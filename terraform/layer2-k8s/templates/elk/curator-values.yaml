@@ -1,0 +1,58 @@
+configMaps:
+  config_yml: |-
+    ---
+    client:
+      hosts:
+        - elasticsearch-master
+      port: 9200
+      use_ssl: True
+      # certificate:
+      client_cert: /certs/tls.crt
+      client_key: /certs/tls.key
+      ssl_no_validate: True
+      http_auth: $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD
+      # timeout: 30
+      # master_only: False
+  action_file_yml: |-
+    ---
+    actions:
+      1:
+        action: delete_indices
+        description: "Clean up ES by deleting old indices"
+        options:
+          timeout_override:
+          continue_if_exception: False
+          disable_action: False
+          ignore_empty_list: True
+        filters:
+        - filtertype: age
+          source: name
+          direction: older
+          timestring: '%Y.%m.%d'
+          unit: days
+          unit_count: ${index_retention_days}
+          field:
+          stats_result:
+          epoch:
+          exclude: False
+
+envFromSecrets:
+  elasticsearch_password:
+    from:
+      key: password
+      secret: elastic-credentials
+  elasticsearch_username:
+    from:
+      key: username
+      secret: elastic-credentials
+
+extraVolumeMounts:
+- mountPath: /certs
+  name: elastic-certificates
+  readOnly: true
+
+extraVolumes:
+- name: elastic-certificates
+  secret:
+    defaultMode: 420
+    secretName: elastic-certificates

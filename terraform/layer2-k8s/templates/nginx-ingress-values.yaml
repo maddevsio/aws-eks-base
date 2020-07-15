@@ -1,0 +1,51 @@
+controller:
+  extraArgs:
+    default-ssl-certificate: "${namespace}/nginx-tls"
+
+  containerPort:
+    http: 80
+    https: 443
+    # special: 8000
+
+  service:
+    targetPorts:
+      http: http
+      https: https
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+      service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+      service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '60'
+      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
+      service.beta.kubernetes.io/aws-load-balancer-type: nlb
+      # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: ${ssl_cert}
+      # service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: ELBSecurityPolicy-TLS-1-2-2017-01
+      external-dns.alpha.kubernetes.io/hostname: ${hostname}.
+  publishService:
+    enabled: true
+
+  config:
+    server-tokens: "false"
+    use-forwarded-headers: "true"
+    use-proxy-protocol: "true"
+    set-real-ip-from: "${proxy_real_ip_cidr}"
+    real-ip-header: "proxy_protocol"
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: prometheus-operator
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node.kubernetes.io/lifecycle
+            operator: NotIn
+            values: 
+              - spot
+
+rbac:
+  create: true

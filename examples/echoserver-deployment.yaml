@@ -1,0 +1,62 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echoserver
+  namespace: fargate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echoserver
+  template:
+    metadata:
+      labels:
+        app: echoserver
+    spec:
+      containers:
+      - image: gcr.io/google_containers/echoserver:1.0
+        imagePullPolicy: Always
+        name: echoserver
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: echoserver
+  namespace: fargate
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: echoserver
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: echoserver
+  namespace: fargate
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-2-2017-01
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:730809894724:certificate/aa3c4d2f-c661-49b8-b312-1f1cf1b7ef51
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/target-type: ip
+    external-dns.alpha.kubernetes.io/hostname: echo.madops.org
+    alb.ingress.kubernetes.io/success-codes: "200"
+    alb.ingress.kubernetes.io/healthcheck-path: "/"
+spec:
+  rules:
+    - host: echo.madops.org
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: echoserver
+              servicePort: 80
+

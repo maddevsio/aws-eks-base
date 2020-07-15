@@ -1,0 +1,77 @@
+rbac:
+  create: true
+  serviceAccountAnnotations:
+    "eks.amazonaws.com/role-arn": ${iam_role_arn}
+
+image: "halfb00t/elasticsearch"
+imageTag: 7.8.0
+
+esMajorVersion: 7
+replicas: 1
+
+clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
+clusterName: "elasticsearch"
+
+volumeClaimTemplate:
+  accessModes: [ "ReadWriteOnce" ]
+  storageClassName: "${storage_class_name}"
+  resources:
+    requests:
+      storage: 100Gi
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 512m
+    memory: 2Gi
+
+esJavaOpts: -Xmx1500m -Xms1500m
+protocol: https
+esConfig:
+  elasticsearch.yml: |
+    xpack.security.enabled: true
+    xpack.monitoring.collection.enabled: true
+    xpack.security.transport.ssl.enabled: true
+    xpack.security.transport.ssl.verification_mode: certificate
+    xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/certs/tls.key
+    xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/certs/tls.crt
+    xpack.security.http.ssl.enabled: true
+    xpack.security.http.ssl.key: /usr/share/elasticsearch/config/certs/tls.key
+    xpack.security.http.ssl.certificate: /usr/share/elasticsearch/config/certs/tls.crt
+
+extraEnvs:
+  - name: ELASTIC_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: elastic-credentials
+        key: password
+  - name: ELASTIC_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: elastic-credentials
+        key: username
+
+secretMounts:
+  - name: elastic-certificates
+    secretName: elastic-certificates
+    path: /usr/share/elasticsearch/config/certs
+
+keystore:
+  - secretName: elasticsearch-s3-user-creds
+    items:
+    - key: aws_s3_user_access_key
+      path: s3.client.default.access_key
+    - key: aws_s3_user_secret_key
+      path: s3.client.default.secret_key
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node.kubernetes.io/lifecycle
+          operator: NotIn
+          values:
+            - spot

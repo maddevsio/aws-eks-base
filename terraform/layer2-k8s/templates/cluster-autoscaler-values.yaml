@@ -1,0 +1,27 @@
+awsRegion: ${region}
+
+rbac:
+  create: true
+  serviceAccountAnnotations:
+    eks.amazonaws.com/role-arn: ${role_arn}
+
+autoDiscovery:
+  clusterName: ${cluster_name}
+  enabled: true
+
+serviceMonitor:
+  enabled: true
+  namespace: monitoring
+  selector:
+    prometheus: prometheus-operator
+  path: /metrics
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node.kubernetes.io/lifecycle
+          operator: NotIn
+          values: 
+            - spot

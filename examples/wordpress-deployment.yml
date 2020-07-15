@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress
+  namespace: wp
+  labels:
+    app: wordpress
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: wordpress
+    tier: frontend
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wp-pv-claim
+  namespace: wp
+  labels:
+    app: wordpress
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: wordpress
+  namespace: wp
+  labels:
+    app: wordpress
+spec:
+  selector:
+    matchLabels:
+      app: wordpress
+      tier: frontend
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wordpress
+        tier: frontend
+    spec:
+      containers:
+      - image: wordpress:5.4.2-apache
+        name: wordpress
+        env:
+        - name: WORDPRESS_DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: mysql-connection
+              key: db-host
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-connection
+              key: db-password
+        - name: WORDPRESS_DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: mysql-connection
+              key: db-name
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-connection
+              key: db-user
+        ports:
+        - containerPort: 80
+          name: wordpress
+        volumeMounts:
+        - name: wordpress-persistent-storage
+          mountPath: /var/www/html
+      volumes:
+      - name: wordpress-persistent-storage
+        persistentVolumeClaim:
+          claimName: wp-pv-claim
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: wordpress
+  namespace: wp
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  rules:
+  - host: wp.madops.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: wordpress
+          servicePort: 80
+  tls:
+  - hosts:
+    - wp.madops.org

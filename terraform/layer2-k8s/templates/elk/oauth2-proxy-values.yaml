@@ -1,0 +1,31 @@
+image:
+  tag: "v6.0.0"
+
+config:
+  existingSecret: kibana-oauth2-secrets
+
+extraArgs:
+  provider: gitlab
+  email-domain: "*"
+  gitlab-group: "teacherly"
+  redirect-url: "https://${domain_name}/oauth2/callback"
+  upstream: "https://${domain_name}/"
+  approval-prompt: auto
+
+ingress:
+  enabled: true
+  path: /oauth2
+  hosts:
+    - ${domain_name}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi

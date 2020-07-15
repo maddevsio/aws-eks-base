@@ -1,0 +1,17 @@
+serviceMonitor:
+  enabled: true
+  additionalLabels:
+    release: prometheus-operator
+
+mysql:
+  existingSecret: mysql-exporter
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node.kubernetes.io/lifecycle
+          operator: In
+          values: 
+            - spot

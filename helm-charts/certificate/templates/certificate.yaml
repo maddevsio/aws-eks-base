@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: nginx-tls
+spec:
+  secretName: nginx-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - {{ .Values.domainName | quote }}
+    - {{ .Values.commonName | quote }}

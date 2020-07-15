@@ -1,0 +1,46 @@
+imageTag: 7.8.0
+
+filebeatConfig:
+  filebeat.yml: |
+    filebeat.inputs:
+    - type: docker
+      containers.ids:
+      - '*'
+    processors:
+      - add_kubernetes_metadata:
+          host: $${NODE_NAME}
+          in_cluster: true
+          labels.dedot: true
+          annotations.dedot: true
+      - drop_event:
+          when:
+            equals:
+              kubernetes.container.name: "filebeat"
+
+    output.elasticsearch:
+      username: '$${ELASTICSEARCH_USERNAME}'
+      password: '$${ELASTICSEARCH_PASSWORD}'
+      protocol: https
+      hosts: ["elasticsearch-master:9200"]
+      ssl.verification_mode: none
+
+extraVolumeMounts:
+  - name: elastic-certificates
+    mountPath: /usr/share/filebeat/config/certs
+
+extraVolumes:
+  - name: elastic-certificates
+    secret:
+      secretName: elastic-certificates
+
+extraEnvs:
+  - name: 'ELASTICSEARCH_USERNAME'
+    valueFrom:
+      secretKeyRef:
+        name: elastic-credentials
+        key: username
+  - name: 'ELASTICSEARCH_PASSWORD'
+    valueFrom:
+      secretKeyRef:
+        name: elastic-credentials
+        key: password

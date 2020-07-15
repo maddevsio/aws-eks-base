@@ -1,0 +1,25 @@
+installCRDs: true
+
+serviceAccount:
+  annotations:
+    "eks.amazonaws.com/role-arn": ${role_arn}
+
+securityContext:
+  fsGroup: 1001
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node.kubernetes.io/lifecycle
+          operator: NotIn
+          values: 
+            - spot
+
+cainjector:
+  enabled: true
+  replicaCount: 1
+
+  extraArgs:
+    - --leader-elect=false

@@ -1,0 +1,169 @@
+# Prometheus Server parameters
+prometheus:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/whitelist-source-range: ${ip_whitelist}
+    path: /
+    hosts:
+      - ${prometheus_domain_name}
+    tls:
+    - hosts: 
+      - ${prometheus_domain_name}
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 30Gi
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node.kubernetes.io/lifecycle
+              operator: NotIn
+              values: 
+                - spot
+
+prometheusOperator:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node.kubernetes.io/lifecycle
+            operator: NotIn
+            values: 
+              - spot
+
+# Grafana settings
+grafana:
+  enabled: true
+  image:
+    tag: 7.0.3
+  deploymentStrategy:
+    type: Recreate
+  adminPassword: "${grafana_password}"
+  serviceAccount:
+    annotations:
+      "eks.amazonaws.com/role-arn": ${role_arn}
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    path: /
+    hosts:
+      - ${grafana_domain_name}
+    tls:
+    - hosts: 
+      - ${grafana_domain_name}
+  env:
+    GF_SERVER_ROOT_URL: https://${grafana_domain_name}
+    GF_USERS_ALLOW_SIGN_UP: false
+    GF_AUTH_GITLAB_ENABLED: true
+    GF_AUTH_GITLAB_ALLOW_SIGN_UP: true
+    GF_AUTH_GITLAB_CLIENT_ID: ${gitlab_client_id}
+    GF_AUTH_GITLAB_CLIENT_SECRET: ${gitlab_client_secret}
+    GF_AUTH_GITLAB_SCOPES: api
+    GF_AUTH_GITLAB_AUTH_URL: https://gitlab.com/oauth/authorize
+    GF_AUTH_GITLAB_TOKEN_URL: https://gitlab.com/oauth/token
+    GF_AUTH_GITLAB_API_URL: https://gitlab.com/api/v4
+    GF_AUTH_GITLAB_ALOWED_GROUPS: madops
+
+  persistence:
+    enabled: false
+    accessModes: ["ReadWriteOnce"]
+    size: 5Gi
+    
+  sidecar:
+    datasources:
+      enabled: true
+      
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: CloudWatch
+          type: cloudwatch
+          jsonData:
+            authType: credentials
+            defaultRegion: "${default_region}"
+
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'aws'
+        orgId: 1
+        folder: 'aws'
+        type: file
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/aws
+      - name: 'k8s'
+        orgId: 1
+        folder: 'k8s'
+        type: file
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/k8s
+
+  dashboards:
+    aws:
+      database-dev:
+        url: https://gist.githubusercontent.com/halfb00t/1515ad62b068a38c2f739cdf1db69ed5/raw/b7b27d03fb3b28e9ae9ca43da977f56fa31eb137/rds-mysql-wp.json
+    k8s:
+      nginx-ingress:
+        gnetId: 6927
+        datasource: Prometheus
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node.kubernetes.io/lifecycle
+            operator: In
+            values: 
+              - spot
+
+# Alertmanager parameters
+alertmanager:
+  enabled: true
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/whitelist-source-range: ${ip_whitelist}
+    path: /
+    hosts:
+      - ${alertmanager_domain_name}
+    tls:
+    - hosts: 
+      - ${alertmanager_domain_name}
+  alertmanagerSpec:
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node.kubernetes.io/lifecycle
+              operator: NotIn
+              values: 
+                - spot

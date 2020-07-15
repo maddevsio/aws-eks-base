@@ -1,0 +1,18 @@
+rbac:
+  create: true
+  serviceAccountName: "external-dns"
+  serviceAccountAnnotations: 
+     "eks.amazonaws.com/role-arn": ${role_arn}
+provider: aws
+domainFilters: [${domain_name}]
+aws:
+  region: ${region}
+  zoneType: ${zone_type}
+
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring
+    selector:
+      prometheus: prometheus-operator

@@ -1,0 +1,19 @@
+mysql:
+  port: 3306
+  host: ${db_host}
+  database: ${db_name}
+  secret:
+    name: mysql-connection
+    keys:
+      user: db-user
+      password: db-password
+
+s3:
+  enabled: true
+  bucket: ${bucket_name}
+  filePrefix: mysqldump
+  secret:
+    name: mysql-backup-s3-creds
+    keys:
+      accessKeyId: accessKeyId
+      secretAccessKey: secretAccessKey
