@@ -1,12 +1,14 @@
 data "template_file" "nginx_ingress" {
-  template = "${file("${path.module}/templates/nginx-ingress-values.yaml")}"
+  template = "${file("${path.module}/templates/nginx-ingress-certmanager-values.yaml")}"
 
   vars = {
     hostname           = "${local.domain_name}"
     ssl_cert           = local.ssl_certificate_arn
+    namespace          = kubernetes_namespace.ing.id
     proxy_real_ip_cidr = local.vpc_cidr
   }
 }
+
 
 resource "helm_release" "nginx_ingress" {
   name       = "nginx-ingress"

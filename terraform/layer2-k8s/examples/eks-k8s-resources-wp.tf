@@ -1,3 +1,9 @@
+resource "kubernetes_namespace" "wp" {
+  metadata {
+    name = "wp"
+  }
+}
+
 resource "kubernetes_secret" "wp_mysql" {
   metadata {
     name      = "mysql-connection"

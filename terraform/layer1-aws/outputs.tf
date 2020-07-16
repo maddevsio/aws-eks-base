@@ -79,17 +79,6 @@ output vpc_elasticache_subnets {
   value       = module.vpc.elasticache_subnets
 }
 
-output wp_db {
-  description = "description"
-  value = {
-    "username"         = local.wp_db_username
-    "database"         = local.wp_db_database
-    "password"         = local.wp_db_password
-    "address"          = module.db_wp.this_db_instance_address
-    "s3_backup_bucket" = aws_s3_bucket.rds_backup_wp.id
-  }
-}
-
 output eks_cluster_endpoint {
   description = "Endpoint for EKS control plane."
   value       = module.eks.cluster_endpoint
@@ -134,10 +123,4 @@ output docker_repository_urls {
 output elastic_stack_bucket_name {
   value       = aws_s3_bucket.elastic_stack.id
   description = "Name of the bucket for ELKS snapshots"
-}
-
-output cloudwatchlogsbeat_bucket_name {
-  value       = aws_s3_bucket.cloudwatchlogsbeat.id
-  description = "Name of the bucket for cloudwatchlogsbeat logs"
-
 }

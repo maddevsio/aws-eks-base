@@ -14,7 +14,6 @@ data "template_file" "cert_manager" {
   }
 }
 
-
 resource "helm_release" "cert_manager" {
   name       = "cert-manager"
   chart      = "cert-manager"
@@ -26,4 +25,10 @@ resource "helm_release" "cert_manager" {
   values = [
     "${data.template_file.cert_manager.rendered}",
   ]
+}
+
+resource "kubernetes_namespace" "certmanager" {
+  metadata {
+    name = "certmanager"
+  }
 }

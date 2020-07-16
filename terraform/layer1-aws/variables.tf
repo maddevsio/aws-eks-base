@@ -71,13 +71,6 @@ variable "allowed_ips" {
   ]
 }
 
-# RDS Variables
-variable "rds_instance_wp" {
-  type        = string
-  default     = "db.t3.small"
-  description = "Instance class of the rds database"
-}
-
 # EKS
 variable "map_roles" {
   description = "Additional IAM roles to add to the aws-auth configmap."

@@ -69,11 +69,3 @@ module "eks" {
 
   write_kubeconfig = false
 }
-
-#module "eks-fargate-profile" {
-#  source       = "terraform-module/eks-fargate-profile/aws"
-#  version      = "2.2.5"
-#  subnet_ids   = module.vpc.private_subnets
-#  cluster_name = module.eks.cluster_id
-#  namespaces    = ["fargate"]
-#}

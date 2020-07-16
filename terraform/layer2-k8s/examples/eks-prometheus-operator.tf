@@ -39,3 +39,9 @@ resource "helm_release" "prometheus_operator" {
     "${data.template_file.prometheus_operator.rendered}",
   ]
 }
+
+resource "kubernetes_namespace" "monitoring" {
+  metadata {
+    name = "monitoring"
+  }
+}
