@@ -1,5 +1,5 @@
 serviceMonitor:
-  enabled: true
+  enabled: false
   additionalLabels:
     release: prometheus-operator
 

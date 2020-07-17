@@ -12,7 +12,7 @@ aws:
 metrics:
   enabled: true
   serviceMonitor:
-    enabled: true
+    enabled: false
     namespace: monitoring
     selector:
       prometheus: prometheus-operator

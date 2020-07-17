@@ -1,3 +1,8 @@
+locals {
+  kibana_domain_name = "kibana-${local.domain_suffix}"
+  apm_domain_name    = "apm-${local.domain_suffix}"
+}
+
 resource "kubernetes_storage_class" "elk" {
   metadata {
     name = "elk"

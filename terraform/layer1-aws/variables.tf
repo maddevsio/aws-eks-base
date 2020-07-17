@@ -1,11 +1,16 @@
 # COMMON VARIABLES
 
-variable "name" {
+variable name {
   description = "Project name, required to form unique resource names"
-  default     = "demo"
+  default     = "maddevs"
 }
 
-variable "short_region" {
+variable environment {
+  default     = "demo"
+  description = "Env name in case workspace wasn't used"
+}
+
+variable short_region {
   description = "The abbreviated name of the region, required to form unique resource names"
   default = {
     us-east-1      = "use1"  # US East (N. Virginia)
@@ -32,18 +37,17 @@ variable "short_region" {
   }
 }
 
-variable "domain_name" {
+variable domain_name {
   description = "Main teacherly domain name"
-  default     = "madops.org"
+  default     = "maddevs.org"
 }
 
 variable zone_id {
-  type        = string
-  default     = "Z0572177MT3HMWS2BEEJ"
-  description = "madops.org zone id"
+  default     = "Z058363314IT7VAKRA364"
+  description = "maddevs.org zone id"
 }
 
-# VPC VARIABLES 
+# VPC VARIABLES
 
 variable region {
   type        = string
@@ -51,17 +55,17 @@ variable region {
   description = "Default infrastructure region"
 }
 
-variable "az_count" {
+variable az_count {
   description = "Count of avaiablity zones, min 2"
   default     = 3
 }
 
-variable "cidr" {
+variable cidr {
   description = "Default CIDR block for VPC"
   default     = "10.0.0.0/16"
 }
 
-variable "allowed_ips" {
+variable allowed_ips {
   type = list
   default = [
     "212.42.109.196/32",
@@ -72,7 +76,12 @@ variable "allowed_ips" {
 }
 
 # EKS
-variable "map_roles" {
+variable eks_cluster_version {
+  default     = "1.16"
+  description = "Version of the EKS K8S cluster"
+}
+
+variable map_roles {
   description = "Additional IAM roles to add to the aws-auth configmap."
   type = list(object({
     rolearn  = string
@@ -90,7 +99,7 @@ variable "map_roles" {
   ]
 }
 
-variable "map_users" {
+variable map_users {
   description = "Additional IAM users to add to the aws-auth configmap."
   type = list(object({
     userarn  = string
@@ -108,13 +117,13 @@ variable "map_users" {
 }
 
 # ECR
-variable "ecr_repos" {
+variable ecr_repos {
   type        = list
   default     = ["demo"]
   description = "List of docker repositories"
 }
 
-variable "ecr_repo_retention_count" {
+variable ecr_repo_retention_count {
   default     = 50
   description = "number of images to store in ECR"
 }

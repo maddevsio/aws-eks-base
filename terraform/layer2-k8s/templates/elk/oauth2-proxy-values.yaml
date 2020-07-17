@@ -7,7 +7,7 @@ config:
 extraArgs:
   provider: gitlab
   email-domain: "*"
-  gitlab-group: "teacherly"
+  gitlab-group: "${gitlab_group}"
   redirect-url: "https://${domain_name}/oauth2/callback"
   upstream: "https://${domain_name}/"
   approval-prompt: auto

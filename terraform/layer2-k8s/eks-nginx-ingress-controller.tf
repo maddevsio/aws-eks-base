@@ -5,6 +5,7 @@ data "template_file" "nginx_ingress" {
     hostname           = "${local.domain_name}"
     ssl_cert           = local.ssl_certificate_arn
     proxy_real_ip_cidr = local.vpc_cidr
+    namespace          = kubernetes_namespace.ing.id
   }
 }
 

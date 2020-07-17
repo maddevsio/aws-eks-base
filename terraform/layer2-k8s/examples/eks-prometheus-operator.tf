@@ -1,3 +1,21 @@
+locals {
+  grafana_password         = random_string.grafana_password.result
+  grafana_domain_name      = "grafana.${local.domain_name}"
+  prometheus_domain_name   = "prometheus.${local.domain_name}"
+  alertmanager_domain_name = "alertmanager.${local.domain_name}"
+}
+
+resource "random_string" "grafana_password" {
+  length  = 20
+  special = true
+}
+
+resource "kubernetes_namespace" "monitoring" {
+  metadata {
+    name = "monitoring"
+  }
+}
+
 module "aws_iam_grafana" {
   source = "../modules/aws-iam-grafana"
 
@@ -40,8 +58,23 @@ resource "helm_release" "prometheus_operator" {
   ]
 }
 
-resource "kubernetes_namespace" "monitoring" {
-  metadata {
-    name = "monitoring"
-  }
+output "grafana_domain_name" {
+  value       = local.grafana_domain_name
+  description = "Grafana dashboards address"
+}
+
+output "alertmanager_domain_name" {
+  value       = local.alertmanager_domain_name
+  description = "Alertmanager ui address"
+}
+
+output "prometheus_domain_name" {
+  value       = local.prometheus_domain_name
+  description = "Prometheus ui address"
+}
+
+output "grafana_admin_password" {
+  value       = local.grafana_password
+  sensitive   = true
+  description = "Grafana admin password"
 }

@@ -26,9 +26,9 @@ prometheus:
           nodeSelectorTerms:
           - matchExpressions:
             - key: node.kubernetes.io/lifecycle
-              operator: NotIn
+              operator: In
               values: 
-                - spot
+                - ondemand
 
 prometheusOperator:
   affinity:
@@ -37,9 +37,9 @@ prometheusOperator:
         nodeSelectorTerms:
         - matchExpressions:
           - key: node.kubernetes.io/lifecycle
-            operator: NotIn
+            operator: In
             values: 
-              - spot
+              - ondemand
 
 # Grafana settings
 grafana:
@@ -164,6 +164,6 @@ alertmanager:
           nodeSelectorTerms:
           - matchExpressions:
             - key: node.kubernetes.io/lifecycle
-              operator: NotIn
+              operator: In
               values: 
-                - spot
+                - ondemand

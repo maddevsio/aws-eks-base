@@ -24,12 +24,6 @@ locals {
   wp_db_name     = "${local.name}-wp"
 }
 
-resource "random_string" "default_env" {
-  length  = 4
-  special = false
-  upper   = false
-}
-
 resource "random_string" "mysql_password_wp" {
   length  = 20
   special = false

@@ -1,9 +1,9 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "12.1.0"
+  version = "12.2.0"
 
   cluster_name    = local.name
-  cluster_version = "1.16"
+  cluster_version = var.eks_cluster_version
   subnets         = module.vpc.private_subnets
   enable_irsa     = true
 
@@ -23,8 +23,8 @@ module "eks" {
       spot_instance_pools     = 4
       asg_max_size            = 5
       asg_min_size            = 0
-      asg_desired_capacity    = 0
-      kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot --node-labels=purpose=spot"
+      asg_desired_capacity    = 1
+      kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
       public_ip               = true
       additional_userdata     = file("${path.module}/templates/eks-nodes-userdata.sh")
       tags = [
@@ -46,7 +46,7 @@ module "eks" {
       asg_desired_capacity = 1
       asg_max_size         = 6
       cpu_credits          = "unlimited"
-      kubelet_extra_args   = "--node-labels=node.kubernetes.io/lifecycle=ondemand --node-labels=purpose=default"
+      kubelet_extra_args   = "--node-labels=node.kubernetes.io/lifecycle=ondemand"
       public_ip            = false
       additional_userdata  = file("${path.module}/templates/eks-nodes-userdata.sh")
       tags = [

@@ -21,7 +21,8 @@ data "template_file" "oauth2_proxy" {
   template = file("${path.module}/templates/elk/oauth2-proxy-values.yaml")
 
   vars = {
-    domain_name = local.kibana_domain_name
+    domain_name  = local.kibana_domain_name
+    gitlab_group = var.kibana_gitlab_group
   }
 }
 

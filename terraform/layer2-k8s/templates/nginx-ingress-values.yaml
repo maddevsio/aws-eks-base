@@ -2,7 +2,7 @@ controller:
   service:
     targetPorts:
       http: http
-      https: https
+      https: http
     annotations:
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
       service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '60'
@@ -18,15 +18,22 @@ controller:
     use-forwarded-headers: "true"
     set-real-ip-from: "${proxy_real_ip_cidr}"
 
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: false
+      additionalLabels:
+        release: prometheus-operator
+
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
           - key: node.kubernetes.io/lifecycle
-            operator: NotIn
+            operator: In
             values: 
-              - spot
+              - ondemand
 
 rbac:
   create: true

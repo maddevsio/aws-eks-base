@@ -7,9 +7,9 @@ ingress:
   path: /
   hosts:
     - ${domain_name}
-  tls:
-  - hosts: 
-    - ${domain_name}
+#  tls:
+#  - hosts: 
+#    - ${domain_name}
 
 apmConfig:
   apm-server.yml: |

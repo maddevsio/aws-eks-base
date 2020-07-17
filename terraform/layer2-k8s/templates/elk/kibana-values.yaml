@@ -1,5 +1,14 @@
 imageTag: 7.8.0
 imagePullPolicy: Always
+
+resources:
+  requests:
+    cpu: "512m"
+    memory: "1Gi"
+  limits:
+    cpu: "512m"
+    memory: "1Gi"
+
 ingress:
   enabled: true
   annotations:
@@ -8,19 +17,21 @@ ingress:
     nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
     nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_set_header Authorization "Basic ${dev_user_base64_creds}";
+      proxy_set_header Authorization "Basic ${kibana_base64_creds}";
       proxy_set_header es-security-runas-user $http_x_forwarded_user;
       proxy_set_header x-proxy-user $http_x_forwarded_user;
   path: /
   hosts:
     - ${domain_name}
-  tls:
-  - hosts: 
-    - ${domain_name}
+#  tls:
+#  - hosts: 
+#    - ${domain_name}
     
 elasticsearchHosts: "https://elasticsearch-master:9200"
 
 extraEnvs:
+  - name: "NODE_OPTIONS"
+    value: "--max-old-space-size=800"
   - name: 'ELASTICSEARCH_USERNAME'
     valueFrom:
       secretKeyRef:
@@ -139,8 +150,8 @@ extraInitContainers:
     command:
       - /bin/sh
       - -c
-      - 'curl -X POST -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_security/user/teacherly -H ''Content-Type: application/json'' 
-        -d ''{"password" : "${dev_user_password}","roles" : [ "superuser"],"full_name" : "Teacherly Developer","email" : ""}'''
+      - 'curl -X POST -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_security/user/${kibana_user} -H ''Content-Type: application/json'' 
+        -d ''{"password" : "${kibana_password}","roles" : [ "superuser"],"full_name" : "Kibana User","email" : ""}'''
     image: appropriate/curl:latest
     imagePullPolicy: IfNotPresent
     env:

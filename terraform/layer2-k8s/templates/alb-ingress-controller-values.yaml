@@ -18,6 +18,6 @@ affinity:
       nodeSelectorTerms:
       - matchExpressions:
         - key: node.kubernetes.io/lifecycle
-          operator: NotIn
+          operator: In
           values: 
-            - spot
+            - ondemand

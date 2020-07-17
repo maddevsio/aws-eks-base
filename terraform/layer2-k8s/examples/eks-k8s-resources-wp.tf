@@ -1,3 +1,12 @@
+locals {
+  wp_db_password      = data.terraform_remote_state.layer1-aws.outputs.wp_db["password"]
+  wp_db_address       = data.terraform_remote_state.layer1-aws.outputs.wp_db["address"]
+  wp_db_username      = data.terraform_remote_state.layer1-aws.outputs.wp_db["username"]
+  wp_db_database      = data.terraform_remote_state.layer1-aws.outputs.wp_db["database"]
+  wp_db_backup_bucket = data.terraform_remote_state.layer1-aws.outputs.wp_db["s3_backup_bucket"]
+}
+
+
 resource "kubernetes_namespace" "wp" {
   metadata {
     name = "wp"

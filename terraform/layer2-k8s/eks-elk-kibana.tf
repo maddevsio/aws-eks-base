@@ -15,7 +15,7 @@ resource "random_string" "kibana_enc_key" {
   upper   = true
 }
 
-resource "random_string" "dev_user_password" {
+resource "random_string" "kibana_password" {
   length  = 32
   special = false
   upper   = true
@@ -27,8 +27,9 @@ data "template_file" "kibana" {
   vars = {
     domain_name             = local.kibana_domain_name
     bucket_name             = local.elastic_stack_bucket_name
-    dev_user_password       = random_string.dev_user_password.result
-    dev_user_base64_creds   = base64encode("teacherly:${random_string.dev_user_password.result}")
+    kibana_user             = "kibana-${local.env}"
+    kibana_password         = random_string.kibana_password.result
+    kibana_base64_creds     = base64encode("kibana-${local.env}:${random_string.kibana_password.result}")
     snapshot_retention_days = var.elk_snapshot_retention_days
     index_retention_days    = var.elk_index_retention_days
   }
