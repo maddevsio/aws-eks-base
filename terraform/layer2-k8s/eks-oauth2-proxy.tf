@@ -18,7 +18,7 @@ resource "kubernetes_secret" "kibana_oauth2_secrets" {
 }
 
 data "template_file" "oauth2_proxy" {
-  template = file("${path.module}/templates/elk/oauth2-proxy-values.yaml")
+  template = file("${path.module}/templates/oauth2-proxy-values.yaml")
 
   vars = {
     domain_name  = local.kibana_domain_name
@@ -37,7 +37,4 @@ resource "helm_release" "oauth2_proxy" {
   values = [
     "${data.template_file.oauth2_proxy.rendered}",
   ]
-
-  # This dep needs for correct apply
-  depends_on = [helm_release.kibana, kubernetes_namespace.elk]
 }

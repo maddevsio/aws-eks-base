@@ -1,0 +1,12 @@
+name: elastic-stack
+version: 0.0.1
+appVersion: 7.8.0
+description: Elasticsearch stack
+keywords:
+- elasticsearch
+- filebeat
+- kibana
+- logstash
+- metricbeat
+- apm
+

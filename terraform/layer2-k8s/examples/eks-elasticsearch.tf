@@ -1,5 +1,5 @@
 data "template_file" "elasticsearch" {
-  template = file("${path.module}/templates/elk/elasticsearch-values.yaml")
+  template = file("${path.module}/templates/elastic/elasticsearch-values.yaml")
 
   vars = {
     iam_role_arn       = module.aws_iam_elastic_stack.role_arn

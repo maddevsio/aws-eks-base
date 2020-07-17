@@ -1,13 +1,12 @@
-data "template_file" "apm" {
-  template = file("${path.module}/templates/elk/apm-values.yaml")
+data "template_file" "apm-server" {
+  template = file("${path.module}/templates/elastic/apm-values.yaml")
 
   vars = {
     domain_name = local.apm_domain_name
-    bucket_name = local.elastic_stack_bucket_name
   }
 }
 
-resource "helm_release" "apm" {
+resource "helm_release" "apm-server" {
   name       = "apm-server"
   chart      = "apm-server"
   repository = local.helm_repo_elastic

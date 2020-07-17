@@ -22,7 +22,7 @@ resource "random_string" "kibana_password" {
 }
 
 data "template_file" "kibana" {
-  template = file("${path.module}/templates/elk/kibana-values.yaml")
+  template = file("${path.module}/templates/elastic/kibana-values.yaml")
 
   vars = {
     domain_name             = local.kibana_domain_name

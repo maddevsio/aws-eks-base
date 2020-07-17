@@ -1,0 +1,23 @@
+# https://github.com/elastic/helm-charts/blob/7.8/elasticsearch/values.yaml
+elasticsearch:
+  enabled: false
+
+# https://github.com/elastic/helm-charts/blob/7.8/kibana/values.yaml
+kibana:
+  enabled: false
+
+# https://github.com/elastic/helm-charts/blob/7.8/filebeat/values.yaml
+filebeat:
+  enabled: false
+
+# https://github.com/elastic/helm-charts/blob/7.8/metricbeat/values.yaml
+metricbeat:
+  enabled: false
+
+# https://github.com/elastic/helm-charts/blob/7.8/logstash/values.yaml
+logstash:
+  enabled: false
+
+# https://github.com/elastic/helm-charts/blob/7.8/apm-server/values.yaml
+apm-server:
+  enabled: false

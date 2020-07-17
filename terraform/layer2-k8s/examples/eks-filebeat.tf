@@ -1,5 +1,5 @@
 data "template_file" "filebeat" {
-  template = file("${path.module}/templates/elk/filebeat-values.yaml")
+  template = file("${path.module}/templates/elastic/filebeat-values.yaml")
 }
 
 resource "helm_release" "filebeat" {

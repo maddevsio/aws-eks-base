@@ -1,5 +1,5 @@
 data "template_file" "metricbeat" {
-  template = file("${path.module}/templates/elk/metricbeat-values.yaml")
+  template = file("${path.module}/templates/elastic/metricbeat-values.yaml")
 }
 
 resource "helm_release" "metricbeat" {

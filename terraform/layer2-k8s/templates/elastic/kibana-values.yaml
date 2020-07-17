@@ -146,7 +146,7 @@ extraInitContainers:
           secretKeyRef:
             name: elastic-credentials
             key: password
-  - name: dev-user
+  - name: kibana-user
     command:
       - /bin/sh
       - -c
@@ -226,8 +226,27 @@ extraInitContainers:
     command:
       - /bin/sh
       - -c
-      - 'curl -X PUT -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_template/filebeat?pretty -H ''Content-Type: application/json'' 
+      - 'curl -X PUT -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_template/apm?pretty -H ''Content-Type: application/json'' 
         -d ''{"index_patterns": ["apm-*"], "settings": {"number_of_shards": 1,"number_of_replicas": 1,"index.lifecycle.name": "delete_old_indicies" }}'''
+    image: appropriate/curl:latest
+    imagePullPolicy: IfNotPresent
+    env:
+      - name: 'ELASTICSEARCH_USERNAME'
+        valueFrom:
+          secretKeyRef:
+            name: elastic-credentials
+            key: username
+      - name: 'ELASTICSEARCH_PASSWORD'
+        valueFrom:
+          secretKeyRef:
+            name: elastic-credentials
+            key: password
+  - name: metricbeat-template
+    command:
+      - /bin/sh
+      - -c
+      - 'curl -X PUT -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_template/metricbeat?pretty -H ''Content-Type: application/json'' 
+        -d ''{"index_patterns": ["metricbeat-*"], "settings": {"number_of_shards": 1,"number_of_replicas": 1,"index.lifecycle.name": "delete_old_indicies" }}'''
     image: appropriate/curl:latest
     imagePullPolicy: IfNotPresent
     env:
