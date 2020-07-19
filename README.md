@@ -13,10 +13,10 @@ Instructions bellow will explain which tools you'll need in order to work with t
   This project uses terraform 0.12. You won't be able to run it on terraform lower 0.12.20 version. Use tfenv to install latest version:
 
   ```bash
-  $ tfenv install 0.12.25
+  $ tfenv install 0.12.28
 
   $ terraform version
-  Terraform v0.12.25
+  Terraform v0.12.28
   ```
 
 * [awscli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html)
@@ -88,7 +88,6 @@ Instructions bellow will explain which tools you'll need in order to work with t
 
   ```bash 
   $ brew install pre-commit awk terraform-docs tflint tfenv terraform awscli helm kubernetes-cli
-  $ brew cask install aws-vault
   ```
 
 ### AWS
@@ -99,7 +98,7 @@ In order to deploy and work with infrastructure AWS Account with `AdministratorA
 
 #### S3 Bucket for states
 
-All states of of all layers are stored in private `demo-terraform-state-us-east-1` s3 bucket with encryption and versioning enabled. Each layer stores it's states in the directory of the bucket with the same name, ie `layer1-aws`. Also this bucket is used to exhachge data between layers.
+All states of of all layers are stored in private `madops-terraform-state-us-east-1` s3 bucket with encryption and versioning enabled. Each layer stores it's states in the directory of the bucket with the same name, ie `layer1-aws`. Also this bucket is used to exhachge data between layers.
 
 ### Terraform
 
@@ -143,7 +142,7 @@ The optional -out argument can be used to save the generated plan to a file for 
 Normal output example:
 
 ```bash
-$ terraform plan -var-file=/Volumes/Keybase/team/maddevs.demo/terraform.tfvars
+$ terraform plan -var-file=/Volumes/Keybase/team/maddevs.madops/demo.tfvars
 # ~600 rows skipped
 Plan: 82 to add, 0 to change, 0 to destroy.
 
@@ -161,7 +160,7 @@ The terraform apply command is used to apply the changes required to reach the d
 By default, apply scans the current directory for the configuration and applies the changes appropriately. However, a path to another configuration or an execution plan can be provided. Explicit execution plans files can be used to split plan and apply into separate steps within automation systems.
 
 ```bash
-$ terraform apply -var-file=/Volumes/Keybase/team/maddevs.demo/terraform.tfvars
+$ terraform apply -var-file=/Volumes/Keybase/team/maddevs.madops/demo.tfvars
 # ~600 rows skipped
 Plan: 82 to add, 0 to change, 0 to destroy.
 
@@ -222,10 +221,10 @@ Destroy complete! Resources: 82 destroyed.
 After `terraform apply` in layer1 is finished, it will print to the output your EKS cluster name and command to configure kubectl in `eks_kubectl_console_config` output variable. You can use it to authenticate in k8s and use `kubectl`:
 
 ```bash
-$ aws eks update-kubeconfig --name demo-ue1 --region us-east-1
+$ aws eks update-kubeconfig --name maddevs-demo-use1 --region us-east-1
 $ kubectl get nodes
 NAME                                       STATUS   ROLES    AGE   VERSION
-ip-10-0-0-165.us-east-1.compute.internal   Ready    <none>   11h   v1.17.11-eks-af3caf
-ip-10-0-1-241.us-east-1.compute.internal   Ready    <none>   11h   v1.17.11-eks-af3caf
-ip-10-0-1-60.us-east-1.compute.internal    Ready    <none>   11h   v1.17.11-eks-af3caf
+ip-10-0-0-165.us-east-1.compute.internal   Ready    <none>   11h   v1.16.11-eks-af3caf
+ip-10-0-1-241.us-east-1.compute.internal   Ready    <none>   11h   v1.16.11-eks-af3caf
+ip-10-0-1-60.us-east-1.compute.internal    Ready    <none>   11h   v1.16.11-eks-af3caf
 ```
