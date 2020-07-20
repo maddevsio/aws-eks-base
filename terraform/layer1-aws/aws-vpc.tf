@@ -3,9 +3,9 @@ resource "null_resource" "subnets" {
 
   triggers = {
     private_subnets     = cidrsubnet(var.cidr, 8, count.index)
-    public_subnets      = cidrsubnet(var.cidr, 8, count.index + 100)
-    database_subnets    = cidrsubnet(var.cidr, 8, count.index + 150)
-    elasticache_subnets = cidrsubnet(var.cidr, 8, count.index + 200)
+    public_subnets      = cidrsubnet(var.cidr, 8, count.index + 10)
+    database_subnets    = cidrsubnet(var.cidr, 8, count.index + 20)
+    elasticache_subnets = cidrsubnet(var.cidr, 8, count.index + 30)
     azs                 = data.aws_availability_zones.available.names[count.index]
   }
 }

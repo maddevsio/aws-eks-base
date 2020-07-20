@@ -57,7 +57,7 @@ variable region {
 
 variable az_count {
   description = "Count of avaiablity zones, min 2"
-  default     = 3
+  default     = 2
 }
 
 variable cidr {
