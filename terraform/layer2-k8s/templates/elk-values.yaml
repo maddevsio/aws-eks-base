@@ -133,20 +133,30 @@ filebeat:
   enabled: true
   filebeatConfig:
     filebeat.yml: |
-      filebeat.inputs:
-      - type: docker
-        containers.ids:
-        - '*'
+      filebeat.modules:
+        - module: system
+          syslog:
+            enabled: true
+            #var.paths: ["/var/log/syslog"]
+      filebeat.autodiscover:
+        providers:
+          - type: kubernetes
+            node: $${NODE_NAME}
+            hints.enabled: true
+            hints.default_config:
+              type: container
+              paths:
+                - /var/log/containers/*-$${data.kubernetes.container.id}.log
+ 
       processors:
-        - add_kubernetes_metadata:
-            host: $${NODE_NAME}
-            in_cluster: true
-            labels.dedot: true
-            annotations.dedot: true
         - drop_event:
             when:
               equals:
                 kubernetes.container.name: "filebeat"
+
+        - add_cloud_metadata:
+        - add_kubernetes_metadata:
+        - add_docker_metadata:
 
       output.elasticsearch:
         username: '$${ELASTICSEARCH_USERNAME}'
@@ -194,6 +204,11 @@ metricbeat:
     # such as metricbeat.yml for daemonset
     metricbeatConfig:
       metricbeat.yml: |
+        metricbeat.autodiscover:
+          providers:
+            - type: kubernetes
+              hints.enabled: true
+
         metricbeat.modules:
         - module: kubernetes
           metricsets:
@@ -277,6 +292,12 @@ metricbeat:
             - state_container
           period: 10s
           hosts: ["$${KUBE_STATE_METRICS_HOSTS}"]
+        - module: prometheus
+          metricsets: ["collector"]
+          metrics_path: /metrics
+          period: 10s
+          hosts: ["nginx-ingress-controller-metrics.ing:9913"]
+          namespace: ing
         output.elasticsearch:
           username: '$${ELASTICSEARCH_USERNAME}'
           password: '$${ELASTICSEARCH_PASSWORD}'
@@ -357,6 +378,9 @@ kibana:
     - name: elastic-certificates
       secretName: elastic-certificates
       path: /usr/share/kibana/config/certs
+  
+  podAnnotations:
+    co.elastic.logs/module: kibana
 
   affinity:
     nodeAffinity:

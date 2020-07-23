@@ -47,12 +47,12 @@ metadata:
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:730809894724:certificate/aa3c4d2f-c661-49b8-b312-1f1cf1b7ef51
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     alb.ingress.kubernetes.io/target-type: ip
-    external-dns.alpha.kubernetes.io/hostname: echo.madops.org
+    external-dns.alpha.kubernetes.io/hostname: echo.maddevs.org
     alb.ingress.kubernetes.io/success-codes: "200"
     alb.ingress.kubernetes.io/healthcheck-path: "/"
 spec:
   rules:
-    - host: echo.madops.org
+    - host: echo.maddevs.org
       http:
         paths:
           - path: /

@@ -42,6 +42,12 @@ spec:
     type: Recreate
   template:
     metadata:
+      annotations:
+        co.elastic.metrics/module: apache
+        co.elastic.metrics/hosts: '${data.host}:80'
+        co.elastic.logs/module: apache
+        co.elastic.logs/fileset.stdout: access
+        co.elastic.logs/fileset.stderr: error
       labels:
         app: wordpress
         tier: frontend
@@ -91,13 +97,11 @@ metadata:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   rules:
-  - host: wp.madops.org
+  - host: wp.maddevs.org
     http:
       paths:
       - path: /
         backend:
           serviceName: wordpress
           servicePort: 80
-  tls:
-  - hosts:
-    - wp.madops.org
+
