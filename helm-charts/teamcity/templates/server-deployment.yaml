@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "teamcity.fullname" . }}
+  labels:
+    app: {{ template "teamcity.name" . }}
+    chart: {{ template "teamcity.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.server.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "teamcity.name" . }}
+      release: {{ .Release.Name }}
+{{- with .Values.server.deploymentStrategy }}
+  strategy:
+{{ toYaml . | trim | indent 4 }}
+{{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "teamcity.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          volumeMounts:
+            - name:  datadir
+              mountPath: /data/teamcity_server/datadir
+          ports:
+            - name: http
+              containerPort: 8111
+              protocol: TCP
+          env:
+            {{- toYaml .Values.server.env | nindent 12 }}
+          resources:
+{{ toYaml .Values.server.resources | indent 12 }}
+      volumes:
+        {{- if and .Values.server.persistence.enabled (eq .Values.server.persistence.type "pvc") }}
+        - name: datadir
+          persistentVolumeClaim:
+            claimName: {{ .Values.server.persistence.existingClaim | default (include "teamcity.fullname" .) }}
+        {{- else if and .Values.server.persistence.enabled (eq .Values.server.persistence.type "statefulset") }}
+        # nothing
+        {{- else }}
+        - name: datadir
+          emptyDir: {}
+        {{- end -}}
+    {{- with .Values.server.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.server.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.server.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

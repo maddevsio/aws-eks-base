@@ -1,0 +1,65 @@
+service:
+  type: ClusterIP
+  port: 8111
+
+ingress:
+  enabled: false
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: 2000m
+  path: /
+  hosts:
+    - teamcity
+
+agent:
+  enabled: false
+  image:
+    repository: jetbrains/teamcity-agent
+    tag: 2020.1.2
+    pullPolicy: IfNotPresent
+
+  replicaCount: 1
+  
+  affinity: {}
+
+  nodeselector: {}
+
+server:
+  image:
+    repository: jetbrains/teamcity-server
+    tag: 2020.1.2
+    pullPolicy: IfNotPresent
+
+  replicaCount: 1
+
+  deploymentStrategy:
+    type: Recreate
+
+  persistence:
+    type: pvc
+    enabled: false
+    # storageClassName: default
+    accessModes:
+      - ReadWriteOnce
+    size: 30Gi
+    # annotations: {}
+  #  finalizers:
+  #    - kubernetes.io/pvc-protection
+    # subPath: ""
+    # existingClaim:
+
+  affinity: {}
+
+  nodeselector: {}
+
+  resources:
+    limits:
+      cpu: 1500m
+      memory: 3Gi
+    requests:
+      cpu: 1000m
+      memory: 3Gi
+
+  env:
+    - name: TEAMCITY_SERVER_MEM_OPTS
+      value: "-Xmx2g -XX:MaxPermSize=270m -XX:ReservedCodeCacheSize=350m"

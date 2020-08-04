@@ -1,4 +1,4 @@
-variable "runner_namespace" {
+variable "namespace" {
   type        = string
   default     = "ci"
   description = "description"

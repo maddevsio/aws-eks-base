@@ -1,7 +1,7 @@
 resource "kubernetes_service_account" "main" {
   metadata {
     name      = var.name
-    namespace = var.runner_namespace
+    namespace = var.namespace
     annotations = {
       "eks.amazonaws.com/role-arn" = var.role_arn
     }
@@ -63,7 +63,7 @@ resource "kubernetes_role_binding" "staging" {
   subject {
     kind      = "ServiceAccount"
     name      = kubernetes_service_account.main.metadata.0.name
-    namespace = var.runner_namespace
+    namespace = var.namespace
   }
 }
 
@@ -82,7 +82,7 @@ resource "kubernetes_role_binding" "prod" {
   subject {
     kind      = "ServiceAccount"
     name      = kubernetes_service_account.main.metadata.0.name
-    namespace = var.runner_namespace
+    namespace = var.namespace
   }
 }
 
@@ -101,6 +101,6 @@ resource "kubernetes_role_binding" "dev" {
   subject {
     kind      = "ServiceAccount"
     name      = kubernetes_service_account.main.metadata.0.name
-    namespace = var.runner_namespace
+    namespace = var.namespace
   }
 }
