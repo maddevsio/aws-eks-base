@@ -57,13 +57,7 @@ Instructions bellow will explain which tools you'll need in order to work with t
   $ echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc
   ```
 
-* [helm](https://helm.sh/)
-
-  ```bash
-  $ curl -LO https://git.io/get_helm.sh
-  $ chmod 700 get_helm.sh
-  $ ./get_helm.sh
-  ```
+* [helm 3](https://helm.sh/docs/intro/install/)
 
 * [pre-commit-terraform](https://github.com/antonbabenko/pre-commit-terraform)
 
