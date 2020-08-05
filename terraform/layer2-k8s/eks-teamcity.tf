@@ -2,18 +2,14 @@ locals {
   teamcity_domain_name = "teamcity-${local.domain_suffix}"
 }
 
-output "teamcity_domain_name" {
+output teamcity_domain_name {
   value       = local.teamcity_domain_name
   description = "Teamcity server"
 }
 
-output name {
-  value       = ""
-  sensitive   = true
-  description = "description"
-  depends_on  = []
+output teamcity_service_account_name {
+  value = module.eks_rbac_teamcity.service_account_name
 }
-
 
 module "aws_iam_teamcity" {
   source = "../modules/aws-iam-ci"
