@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: teamcity-agent
+  namespace: teamcity-agent
+spec:
+  containers:
+  - name: teamcity-agent
+    image: halfb00t/teamcity-agent:2020.1.2
+    imagePullPolicy: IfNotPresent
+  nodeSelector:
+    node.kubernetes.io/lifecycle: spot
+  serviceAccountName: maddevs-demo-use1-teamcity
+  

@@ -1,5 +1,5 @@
 resource "aws_iam_role" "this" {
-  name_prefix        = "${var.name}-runner"
+  name_prefix        = "${var.name}"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -22,7 +22,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "this" {
-  name_prefix = "${var.name}-runner"
+  name_prefix = "${var.name}"
   role        = aws_iam_role.this.id
 
   policy = data.aws_iam_policy_document.this.json

@@ -1,25 +1,14 @@
+serviceAccountName: ${service_account_name}
+
 ingress:
   enabled: true
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/proxy-body-size: 2000m
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   path: /
   hosts:
     - ${domain_name}
-
-agent:
-  enabled: true
-  replicaCount: 1
-
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: node.kubernetes.io/lifecycle
-            operator: In
-            values:
-              - spot
 
 server:
   replicaCount: 1

@@ -48,6 +48,19 @@ resource "kubernetes_role" "dev" {
   }
 }
 
+resource "kubernetes_role" "ci" {
+  metadata {
+    name      = "${var.name}-ci"
+    namespace = "ci"
+  }
+
+  rule {
+    api_groups = ["", "apps", "extensions", "batch", "networking.k8s.io"]
+    resources  = ["*"]
+    verbs      = ["*"]
+  }
+}
+
 resource "kubernetes_role_binding" "staging" {
   metadata {
     name      = "${var.name}-staging"
@@ -96,6 +109,25 @@ resource "kubernetes_role_binding" "dev" {
     api_group = "rbac.authorization.k8s.io"
     kind      = "Role"
     name      = kubernetes_role.dev.metadata.0.name
+  }
+
+  subject {
+    kind      = "ServiceAccount"
+    name      = kubernetes_service_account.main.metadata.0.name
+    namespace = var.namespace
+  }
+}
+
+resource "kubernetes_role_binding" "ci" {
+  metadata {
+    name      = "${var.name}-ci"
+    namespace = "ci"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "Role"
+    name      = kubernetes_role.ci.metadata.0.name
   }
 
   subject {

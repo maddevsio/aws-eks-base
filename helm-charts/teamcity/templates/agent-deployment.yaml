@@ -29,6 +29,9 @@ spec:
               value: "http://{{ template "teamcity.fullname" . }}:8111"
           resources:
 {{ toYaml .Values.agent.resources | indent 12 }}
+    {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+    {{- end }}
     {{- with .Values.agent.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

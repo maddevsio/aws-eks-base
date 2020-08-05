@@ -49,6 +49,9 @@ spec:
         - name: datadir
           emptyDir: {}
         {{- end -}}
+    {{- if and .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+    {{- end }}
     {{- with .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
