@@ -2,15 +2,6 @@ locals {
   teamcity_domain_name = "teamcity-${local.domain_suffix}"
 }
 
-output teamcity_domain_name {
-  value       = local.teamcity_domain_name
-  description = "Teamcity server"
-}
-
-output teamcity_service_account_name {
-  value = module.eks_rbac_teamcity.service_account_name
-}
-
 module "aws_iam_teamcity" {
   source = "../modules/aws-iam-ci"
 
@@ -26,6 +17,14 @@ module "eks_rbac_teamcity" {
   name      = "${local.name}-teamcity"
   role_arn  = module.aws_iam_teamcity.role_arn
   namespace = kubernetes_namespace.ci.id
+}
+
+data "template_file" "teamcity_agent" {
+  template = file("${path.module}/templates/teamcity-agent-pod-template.yaml")
+
+  vars = {
+    service_account_name = module.eks_rbac_teamcity.service_account_name
+  }
 }
 
 data "template_file" "teamcity" {
@@ -61,4 +60,21 @@ resource "kubernetes_storage_class" "teamcity" {
     encrypted = true
     fsType    = "ext4"
   }
+}
+
+output teamcity_domain_name {
+  value       = local.teamcity_domain_name
+  description = "Teamcity server"
+}
+
+output teamcity_service_account_name {
+  value = module.eks_rbac_teamcity.service_account_name
+}
+
+output teamcity_agent_pod_template {
+  value = data.template_file.teamcity_agent.rendered
+}
+
+output teamcity_kubernetes_api_url {
+  value = data.aws_eks_cluster.main.endpoint
 }
