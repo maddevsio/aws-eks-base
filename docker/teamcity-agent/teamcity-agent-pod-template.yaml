@@ -11,4 +11,6 @@ spec:
   nodeSelector:
     node.kubernetes.io/lifecycle: spot
   serviceAccountName: maddevs-demo-use1-teamcity
-  
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000
