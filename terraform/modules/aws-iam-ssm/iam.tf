@@ -32,7 +32,7 @@ data "aws_iam_policy_document" "this" {
     effect = "Allow"
 
     actions = [
-      "ecr:*",
+      "ssm:*",
     ]
 
     resources = ["*"]
