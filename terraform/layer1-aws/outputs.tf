@@ -113,14 +113,3 @@ output eks_oidc_provider_arn {
   description = "ARN of EKS oidc provider"
   value       = module.eks.oidc_provider_arn
 }
-
-output docker_repository_urls {
-  value       = aws_ecr_repository.main.*.repository_url
-  description = "description"
-  depends_on  = []
-}
-
-output elastic_stack_bucket_name {
-  value       = aws_s3_bucket.elastic_stack.id
-  description = "Name of the bucket for ELKS snapshots"
-}

@@ -5,17 +5,6 @@ variable "rds_instance_wp" {
   description = "Instance class of the rds database"
 }
 
-output wp_db {
-  description = "description"
-  value = {
-    "username"         = local.wp_db_username
-    "database"         = local.wp_db_database
-    "password"         = local.wp_db_password
-    "address"          = module.db_wp.this_db_instance_address
-    "s3_backup_bucket" = aws_s3_bucket.rds_backup_wp.id
-  }
-}
-
 locals {
   # Passwords for services and secrets
   wp_db_password = random_string.mysql_password_wp.result
@@ -158,4 +147,49 @@ resource "aws_s3_bucket_public_access_block" "rds_backup_wp" {
   block_public_policy = true
   # Retroactivley block public and cross-account access if bucket has public policies
   restrict_public_buckets = true
+}
+
+output wp_db {
+  description = "description"
+  value = {
+    "username"         = local.wp_db_username
+    "database"         = local.wp_db_database
+    "password"         = local.wp_db_password
+    "address"          = module.db_wp.this_db_instance_address
+    "s3_backup_bucket" = aws_s3_bucket.rds_backup_wp.id
+  }
+}
+
+module wp_ssm {
+  source = "git::https://github.com/cloudposse/terraform-aws-ssm-parameter-store"
+
+  parameter_write = [{
+    name      = "/wp/database/username"
+    value     = "${local.wp_db_username}"
+    type      = "String"
+    overwrite = "true"
+    },
+    {
+      name      = "/wp/database/database"
+      value     = "${local.wp_db_database}"
+      type      = "String"
+      overwrite = "true"
+    },
+    {
+      name      = "/wp/database/password"
+      value     = "${local.wp_db_password}"
+      type      = "String"
+      overwrite = "true"
+    },
+    {
+      name      = "/wp/database/address"
+      value     = "${module.db_wp.this_db_instance_address}"
+      type      = "String"
+      overwrite = "true"
+    },
+  ]
+
+  tags = {
+    ManagedBy = "Terraform"
+  }
 }
