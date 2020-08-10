@@ -59,9 +59,17 @@ variable redis_version {
 
 # ELK
 variable elk_version {
-  type        = string
-  default     = "7.8.0"
-  description = "description"
+  type    = string
+  default = "7.8.0"
+}
+
+# external secrets
+variable external_secrets_version {
+  default = "5.1.0"
+}
+
+variable reloader_version {
+  default = "0.0.66"
 }
 
 variable elk_snapshot_retention_days {
@@ -75,9 +83,8 @@ variable elk_index_retention_days {
 }
 
 variable grafana_gitlab_client_id {
-  type        = string
-  default     = "Id of the GitLab oauth app for grafana"
-  description = "description"
+  type    = string
+  default = "Id of the GitLab oauth app for grafana"
 }
 
 variable grafana_gitlab_client_secret {
@@ -92,9 +99,8 @@ variable kibana_gitlab_group {
 }
 
 variable kibana_gitlab_client_id {
-  type        = string
-  default     = "Id of the GitLab oauth app for kibana"
-  description = "description"
+  type    = string
+  default = "Id of the GitLab oauth app for kibana"
 }
 
 variable kibana_gitlab_client_secret {
