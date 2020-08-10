@@ -45,3 +45,9 @@ resource "kubernetes_namespace" "ci" {
     name = "ci"
   }
 }
+
+resource "kubernetes_namespace" "sys" {
+  metadata {
+    name = "sys"
+  }
+}

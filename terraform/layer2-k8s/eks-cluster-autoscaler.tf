@@ -22,7 +22,7 @@ resource "helm_release" "cluster_autoscaler" {
   chart      = "cluster-autoscaler"
   repository = local.helm_repo_stable
   version    = var.cluster_autoscaler_version
-  namespace  = "kube-system"
+  namespace  = kubernetes_namespace.sys.id
 
   values = [
     "${data.template_file.cluster_autoscaler.rendered}",
