@@ -1,6 +1,7 @@
 locals {
-  kibana_domain_name = "kibana-${local.domain_suffix}"
-  apm_domain_name    = "apm-${local.domain_suffix}"
+  kibana_domain_name        = "kibana-${local.domain_suffix}"
+  apm_domain_name           = "apm-${local.domain_suffix}"
+  elastic_stack_bucket_name = data.terraform_remote_state.layer1-aws.outputs.elastic_stack_bucket_name
 }
 
 data "template_file" "elk" {
@@ -130,4 +131,20 @@ module "aws_iam_elastic_stack" {
   bucket_name       = local.elastic_stack_bucket_name
   oidc_provider_arn = local.eks_oidc_provider_arn
   create_user       = true
+}
+
+output "kibana_domain_name" {
+  value       = local.kibana_domain_name
+  description = "Kibana dashboards address"
+}
+
+output "apm_domain_name" {
+  value       = local.apm_domain_name
+  description = ""
+}
+
+output "elasticsearch_elastic_password" {
+  value       = random_string.elasticsearch_password.result
+  sensitive   = true
+  description = "Password of the superuser 'elastic'"
 }

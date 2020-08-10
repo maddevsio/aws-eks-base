@@ -31,3 +31,8 @@ resource "aws_s3_bucket_public_access_block" "elastic_stack_public_access_block"
   # Retroactivley block public and cross-account access if bucket has public policies
   restrict_public_buckets = true
 }
+
+output elastic_stack_bucket_name {
+  value       = aws_s3_bucket.elastic_stack.id
+  description = "Name of the bucket for ELKS snapshots"
+}

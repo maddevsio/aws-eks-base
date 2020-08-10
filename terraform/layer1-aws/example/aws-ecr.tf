@@ -31,3 +31,8 @@ EOF
 
   depends_on = [aws_ecr_repository.main]
 }
+
+output docker_repository_urls {
+  value       = aws_ecr_repository.main.*.repository_url
+  description = "description"
+}
