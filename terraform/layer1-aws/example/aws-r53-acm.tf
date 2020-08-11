@@ -29,3 +29,8 @@ resource "aws_route53_record" "main" {
   records = [aws_acm_certificate.main.domain_validation_options[1].resource_record_value]
   ttl     = 60
 }
+
+output ssl_certificate_arn {
+  description = "ARN of SSL certificate"
+  value       = aws_acm_certificate.main.arn
+}

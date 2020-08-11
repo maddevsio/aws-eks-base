@@ -1,9 +1,10 @@
 data "template_file" "nginx_ingress" {
-  template = "${file("${path.module}/templates/nginx-ingress-values.yaml")}"
+  #template = "${file("${path.module}/templates/nginx-ingress-values.yaml")}"
+  template = "${file("${path.module}/templates/nginx-ingress-certmanager-ssl-termination-values.yaml")}"
 
   vars = {
-    hostname           = "${local.domain_name}"
-    ssl_cert           = local.ssl_certificate_arn
+    hostname = "${local.domain_name}"
+    # ssl_cert           = local.ssl_certificate_arn
     proxy_real_ip_cidr = local.vpc_cidr
     namespace          = kubernetes_namespace.ing.id
   }
