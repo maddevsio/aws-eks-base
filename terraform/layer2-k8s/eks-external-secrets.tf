@@ -35,3 +35,16 @@ resource "helm_release" "reloader" {
   version    = var.reloader_version
   wait       = false
 }
+
+#module "aws_iam_wp_external_secrets" {
+#  source = "../modules/aws-iam-ssm"
+#
+#  name              = local.name
+#  region            = local.region
+#  oidc_provider_arn = local.eks_oidc_provider_arn
+#  resources         = ["arn:aws:ssm:${local.region}:${data.aws_caller_identity.current.account_id}:parameter/wp/*"]
+#}
+#
+#output wordpress_external_secrets_role_arn {
+#  value       = module.aws_iam_wp_external_secrets.role_arn
+#}

@@ -19,3 +19,5 @@ data "terraform_remote_state" "layer1-aws" {
   }
   workspace = terraform.workspace
 }
+
+data "aws_caller_identity" "current" {}

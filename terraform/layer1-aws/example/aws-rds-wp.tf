@@ -149,16 +149,16 @@ resource "aws_s3_bucket_public_access_block" "rds_backup_wp" {
   restrict_public_buckets = true
 }
 
-output wp_db {
-  description = "description"
-  value = {
-    "username"         = local.wp_db_username
-    "database"         = local.wp_db_database
-    "password"         = local.wp_db_password
-    "address"          = module.db_wp.this_db_instance_address
-    "s3_backup_bucket" = aws_s3_bucket.rds_backup_wp.id
-  }
-}
+#output wp_db {
+#  description = "description"
+#  value = {
+#    "username"         = local.wp_db_username
+#    "database"         = local.wp_db_database
+#    "password"         = local.wp_db_password
+#    "address"          = module.db_wp.this_db_instance_address
+#    "s3_backup_bucket" = aws_s3_bucket.rds_backup_wp.id
+#  }
+#}
 
 module wp_ssm {
   source = "git::https://github.com/cloudposse/terraform-aws-ssm-parameter-store"

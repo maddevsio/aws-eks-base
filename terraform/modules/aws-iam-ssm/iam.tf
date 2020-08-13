@@ -7,6 +7,13 @@ resource "aws_iam_role" "this" {
     {
       "Effect": "Allow",
       "Principal": {
+        "Service": ["ec2.amazonaws.com"]
+      },
+      "Action": "sts:AssumeRole"
+    },
+    {
+      "Effect": "Allow",
+      "Principal": {
         "Federated": "${var.oidc_provider_arn}"
       },
       "Action": "sts:AssumeRoleWithWebIdentity",
@@ -32,9 +39,9 @@ data "aws_iam_policy_document" "this" {
     effect = "Allow"
 
     actions = [
-      "ssm:*",
+      "ssm:GetParameter",
     ]
 
-    resources = ["*"]
+    resources = var.resources
   }
 }

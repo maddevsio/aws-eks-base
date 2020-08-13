@@ -16,3 +16,8 @@ variable "eks_cluster_id" {
   description = "ID of EKS cluster"
   default     = ""
 }
+
+variable resources {
+  type    = list
+  default = ["*"]
+}
