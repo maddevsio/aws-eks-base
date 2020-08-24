@@ -79,7 +79,7 @@ variable elk_snapshot_retention_days {
 
 variable elk_index_retention_days {
   description = "Days before remove index from system elasticsearch"
-  default     = 30
+  default     = 14
 }
 
 variable grafana_gitlab_client_id {
