@@ -64,11 +64,11 @@ module "eks" {
     },
     {
       name                    = "ci"
-      override_instance_types = ["t3a.medium", "t3.medium"]
-      spot_instance_pools     = 2
-      asg_max_size            = 3
-      asg_desired_capacity    = 0
-      asg_min_size            = 0
+      override_instance_types = var.worker_groups.ci.override_instance_types
+      spot_instance_pools     = var.worker_groups.ci.spot_instance_pools
+      asg_max_size            = var.worker_groups.ci.asg_max_size
+      asg_min_size            = var.worker_groups.ci.asg_min_size
+      asg_desired_capacity    = var.worker_groups.ci.asg_desired_capacity
       cpu_credits             = "unlimited"
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot --node-labels=purpose=ci --register-with-taints=purpose=ci:NoSchedule"
       public_ip               = true

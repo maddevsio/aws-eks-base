@@ -99,7 +99,14 @@ variable worker_groups {
       instance_type        = "t3a.medium"
       asg_desired_capacity = 1
       asg_max_size         = 6
-    }
+    },
+    ci = {
+      override_instance_types = ["t3.medium", "t3a.medium"]
+      spot_instance_pools     = 2
+      asg_max_size            = 3
+      asg_min_size            = 0
+      asg_desired_capacity    = 0
+    },
   }
 }
 
