@@ -28,6 +28,14 @@ variable nginx_ingress_controller_version {
   default     = "1.39.1"
 }
 
+variable nginx_ingress_ssl_terminator {
+  description = "Select SSL termination type"
+  default     = "nginx"
+  # options:
+  # lb - terminate ssl on loadbalancer side
+  # nginx - terminate ssl on nginx side
+}
+
 # ALB Ingress
 variable alb_ingress_image_tag {
   description = "Tag of docker image alb-ingress controller"
