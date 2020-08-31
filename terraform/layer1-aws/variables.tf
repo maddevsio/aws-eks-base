@@ -81,6 +81,23 @@ variable eks_cluster_version {
   description = "Version of the EKS K8S cluster"
 }
 
+variable worker_groups {
+  default = {
+    spot = {
+      override_instance_types = ["t3.medium", "t3a.medium"]
+      spot_instance_pools     = 2
+      asg_max_size            = 5
+      asg_min_size            = 0
+      asg_desired_capacity    = 1
+    },
+    ondemand = {
+      instance_type        = "t3a.medium"
+      asg_desired_capacity = 1
+      asg_max_size         = 6
+    }
+  }
+}
+
 variable map_roles {
   description = "Additional IAM roles to add to the aws-auth configmap."
   type = list(object({
