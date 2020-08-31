@@ -20,7 +20,7 @@ resource "helm_release" "cert_manager" {
   repository = local.helm_repo_certmanager
   namespace  = kubernetes_namespace.certmanager.id
   version    = var.cert_manager_version
-  wait       = false
+  wait       = true
 
   values = [
     "${data.template_file.cert_manager.rendered}",
