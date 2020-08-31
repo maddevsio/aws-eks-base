@@ -1,5 +1,10 @@
 # COMMON VARIABLES
 
+variable allowed_account_ids {
+  description = "List of allowed AWS account IDs"
+  default     = []
+}
+
 variable name {
   description = "Project name, required to form unique resource names"
   default     = "maddevs"
@@ -79,6 +84,23 @@ variable allowed_ips {
 variable eks_cluster_version {
   default     = "1.16"
   description = "Version of the EKS K8S cluster"
+}
+
+variable worker_groups {
+  default = {
+    spot = {
+      override_instance_types = ["t3.medium", "t3a.medium"]
+      spot_instance_pools     = 2
+      asg_max_size            = 5
+      asg_min_size            = 0
+      asg_desired_capacity    = 1
+    },
+    ondemand = {
+      instance_type        = "t3a.medium"
+      asg_desired_capacity = 1
+      asg_max_size         = 6
+    }
+  }
 }
 
 variable map_roles {
