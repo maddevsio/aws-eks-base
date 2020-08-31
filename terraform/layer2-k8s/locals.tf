@@ -13,7 +13,6 @@ locals {
   vpc_cidr              = data.terraform_remote_state.layer1-aws.outputs.vpc_cidr
   eks_cluster_id        = data.terraform_remote_state.layer1-aws.outputs.eks_cluster_id
   eks_oidc_provider_arn = data.terraform_remote_state.layer1-aws.outputs.eks_oidc_provider_arn
-  ssl_certificate_arn   = data.terraform_remote_state.layer1-aws.outputs.ssl_certificate_arn
 
   helm_repo_stable           = "https://kubernetes-charts.storage.googleapis.com"
   helm_repo_incubator        = "https://storage.googleapis.com/kubernetes-charts-incubator"

@@ -19,11 +19,6 @@ output route53_zone_id {
   value       = var.zone_id
 }
 
-output ssl_certificate_arn {
-  description = "ARN of SSL certificate"
-  value       = aws_acm_certificate.main.arn
-}
-
 output region {
   description = "Target region for all infrastructure resources"
   value       = var.region

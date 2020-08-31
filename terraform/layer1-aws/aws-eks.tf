@@ -62,6 +62,35 @@ module "eks" {
         }
       ]
     },
+    {
+      name                    = "ci"
+      override_instance_types = ["t3a.medium", "t3.medium"]
+      spot_instance_pools     = 2
+      asg_max_size            = 3
+      asg_desired_capacity    = 0
+      asg_min_size            = 0
+      cpu_credits             = "unlimited"
+      kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot --node-labels=purpose=ci --register-with-taints=purpose=ci:NoSchedule"
+      public_ip               = true
+      additional_userdata     = file("${path.module}/templates/eks-nodes-userdata.sh")
+      tags = [
+        {
+          "key"                 = "k8s.io/cluster-autoscaler/enabled"
+          "propagate_at_launch" = "false"
+          "value"               = "true"
+        },
+        {
+          "key"                 = "k8s.io/cluster-autoscaler/${local.name}"
+          "propagate_at_launch" = "false"
+          "value"               = "true"
+        },
+        {
+          "key"                 = "k8s.io/cluster-autoscaler/node-template/label/purpose"
+          "propagate_at_launch" = "true"
+          "value"               = "ci"
+        }
+      ]
+    },
   ]
 
   map_users = var.map_users

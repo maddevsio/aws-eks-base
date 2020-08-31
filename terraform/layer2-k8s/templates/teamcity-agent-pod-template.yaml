@@ -9,9 +9,23 @@ spec:
   - name: teamcity-agent
     image: halfb00t/teamcity-agent:2020.1.2
     imagePullPolicy: IfNotPresent
+    env:
+    - name: DOCKER_IN_DOCKER
+      value: "start"
+    resources: {}
+      # requests:
+      #   memory: "4096Mi"
+      #   cpu: "2000m"
+      # limits:
+      #   memory: "8192Mi"
+      #   cpu: "4000m"
+  serviceAccountName: ${service_account_name}
   nodeSelector:
     node.kubernetes.io/lifecycle: spot
-  serviceAccountName: ${service_account_name}
+  tolerations:
+  - key: "purpose"
+    operator: "Equal"
+    value: "ci"
+    effect: "NoSchedule"
   securityContext:
-    runAsUser: 1000
-    fsGroup: 1000
+    privileged: true

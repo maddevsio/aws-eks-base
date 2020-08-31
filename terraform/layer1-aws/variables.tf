@@ -1,5 +1,10 @@
 # COMMON VARIABLES
 
+variable allowed_account_ids {
+  description = "List of allowed AWS account IDs"
+  default     = []
+}
+
 variable name {
   description = "Project name, required to form unique resource names"
   default     = "maddevs"
