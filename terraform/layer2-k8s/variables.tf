@@ -1,3 +1,8 @@
+variable allowed_account_ids {
+  description = "List of allowed AWS account IDs"
+  default     = []
+}
+
 variable additional_allowed_ips {
   type    = list
   default = []
