@@ -7,7 +7,8 @@ image:
 cache:
   key: terraform_dir
   paths:
-    - .terraform
+    - $CI_PROJECT_DIR/terraform/layer1-aws/.terraform
+    - $CI_PROJECT_DIR/terraform/layer2-k8s/.terraform
 
 stages:
   - init
