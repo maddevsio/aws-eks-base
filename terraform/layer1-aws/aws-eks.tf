@@ -19,11 +19,11 @@ module "eks" {
   worker_groups_launch_template = [
     {
       name                    = "spot"
-      override_instance_types = ["t3.medium", "t3a.medium"]
-      spot_instance_pools     = 2
-      asg_max_size            = 5
-      asg_min_size            = 0
-      asg_desired_capacity    = 1
+      override_instance_types = var.worker_groups.spot.override_instance_types
+      spot_instance_pools     = var.worker_groups.spot.spot_instance_pools
+      asg_max_size            = var.worker_groups.spot.asg_max_size
+      asg_min_size            = var.worker_groups.spot.asg_min_size
+      asg_desired_capacity    = var.worker_groups.spot.asg_desired_capacity
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
       public_ip               = true
       additional_userdata     = file("${path.module}/templates/eks-nodes-userdata.sh")
@@ -42,9 +42,9 @@ module "eks" {
     },
     {
       name                 = "ondemand"
-      instance_type        = "t3a.medium"
-      asg_desired_capacity = 1
-      asg_max_size         = 6
+      instance_type        = var.worker_groups.ondemand.instance_type
+      asg_desired_capacity = var.worker_groups.ondemand.asg_desired_capacity
+      asg_max_size         = var.worker_groups.ondemand.asg_max_size
       cpu_credits          = "unlimited"
       kubelet_extra_args   = "--node-labels=node.kubernetes.io/lifecycle=ondemand"
       public_ip            = false
@@ -64,11 +64,11 @@ module "eks" {
     },
     {
       name                    = "ci"
-      override_instance_types = ["t3a.medium", "t3.medium"]
-      spot_instance_pools     = 2
-      asg_max_size            = 3
-      asg_desired_capacity    = 0
-      asg_min_size            = 0
+      override_instance_types = var.worker_groups.ci.override_instance_types
+      spot_instance_pools     = var.worker_groups.ci.spot_instance_pools
+      asg_max_size            = var.worker_groups.ci.asg_max_size
+      asg_min_size            = var.worker_groups.ci.asg_min_size
+      asg_desired_capacity    = var.worker_groups.ci.asg_desired_capacity
       cpu_credits             = "unlimited"
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot --node-labels=purpose=ci --register-with-taints=purpose=ci:NoSchedule"
       public_ip               = true
