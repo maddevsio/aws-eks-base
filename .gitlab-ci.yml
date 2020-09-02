@@ -44,5 +44,7 @@ terraform_tflint:
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   stage: check
   script:
-    - tflint --no-color layer1-aws
-    - tflint --no-color layer2-k8s
+    - cd $CI_PROJECT_DIR/terraform/layer1-aws
+    - tflint --no-color
+    - cd $CI_PROJECT_DIR/terraform/layer2-k8s
+    - tflint --no-color
