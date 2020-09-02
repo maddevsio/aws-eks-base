@@ -1,0 +1,50 @@
+image:
+  name: hashicorp/terraform:light
+  entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+
+before_script:
+  - terraform init
+
+cache:
+  key: terraform_dir
+  paths:
+    - .terraform
+
+stages:
+  - init
+  - check
+
+terraform_init:
+  stage: init
+  script:
+    - cd $CI_PROJECT_DIR/terraform/layer1-aws
+    - terraform init
+    - cd $CI_PROJECT_DIR/terraform/layer2-k8s
+    - terraform init
+
+terraform_format:
+  stage: check
+  script:
+    - cd $CI_PROJECT_DIR/terraform/layer1-aws
+    - terraform fmt -recursive -write=false -check .
+
+terraform_validate:
+  stage: check
+  script:
+    - cd $CI_PROJECT_DIR/terraform/layer1-aws
+    - terraform validate -no-color .
+    - cd $CI_PROJECT_DIR/terraform/layer2-k8s
+    - terraform validate -no-color .
+
+terraform_validate:
+  image: 
+    name: wata727/tflint
+    entrypoint:
+    - '/usr/bin/env'
+    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  stage: check
+  script:
+    - tflint --no-color layer1-aws
+    - tflint --no-color layer2-k8s
