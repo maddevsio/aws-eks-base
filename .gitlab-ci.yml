@@ -20,9 +20,9 @@ terraform_init:
   stage: init
   script:
     - cd $CI_PROJECT_DIR/terraform/layer1-aws
-    - terraform init
+    - terraform init -backend=false
     - cd $CI_PROJECT_DIR/terraform/layer2-k8s
-    - terraform init
+    - terraform init -backend=false
 
 terraform_format:
   stage: check
