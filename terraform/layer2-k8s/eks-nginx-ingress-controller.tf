@@ -8,7 +8,7 @@ locals {
 }
 
 data "template_file" "nginx_ingress" {
-  template = "${file("${path.module}/templates/${local.template_name}")}"
+  template = file("${path.module}/templates/${local.template_name}")
 
   vars = {
     hostname           = "${local.domain_name}"

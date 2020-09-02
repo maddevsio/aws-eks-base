@@ -8,7 +8,7 @@ module "aws_iam_autoscaler" {
 }
 
 data "template_file" "cluster_autoscaler" {
-  template = "${file("${path.module}/templates/cluster-autoscaler-values.yaml")}"
+  template = file("${path.module}/templates/cluster-autoscaler-values.yaml")
 
   vars = {
     role_arn     = module.aws_iam_autoscaler.role_arn

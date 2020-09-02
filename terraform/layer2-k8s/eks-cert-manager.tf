@@ -7,7 +7,7 @@ module "aws_iam_cert_manager" {
 }
 
 data "template_file" "cert_manager" {
-  template = "${file("${path.module}/templates/cert-manager-values.yaml")}"
+  template = file("${path.module}/templates/cert-manager-values.yaml")
 
   vars = {
     role_arn = module.aws_iam_cert_manager.role_arn
