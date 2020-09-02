@@ -13,7 +13,7 @@ resource "null_resource" "subnets" {
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
-  name = "${local.name}"
+  name = local.name
   cidr = var.cidr
 
   azs                 = null_resource.subnets[*].triggers.azs
