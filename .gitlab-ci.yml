@@ -25,7 +25,6 @@ terraform_init:
 terraform_format:
   stage: check
   script:
-    - cd $CI_PROJECT_DIR/terraform/layer1-aws
     - terraform fmt -recursive -write=false -check .
 
 terraform_validate:
