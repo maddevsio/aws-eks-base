@@ -35,7 +35,7 @@ terraform_validate:
     - cd $CI_PROJECT_DIR/terraform/layer2-k8s
     - terraform validate -no-color .
 
-terraform_validate:
+terraform_tflint:
   image: 
     name: wata727/tflint
     entrypoint:
