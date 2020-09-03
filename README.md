@@ -222,3 +222,7 @@ ip-10-0-0-165.us-east-1.compute.internal   Ready    <none>   11h   v1.16.11-eks-
 ip-10-0-1-241.us-east-1.compute.internal   Ready    <none>   11h   v1.16.11-eks-af3caf
 ip-10-0-1-60.us-east-1.compute.internal    Ready    <none>   11h   v1.16.11-eks-af3caf
 ```
+
+### Upgrade from terraform 12 to terraform 13
+If the state was created by version 12, you need to run:  
+`terraform init -reconfigure`
