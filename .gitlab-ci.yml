@@ -27,15 +27,13 @@ terraform_format:
   script:
     - terraform fmt -recursive -write=false -check .
 
-# temporarily disabled, related to:
-# https://github.com/hashicorp/terraform/issues/15811
-# terraform_validate:
-#   stage: check
-#   script:
-#     - cd $CI_PROJECT_DIR/terraform/layer1-aws
-#     - terraform validate -no-color .
-#     - cd $CI_PROJECT_DIR/terraform/layer2-k8s
-#     - terraform validate -no-color .
+terraform_validate:
+  stage: check
+  script:
+    - cd $CI_PROJECT_DIR/terraform/layer1-aws
+    - terraform validate -no-color .
+    - cd $CI_PROJECT_DIR/terraform/layer2-k8s
+    - terraform validate -no-color .
 
 terraform_tflint:
   image: 
