@@ -8,7 +8,7 @@
 # }
 
 module "dev_ns_network_policy" {
-  source                = "../modules/kubernetes-network-policy"
+  source                = "../modules/kubernetes-network-policy-namespace"
   namespace             = kubernetes_namespace.dev.metadata[0].name
   allow_from_namespaces = [module.ing_namespace.labels_name]
 
