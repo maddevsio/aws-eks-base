@@ -7,7 +7,7 @@ module "aws_iam_external_dns" {
 }
 
 data "template_file" "external_dns" {
-  template = "${file("${path.module}/templates/external-dns.yaml")}"
+  template = file("${path.module}/templates/external-dns.yaml")
 
   vars = {
     role_arn    = module.aws_iam_external_dns.role_arn

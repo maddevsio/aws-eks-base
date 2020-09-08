@@ -7,7 +7,7 @@ module "aws_iam_external_secrets" {
 }
 
 data "template_file" "external_secrets" {
-  template = "${file("${path.module}/templates/external-secrets-values.yaml")}"
+  template = file("${path.module}/templates/external-secrets-values.yaml")
 
   vars = {
     role_arn = module.aws_iam_external_secrets.role_arn

@@ -4,10 +4,9 @@ resource "kubernetes_namespace" "dns" {
   }
 }
 
-resource "kubernetes_namespace" "ing" {
-  metadata {
-    name = "ing"
-  }
+module "ing_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "ing"
 }
 
 resource "kubernetes_namespace" "elk" {

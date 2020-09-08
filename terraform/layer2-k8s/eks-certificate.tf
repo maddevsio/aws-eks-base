@@ -10,7 +10,7 @@ data "template_file" "certificate" {
 resource "helm_release" "certificate" {
   name      = "certificate"
   chart     = "../../helm-charts/certificate"
-  namespace = kubernetes_namespace.ing.id
+  namespace = module.ing_namespace.name
   wait      = false
 
   values = [
@@ -18,5 +18,5 @@ resource "helm_release" "certificate" {
   ]
 
   # This dep needs for correct apply
-  depends_on = [helm_release.cert_manager, helm_release.cluster_issuer, kubernetes_namespace.ing]
+  depends_on = [helm_release.cert_manager, helm_release.cluster_issuer]
 }
