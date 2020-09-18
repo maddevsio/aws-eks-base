@@ -7,7 +7,7 @@ resource "kubernetes_network_policy" "deny-all" {
     pod_selector {
     }
 
-    policy_types = ["Ingress", "Egress"]
+    policy_types = ["Ingress"]
   }
 
   depends_on = [var.depends]
