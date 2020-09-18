@@ -21,7 +21,7 @@ data "template_file" "external_dns" {
 resource "helm_release" "external_dns" {
   name       = "external-dns"
   chart      = "external-dns"
-  repository = local.helm_repo_stable
+  repository = local.helm_repo_bitnami
   version    = var.external_dns_version
   namespace  = kubernetes_namespace.dns.id
 
