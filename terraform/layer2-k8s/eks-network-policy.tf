@@ -1,7 +1,7 @@
 resource "helm_release" "calico_daemonset" {
-  name       = "calico-daemonset"
-  chart      = "../../helm-charts/calico-daemonset"
-  namespace  = "kube-system"
+  name      = "calico-daemonset"
+  chart     = "../../helm-charts/calico-daemonset"
+  namespace = "kube-system"
 }
 
 module "dev_ns_network_policy" {
