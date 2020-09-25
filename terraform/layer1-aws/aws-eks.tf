@@ -26,7 +26,7 @@ module "eks" {
       asg_desired_capacity    = var.worker_groups.spot.asg_desired_capacity
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
       public_ip               = true
-      additional_userdata     = file("${path.module}/templates/eks-nodes-userdata.sh")
+      additional_userdata     = file("${path.module}/templates/eks-x86-nodes-userdata.sh")
       tags = [
         {
           "key"                 = "k8s.io/cluster-autoscaler/enabled"
@@ -48,7 +48,7 @@ module "eks" {
       cpu_credits          = "unlimited"
       kubelet_extra_args   = "--node-labels=node.kubernetes.io/lifecycle=ondemand"
       public_ip            = false
-      additional_userdata  = file("${path.module}/templates/eks-nodes-userdata.sh")
+      additional_userdata  = file("${path.module}/templates/eks-x86-nodes-userdata.sh")
       tags = [
         {
           "key"                 = "k8s.io/cluster-autoscaler/enabled"
@@ -72,7 +72,7 @@ module "eks" {
       cpu_credits             = "unlimited"
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot --node-labels=purpose=ci --register-with-taints=purpose=ci:NoSchedule"
       public_ip               = true
-      additional_userdata     = file("${path.module}/templates/eks-nodes-userdata.sh")
+      additional_userdata     = file("${path.module}/templates/eks-x86-nodes-userdata.sh")
       tags = [
         {
           "key"                 = "k8s.io/cluster-autoscaler/enabled"
