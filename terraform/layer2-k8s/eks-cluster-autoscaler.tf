@@ -18,8 +18,8 @@ data "template_file" "cluster_autoscaler" {
 }
 
 resource "helm_release" "cluster_autoscaler" {
-  name       = "cluster-autoscaler"
-  chart      = "cluster-autoscaler"
+  name       = "cluster-autoscaler-chart"
+  chart      = "cluster-autoscaler-chart"
   repository = local.helm_repo_cluster_autoscaler
   version    = var.cluster_autoscaler_version
   namespace  = kubernetes_namespace.sys.id
