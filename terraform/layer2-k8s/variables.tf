@@ -18,7 +18,7 @@ variable oauth2_proxy_version {
 # External DNS
 variable external_dns_version {
   description = "Version of external-dns helm chart"
-  default     = "2.16.0"
+  default     = "3.4.2"
 }
 
 # Certn Manager
@@ -30,7 +30,7 @@ variable cert_manager_version {
 # NGINX Ingress
 variable nginx_ingress_controller_version {
   description = "Version of nginx-ingress helm chart"
-  default     = "1.39.1"
+  default     = "3.3.0"
 }
 
 variable nginx_ingress_ssl_terminator {
@@ -55,13 +55,13 @@ variable alb_ingress_chart_version {
 # Cluster autoscaler
 variable cluster_autoscaler_version {
   description = "Version of autoscaler helm chart"
-  default     = "6.4.0"
+  default     = "1.0.3"
 }
 
 # Prometheus Operator
 variable prometheus_operator_version {
   description = "Version of prometheus operator helm chart"
-  default     = "8.15.0"
+  default     = "9.4.4"
 }
 
 # Redis
