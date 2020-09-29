@@ -2,12 +2,12 @@ awsRegion: ${region}
 
 rbac:
   create: true
-  serviceAccountAnnotations:
-    eks.amazonaws.com/role-arn: ${role_arn}
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: ${role_arn}
 
 autoDiscovery:
   clusterName: ${cluster_name}
-  enabled: true
 
 serviceMonitor:
   enabled: false
