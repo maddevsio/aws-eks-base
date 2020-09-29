@@ -45,7 +45,7 @@ prometheusOperator:
 grafana:
   enabled: true
   image:
-    tag: 7.0.3
+    tag: 7.2.0
   deploymentStrategy:
     type: Recreate
   adminPassword: "${grafana_password}"
