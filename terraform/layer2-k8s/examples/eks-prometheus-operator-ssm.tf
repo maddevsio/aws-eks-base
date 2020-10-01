@@ -26,12 +26,12 @@ module "aws_iam_grafana" {
 
 module "grafana_gitlab_client_id" {
   source         = "git::https://github.com/cloudposse/terraform-aws-ssm-parameter-store?ref=master"
-  parameter_read = ["/blitzkrieg/infra/kibana_gitlab_client_id"]
+  parameter_read = ["/demo/infra/grafana_gitlab_client_id"]
 }
 
 module "grafana_gitlab_client_secret" {
   source         = "git::https://github.com/cloudposse/terraform-aws-ssm-parameter-store?ref=master"
-  parameter_read = ["/blitzkrieg/infra/kibana_gitlab_client_secret"]
+  parameter_read = ["/demo/infra/grafana_gitlab_client_secret"]
 }
 
 
