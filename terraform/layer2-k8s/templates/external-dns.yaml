@@ -1,8 +1,12 @@
 rbac:
   create: true
-  serviceAccountName: "external-dns"
-  serviceAccountAnnotations: 
-     "eks.amazonaws.com/role-arn": ${role_arn}
+
+serviceAccount:
+  create: true
+  name: "external-dns"
+  annotations:
+    "eks.amazonaws.com/role-arn": ${role_arn}
+
 provider: aws
 domainFilters: [${domain_name}]
 aws:
