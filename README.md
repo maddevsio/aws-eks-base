@@ -101,7 +101,7 @@ All states of of all layers are stored in private `madops-terraform-state-us-eas
 Configuration of this infrastructure has been splitted into two layers. This approach provides more reliable and faster deployemnt of the changes.
 
 * layer1-aws contains aws resources: VPC network and security groups, RDS instances, EKS cluster and it's nodes
-* layer2-k8s contains part of the insrastructure which should be deployed to the EKS cluster: namespaces, secrets, ssl keys, ingresses, monitoring and log services.
+* layer2-k8s contains part of the infrastructure which should be deployed to the EKS cluster: namespaces, secrets, ssl keys, ingresses, monitoring and log services.
 
 #### terraform init
 
@@ -124,6 +124,16 @@ Normal output would be:
 
 Terraform has been successfully initialized!
 ```
+
+#### Saving secret variables in ssm parameter store
+
+Save a secret variable in the ssm parameter store: 
+
+Create parameter with name:
+```
+/demo/infra/kibana_gitlab_client_id
+```
+Save value for this parameter and use it for infrastructure 
 
 #### terraform plan
 
@@ -168,7 +178,7 @@ Do you want to perform these actions?
 
 ```
 
-If you will type "yes" and press the "enter" key, terraform will start to deploy infrastracture in accordiance to code.
+If you will type "yes" and press the "enter" key, terraform will start to deploy infrastructure in accordiance to code.
 
 ```
 Apply complete! Resources: 82 added, 0 changed, 0 destroyed.
