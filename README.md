@@ -125,15 +125,13 @@ Normal output would be:
 Terraform has been successfully initialized!
 ```
 
-#### Saving secret variables in ssm parameter store
-
-Save a secret variable in the ssm parameter store: 
-
-Create parameter with name:
-```
-/demo/infra/kibana_gitlab_client_id
-```
-Save value for this parameter and use it for infrastructure 
+#### Secret variables save in ssm parameter store
+````bash 
+/demo/infra/grafana_gitlab_client_id	
+/demo/infra/grafana_gitlab_client_secret	
+/demo/infra/kibana_gitlab_client_id	  
+/demo/infra/kibana_gitlab_client_secret  
+````
 
 #### terraform plan
 
@@ -146,7 +144,7 @@ The optional -out argument can be used to save the generated plan to a file for 
 Normal output example:
 
 ```bash
-$ terraform plan -var-file=/Volumes/Keybase/team/maddevs.madops/demo.tfvars
+$ terraform plan
 # ~600 rows skipped
 Plan: 82 to add, 0 to change, 0 to destroy.
 
@@ -164,7 +162,7 @@ The terraform apply command is used to apply the changes required to reach the d
 By default, apply scans the current directory for the configuration and applies the changes appropriately. However, a path to another configuration or an execution plan can be provided. Explicit execution plans files can be used to split plan and apply into separate steps within automation systems.
 
 ```bash
-$ terraform apply -var-file=/Volumes/Keybase/team/maddevs.madops/demo.tfvars
+$ terraform apply
 # ~600 rows skipped
 Plan: 82 to add, 0 to change, 0 to destroy.
 
@@ -197,7 +195,7 @@ $ terraform apply -target helm_release.kibana
 The terraform destroy command is used to destroy the Terraform-managed infrastructure.
 
 ```bash
-$ terraform destroy -var-file=/Volumes/Keybase/team/maddevs.demo/terraform.tfvars
+$ terraform destroy
 random_string.database_user: Refreshing state... (ID: none)
 data.template_file.map_accounts[0]: Refreshing state...
 random_string.database_prefix: Refreshing state... (ID: none)

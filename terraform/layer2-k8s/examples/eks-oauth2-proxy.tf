@@ -4,6 +4,14 @@ resource "random_string" "kibana_ouath2_secret_cookie" {
   upper   = true
 }
 
+data "aws_ssm_parameter" "kibana_gitlab_client_id" {
+  name = "/demo/infra/kibana_gitlab_client_id"
+}
+
+data "aws_ssm_parameter" "kibana_gitlab_client_secret" {
+  name = "/demo/infra/kibana_gitlab_client_secret"
+}
+
 resource "kubernetes_secret" "kibana_oauth2_secrets" {
   metadata {
     name      = "kibana-oauth2-secrets"
@@ -12,8 +20,8 @@ resource "kubernetes_secret" "kibana_oauth2_secrets" {
 
   data = {
     "cookie-secret" = random_string.kibana_ouath2_secret_cookie.result
-    "client-secret" = var.kibana_gitlab_client_secret
-    "client-id"     = var.kibana_gitlab_client_id
+    "client-secret" = data.aws_ssm_parameter.grafana_gitlab_client_secret
+    "client-id"     = data.aws_ssm_parameter.kibana_gitlab_client_id
   }
 }
 
