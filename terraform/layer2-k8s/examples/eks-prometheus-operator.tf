@@ -6,11 +6,12 @@ locals {
 }
 
 data "aws_ssm_parameter" "grafana_gitlab_client_id" {
-  name = "/demo/infra/grafana_gitlab_client_id"
+  name = "${local.name}/infra/grafana/gitlab_client_id"
 }
 
+
 data "aws_ssm_parameter" "grafana_gitlab_client_secret" {
-  name = "/demo/infra/grafana_gitlab_client_secret"
+  name = "${local.name}/infra/grafana/gitlab_client_secret"
 }
 
 resource "random_string" "grafana_password" {

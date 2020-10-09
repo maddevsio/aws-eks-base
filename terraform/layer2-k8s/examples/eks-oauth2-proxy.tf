@@ -5,11 +5,11 @@ resource "random_string" "kibana_ouath2_secret_cookie" {
 }
 
 data "aws_ssm_parameter" "kibana_gitlab_client_id" {
-  name = "/demo/infra/kibana_gitlab_client_id"
+  name = "${local.name}/infra/kibana/gitlab_client_id"
 }
 
 data "aws_ssm_parameter" "kibana_gitlab_client_secret" {
-  name = "/demo/infra/kibana_gitlab_client_secret"
+  name = "${local.name}/infra/kibana/gitlab_client_secret"
 }
 
 resource "kubernetes_secret" "kibana_oauth2_secrets" {
