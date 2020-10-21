@@ -4,6 +4,7 @@ locals {
   az_count              = data.terraform_remote_state.layer1-aws.outputs.az_count
   name                  = data.terraform_remote_state.layer1-aws.outputs.name
   env                   = data.terraform_remote_state.layer1-aws.outputs.env
+  name_wo_region        = data.terraform_remote_state.layer1-aws.outputs.name_wo_region
   zone_id               = data.terraform_remote_state.layer1-aws.outputs.route53_zone_id
   domain_name           = data.terraform_remote_state.layer1-aws.outputs.domain_name
   domain_suffix         = "${local.env}.${local.domain_name}"

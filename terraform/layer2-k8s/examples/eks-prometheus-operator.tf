@@ -6,12 +6,12 @@ locals {
 }
 
 data "aws_ssm_parameter" "grafana_gitlab_client_id" {
-  name = "${local.name}/infra/grafana/gitlab_client_id"
+  name = "/${local.name_wo_region}/infra/grafana/gitlab_client_id"
 }
 
 
 data "aws_ssm_parameter" "grafana_gitlab_client_secret" {
-  name = "${local.name}/infra/grafana/gitlab_client_secret"
+  name = "/${local.name_wo_region}/infra/grafana/gitlab_client_secret"
 }
 
 resource "random_string" "grafana_password" {
@@ -87,3 +87,5 @@ output "grafana_admin_password" {
   sensitive   = true
   description = "Grafana admin password"
 }
+
+

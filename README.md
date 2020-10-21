@@ -127,10 +127,10 @@ Terraform has been successfully initialized!
 
 #### Secret variables save in ssm parameter store
 ````bash 
-/maddevs/infra/grafana/gitlab_client_id	
-/maddevs/infra/grafana/gitlab_client_secret	
-/maddevs/infra/kibana/gitlab_client_id	  
-/maddevs/infra/kibana/gitlab_client_secret  
+/maddevs-demo/infra/grafana/gitlab_client_id	
+/maddevs-demo/infra/grafana/gitlab_client_secret	
+/maddevs-demo/infra/kibana/gitlab_client_id	  
+/maddevs-demo/infra/kibana/gitlab_client_secret  
 ````
 
 #### terraform plan
