@@ -85,6 +85,10 @@ variable reloader_version {
   default = "0.0.66"
 }
 
+variable prometheus_mysql_exporter_version {
+  default = "0.7.1"
+}
+
 variable elk_snapshot_retention_days {
   description = "Days to capture index in snapshot"
   default     = 90

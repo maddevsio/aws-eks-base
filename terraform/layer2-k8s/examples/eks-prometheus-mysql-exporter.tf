@@ -7,7 +7,7 @@ resource "helm_release" "prometheus_mysql_exporter_wp" {
   chart      = "prometheus-mysql-exporter"
   repository = local.helm_repo_prometheus_community
   namespace  = kubernetes_namespace.wp.id
-  version    = "0.7.1"
+  version    = var.prometheus_mysql_exporter_version
   wait       = false
 
   values = [
