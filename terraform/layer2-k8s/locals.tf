@@ -14,14 +14,17 @@ locals {
   eks_cluster_id        = data.terraform_remote_state.layer1-aws.outputs.eks_cluster_id
   eks_oidc_provider_arn = data.terraform_remote_state.layer1-aws.outputs.eks_oidc_provider_arn
 
-  helm_repo_stable           = "https://kubernetes-charts.storage.googleapis.com"
-  helm_repo_incubator        = "https://storage.googleapis.com/kubernetes-charts-incubator"
-  helm_repo_certmanager      = "https://charts.jetstack.io"
-  helm_repo_gitlab           = "https://charts.gitlab.io"
-  helm_repo_eks              = "https://aws.github.io/eks-charts"
-  helm_repo_softonic         = "https://charts.softonic.io"
-  helm_repo_elastic          = "https://helm.elastic.co"
-  helm_repo_external_secrets = "https://godaddy.github.io/kubernetes-external-secrets/"
-  helm_repo_stakater         = "https://stakater.github.io/stakater-charts"
+  helm_repo_stable               = "https://kubernetes-charts.storage.googleapis.com"
+  helm_repo_incubator            = "https://storage.googleapis.com/kubernetes-charts-incubator"
+  helm_repo_certmanager          = "https://charts.jetstack.io"
+  helm_repo_gitlab               = "https://charts.gitlab.io"
+  helm_repo_eks                  = "https://aws.github.io/eks-charts"
+  helm_repo_softonic             = "https://charts.softonic.io"
+  helm_repo_elastic              = "https://helm.elastic.co"
+  helm_repo_external_secrets     = "https://godaddy.github.io/kubernetes-external-secrets/"
+  helm_repo_stakater             = "https://stakater.github.io/stakater-charts"
+  helm_repo_cluster_autoscaler   = "https://kubernetes.github.io/autoscaler"
+  helm_repo_ingress_nginx        = "https://kubernetes.github.io/ingress-nginx"
+  helm_repo_bitnami              = "https://charts.bitnami.com/bitnami"
+  helm_repo_prometheus_community = "https://prometheus-community.github.io/helm-charts"
 }
-

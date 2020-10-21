@@ -45,7 +45,7 @@ prometheusOperator:
 grafana:
   enabled: true
   image:
-    tag: 7.0.3
+    tag: 7.2.0
   deploymentStrategy:
     type: Recreate
   adminPassword: "${grafana_password}"
@@ -64,17 +64,18 @@ grafana:
     - hosts: 
       - ${grafana_domain_name}
   env:
-    GF_SERVER_ROOT_URL: https://${grafana_domain_name}
-    GF_USERS_ALLOW_SIGN_UP: false
-    GF_AUTH_GITLAB_ENABLED: true
-    GF_AUTH_GITLAB_ALLOW_SIGN_UP: true
-    GF_AUTH_GITLAB_CLIENT_ID: ${gitlab_client_id}
-    GF_AUTH_GITLAB_CLIENT_SECRET: ${gitlab_client_secret}
-    GF_AUTH_GITLAB_SCOPES: api
-    GF_AUTH_GITLAB_AUTH_URL: https://gitlab.com/oauth/authorize
-    GF_AUTH_GITLAB_TOKEN_URL: https://gitlab.com/oauth/token
-    GF_AUTH_GITLAB_API_URL: https://gitlab.com/api/v4
-    GF_AUTH_GITLAB_ALOWED_GROUPS: madops
+    # all values must be quoted
+    GF_SERVER_ROOT_URL: "https://${grafana_domain_name}"
+    GF_USERS_ALLOW_SIGN_UP: "false"
+    GF_AUTH_GITLAB_ENABLED: "true"
+    GF_AUTH_GITLAB_ALLOW_SIGN_UP: "true"
+    GF_AUTH_GITLAB_CLIENT_ID: "${gitlab_client_id}"
+    GF_AUTH_GITLAB_CLIENT_SECRET: "${gitlab_client_secret}"
+    GF_AUTH_GITLAB_SCOPES: "api"
+    GF_AUTH_GITLAB_AUTH_URL: "https://gitlab.com/oauth/authorize"
+    GF_AUTH_GITLAB_TOKEN_URL: "https://gitlab.com/oauth/token"
+    GF_AUTH_GITLAB_API_URL: "https://gitlab.com/api/v4"
+    GF_AUTH_GITLAB_ALOWED_GROUPS: "madops"
 
   persistence:
     enabled: false

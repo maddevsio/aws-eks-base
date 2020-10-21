@@ -5,9 +5,9 @@ data "template_file" "prometheus_mysql_exporter" {
 resource "helm_release" "prometheus_mysql_exporter_wp" {
   name       = "prometheus-mysql-exporter"
   chart      = "prometheus-mysql-exporter"
-  repository = local.helm_repo_stable
+  repository = local.helm_repo_prometheus_community
   namespace  = kubernetes_namespace.wp.id
-  version    = "0.5.3"
+  version    = var.prometheus_mysql_exporter_version
   wait       = false
 
   values = [

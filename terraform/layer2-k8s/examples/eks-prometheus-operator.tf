@@ -41,9 +41,9 @@ data "template_file" "prometheus_operator" {
 }
 
 resource "helm_release" "prometheus_operator" {
-  name       = "prometheus-operator"
-  chart      = "prometheus-operator"
-  repository = local.helm_repo_stable
+  name       = "kube-prometheus-stack"
+  chart      = "kube-prometheus-stack"
+  repository = local.helm_repo_prometheus_community
   namespace  = kubernetes_namespace.monitoring.id
   version    = var.prometheus_operator_version
   wait       = false
