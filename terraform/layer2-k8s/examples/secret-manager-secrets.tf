@@ -14,9 +14,3 @@ data "aws_secretsmanager_secret" "infra" {
 data "aws_secretsmanager_secret_version" "infra" {
   secret_id = data.aws_secretsmanager_secret.infra.id
 }
-
-
-
-
-
-

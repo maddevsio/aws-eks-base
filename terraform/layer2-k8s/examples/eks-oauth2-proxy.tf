@@ -39,4 +39,3 @@ resource "helm_release" "oauth2_proxy" {
   ]
 }
 
-

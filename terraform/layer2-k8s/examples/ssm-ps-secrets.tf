@@ -28,4 +28,3 @@ data "aws_ssm_parameter" "gitlab_registration_token" {
 }
 
 
-
