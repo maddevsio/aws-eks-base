@@ -5,15 +5,6 @@ locals {
   alertmanager_domain_name = "alertmanager.${local.domain_name}"
 }
 
-data "aws_ssm_parameter" "grafana_gitlab_client_id" {
-  name = "/${local.name_wo_region}/infra/grafana/gitlab_client_id"
-}
-
-
-data "aws_ssm_parameter" "grafana_gitlab_client_secret" {
-  name = "/${local.name_wo_region}/infra/grafana/gitlab_client_secret"
-}
-
 resource "random_string" "grafana_password" {
   length  = 20
   special = true
@@ -44,8 +35,8 @@ data "template_file" "prometheus_operator" {
     grafana_domain_name      = local.grafana_domain_name
     grafana_password         = local.grafana_password
     role_arn                 = module.aws_iam_grafana.role_arn
-    gitlab_client_id         = data.aws_ssm_parameter.grafana_gitlab_client_id.value
-    gitlab_client_secret     = data.aws_ssm_parameter.grafana_gitlab_client_secret.value
+    gitlab_client_id         = local.grafana_gitlab_client_id
+    gitlab_client_secret     = local.grafana_gitlab_client_secret
   }
 }
 
@@ -87,5 +78,6 @@ output "grafana_admin_password" {
   sensitive   = true
   description = "Grafana admin password"
 }
+
 
 

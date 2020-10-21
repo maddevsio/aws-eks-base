@@ -125,12 +125,22 @@ Normal output would be:
 Terraform has been successfully initialized!
 ```
 
-#### Secret variables save in ssm parameter store
+#### Secret variables
+
+###### Save secrets in ssm parameter store
+
 ````bash 
 /maddevs-demo/infra/grafana/gitlab_client_id	
 /maddevs-demo/infra/grafana/gitlab_client_secret	
 /maddevs-demo/infra/kibana/gitlab_client_id	  
-/maddevs-demo/infra/kibana/gitlab_client_secret  
+/maddevs-demo/infra/kibana/gitlab_client_secret 
+/maddevs-demo/infra/runner/gitlab_registration_token 
+````
+or
+###### Save secrets in one secret in secret manager
+
+````bash 
+/maddevs-demo/infra/gitlab-tokens	 
 ````
 
 #### terraform plan

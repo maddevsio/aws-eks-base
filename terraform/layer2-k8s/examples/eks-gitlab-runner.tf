@@ -19,7 +19,7 @@ data "template_file" "gitlab_runner" {
   template = "${file("${path.module}/templates/gitlab-runner-values.yaml")}"
 
   vars = {
-    registration_token = var.gitlab_registration_token
+    registration_token = local.gitlab_registration_token
     namespace          = kubernetes_namespace.ci.id
     role_arn           = module.aws_iam_gitlab_runner.role_arn
     runner_sa          = module.eks_rbac_gitlab_runner.sa_name
@@ -38,3 +38,4 @@ resource "helm_release" "gitlab_runner" {
     "${data.template_file.gitlab_runner.rendered}",
   ]
 }
+
