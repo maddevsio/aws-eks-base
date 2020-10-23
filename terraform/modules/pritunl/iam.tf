@@ -10,8 +10,8 @@ data "aws_iam_policy_document" "this" {
   }
 
   statement {
-    sid       = "AllowAssociateEIP"
-    actions   = ["ec2:AssociateAddress"]
+    sid     = "AllowAssociateEIP"
+    actions = ["ec2:AssociateAddress"]
     resources = ["arn:aws:ec2:*:*:elastic-ip/${aws_eip.this.id}",
       "arn:aws:ec2:*:*:instance/*"
     ]
