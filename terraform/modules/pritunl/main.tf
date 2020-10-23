@@ -83,9 +83,8 @@ resource "aws_autoscaling_group" "this" {
     version = "$Latest"
   }
 
-  # availability_zones            = [var.availability_zone]
   vpc_zone_identifier = [tolist(data.aws_subnet_ids.selected.ids)[0]]
-  # vpc_zone_identifier           = ["subnet-01ea79f020ac51979"]
+
   tag {
     key                 = "Name"
     value               = var.name

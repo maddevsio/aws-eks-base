@@ -12,15 +12,11 @@ data "aws_iam_policy_document" "this" {
   statement {
     sid       = "AllowAssociateEIP"
     actions   = ["ec2:AssociateAddress"]
-    resources = ["*"]
-
-    # condition {
-    #   test                = "StringEquals"
-    #   variable            = "eip:ResourceTag/Name"
-
-    #   values              = [var.name]
-    # }
+    resources = ["arn:aws:ec2:*:*:elastic-ip/${aws_eip.this.id}",
+      "arn:aws:ec2:*:*:instance/*"
+    ]
   }
+
   statement {
     sid       = "AllowModifyInstanceAttribute"
     actions   = ["ec2:ModifyInstanceAttribute"]
