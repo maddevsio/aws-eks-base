@@ -101,7 +101,7 @@ All states of of all layers are stored in private `madops-terraform-state-us-eas
 Configuration of this infrastructure has been splitted into two layers. This approach provides more reliable and faster deployemnt of the changes.
 
 * layer1-aws contains aws resources: VPC network and security groups, RDS instances, EKS cluster and it's nodes
-* layer2-k8s contains part of the insrastructure which should be deployed to the EKS cluster: namespaces, secrets, ssl keys, ingresses, monitoring and log services.
+* layer2-k8s contains part of the infrastructure which should be deployed to the EKS cluster: namespaces, secrets, ssl keys, ingresses, monitoring and log services.
 
 #### terraform init
 
@@ -125,6 +125,36 @@ Normal output would be:
 Terraform has been successfully initialized!
 ```
 
+#### Secret variables
+
+###### Save secrets in ssm parameter store
+
+> values in ssm PS
+````bash 
+/maddevs-demo/infra/grafana/gitlab_client_id	
+/maddevs-demo/infra/grafana/gitlab_client_secret	
+/maddevs-demo/infra/kibana/gitlab_client_id	  
+/maddevs-demo/infra/kibana/gitlab_client_secret 
+/maddevs-demo/infra/runner/gitlab_registration_token 
+````
+or
+###### Save secrets in one secret in secret manager
+
+> secret name
+````bash 
+/maddevs-demo/infra/gitlab-tokens	 
+````
+
+> json with secret values
+````json
+{
+  "kibana_gitlab_client_id": "access key token",
+  "kibana_gitlab_client_secret": "secret key token",
+  "grafana_gitlab_client_id": "access key token",
+  "grafana_gitlab_client_secret": "secret key token",
+  "gitlab_registration_token": "gitlab-runner token"
+}
+````
 #### terraform plan
 
 `terraform plan` command is used to create an execution plan. Terraform determines what actions are necessary to achieve the desired state specified in the configuration files.
@@ -136,7 +166,7 @@ The optional -out argument can be used to save the generated plan to a file for 
 Normal output example:
 
 ```bash
-$ terraform plan -var-file=/Volumes/Keybase/team/maddevs.madops/demo.tfvars
+$ terraform plan
 # ~600 rows skipped
 Plan: 82 to add, 0 to change, 0 to destroy.
 
@@ -154,7 +184,7 @@ The terraform apply command is used to apply the changes required to reach the d
 By default, apply scans the current directory for the configuration and applies the changes appropriately. However, a path to another configuration or an execution plan can be provided. Explicit execution plans files can be used to split plan and apply into separate steps within automation systems.
 
 ```bash
-$ terraform apply -var-file=/Volumes/Keybase/team/maddevs.madops/demo.tfvars
+$ terraform apply
 # ~600 rows skipped
 Plan: 82 to add, 0 to change, 0 to destroy.
 
@@ -168,7 +198,7 @@ Do you want to perform these actions?
 
 ```
 
-If you will type "yes" and press the "enter" key, terraform will start to deploy infrastracture in accordiance to code.
+If you will type "yes" and press the "enter" key, terraform will start to deploy infrastructure in accordiance to code.
 
 ```
 Apply complete! Resources: 82 added, 0 changed, 0 destroyed.
@@ -187,7 +217,7 @@ $ terraform apply -target helm_release.kibana
 The terraform destroy command is used to destroy the Terraform-managed infrastructure.
 
 ```bash
-$ terraform destroy -var-file=/Volumes/Keybase/team/maddevs.demo/terraform.tfvars
+$ terraform destroy
 random_string.database_user: Refreshing state... (ID: none)
 data.template_file.map_accounts[0]: Refreshing state...
 random_string.database_prefix: Refreshing state... (ID: none)

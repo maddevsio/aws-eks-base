@@ -4,6 +4,11 @@ output name {
   value       = local.name
 }
 
+output "name_wo_region" {
+  description = "Project name, required to form unique resource names without short region"
+  value       = local.name_wo_region
+}
+
 output domain_name {
   description = "Domain name"
   value       = var.domain_name

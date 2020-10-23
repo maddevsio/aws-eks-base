@@ -12,8 +12,8 @@ resource "kubernetes_secret" "kibana_oauth2_secrets" {
 
   data = {
     "cookie-secret" = random_string.kibana_ouath2_secret_cookie.result
-    "client-secret" = var.kibana_gitlab_client_secret
-    "client-id"     = var.kibana_gitlab_client_id
+    "client-secret" = local.kibana_gitlab_client_secret
+    "client-id"     = local.kibana_gitlab_client_id
   }
 }
 
@@ -38,3 +38,4 @@ resource "helm_release" "oauth2_proxy" {
     "${data.template_file.oauth2_proxy.rendered}",
   ]
 }
+

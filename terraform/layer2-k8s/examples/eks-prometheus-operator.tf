@@ -35,8 +35,8 @@ data "template_file" "prometheus_operator" {
     grafana_domain_name      = local.grafana_domain_name
     grafana_password         = local.grafana_password
     role_arn                 = module.aws_iam_grafana.role_arn
-    gitlab_client_id         = var.grafana_gitlab_client_id
-    gitlab_client_secret     = var.grafana_gitlab_client_secret
+    gitlab_client_id         = local.grafana_gitlab_client_id
+    gitlab_client_secret     = local.grafana_gitlab_client_secret
   }
 }
 
@@ -78,3 +78,5 @@ output "grafana_admin_password" {
   sensitive   = true
   description = "Grafana admin password"
 }
+
+
