@@ -129,6 +129,7 @@ Terraform has been successfully initialized!
 
 ###### Save secrets in ssm parameter store
 
+> values in ssm PS
 ````bash 
 /maddevs-demo/infra/grafana/gitlab_client_id	
 /maddevs-demo/infra/grafana/gitlab_client_secret	
@@ -139,10 +140,21 @@ Terraform has been successfully initialized!
 or
 ###### Save secrets in one secret in secret manager
 
+> secret name
 ````bash 
 /maddevs-demo/infra/gitlab-tokens	 
 ````
 
+> json with secret values
+````json
+{
+  "kibana_gitlab_client_id": "access key token",
+  "kibana_gitlab_client_secret": "secret key token",
+  "grafana_gitlab_client_id": "access key token",
+  "grafana_gitlab_client_secret": "secret key token",
+  "gitlab_registration_token": "gitlab-runner token"
+}
+````
 #### terraform plan
 
 `terraform plan` command is used to create an execution plan. Terraform determines what actions are necessary to achieve the desired state specified in the configuration files.
