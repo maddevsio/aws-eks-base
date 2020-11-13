@@ -11,7 +11,7 @@ data "template_file" "nginx_ingress" {
   template = file("${path.module}/templates/${local.template_name}")
 
   vars = {
-    hostname           = "${local.domain_name}"
+    hostname           = local.domain_name
     ssl_cert           = local.ssl_certificate_arn
     proxy_real_ip_cidr = local.vpc_cidr
     namespace          = module.ing_namespace.name
@@ -27,6 +27,6 @@ resource "helm_release" "nginx_ingress" {
   wait       = false
 
   values = [
-    "${data.template_file.nginx_ingress.rendered}",
+    data.template_file.nginx_ingress.rendered,
   ]
 }

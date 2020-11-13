@@ -29,7 +29,7 @@ module "vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name                                  = "${local.name}"
+    Name                                  = local.name
     Environment                           = local.env
     "kubernetes.io/cluster/${local.name}" = "shared"
 

@@ -1,5 +1,5 @@
 terraform {
-  required_version = "~> 0.13.2"
+  required_version = "~> 0.13.5"
 
   backend "s3" {
     bucket  = "madops-terraform-state-us-east-1"

@@ -23,7 +23,7 @@ resource "helm_release" "cert_manager" {
   wait       = true
 
   values = [
-    "${data.template_file.cert_manager.rendered}",
+    data.template_file.cert_manager.rendered,
   ]
 }
 

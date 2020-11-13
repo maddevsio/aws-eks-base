@@ -35,7 +35,7 @@ variable nginx_ingress_controller_version {
 
 variable nginx_ingress_ssl_terminator {
   description = "Select SSL termination type"
-  default     = "nginx"
+  default     = "lb"
   # options:
   # lb - terminate ssl on loadbalancer side
   # nginx - terminate ssl on nginx side
@@ -55,7 +55,7 @@ variable alb_ingress_chart_version {
 # Cluster autoscaler
 variable cluster_autoscaler_version {
   description = "Version of autoscaler helm chart"
-  default     = "1.0.3"
+  default     = "1.1.0"
 }
 
 # Prometheus Operator

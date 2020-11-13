@@ -70,6 +70,11 @@ variable cidr {
   default     = "10.0.0.0/16"
 }
 
+variable create_acm_certificate {
+  default     = false
+  description = "Whether to create acm certificate or use existing"
+}
+
 variable allowed_ips {
   type = list
   default = [
@@ -82,7 +87,7 @@ variable allowed_ips {
 
 # EKS
 variable eks_cluster_version {
-  default     = "1.16"
+  default     = "1.18"
   description = "Version of the EKS K8S cluster"
 }
 
