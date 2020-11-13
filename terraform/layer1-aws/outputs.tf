@@ -113,3 +113,8 @@ output eks_oidc_provider_arn {
   description = "ARN of EKS oidc provider"
   value       = module.eks.oidc_provider_arn
 }
+
+output ssl_certificate_arn {
+  description = "ARN of SSL certificate"
+  value       = local.ssl_certificate_arn
+}

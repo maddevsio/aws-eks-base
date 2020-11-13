@@ -25,6 +25,6 @@ resource "helm_release" "cluster_autoscaler" {
   namespace  = kubernetes_namespace.sys.id
 
   values = [
-    "${data.template_file.cluster_autoscaler.rendered}",
+    data.template_file.cluster_autoscaler.rendered,
   ]
 }

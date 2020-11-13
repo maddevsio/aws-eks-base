@@ -26,6 +26,6 @@ resource "helm_release" "external_dns" {
   namespace  = kubernetes_namespace.dns.id
 
   values = [
-    "${data.template_file.external_dns.rendered}",
+    data.template_file.external_dns.rendered,
   ]
 }

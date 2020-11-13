@@ -14,7 +14,7 @@ resource "helm_release" "certificate" {
   wait      = false
 
   values = [
-    "${data.template_file.certificate.rendered}",
+    data.template_file.certificate.rendered,
   ]
 
   # This dep needs for correct apply

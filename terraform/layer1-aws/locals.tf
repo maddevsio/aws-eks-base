@@ -6,4 +6,6 @@ locals {
   name_wo_region = "${var.name}-${local.env}"
   domain_name    = var.domain_name
   account_id     = data.aws_caller_identity.current.account_id
+
+  ssl_certificate_arn = var.create_acm_certificate ? module.acm.this_acm_certificate_arn : data.aws_acm_certificate.main[0].arn
 }

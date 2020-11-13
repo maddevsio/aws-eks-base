@@ -23,7 +23,7 @@ resource "helm_release" "external_secrets" {
   namespace  = kubernetes_namespace.sys.id
 
   values = [
-    "${data.template_file.external_secrets.rendered}",
+    data.template_file.external_secrets.rendered,
   ]
 }
 

@@ -15,7 +15,7 @@ resource "helm_release" "cluster_issuer" {
   wait      = false
 
   values = [
-    "${data.template_file.cluster_issuer.rendered}",
+    data.template_file.cluster_issuer.rendered,
   ]
 
   # This dep needs for correct apply
