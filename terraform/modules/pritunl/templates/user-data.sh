@@ -12,9 +12,31 @@ echo "root soft nofile 64000" >> /etc/security/limits.conf
 INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 
 # Attach EIP
-aws ec2 associate-address --instance-id $${INSTANCE_ID} --allocation-id ${eipalloc}
+aws ec2 associate-address --instance-id $${INSTANCE_ID} --allocation-id ${eipalloc} --allow-reassociation
+
 # Attach volume for MongoDB
-aws ec2 attach-volume --volume-id ${volume_id} --instance-id $${INSTANCE_ID} --device /dev/sdf
+aws ec2 detach-volume --volume-id ${volume_id}
+
+until aws ec2 attach-volume --volume-id ${volume_id} --instance-id $${INSTANCE_ID} --device /dev/sdf; do
+  sleep 10
+  echo "Trying to attach volume"
+done
+
+# wait for EBS volume to attach
+DATA_STATE="unknown"
+until [[ $${DATA_STATE} == "attached" ]]; do
+  DATA_STATE=$(aws ec2 describe-volumes \
+      --filters \
+          Name=attachment.instance-id,Values=$${INSTANCE_ID} \
+          Name=attachment.device,Values=/dev/sdf \
+      --query Volumes[].Attachments[].State \
+      --output text)
+  echo 'waiting for volume...'
+  sleep 5
+done
+
+echo 'EBS volume attached!'
+
 # Change source-destination checking
 aws ec2 modify-instance-attribute --instance-id $${INSTANCE_ID} --source-dest-check "{\"Value\": false}"
 

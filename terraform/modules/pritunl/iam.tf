@@ -2,7 +2,8 @@ data "aws_iam_policy_document" "this" {
   statement {
     sid = "AllowAttachDetachVolume"
     actions = ["ec2:AttachVolume",
-      "ec2:DetachVolume"
+      "ec2:DetachVolume",
+      "ec2:DescribeVolumes"
     ]
     resources = ["arn:aws:ec2:*:*:volume/${aws_ebs_volume.mongodb_data.id}",
       "arn:aws:ec2:*:*:instance/*"
@@ -12,6 +13,21 @@ data "aws_iam_policy_document" "this" {
   statement {
     sid     = "AllowAssociateEIP"
     actions = ["ec2:AssociateAddress"]
+    resources = ["arn:aws:ec2:*:*:elastic-ip/${aws_eip.this.id}",
+      "arn:aws:ec2:*:*:instance/*"
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "ec2:ResourceTag/Name"
+
+      values = [var.name]
+    }
+  }
+
+  statement {
+    sid     = "AllowDisassociateAddressEIP"
+    actions = ["ec2:DisassociateAddress"]
     resources = ["arn:aws:ec2:*:*:elastic-ip/${aws_eip.this.id}",
       "arn:aws:ec2:*:*:instance/*"
     ]
