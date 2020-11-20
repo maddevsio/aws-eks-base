@@ -1,6 +1,8 @@
 # Created by https://www.gitignore.io/api/visualstudiocode,linux,helm,macos,terraform,windows
 # Edit at https://www.gitignore.io/?templates=visualstudiocode,linux,helm,macos,terraform,windows
 
+.idea/
+
 ### Linux ###
 *~
 
