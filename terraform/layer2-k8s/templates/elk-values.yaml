@@ -8,7 +8,7 @@ apm-server:
     hosts:
       - ${apm_domain_name}
   #  tls:
-  #  - hosts: 
+  #  - hosts:
   #    - ${apm_domain_name}
 
   apmConfig:
@@ -119,15 +119,14 @@ elasticsearch:
       - key: aws_s3_user_secret_key
         path: s3.client.default.secret_key
 
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: node.kubernetes.io/lifecycle
-            operator: NotIn
-            values:
-              - spot
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node.kubernetes.io/lifecycle
+          operator: NotIn
+          values:
+            - spot
 
 filebeat:
   enabled: true
@@ -147,7 +146,7 @@ filebeat:
               type: container
               paths:
                 - /var/log/containers/*-$${data.kubernetes.container.id}.log
- 
+
       processors:
         - drop_event:
             when:
@@ -259,7 +258,7 @@ metricbeat:
           protocol: https
           hosts: ["elasticsearch-master:9200"]
           ssl.verification_mode: none
-      
+
     secretMounts:
     - name: elastic-certificates
       secretName: elastic-certificates
@@ -335,9 +334,9 @@ kibana:
     hosts:
       - ${kibana_domain_name}
   #  tls:
-  #  - hosts: 
+  #  - hosts:
   #    - ${kibana_domain_name}
-      
+
   elasticsearchHosts: "https://elasticsearch-master:9200"
 
   extraEnvs:
@@ -378,7 +377,7 @@ kibana:
     - name: elastic-certificates
       secretName: elastic-certificates
       path: /usr/share/kibana/config/certs
-  
+
   podAnnotations:
     co.elastic.logs/module: kibana
 
@@ -442,10 +441,10 @@ kibana:
       command:
         - /bin/sh
         - -c
-        - 'curl -X POST -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_security/role/kibana_basic_user -H ''Content-Type: application/json'' 
+        - 'curl -X POST -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_security/role/kibana_basic_user -H ''Content-Type: application/json''
           -d ''{"applications":[{"application":"kibana-.kibana","privileges":["feature_discover.all","feature_visualize.all","feature_dashboard.all","feature_dev_tools.all","feature_advancedSettings.all"],"resources":["space:default"]}]}''
           &&
-          curl -X POST -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_security/role/all_indexes_read -H ''Content-Type: application/json'' 
+          curl -X POST -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_security/role/all_indexes_read -H ''Content-Type: application/json''
           -d ''{"indices":[{"names":["*"],"privileges":["read"],"allow_restricted_indices":false}]}'''
       image: appropriate/curl:latest
       imagePullPolicy: IfNotPresent
@@ -464,7 +463,7 @@ kibana:
       command:
         - /bin/sh
         - -c
-        - 'curl -X POST -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_security/user/${kibana_user} -H ''Content-Type: application/json'' 
+        - 'curl -X POST -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_security/user/${kibana_user} -H ''Content-Type: application/json''
           -d ''{"password" : "${kibana_password}","roles" : [ "superuser"],"full_name" : "Kibana User","email" : ""}'''
       image: appropriate/curl:latest
       imagePullPolicy: IfNotPresent
@@ -483,7 +482,7 @@ kibana:
       command:
         - /bin/sh
         - -c
-        - 'curl -X PUT -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_slm/policy/daily-snapshots?pretty -H ''Content-Type: application/json'' 
+        - 'curl -X PUT -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_slm/policy/daily-snapshots?pretty -H ''Content-Type: application/json''
           -d ''{"schedule": "0 30 1 * * ?","name": "<daily-snap-{now/d}>","repository": "s3_repository","config": {"ignore_unavailable": false,"include_global_state": false},"retention": {"expire_after": "${snapshot_retention_days}d","min_count": 5,"max_count": 50}}'''
       image: appropriate/curl:latest
       imagePullPolicy: IfNotPresent
@@ -502,7 +501,7 @@ kibana:
       command:
         - /bin/sh
         - -c
-        - 'curl -X PUT -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_ilm/policy/delete_old_indicies -H ''Content-Type: application/json'' 
+        - 'curl -X PUT -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_ilm/policy/delete_old_indicies -H ''Content-Type: application/json''
           -d ''{"policy": {"phases": {"hot": {"actions": {"set_priority": {"priority": 100 }}}, "delete": { "min_age": "${index_retention_days}d", "actions": {"delete": {} }}}}}'''
       image: appropriate/curl:latest
       imagePullPolicy: IfNotPresent
@@ -521,7 +520,7 @@ kibana:
       command:
         - /bin/sh
         - -c
-        - 'curl -X PUT -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_template/filebeat?pretty -H ''Content-Type: application/json'' 
+        - 'curl -X PUT -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_template/filebeat?pretty -H ''Content-Type: application/json''
           -d ''{"index_patterns": ["filebeat-*"], "settings": {"number_of_shards": 1,"number_of_replicas": 1,"index.lifecycle.name": "delete_old_indicies" }}'''
       image: appropriate/curl:latest
       imagePullPolicy: IfNotPresent
@@ -540,7 +539,7 @@ kibana:
       command:
         - /bin/sh
         - -c
-        - 'curl -X PUT -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_template/apm?pretty -H ''Content-Type: application/json'' 
+        - 'curl -X PUT -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_template/apm?pretty -H ''Content-Type: application/json''
           -d ''{"index_patterns": ["apm-*"], "settings": {"number_of_shards": 1,"number_of_replicas": 1,"index.lifecycle.name": "delete_old_indicies" }}'''
       image: appropriate/curl:latest
       imagePullPolicy: IfNotPresent
@@ -559,7 +558,7 @@ kibana:
       command:
         - /bin/sh
         - -c
-        - 'curl -X PUT -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_template/metricbeat?pretty -H ''Content-Type: application/json'' 
+        - 'curl -X PUT -k -u $ELASTICSEARCH_USERNAME:$ELASTICSEARCH_PASSWORD https://elasticsearch-master:9200/_template/metricbeat?pretty -H ''Content-Type: application/json''
           -d ''{"index_patterns": ["metricbeat-*"], "settings": {"number_of_shards": 1,"number_of_replicas": 1,"index.lifecycle.name": "delete_old_indicies" }}'''
       image: appropriate/curl:latest
       imagePullPolicy: IfNotPresent
