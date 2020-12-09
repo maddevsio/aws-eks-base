@@ -29,6 +29,10 @@ module "vpc" {
 
   create_database_subnet_group = false
 
+  manage_default_security_group  = true
+  default_security_group_ingress = [{}]
+  default_security_group_egress  = [{}]
+
   tags = {
     Name                                  = local.name
     Environment                           = local.env
