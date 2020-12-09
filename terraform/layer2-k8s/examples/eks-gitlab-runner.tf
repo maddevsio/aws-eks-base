@@ -1,5 +1,5 @@
 module "aws_iam_gitlab_runner" {
-  source = "../modules/aws-iam-gitlab-runner"
+  source = "../modules/aws-iam-ci"
 
   name              = local.name
   region            = local.region
