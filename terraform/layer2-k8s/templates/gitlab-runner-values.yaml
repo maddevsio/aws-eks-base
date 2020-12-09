@@ -26,6 +26,15 @@ runners:
     effect: "NoSchedule"
   nodeSelector:
     purpose: ci
+  cache:
+    cacheType: s3
+    cachePath: "gitlab_runner"
+    cacheShared: true
+    s3ServerAddress: s3.amazonaws.com
+    s3BucketName: ${bucket_name}
+    s3BucketLocation: ${region}
+    s3CacheInsecure: false
+    secretName: s3access
 
   builds:
     cpuLimit: 950m
@@ -42,3 +51,5 @@ runners:
     memoryLimit: 2500Mi
     cpuRequests: 250m
     memoryRequests: 512Mi
+
+
