@@ -10,7 +10,7 @@ prometheus:
     hosts:
       - ${prometheus_domain_name}
     tls:
-    - hosts: 
+    - hosts:
       - ${prometheus_domain_name}
   prometheusSpec:
     storageSpec:
@@ -27,7 +27,7 @@ prometheus:
           - matchExpressions:
             - key: node.kubernetes.io/lifecycle
               operator: In
-              values: 
+              values:
                 - ondemand
 
 prometheusOperator:
@@ -38,7 +38,7 @@ prometheusOperator:
         - matchExpressions:
           - key: node.kubernetes.io/lifecycle
             operator: In
-            values: 
+            values:
               - ondemand
 
 # Grafana settings
@@ -61,7 +61,7 @@ grafana:
     hosts:
       - ${grafana_domain_name}
     tls:
-    - hosts: 
+    - hosts:
       - ${grafana_domain_name}
   env:
     # all values must be quoted
@@ -81,11 +81,11 @@ grafana:
     enabled: false
     accessModes: ["ReadWriteOnce"]
     size: 5Gi
-    
+
   sidecar:
     datasources:
       enabled: true
-      
+
   datasources:
     datasources.yaml:
       apiVersion: 1
@@ -95,11 +95,24 @@ grafana:
           jsonData:
             authType: credentials
             defaultRegion: "${default_region}"
+        - name: Loki
+          type: loki
+          url: http://loki-stack:3100
+          jsonData:
+            maxLines: 1000
 
   dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1
       providers:
+      - name: 'logs'
+        orgId: 1
+        folder: 'logs'
+        type: file
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/logs
       - name: 'aws'
         orgId: 1
         folder: 'aws'
@@ -118,6 +131,9 @@ grafana:
           path: /var/lib/grafana/dashboards/k8s
 
   dashboards:
+    logs:
+      logs:
+        url: https://gist.githubusercontent.com/khalezin/49766ed2976d49b0dc84a9c7809392e5/raw/53c0d067713e4da0e6cf187c6515a19e5dd996f5/loki-dashboard-quick-search.json
     aws:
       database-dev:
         url: https://gist.githubusercontent.com/halfb00t/1515ad62b068a38c2f739cdf1db69ed5/raw/b7b27d03fb3b28e9ae9ca43da977f56fa31eb137/rds-mysql-wp.json
@@ -133,7 +149,7 @@ grafana:
         - matchExpressions:
           - key: node.kubernetes.io/lifecycle
             operator: In
-            values: 
+            values:
               - spot
 
 # Alertmanager parameters
@@ -149,7 +165,7 @@ alertmanager:
     hosts:
       - ${alertmanager_domain_name}
     tls:
-    - hosts: 
+    - hosts:
       - ${alertmanager_domain_name}
   alertmanagerSpec:
     storage:
@@ -166,5 +182,5 @@ alertmanager:
           - matchExpressions:
             - key: node.kubernetes.io/lifecycle
               operator: In
-              values: 
+              values:
                 - ondemand

@@ -89,6 +89,11 @@ variable prometheus_mysql_exporter_version {
   default = "0.7.1"
 }
 
+variable "loki_stack" {
+  type    = string
+  default = "2.1.1"
+}
+
 variable elk_snapshot_retention_days {
   description = "Days to capture index in snapshot"
   default     = 90
