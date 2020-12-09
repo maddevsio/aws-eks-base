@@ -30,7 +30,7 @@ module "aws_iam_gitlab_runner_cache_s3" {
 }
 
 data "template_file" "gitlab_runner" {
-  template = "${file("${path.module}/templates/gitlab-runner-values.yaml")}"
+  template = file("${path.module}/templates/gitlab-runner-values.yaml")
 
   vars = {
     registration_token = local.gitlab_registration_token
