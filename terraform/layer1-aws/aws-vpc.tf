@@ -1,13 +1,12 @@
-resource "null_resource" "subnets" {
-  count = var.az_count
+locals {
+  cidr_subnets = [for cidr_block in cidrsubnets(var.cidr, 2, 2, 2, 2) : cidrsubnets(cidr_block, 4, 4, 4, 4)]
 
-  triggers = {
-    private_subnets     = cidrsubnet(var.cidr, 8, count.index)
-    public_subnets      = cidrsubnet(var.cidr, 8, count.index + 10)
-    database_subnets    = cidrsubnet(var.cidr, 8, count.index + 20)
-    elasticache_subnets = cidrsubnet(var.cidr, 8, count.index + 30)
-    azs                 = data.aws_availability_zones.available.names[count.index]
-  }
+  private_subnets     = chunklist(local.cidr_subnets[0], var.az_count)[0]
+  public_subnets      = chunklist(local.cidr_subnets[1], var.az_count)[0]
+  database_subnets    = chunklist(local.cidr_subnets[2], var.az_count)[0]
+  elasticache_subnets = chunklist(local.cidr_subnets[3], var.az_count)[0]
+
+  azs = chunklist(data.aws_availability_zones.available.names, var.az_count)[0]
 }
 
 module "vpc" {
@@ -16,17 +15,23 @@ module "vpc" {
   name = local.name
   cidr = var.cidr
 
-  azs                 = null_resource.subnets[*].triggers.azs
-  private_subnets     = null_resource.subnets[*].triggers.private_subnets
-  public_subnets      = null_resource.subnets[*].triggers.public_subnets
-  database_subnets    = null_resource.subnets[*].triggers.database_subnets
-  elasticache_subnets = null_resource.subnets[*].triggers.elasticache_subnets
+  azs                 = local.azs
+  private_subnets     = local.private_subnets
+  public_subnets      = local.public_subnets
+  database_subnets    = local.database_subnets
+  elasticache_subnets = local.elasticache_subnets
 
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_vpn_gateway   = false
   enable_dns_hostnames = true
   enable_dns_support   = true
+
+  create_database_subnet_group = false
+
+  manage_default_security_group  = true
+  default_security_group_ingress = [{}]
+  default_security_group_egress  = [{}]
 
   tags = {
     Name                                  = local.name

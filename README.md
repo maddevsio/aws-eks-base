@@ -13,10 +13,10 @@ Instructions bellow will explain which tools you'll need in order to work with t
   This project uses terraform 0.12. You won't be able to run it on terraform lower 0.12.20 version. Use tfenv to install latest version:
 
   ```bash
-  $ tfenv install 0.12.28
+  $ tfenv install 0.13.5
 
   $ terraform version
-  Terraform v0.12.28
+  Terraform v0.13.5
   ```
 
 * [awscli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html)
