@@ -91,12 +91,12 @@ variable prometheus_mysql_exporter_version {
 
 variable aws_node_termination_handler_version {
   description = "Version of aws-node-termination-handler helm chart"
-  default = "0.13.2"
+  default     = "0.13.2"
 }
 
 variable gitlab_runner_version {
   description = "Version of gitlab runner helm chart"
-  default = "0.24.0"
+  default     = "0.24.0"
 }
 
 variable elk_snapshot_retention_days {
