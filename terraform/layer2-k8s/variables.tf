@@ -99,11 +99,6 @@ variable gitlab_runner_version {
   default = "0.24.0"
 }
 
-variable gitlab_runner_version {
-  description = "Version of gitlab runner helm chart"
-  default = "0.24.0"
-}
-
 variable elk_snapshot_retention_days {
   description = "Days to capture index in snapshot"
   default     = 90
