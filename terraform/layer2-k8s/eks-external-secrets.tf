@@ -31,8 +31,8 @@ resource "helm_release" "reloader" {
   name       = "reloader"
   chart      = "reloader"
   repository = local.helm_repo_stakater
-  namespace  = kubernetes_namespace.sys.id
   version    = var.reloader_version
+  namespace  = kubernetes_namespace.sys.id
   wait       = false
 }
 

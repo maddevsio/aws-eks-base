@@ -30,8 +30,8 @@ resource "helm_release" "oauth2_proxy" {
   name       = "oauth2-proxy"
   chart      = "oauth2-proxy"
   repository = local.helm_repo_stable
-  namespace  = kubernetes_namespace.elk.id
   version    = var.oauth2_proxy_version
+  namespace  = kubernetes_namespace.elk.id
   wait       = false
 
   values = [

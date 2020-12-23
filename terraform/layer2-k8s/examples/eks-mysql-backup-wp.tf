@@ -37,8 +37,8 @@ resource "helm_release" "mysql_backup_wp" {
   name       = "mysql-backup"
   chart      = "mysql-backup"
   repository = local.helm_repo_softonic
-  namespace  = kubernetes_namespace.wp.id
   version    = "2.1.4"
+  namespace  = kubernetes_namespace.wp.id
   wait       = false
 
   values = [
