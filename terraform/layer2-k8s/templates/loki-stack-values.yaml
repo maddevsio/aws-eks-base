@@ -1,0 +1,44 @@
+loki:
+  enabled: true
+
+  config:
+    limits_config:
+      enforce_metric_name: false
+      reject_old_samples: true
+      reject_old_samples_max_age: 168h
+
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+    annotations: { }
+    # selector:
+    #   matchLabels:
+    #     app.kubernetes.io/name: loki
+    # subPath: ""
+    # existingClaim:
+
+  serviceMonitor:
+    enabled: true
+    interval: ""
+    additionalLabels: { }
+    annotations: { }
+    scrapeTimeout: 10s
+
+  nodeSelector:
+    node.kubernetes.io/lifecycle: ondemand
+
+promtail:
+  enabled: true
+
+fluent-bit:
+  enabled: false
+
+grafana:
+  enabled: false
+  sidecar:
+    datasources:
+      enabled: true
+  image:
+    tag: 6.7.0
