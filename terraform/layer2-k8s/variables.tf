@@ -11,7 +11,7 @@ variable additional_allowed_ips {
 # OAUTH PROXY
 variable oauth2_proxy_version {
   type        = string
-  default     = "3.2.0"
+  default     = "3.2.5"
   description = "Version of the oauth-proxy chart"
 }
 
@@ -21,7 +21,7 @@ variable external_dns_version {
   default     = "3.4.2"
 }
 
-# Certn Manager
+# Cert Manager
 variable cert_manager_version {
   description = "Version of cert-manager helm chart"
   default     = "0.15.1"
@@ -30,7 +30,7 @@ variable cert_manager_version {
 # NGINX Ingress
 variable nginx_ingress_controller_version {
   description = "Version of nginx-ingress helm chart"
-  default     = "3.3.0"
+  default     = "3.16.1"
 }
 
 variable nginx_ingress_ssl_terminator {
@@ -49,7 +49,7 @@ variable alb_ingress_image_tag {
 
 variable alb_ingress_chart_version {
   description = "Version of alb-ingress helm chart"
-  default     = "0.1.13"
+  default     = "1.0.4"
 }
 
 # Cluster autoscaler
@@ -61,7 +61,7 @@ variable cluster_autoscaler_version {
 # Prometheus Operator
 variable prometheus_operator_version {
   description = "Version of prometheus operator helm chart"
-  default     = "9.4.4"
+  default     = "12.8.1"
 }
 
 # Redis
@@ -92,6 +92,17 @@ variable prometheus_mysql_exporter_version {
 variable "loki_stack" {
   type    = string
   default = "2.1.1"
+}
+
+variable aws_node_termination_handler_version {
+  description = "Version of aws-node-termination-handler helm chart"
+  default     = "0.13.2"
+}
+
+variable gitlab_runner_version {
+  description = "Version of gitlab runner helm chart"
+  default     = "0.24.0"
+
 }
 
 variable elk_snapshot_retention_days {

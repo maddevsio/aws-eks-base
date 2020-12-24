@@ -30,8 +30,8 @@ resource "helm_release" "gitlab_runner" {
   name       = "gitlab-runner"
   chart      = "gitlab-runner"
   repository = local.helm_repo_gitlab
-  namespace  = kubernetes_namespace.ci.id
   version    = var.gitlab_runner_version
+  namespace  = kubernetes_namespace.ci.id
   wait       = false
 
   values = [

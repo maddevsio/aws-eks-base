@@ -4,13 +4,6 @@ provider "aws" {
   allowed_account_ids = var.allowed_account_ids
 }
 
-provider "aws" {
-  version             = "3.4.0"
-  region              = "us-east-1"
-  alias               = "virginia"
-  allowed_account_ids = var.allowed_account_ids
-}
-
 provider "kubernetes" {
   version                = "1.12.0"
   host                   = data.aws_eks_cluster.main.endpoint
