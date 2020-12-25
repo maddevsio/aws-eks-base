@@ -16,7 +16,7 @@ resource "kubernetes_role" "staging" {
   }
 
   rule {
-    api_groups = ["", "apps", "extensions", "batch", "networking.k8s.io"]
+    api_groups = ["", "apps", "extensions", "batch", "networking.k8s.io", "kubernetes-client.io"]
     resources  = ["*"]
     verbs      = ["*"]
   }
@@ -29,7 +29,7 @@ resource "kubernetes_role" "prod" {
   }
 
   rule {
-    api_groups = ["", "apps", "extensions", "batch", "networking.k8s.io"]
+    api_groups = ["", "apps", "extensions", "batch", "networking.k8s.io", "kubernetes-client.io"]
     resources  = ["*"]
     verbs      = ["*"]
   }
@@ -42,7 +42,7 @@ resource "kubernetes_role" "dev" {
   }
 
   rule {
-    api_groups = ["", "apps", "extensions", "batch", "networking.k8s.io"]
+    api_groups = ["", "apps", "extensions", "batch", "networking.k8s.io", "kubernetes-client.io"]
     resources  = ["*"]
     verbs      = ["*"]
   }
