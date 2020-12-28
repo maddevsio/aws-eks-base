@@ -1,0 +1,37 @@
+{{- if .Values.scheduler.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "scheduler.jobname" . }}
+  labels:
+    {{- include "postgresql-backups.labels" . | nindent 4 }}
+  annotations:
+    secret.reloader.stakater.com/reload: {{ include "scheduler.jobname" . }}
+spec:
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "postgresql-backups.selectorLabels" . | nindent 12 }}
+        spec:
+          containers:
+          - name: {{ include "scheduler.jobname" . }}
+            image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            envFrom:
+              - secretRef:
+                  name: {{ include "postgresql-backups.fullname" . }}
+            command: {{ .Values.scheduler.command }}
+            {{- with .Values.scheduler.args }}
+            args:
+              {{ toYaml . | nindent 14 }}
+            {{- end }}
+            resources:
+              {{- toYaml .Values.scheduler.resources | nindent 14 }}
+          restartPolicy: {{ .Values.scheduler.restartPolicy }}
+  schedule: {{ .Values.scheduler.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.scheduler.successfulJobsHistoryLimit }}
+  concurrencyPolicy: {{ .Values.scheduler.concurrencyPolicy }}
+  failedJobsHistoryLimit: {{ .Values.scheduler.failedJobsHistoryLimit }}
+{{- end }}

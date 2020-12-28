@@ -1,0 +1,37 @@
+image:
+  repository: ${image_name}
+  tag: latest
+  pullPolicy: IfNotPresent
+
+ExternalSecret:
+  enabled: true
+  Envs:
+    - key: /${name_wo_region}/environment/pg_host
+      name: PG_HOST
+    - key: /${name_wo_region}/environment/pg_port
+      name: PG_PORT
+    - key: /${name_wo_region}/environment/pg_user
+      name: PG_USER
+    - key: /${name_wo_region}/environment/pg_database
+      name: PG_DATABASE
+    - key: /${name_wo_region}/environment/pg_pass
+      name: PG_PASS
+    - key: /${name_wo_region}/infra/alertmanager/slack_url
+      name: SLACK_URL
+    - key: /${name_wo_region}/environment/s3/pg_backups
+      name: AWS_BUCKET_NAME
+
+scheduler:
+  enabled: true
+  schedule: "0 4 * * *"
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  successfulJobsHistoryLimit: 5
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 5
+  restartPolicy: OnFailure
