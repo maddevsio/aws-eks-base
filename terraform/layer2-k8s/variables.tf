@@ -136,12 +136,6 @@ variable grafana_gitlab_group {
   description = "Gitlab group for grafana oauth"
 }
 
-variable "alertmanager_slack_enabled" {
-  type        = bool
-  default     = false
-  description = "Enable or disable slack alerts for alertmanager"
-}
-
 variable "alertmanager_slack_channel" {
   type        = string
   default     = "madops-demo-alerts"

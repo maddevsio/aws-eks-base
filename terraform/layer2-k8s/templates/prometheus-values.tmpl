@@ -160,7 +160,7 @@ grafana:
 
 # Alertmanager parameters
 alertmanager:
-  enabled: true
+  enabled: false
   ingress:
     enabled: true
     annotations:
@@ -181,7 +181,6 @@ alertmanager:
           resources:
             requests:
               storage: 10Gi
-  %{ if alertmanager_slack_enabled == true }
   config:
     global:
       resolve_timeout: 5m
@@ -218,7 +217,6 @@ alertmanager:
             {{ end }}
             {{ end }}
           icon_emoji: '{{ template "slack.default.iconemoji" . }}'
-  %{ endif }
 
   affinity:
     nodeAffinity:
