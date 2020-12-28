@@ -144,7 +144,7 @@ variable "alertmanager_slack_enabled" {
 
 variable "alertmanager_slack_channel" {
   type        = string
-  default     = madops-demo-alerts
+  default     = "madops-demo-alerts"
   description = "Slack channel for alertmaneger alerts"
 }
 
