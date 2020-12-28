@@ -34,7 +34,7 @@ resource "kubernetes_namespace" "monitoring" {
 }
 
 module "aws_iam_grafana" {
-  source = "../../modules/aws-iam-grafana"
+  source = "../modules/aws-iam-grafana"
 
   name              = local.name
   region            = local.region
