@@ -36,12 +36,6 @@ grafana:
   image:
     tag: 7.2.1
 
-  service:
-    type: ClusterIP
-    port: 80
-    targetPort: 3000
-    portName: service
-
   serviceMonitor:
     enabled: true
     path: /metrics
