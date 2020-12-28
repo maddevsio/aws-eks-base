@@ -148,19 +148,9 @@ variable "alertmanager_slack_channel" {
   description = "Slack channel for alertmaneger alerts"
 }
 
-
 variable kibana_gitlab_group {
+  type        = string
   default     = "madops"
   description = "Gitlab group for kibana oauth2"
 }
 
-variable kibana_gitlab_client_id {
-  type    = string
-  default = "Id of the GitLab oauth app for kibana"
-}
-
-variable kibana_gitlab_client_secret {
-  type        = string
-  default     = ""
-  description = "Secret of the GitLab oauth app for kibana"
-}

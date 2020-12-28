@@ -22,7 +22,6 @@ resource "helm_release" "loki_stack" {
   values = [
     local.loki_stack_template
   ]
-
 }
 
 resource "random_string" "grafana_loki_password" {
