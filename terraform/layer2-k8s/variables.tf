@@ -94,6 +94,11 @@ variable "loki_stack" {
   default = "2.1.1"
 }
 
+variable "loki_datasource_for_prometheus_stack" {
+  type    = bool
+  default = false
+}
+
 variable aws_node_termination_handler_version {
   description = "Version of aws-node-termination-handler helm chart"
   default     = "0.13.2"
@@ -102,7 +107,6 @@ variable aws_node_termination_handler_version {
 variable gitlab_runner_version {
   description = "Version of gitlab runner helm chart"
   default     = "0.24.0"
-
 }
 
 variable elk_snapshot_retention_days {
@@ -124,6 +128,12 @@ variable grafana_gitlab_client_secret {
   type        = string
   default     = ""
   description = "Secret of the GitLab oauth app for grafana"
+}
+
+variable grafana_gitlab_group {
+  type        = string
+  default     = "madops"
+  description = "Gitlab group for grafana oauth"
 }
 
 variable kibana_gitlab_group {

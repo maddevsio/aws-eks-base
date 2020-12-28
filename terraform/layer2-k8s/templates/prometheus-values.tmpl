@@ -95,16 +95,19 @@ grafana:
           jsonData:
             authType: credentials
             defaultRegion: "${default_region}"
+        %{ if loki_datasource_for_prometheus_stack == true }
         - name: Loki
           type: loki
           url: http://loki-stack:3100
           jsonData:
             maxLines: 1000
+        %{ endif }
 
   dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1
       providers:
+      %{ if loki_datasource_for_prometheus_stack == true }
       - name: 'logs'
         orgId: 1
         folder: 'logs'
@@ -113,6 +116,7 @@ grafana:
         editable: true
         options:
           path: /var/lib/grafana/dashboards/logs
+      %{ endif }
       - name: 'aws'
         orgId: 1
         folder: 'aws'
@@ -131,9 +135,11 @@ grafana:
           path: /var/lib/grafana/dashboards/k8s
 
   dashboards:
+    %{ if loki_datasource_for_prometheus_stack == true }
     logs:
       logs:
         url: https://gist.githubusercontent.com/khalezin/49766ed2976d49b0dc84a9c7809392e5/raw/53c0d067713e4da0e6cf187c6515a19e5dd996f5/loki-dashboard-quick-search.json
+    %{ endif }
     aws:
       database-dev:
         url: https://gist.githubusercontent.com/halfb00t/1515ad62b068a38c2f739cdf1db69ed5/raw/b7b27d03fb3b28e9ae9ca43da977f56fa31eb137/rds-mysql-wp.json
@@ -151,6 +157,7 @@ grafana:
             operator: In
             values:
               - spot
+
 
 # Alertmanager parameters
 alertmanager:
@@ -175,12 +182,51 @@ alertmanager:
           resources:
             requests:
               storage: 10Gi
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
+  %{ if alertmanager_slack_enabled == true }
+  config:
+    global:
+      resolve_timeout: 5m
+      slack_api_url: ${alertmanager_slack_url}
+    route:
+      group_by: ['job']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'null'
+      routes:
+        - match:
+            alertname: Watchdog
+          receiver: 'null'
+        - match:
+          receiver: "slack-notifications"
+          continue: true
+    receivers:
+    - name: 'null'
+    - name: 'slack-notifications'
+      slack_configs:
+        - channel: ${alertmanager_slack_channel}
+          send_resolved: true
+          icon_url: https://avatars3.githubusercontent.com/u/3380462
+          username: 'AlertManager'
+          color: '{{ if eq .Status "firing" }}danger{{ else }}good{{ end }}'
+          title: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .GroupLabels.SortedPairs.Values | join " " }} {{ if gt (len .CommonLabels) (len .GroupLabels) }}({{ with .CommonLabels.Remove .GroupLabels.Names }}{{ .Values | join " " }}{{ end }}){{ end }}'
+          text: |-
+            {{ range .Alerts }}
+            {{ if .Annotations.summary }}*Alert:*  - {{ .Annotations.summary }} - `{{ .Labels.severity }}`{{ end }}
+            *Description:* {{ .Annotations.message }}
+            *Details:*
+            {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+            {{ end }}
+            {{ end }}
+          icon_emoji: '{{ template "slack.default.iconemoji" . }}'
+  %{ endif }
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
           - matchExpressions:
-            - key: node.kubernetes.io/lifecycle
-              operator: In
-              values:
-                - ondemand
+              - key: purpose
+                operator: In
+                values:
+                  - ondemand
