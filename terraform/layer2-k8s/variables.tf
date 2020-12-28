@@ -139,13 +139,13 @@ variable grafana_gitlab_group {
 variable "alertmanager_slack_enabled" {
   type        = bool
   default     = false
-  description = "Enable or disable slack alerts for alert manager"
+  description = "Enable or disable slack alerts for alertmanager"
 }
 
 variable "alertmanager_slack_channel" {
   type        = string
   default     = "madops-demo-alerts"
-  description = "Slack channel for alertmaneger alerts"
+  description = "Slack channel for alertmanager alerts"
 }
 
 variable kibana_gitlab_group {
