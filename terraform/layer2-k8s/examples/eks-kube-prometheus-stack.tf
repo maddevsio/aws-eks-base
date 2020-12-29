@@ -26,12 +26,6 @@ resource "random_string" "grafana_password" {
   special = true
 }
 
-resource "kubernetes_namespace" "monitoring" {
-  metadata {
-    name = "monitoring"
-  }
-}
-
 module "aws_iam_grafana" {
   source = "../modules/aws-iam-grafana"
 

@@ -119,17 +119,6 @@ variable elk_index_retention_days {
   default     = 14
 }
 
-variable grafana_gitlab_client_id {
-  type    = string
-  default = "Id of the GitLab oauth app for grafana"
-}
-
-variable grafana_gitlab_client_secret {
-  type        = string
-  default     = ""
-  description = "Secret of the GitLab oauth app for grafana"
-}
-
 variable grafana_gitlab_group {
   type        = string
   default     = "madops"

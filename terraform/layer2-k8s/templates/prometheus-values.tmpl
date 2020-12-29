@@ -147,6 +147,10 @@ grafana:
       nginx-ingress:
         gnetId: 6927
         datasource: Prometheus
+      %{ if loki_datasource_for_prometheus_stack == true }
+      loki-promtail:
+        url: https://gist.githubusercontent.com/khalezin/dd63440a404afc7ff13815dded04e74a/raw/613f52a7c57b824ec52c15a8e89ff6ba2ba2f73d/loki-promtail.json
+      %{ endif }
 
   affinity:
     nodeAffinity:

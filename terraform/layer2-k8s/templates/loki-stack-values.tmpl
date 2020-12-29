@@ -15,7 +15,9 @@ loki:
   serviceMonitor:
     enabled: true
     interval: ""
-    additionalLabels: {}
+    additionalLabels:
+      app: kube-prometheus-stack-operator
+      release: kube-prometheus-stack
     annotations: {}
     scrapeTimeout: 10s
 
@@ -24,6 +26,14 @@ loki:
 
 promtail:
   enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: ""
+    additionalLabels:
+      app: kube-prometheus-stack-operator
+      release: kube-prometheus-stack
+    annotations: {}
+    # scrapeTimeout: 10s
 
 fluent-bit:
   enabled: false
@@ -35,14 +45,6 @@ grafana:
       enabled: true
   image:
     tag: 7.2.1
-
-  serviceMonitor:
-    enabled: true
-    path: /metrics
-    labels: {}
-    interval: 1m
-    scrapeTimeout: 30s
-    relabelings: []
 
   ingress:
     enabled: true
