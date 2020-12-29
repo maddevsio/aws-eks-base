@@ -1,0 +1,19 @@
+config:
+  datasource:
+    host: ${pg_host}
+    user: ${pg_user}
+    password: ${pg_pass}
+    port: ${pg_port}
+    database: ''
+    sslmode: disable
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node.kubernetes.io/lifecycle
+          operator: In
+          values:
+            - spot
+
