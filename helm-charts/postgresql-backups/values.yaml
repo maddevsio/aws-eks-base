@@ -1,5 +1,5 @@
 image:
-  repository: nginx
+  repository: dymokd/pg-backups-s3
   tag: latest
   pullPolicy: IfNotPresent
 

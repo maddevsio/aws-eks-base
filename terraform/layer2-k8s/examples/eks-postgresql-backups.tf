@@ -3,14 +3,13 @@ data "template_file" "postgresql_backups" {
 
   vars = {
     name_wo_region = local.name_wo_region
-    image_name     = local.backups_image_name
   }
 }
 
 resource "helm_release" "postgresql_backups" {
   name      = "postgresql-backups"
   chart     = "../../helm-charts/postgresql-backups"
-  namespace = kubernetes_namespace.sys.id
+  namespace = kubernetes_namespace.prod.id
   wait      = false
 
   values = [

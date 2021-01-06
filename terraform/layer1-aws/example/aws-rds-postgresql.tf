@@ -103,13 +103,27 @@ resource "aws_s3_bucket" "rds_backups" {
     }
   }
 
+  lifecycle_rule {
+    id      = "postgresql-backups-lifecycle-rule"
+    enabled = false
+
+    tags = {
+      "rule" = "postgresql-backups-lifecycle-rule"
+    }
+
+    transition {
+      days          = 365
+      storage_class = "GLACIER"
+    }
+  }
+
   tags = {
     Name        = "${local.name}-rds-backups"
     Environment = local.env
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "rds_backup" {
+resource "aws_s3_bucket_public_access_block" "rds_backups" {
   bucket = aws_s3_bucket.rds_backups.id
 
   # Block new public ACLs and uploading public objects
@@ -122,43 +136,71 @@ resource "aws_s3_bucket_public_access_block" "rds_backup" {
   restrict_public_buckets = true
 }
 
+module "aws_iam_rds_backups" {
+  source = "../modules/aws-iam-s3"
+
+  name              = "${local.name}-rds-backups"
+  region            = var.region
+  bucket_name       = aws_s3_bucket.rds_backups.id
+  oidc_provider_arn = module.eks.oidc_provider_arn
+  create_user       = true
+}
+
 module ssm {
   source = "git::https://github.com/cloudposse/terraform-aws-ssm-parameter-store?ref=0.4.1"
 
   parameter_write = [
     {
-      name      = "/${name_wo_region}/environment/pg_host"
+      name      = "/${name_wo_region}/env/pg_host"
       value     = module.db.this_db_instance_address
       type      = "String"
       overwrite = "true"
     },
     {
-      name      = "/${name_wo_region}/environment/pg_port"
+      name      = "/${name_wo_region}/env/pg_port"
       value     = 5432
       type      = "String"
       overwrite = "true"
     },
     {
-      name      = "/${name_wo_region}/environment/pg_user"
+      name      = "/${name_wo_region}/env/pg_user"
       value     = local.db_username
       type      = "String"
       overwrite = "true"
     },
     {
-      name      = "/${name_wo_region}/environment/pg_database"
+      name      = "/${name_wo_region}/env/pg_database"
       value     = local.db_database
       type      = "String"
       overwrite = "true"
     },
     {
-      name      = "/${name_wo_region}/environment/pg_pass"
+      name      = "/${name_wo_region}/env/pg_pass"
       value     = local.db_password
       type      = "String"
       overwrite = "true"
     },
     {
-      name      = "/${name_wo_region}/environment/s3/pg_backups"
+      name      = "/${name_wo_region}/env/s3/pg_backups_bucket_name"
       value     = aws_s3_bucket.rds_backups.id
+      type      = "String"
+      overwrite = "true"
+    },
+    {
+      name      = "/${name_wo_region}/env/s3/pg_backups_bucket_region"
+      value     = aws_s3_bucket.rds_backups.region
+      type      = "String"
+      overwrite = "true"
+    },
+    {
+      name      = "/${name_wo_region}/env/s3/access_key_id"
+      value     = module.aws_iam_rds_backups.access_key_id
+      type      = "String"
+      overwrite = "true"
+    },
+    {
+      name      = "/${name_wo_region}/env/s3/access_secret_key"
+      value     = module.aws_iam_rds_backups.access_secret_key
       type      = "String"
       overwrite = "true"
     }
