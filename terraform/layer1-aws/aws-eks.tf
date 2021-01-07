@@ -14,8 +14,6 @@ module "eks" {
 
   vpc_id = module.vpc.vpc_id
 
-  workers_additional_policies = ["arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"]
-
   worker_groups_launch_template = [
     {
       name                    = "spot"

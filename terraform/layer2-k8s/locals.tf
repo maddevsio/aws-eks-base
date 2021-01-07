@@ -28,4 +28,5 @@ locals {
   helm_repo_ingress_nginx        = "https://kubernetes.github.io/ingress-nginx"
   helm_repo_bitnami              = "https://charts.bitnami.com/bitnami"
   helm_repo_prometheus_community = "https://prometheus-community.github.io/helm-charts"
+  helm_repo_loki_stack           = "https://grafana.github.io/loki/charts"
 }

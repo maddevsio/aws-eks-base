@@ -89,6 +89,16 @@ variable prometheus_mysql_exporter_version {
   default = "0.7.1"
 }
 
+variable "loki_stack" {
+  type    = string
+  default = "2.1.1"
+}
+
+variable "loki_datasource_for_prometheus_stack" {
+  type    = bool
+  default = false
+}
+
 variable aws_node_termination_handler_version {
   description = "Version of aws-node-termination-handler helm chart"
   default     = "0.13.2"
@@ -109,29 +119,21 @@ variable elk_index_retention_days {
   default     = 14
 }
 
-variable grafana_gitlab_client_id {
-  type    = string
-  default = "Id of the GitLab oauth app for grafana"
+variable grafana_gitlab_group {
+  type        = string
+  default     = "madops"
+  description = "Gitlab group for grafana oauth"
 }
 
-variable grafana_gitlab_client_secret {
+variable "alertmanager_slack_channel" {
   type        = string
-  default     = ""
-  description = "Secret of the GitLab oauth app for grafana"
+  default     = "madops-demo-alerts"
+  description = "Slack channel for alertmanager alerts"
 }
 
 variable kibana_gitlab_group {
+  type        = string
   default     = "madops"
   description = "Gitlab group for kibana oauth2"
 }
 
-variable kibana_gitlab_client_id {
-  type    = string
-  default = "Id of the GitLab oauth app for kibana"
-}
-
-variable kibana_gitlab_client_secret {
-  type        = string
-  default     = ""
-  description = "Secret of the GitLab oauth app for kibana"
-}

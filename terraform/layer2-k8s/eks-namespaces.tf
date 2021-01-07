@@ -50,3 +50,10 @@ resource "kubernetes_namespace" "sys" {
     name = "sys"
   }
 }
+
+resource "kubernetes_namespace" "monitoring" {
+  metadata {
+    name = "monitoring"
+  }
+}
+

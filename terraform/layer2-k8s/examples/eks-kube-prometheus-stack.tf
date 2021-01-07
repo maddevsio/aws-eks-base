@@ -3,17 +3,27 @@ locals {
   grafana_domain_name      = "grafana.${local.domain_name}"
   prometheus_domain_name   = "prometheus.${local.domain_name}"
   alertmanager_domain_name = "alertmanager.${local.domain_name}"
+
+  kube_prometheus_stack_template = templatefile("${path.module}/templates/prometheus-values.tmpl",
+    {
+      prometheus_domain_name               = local.prometheus_domain_name
+      alertmanager_domain_name             = local.alertmanager_domain_name
+      ip_whitelist                         = local.ip_whitelist
+      default_region                       = local.region
+      grafana_domain_name                  = local.grafana_domain_name
+      grafana_password                     = local.grafana_password
+      role_arn                             = module.aws_iam_grafana.role_arn
+      gitlab_client_id                     = local.grafana_gitlab_client_id
+      gitlab_client_secret                 = local.grafana_gitlab_client_secret
+      alertmanager_slack_url               = local.alertmanager_slack_url
+      alertmanager_slack_channel           = var.alertmanager_slack_channel
+      loki_datasource_for_prometheus_stack = var.loki_datasource_for_prometheus_stack
+  })
 }
 
 resource "random_string" "grafana_password" {
   length  = 20
   special = true
-}
-
-resource "kubernetes_namespace" "monitoring" {
-  metadata {
-    name = "monitoring"
-  }
 }
 
 module "aws_iam_grafana" {
@@ -22,22 +32,6 @@ module "aws_iam_grafana" {
   name              = local.name
   region            = local.region
   oidc_provider_arn = local.eks_oidc_provider_arn
-}
-
-data "template_file" "prometheus_operator" {
-  template = "${file("${path.module}/templates/prometheus-values.yaml")}"
-
-  vars = {
-    prometheus_domain_name   = local.prometheus_domain_name
-    alertmanager_domain_name = local.alertmanager_domain_name
-    ip_whitelist             = local.ip_whitelist
-    default_region           = local.region
-    grafana_domain_name      = local.grafana_domain_name
-    grafana_password         = local.grafana_password
-    role_arn                 = module.aws_iam_grafana.role_arn
-    gitlab_client_id         = local.grafana_gitlab_client_id
-    gitlab_client_secret     = local.grafana_gitlab_client_secret
-  }
 }
 
 resource "helm_release" "prometheus_operator" {
@@ -54,7 +48,7 @@ resource "helm_release" "prometheus_operator" {
   }
 
   values = [
-    "${data.template_file.prometheus_operator.rendered}",
+    local.kube_prometheus_stack_template
   ]
 }
 
