@@ -21,6 +21,10 @@ spec:
             {{- if .Values.Envs }}
             {{ toYaml .Values.Envs | nindent 12 }}
             {{- end }}
+          {{- with .Values.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- with .Values.command }}
           command:
             {{- toYaml . | nindent 12 }}

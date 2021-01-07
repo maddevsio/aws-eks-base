@@ -1,6 +1,6 @@
 # Base image for postgresql-backups
 
-* This docker image contains a sql dump for creating user with access to pg_stat_activity and pg_stat_replication 
+* This docker image contains the sql script for creating user with access to pg_stat_activity and pg_stat_replication 
 
 # Build and push docker image
 

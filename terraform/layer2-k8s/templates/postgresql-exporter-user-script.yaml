@@ -8,21 +8,22 @@ activeDeadlineSeconds: 3600
 backoffLimit: 6
 
 Envs:
-  - value: ${pg_host}
-    name: PG_HOST
-  - value: ${pg_port}
-    name: PG_PORT
-  - value: ${pg_user}
-    name: PG_USER
-  - value: ${pg_database}
-    name: PG_DATABASE
-  - value: ${pg_pass}
-    name: PG_PASS
-  - value: ${pg_exporter_pass}
-    name: PG_EXPORTER_PASS
-
-command: ["PGPASSWORD=$PG_PASS", "psql", "--set=generated_pass=$PG_EXPORTER_PASS", "--set=master_user=$PG_USER", "-h $PG_HOST", "-p $PG_PORT", "-U $PG_USER", "-f  /app/pg_exporter_user.sql"]
+  - name: PG_HOST
+    value: "${pg_host}"
+  - name: PG_PORT
+    value: "${pg_port}"
+  - name: PG_USER
+    value: "${pg_user}"
+  - name: PG_PASS
+    value: "${pg_pass}"
+  - name: PG_DATABASE
+    value: "${pg_database}"
+  - name: PG_EXPORTER_PASS
+    value: "${pg_exporter_pass}"
 
 
+command: ["/bin/bash", "-c"]
+
+args: ["PGPASSWORD=$PG_PASS psql --set=generate_pass=$PG_EXPORTER_PASS -h $PG_HOST -p $PG_PORT -U $PG_USER -d $PG_DATABASE -f /app/pg_exporter_user.sql"]
 
 

@@ -146,60 +146,60 @@ module "aws_iam_rds_backups" {
   create_user       = true
 }
 
-module ssm {
+module "ssm" {
   source = "git::https://github.com/cloudposse/terraform-aws-ssm-parameter-store?ref=0.4.1"
 
   parameter_write = [
     {
-      name      = "/${name_wo_region}/env/pg_host"
+      name      = "/${local.name_wo_region}/env/pg_host"
       value     = module.db.this_db_instance_address
       type      = "String"
       overwrite = "true"
     },
     {
-      name      = "/${name_wo_region}/env/pg_port"
+      name      = "/${local.name_wo_region}/env/pg_port"
       value     = 5432
       type      = "String"
       overwrite = "true"
     },
     {
-      name      = "/${name_wo_region}/env/pg_user"
+      name      = "/${local.name_wo_region}/env/pg_user"
       value     = local.db_username
       type      = "String"
       overwrite = "true"
     },
     {
-      name      = "/${name_wo_region}/env/pg_database"
+      name      = "/${local.name_wo_region}/env/pg_database"
       value     = local.db_database
       type      = "String"
       overwrite = "true"
     },
     {
-      name      = "/${name_wo_region}/env/pg_pass"
+      name      = "/${local.name_wo_region}/env/pg_pass"
       value     = local.db_password
       type      = "String"
       overwrite = "true"
     },
     {
-      name      = "/${name_wo_region}/env/s3/pg_backups_bucket_name"
+      name      = "/${local.name_wo_region}/env/s3/pg_backups_bucket_name"
       value     = aws_s3_bucket.rds_backups.id
       type      = "String"
       overwrite = "true"
     },
     {
-      name      = "/${name_wo_region}/env/s3/pg_backups_bucket_region"
+      name      = "/${local.name_wo_region}/env/s3/pg_backups_bucket_region"
       value     = aws_s3_bucket.rds_backups.region
       type      = "String"
       overwrite = "true"
     },
     {
-      name      = "/${name_wo_region}/env/s3/access_key_id"
+      name      = "/${local.name_wo_region}/env/s3/access_key_id"
       value     = module.aws_iam_rds_backups.access_key_id
       type      = "String"
       overwrite = "true"
     },
     {
-      name      = "/${name_wo_region}/env/s3/access_secret_key"
+      name      = "/${local.name_wo_region}/env/s3/access_secret_key"
       value     = module.aws_iam_rds_backups.access_secret_key
       type      = "String"
       overwrite = "true"

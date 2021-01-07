@@ -29,7 +29,7 @@ ExternalSecret:
 
 scheduler:
   enabled: true
-  schedule: "0 4 * * *"
+  schedule: "00 17 * * *"
   resources:
     limits:
       cpu: 100m
