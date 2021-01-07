@@ -43,7 +43,7 @@ docker logs postgresql-backups
 * Environment variables
 
 ```yaml
-# Optional variables
+# Optional variable
 SLACK_URL=slack-notification-url
 
 # Requered variables
