@@ -185,6 +185,10 @@ filebeat:
           name: elastic-credentials
           key: password
 
+  tolerations:
+    - effect: NoSchedule
+      operator: Exists
+
 metricbeat:
   enabled: true
   daemonset:
