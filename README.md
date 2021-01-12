@@ -36,6 +36,7 @@
 * [terragrunt v0.26.7](https://terragrunt.gruntwork.io/) - небольшой wrapper для терраформа обеспечивающий DRY для некоторых статичных частей терраформ кода
 * [awsudo](https://github.com/meltwater/awsudo) - простая консольная утилита, позволяющая запускать команды awscli из под определенных ролей
 * [aws-vault](https://github.com/99designs/aws-vault) - тула для секурного менеджмента ключей AWS и запуска консольных команд
+* [vscode](https://code.visualstudio.com/)
 
 ---
 **На заметку**
@@ -43,6 +44,21 @@
 Опционально, можно поставить и сконфигурить пре-коммит хук для терраформа: [pre-commit-terraform](https://github.com/antonbabenko/pre-commit-terraform), что позволит форматировать и проверять код еще на этапе коммита
 
 ---
+
+## Полезные экстеншены VSCode
+
+* [editorconfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+* [terraform](https://marketplace.visualstudio.com/items?itemName=4ops.terraform)
+* [drawio](https://marketplace.visualstudio.com/items?itemName=eightHundreds.vscode-drawio)
+* [yaml](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
+* [embrace](https://marketplace.visualstudio.com/items?itemName=mycelo.embrace)
+* [js-beautify](https://marketplace.visualstudio.com/items?itemName=HookyQR.beautify)
+* [docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker)
+* [git-extension-pack](https://marketplace.visualstudio.com/items?itemName=donjayamanne.git-extension-pack)
+* [githistory](https://marketplace.visualstudio.com/items?itemName=donjayamanne.githistory)
+* [kubernetes-tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)
+* [markdown-preview-enhanced](https://marketplace.visualstudio.com/items?itemName=shd101wyy.markdown-preview-enhanced)
+* [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
 
 ## AWS аккаунт
 
@@ -109,4 +125,4 @@
 
 ## Coding conventions
 
-<добавить базовые правила и подходы в написания кода>
+В данном разделе собраны самые базовые рекомендации для пользователей и контрибьютеров по написанию кода, неймингу итд. 
