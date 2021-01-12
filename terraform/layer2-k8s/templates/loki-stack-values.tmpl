@@ -23,9 +23,6 @@ loki:
 
   nodeSelector:
     node.kubernetes.io/lifecycle: ondemand
-  tolerations:
-  - effect: NoSchedule
-    operator: Exists
 
 promtail:
   enabled: true
@@ -37,6 +34,9 @@ promtail:
       release: kube-prometheus-stack
     annotations: {}
     # scrapeTimeout: 10s
+  tolerations:
+    - effect: NoSchedule
+      operator: Exists
 
 fluent-bit:
   enabled: false
