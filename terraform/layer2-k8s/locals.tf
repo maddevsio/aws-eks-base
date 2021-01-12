@@ -15,8 +15,8 @@ locals {
   eks_cluster_id        = data.terraform_remote_state.layer1-aws.outputs.eks_cluster_id
   eks_oidc_provider_arn = data.terraform_remote_state.layer1-aws.outputs.eks_oidc_provider_arn
 
-  helm_repo_stable               = "https://kubernetes-charts.storage.googleapis.com"
-  helm_repo_incubator            = "https://storage.googleapis.com/kubernetes-charts-incubator"
+  helm_repo_stable               = "https://charts.helm.sh/stable"
+  helm_repo_incubator            = "https://charts.helm.sh/incubator"
   helm_repo_certmanager          = "https://charts.jetstack.io"
   helm_repo_gitlab               = "https://charts.gitlab.io"
   helm_repo_eks                  = "https://aws.github.io/eks-charts"
