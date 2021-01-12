@@ -34,6 +34,8 @@
 * [helm v3.4.2](https://helm.sh/docs/intro/install/) - тула для создания и деплоя шаблонизированных чартов приложений в кубер
 * [helmfile v0.136.0](https://github.com/roboll/helmfile) - "докер композ" для хелм чартов
 * [terragrunt v0.26.7](https://terragrunt.gruntwork.io/) - небольшой wrapper для терраформа обеспечивающий DRY для некоторых статичных частей терраформ кода
+* [awsudo](https://github.com/meltwater/awsudo) - простая консольная утилита, позволяющая запускать команды awscli из под определенных ролей
+* [aws-vault](https://github.com/99designs/aws-vault) - тула для секурного менеджмента ключей AWS и запуска консольных команд
 
 ---
 **На заметку**
@@ -67,8 +69,30 @@
 * В разделе [Groups](https://console.aws.amazon.com/iam/home#/groups) создайте группу `admin`, в следующем окне прикрепите к ней политику `AdministratorAccess` и `MFASecurity`. Завершите создание группы.
 * В разделе [Users](https://console.aws.amazon.com/iam/home#/users) создайте пользователя для работы с AWS, выбрав обе галочки в *Select AWS access type*. В следующем окне добавьте пользователя в группу `admin`. Завершите создание и скачайте CSV с реквизитами доступа.
 
+---
+**На заметку**
+
+В рамках этой доки мы не рассмотрели более секурный и правильный метод управления пользователями, используя внешние Identity провайдеры. Такие как G-suite, Okta и [другие](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers.html).
+
+---
+
 ### Настройка awscli
 
+* Terraform умеет работать с переменными окруения для [AWS access key ID and a secret access key](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys) или AWS профилем, в данном примере создадим aws profile:
+  
+  ```bash
+  $ aws configure --profile maddevs
+  AWS Access Key ID [None]: *****************
+  AWS Secret Access Key [None]: *********************
+  Default region name [None]: us-east-1
+  Default output format [None]: json
+  ```
+
+  ```bash
+  $ export AWS_PROFILE=maddevs
+  ```
+
+* В качестве альтернатив мможно извользовать `aws-vault` и `awsudo`
 
 ## Работа с terraform кодом
 
