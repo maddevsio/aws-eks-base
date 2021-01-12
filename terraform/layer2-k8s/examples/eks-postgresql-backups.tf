@@ -1,9 +1,8 @@
-data "template_file" "postgresql_backups" {
-  template = file("${path.module}/templates/postgresql-backups-values.yaml")
-
-  vars = {
-    name_wo_region = local.name_wo_region
-  }
+locals {
+  postgresql_backups_template = templatefile("${path.module}/templates/postgresql-backups-values.tmpl",
+    {
+      name_wo_region = local.name_wo_region
+  })
 }
 
 resource "helm_release" "postgresql_backups" {
@@ -13,11 +12,9 @@ resource "helm_release" "postgresql_backups" {
   wait      = false
 
   values = [
-    data.template_file.postgresql_backups.rendered
+    local.postgresql_backups_template
   ]
 }
-
-
 
 
 

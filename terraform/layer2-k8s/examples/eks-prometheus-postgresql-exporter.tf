@@ -5,19 +5,25 @@ locals {
   pg_pass          = data.aws_ssm_parameter.pg_pass.value
   pg_database      = data.aws_ssm_parameter.pg_database.value
   pg_exporter_pass = random_string.pg_exporter_pass.result
-}
 
-data "template_file" "postgresql_exporter_user" {
-  template = file("${path.module}/templates/postgresql-exporter-user-script.yaml")
+  postgresql_exporter_user_template = templatefile("${path.module}/templates/postgresql-exporter-user-script.tmpl",
+    {
+      pg_host          = local.pg_host
+      pg_user          = local.pg_user
+      pg_port          = local.pg_port
+      pg_pass          = local.pg_pass
+      pg_database      = local.pg_database
+      pg_exporter_pass = local.pg_exporter_pass
+  })
 
-  vars = {
-    pg_host          = local.pg_host
-    pg_user          = local.pg_user
-    pg_port          = local.pg_port
-    pg_pass          = local.pg_pass
-    pg_database      = local.pg_database
-    pg_exporter_pass = local.pg_exporter_pass
-  }
+  prometheus_postgresql_exporter_template = templatefile("${path.module}/templates/prometheus-postgresql-exporter.tmpl",
+    {
+      pg_host     = local.pg_host
+      pg_pass     = local.pg_exporter_pass
+      pg_port     = local.pg_port
+      pg_database = local.pg_database
+  })
+
 }
 
 resource "helm_release" "postgresql_exporter_user" {
@@ -27,19 +33,8 @@ resource "helm_release" "postgresql_exporter_user" {
   wait      = false
 
   values = [
-    data.template_file.postgresql_exporter_user.rendered
+    local.postgresql_exporter_user_template
   ]
-}
-
-data "template_file" "prometheus_postgresql_exporter" {
-  template = file("${path.module}/templates/prometheus-postgresql-exporter.yaml")
-
-  vars = {
-    pg_host     = local.pg_host
-    pg_pass     = local.pg_exporter_pass
-    pg_port     = local.pg_port
-    pg_database = local.pg_database
-  }
 }
 
 resource "helm_release" "postgresql_exporter" {
@@ -51,7 +46,7 @@ resource "helm_release" "postgresql_exporter" {
   wait       = false
 
   values = [
-    data.template_file.prometheus_postgresql_exporter.rendered
+    local.prometheus_postgresql_exporter_template
   ]
 
   depends_on = [helm_release.postgresql_exporter_user]
