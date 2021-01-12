@@ -23,6 +23,9 @@ loki:
 
   nodeSelector:
     node.kubernetes.io/lifecycle: ondemand
+  tolerations:
+  - effect: NoSchedule
+    operator: Exists
 
 promtail:
   enabled: true
