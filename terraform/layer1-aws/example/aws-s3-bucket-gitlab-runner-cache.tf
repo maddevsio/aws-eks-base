@@ -1,4 +1,3 @@
-# Bucket
 resource "aws_s3_bucket" "gitlab_runner_cache" {
   bucket = "${local.name}-gitlab-runner-cache"
   acl    = "private"
@@ -8,6 +7,19 @@ resource "aws_s3_bucket" "gitlab_runner_cache" {
       apply_server_side_encryption_by_default {
         sse_algorithm = "aws:kms"
       }
+    }
+  }
+
+  lifecycle_rule {
+    id      = "gitlab-runner-cache-lifecycle-rule"
+    enabled = true
+
+    tags = {
+      "rule" = "gitlab-runner-cache-lifecycle-rule"
+    }
+
+    expiration {
+      days = 120
     }
   }
 

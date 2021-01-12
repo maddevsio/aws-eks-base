@@ -1,5 +1,16 @@
 locals {
   gitlab_runner_cache_bucket_name = data.terraform_remote_state.layer1-aws.outputs.gitlab_runner_cache_bucket_name
+
+  gitlab_runner_template = templatefile("${path.module}/templates/gitlab-runner-values.tmpl",
+    {
+      registration_token = local.gitlab_registration_token
+      namespace          = kubernetes_namespace.ci.id
+      role_arn           = module.aws_iam_gitlab_runner.role_arn
+      runner_sa          = module.eks_rbac_gitlab_runner.sa_name
+      bucket_name        = local.gitlab_runner_cache_bucket_name
+      region             = local.region
+  })
+
 }
 
 module "aws_iam_gitlab_runner" {
@@ -29,19 +40,6 @@ module "aws_iam_gitlab_runner_cache_s3" {
   create_user       = true
 }
 
-data "template_file" "gitlab_runner" {
-  template = file("${path.module}/templates/gitlab-runner-values.yaml")
-
-  vars = {
-    registration_token = local.gitlab_registration_token
-    namespace          = kubernetes_namespace.ci.id
-    role_arn           = module.aws_iam_gitlab_runner.role_arn
-    runner_sa          = module.eks_rbac_gitlab_runner.sa_name
-    bucket_name        = local.gitlab_runner_cache_bucket_name
-    region             = local.region
-  }
-}
-
 resource "helm_release" "gitlab_runner" {
   name       = "gitlab-runner"
   chart      = "gitlab-runner"
@@ -51,7 +49,7 @@ resource "helm_release" "gitlab_runner" {
   wait       = false
 
   values = [
-    data.template_file.gitlab_runner.rendered
+    local.gitlab_runner_template
   ]
 }
 
