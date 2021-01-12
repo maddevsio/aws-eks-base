@@ -22,8 +22,8 @@ resource "kubernetes_namespace" "this" {
   count = var.enable ? 1 : 0
   metadata {
     annotations = var.annotations
-    labels = local.labels
-    name = var.name
+    labels      = local.labels
+    name        = var.name
   }
 
   depends_on = [var.depends]
