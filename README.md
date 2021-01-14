@@ -46,6 +46,7 @@
 * [markdown-preview-enhanced](https://marketplace.visualstudio.com/items?itemName=shd101wyy.markdown-preview-enhanced)
 * [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
 * [file-tree-generator](https://marketplace.visualstudio.com/items?itemName=Shinotatwu-DS.file-tree-generator)
+* [gotemplate-syntax](https://marketplace.visualstudio.com/items?itemName=casualjim.gotemplate)
 
 ## AWS аккаунт
 
