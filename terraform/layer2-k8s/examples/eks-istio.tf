@@ -20,7 +20,7 @@ resource "helm_release" "istio_operator_resources" {
     file("${path.module}/templates/istio/istio-resources-values.yaml")
   ]
 
-  depends_on = [helm_release.istio_operator]
+  depends_on = [helm_release.istio_operator, helm_release.prometheus_operator]
 }
 
 resource "time_sleep" "wait_10_seconds" {
@@ -54,6 +54,7 @@ resource "helm_release" "kiali" {
   values = [
     file("${path.module}/templates/istio/istio-kiali-values.yaml")
   ]
+  depends_on = [helm_release.istio_operator, helm_release.prometheus_operator]
 }
 
 module "istio_system_namespace" {
