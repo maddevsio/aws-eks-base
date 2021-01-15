@@ -1,0 +1,73 @@
+istioOperator:
+  components:
+    ingressGateways:
+    - name: istio-ingressgateway
+      enabled: true
+      k8s:
+        serviceAnnotations:
+          service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+        service:
+          ports:
+            - port: 15021
+              targetPort: 15021
+              name: status-port
+              protocol: TCP
+            - port: 5100
+              targetPort: 5100
+              name: grpc
+              protocol: TCP
+    egressGateways:
+    - name: istio-egressgateway
+      enabled: false
+  meshConfig:
+    defaultConfig:
+      proxyStatsMatcher:
+        inclusionRegexps:
+          - .*circuit_breakers.*
+        inclusionPrefixes:
+          - upstream_rq_retry
+          - upstream_cx
+    # accessLogFile: /dev/stdout  #Uncomment this if you want to get Envoy logs 
+
+  values:
+    global:
+      proxy:
+        # This controls the default 'policy' in the sidecar injector.
+        autoInject: disabled # we don't inject sidecar by default even if namespace is annotated. 
+    sidecarInjectorWebhook:
+      injectedAnnotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true" # https://github.com/kubeflow/pipelines/issues/4530
+
+# We create istio resource 'Gateway' with name 'ingress-gateway' and open port 5100 for all vhosts. This configuration is related to istio-ingressgateway settings
+ingressGateway:
+  enabled: true
+  servers:
+  - port:
+      number: 5100
+      name: grpc
+      protocol: GRPC
+    hosts:
+    - "*"
+
+### We need to configure Virtualservice object for each services (apps) to get incoming traffic through istio-ingressgateway.
+### There is an example.
+# $ kubectl apply -n staging -f - <<EOF
+# apiVersion: networking.istio.io/v1alpha3
+# kind: VirtualService
+# metadata:
+#   name: geona-grpc-virtual-service
+# spec:
+#   hosts:
+#   - "*"
+#   gateways:
+#   - istio-system/ingress-gateway
+#   http:
+#   - match:
+#       - port: 5100
+#     route:
+#     - destination:
+#         host: geona-grpc-daemon.staging.svc.cluster.local
+#         port:
+#           number: 5100
+# EOF
+
