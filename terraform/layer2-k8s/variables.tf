@@ -101,7 +101,7 @@ variable "loki_datasource_for_prometheus_stack" {
 
 variable aws_node_termination_handler_version {
   description = "Version of aws-node-termination-handler helm chart"
-  default     = "0.13.2"
+  default     = "0.13.3"
 }
 
 variable gitlab_runner_version {

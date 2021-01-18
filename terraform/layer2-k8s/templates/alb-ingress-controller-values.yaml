@@ -6,7 +6,7 @@ awsVpcID: ${vpc_id}
 rbac:
   create: true
   serviceAccountName: "alb-ingress"
-  serviceAccountAnnotations: 
+  serviceAccountAnnotations:
      "eks.amazonaws.com/role-arn": ${role_arn}
 
 image:
@@ -19,5 +19,5 @@ affinity:
       - matchExpressions:
         - key: node.kubernetes.io/lifecycle
           operator: In
-          values: 
+          values:
             - ondemand
