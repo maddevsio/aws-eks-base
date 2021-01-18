@@ -20,6 +20,7 @@ module "aws_iam_gitlab_runner" {
   region            = local.region
   oidc_provider_arn = local.eks_oidc_provider_arn
   eks_cluster_id    = local.eks_cluster_id
+  s3_bucket_name    = local.gitlab_runner_cache_bucket_name
 }
 
 module "eks_rbac_gitlab_runner" {
@@ -28,16 +29,6 @@ module "eks_rbac_gitlab_runner" {
   name             = "${local.name}-gl"
   role_arn         = module.aws_iam_gitlab_runner.role_arn
   runner_namespace = kubernetes_namespace.ci.id
-}
-
-module "aws_iam_gitlab_runner_cache_s3" {
-  source = "../modules/aws-iam-s3"
-
-  name              = "${local.name}-gl-cache"
-  region            = local.region
-  bucket_name       = local.gitlab_runner_cache_bucket_name
-  oidc_provider_arn = local.eks_oidc_provider_arn
-  create_user       = true
 }
 
 resource "helm_release" "gitlab_runner" {
@@ -53,15 +44,5 @@ resource "helm_release" "gitlab_runner" {
   ]
 }
 
-resource "kubernetes_secret" "gitlab_runner_cache_s3_user_creds" {
-  metadata {
-    name      = "s3access"
-    namespace = kubernetes_namespace.ci.id
-  }
 
-  data = {
-    "accesskey" = module.aws_iam_gitlab_runner_cache_s3.access_key_id
-    "secretkey" = module.aws_iam_gitlab_runner_cache_s3.access_secret_key
-  }
-}
 

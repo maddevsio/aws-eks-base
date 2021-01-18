@@ -16,3 +16,10 @@ variable "eks_cluster_id" {
   description = "ID of EKS cluster"
   default     = ""
 }
+
+variable "s3_bucket_name" {
+  type        = string
+  description = "s3 bucket name"
+  default     = ""
+}
+

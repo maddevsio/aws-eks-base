@@ -37,4 +37,14 @@ data "aws_iam_policy_document" "this" {
 
     resources = ["*"]
   }
+  statement {
+    actions = [
+      "s3:*"
+    ]
+
+    resources = [
+      "arn:aws:s3:::${var.s3_bucket_name}",
+      "arn:aws:s3:::${var.s3_bucket_name}/*",
+    ]
+  }
 }
