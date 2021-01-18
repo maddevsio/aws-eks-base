@@ -10,4 +10,9 @@ resource "helm_release" "aws_node_termination_handler" {
     name  = "enableSpotInterruptionDraining"
     value = "true"
   }
+  # https://docs.aws.amazon.com/autoscaling/ec2/userguide/capacity-rebalance.html
+  set {
+    name  = "enableRebalanceMonitoring"
+    value = "true"
+  }
 }
