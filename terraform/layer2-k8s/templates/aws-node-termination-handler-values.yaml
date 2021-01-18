@@ -1,0 +1,4 @@
+enableSpotInterruptionDraining: true
+enableRebalanceMonitoring: true
+nodeSelector:
+  node.kubernetes.io/lifecycle: spot
