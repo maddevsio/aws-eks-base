@@ -1,0 +1,4 @@
+hub: docker.io/istio
+tag: 1.8.1
+operatorNamespace: istio-operator
+watchedNamespaces: istio-system

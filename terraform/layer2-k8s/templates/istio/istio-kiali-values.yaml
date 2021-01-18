@@ -1,0 +1,83 @@
+nameOverride: "kiali"
+fullnameOverride: "kiali"
+
+# This is required for "openshift" auth strategy.
+# You have to know ahead of time what your Route URL will be because
+# right now the helm chart can't figure this out at runtime (it would
+# need to wait for the Kiali Route to be deployed and for OpenShift
+# to start it up). If someone knows how to update this helm chart to
+# do this, a PR would be welcome.
+kiali_route_url: ""
+
+#
+# Settings that mimic the Kiali CR which are placed in the ConfigMap.
+# Note that only those values used by the Helm Chart will be here.
+#
+
+istio_namespace: "" # default is where Kiali is installed
+
+auth:
+  openid: {}
+  openshift: {}
+  strategy: "anonymous"
+
+deployment:
+  # This only limits what Kiali will attempt to see, but Kiali Service Account has permissions to see everything.
+  # For more control over what the Kial Service Account can see, use the Kiali Operator
+  accessible_namespaces:
+  - "**"
+  additional_service_yaml: {}
+  affinity:
+    node: {}
+    pod: {}
+    pod_anti: {}
+  custom_dashboards:
+    excludes: ['']
+    includes: ['*']
+  image_name: quay.io/kiali/kiali
+  image_pull_policy: "Always"
+  image_pull_secrets: []
+  image_version: v1.28
+  ingress_enabled: true
+  logger:
+    log_format: "text"
+    log_level: "info"
+    time_field_format: "2006-01-02T15:04:05Z07:00"
+    sampler_rate: "1"
+  node_selector: {}
+  override_ingress_yaml:
+    metadata: {}
+  pod_annotations: {}
+  pod_labels: {}
+  priority_class_name: ""
+  replicas: 1
+  resources: {}
+  secret_name: "kiali"
+  service_annotations: {}
+  service_type: ""
+  tolerations: []
+  version_label: v1.28
+  view_only_mode: false
+
+external_services:
+  custom_dashboards:
+    enabled: true
+  prometheus:
+    url: http://kube-prometheus-stack-prometheus.monitoring:9090
+    custom_metrics_url: http://kube-prometheus-stack-prometheus.monitoring:9090
+  grafana:
+    url: http://kube-prometheus-stack-grafana.monitoring
+  namespace_label: kubernetes_namespace
+
+identity: {}
+  #cert_file:
+  #private_key_file:
+
+login_token:
+  signing_key: ""
+
+server:
+  port: 20001
+  metrics_enabled: true
+  metrics_port: 9090
+  web_root: ""

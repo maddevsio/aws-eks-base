@@ -20,3 +20,8 @@ metrics:
     namespace: monitoring
     selector:
       prometheus: prometheus-operator
+
+sources:
+  - service
+  - ingress
+  - istio-virtualservice
