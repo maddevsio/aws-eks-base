@@ -30,5 +30,3 @@ data "aws_ssm_parameter" "gitlab_registration_token" {
 data "aws_ssm_parameter" "alertmanager_slack_url" {
   name = "/${local.name_wo_region}/infra/alertmanager/slack_url"
 }
-
-

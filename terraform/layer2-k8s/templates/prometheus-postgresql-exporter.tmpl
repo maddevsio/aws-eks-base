@@ -1,0 +1,29 @@
+config:
+  datasource:
+    host: ${pg_host}
+    user: "postgres_exporter"
+    password: ${pg_pass}
+    port: ${pg_port}
+    database: ${pg_database}
+    sslmode: disable
+
+serviceMonitor:
+  enabled: true
+  namespace: monitoring
+  interval: 30s
+  telemetryPath: /metrics
+  labels:
+    app: kube-prometheus-stack-operator
+    release: kube-prometheus-stack
+  timeout: 10s
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node.kubernetes.io/lifecycle
+          operator: In
+          values:
+            - spot
+

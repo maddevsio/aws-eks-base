@@ -1,0 +1,15 @@
+image:
+  repository: dymokd/pg-exporter-user
+  tag: latest
+  pullPolicy: IfNotPresent
+
+ttlSecondsAfterFinished: 0
+activeDeadlineSeconds: 3600
+backoffLimit: 6
+
+Envs: {}
+
+command: []
+
+args: []
+
