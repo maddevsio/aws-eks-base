@@ -27,7 +27,7 @@ module "vpc" {
   enable_dns_hostnames = true
   enable_dns_support   = true
 
-  enable_s3_endpoint   = true
+  enable_s3_endpoint = true
 
   create_database_subnet_group = false
 
