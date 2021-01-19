@@ -26,9 +26,9 @@ module "aws_iam_gitlab_runner" {
 module "eks_rbac_gitlab_runner" {
   source = "../modules/eks-rbac-ci"
 
-  name             = "${local.name}-gl"
-  role_arn         = module.aws_iam_gitlab_runner.role_arn
-  runner_namespace = kubernetes_namespace.ci.id
+  name      = "${local.name}-gl"
+  role_arn  = module.aws_iam_gitlab_runner.role_arn
+  namespace = kubernetes_namespace.ci.id
 }
 
 resource "helm_release" "gitlab_runner" {
