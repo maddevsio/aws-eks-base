@@ -61,7 +61,7 @@
 
 ## Структура неймспейсов в K8S кластере
 
-![aws-base-namespaces](docs/aws-base-diagrams-Namespaces.svg)
+![aws-base-namespaces](docs/aws-base-diagrams-Namespaces-v1.svg)
 
 На этой схему указаны неймспейсы которые используются в кластере, и ресурсы которые находятся в этих неймспесах по умолчанию.  
 
