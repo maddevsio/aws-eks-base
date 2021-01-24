@@ -55,7 +55,6 @@
 | Cloudwatch    | First 10 Metrics - free  |                  |                |        | 0                 |
 |               |                          |                  |                | Total  | 216.8             |
 
->Note  
 > Стоимость указана без подсчета количество трафика для Nat Gateway Load Balancer и S3
 
 ## Структура неймспейсов в K8S кластере
