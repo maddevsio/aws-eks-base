@@ -13,7 +13,7 @@
 ![aws-base-diagram](docs/aws-base-diagrams-Infrastructure-v3.svg)
 
 Эта схема описывает инфраструктуру создаваемую по умолчанию.
-Небольшое описание того что мы имеем на схеме. Инфраструктура в облаке AWS. 
+Небольшое описание того что мы имеем на схеме. Инфраструктура в облаке AWS
 
 * Мы используем две availability Zone
 * Основная сеть VPC
@@ -22,20 +22,19 @@
     * Internet gateway - точка входа в созданную VPC
     * Single Nat Gateway - сервис для огранизации доступа для инстансов из привтных сетей в публичные.
   * Две приватные подсети для EKS workers
-    * Autoscaling groups 
-      * On-demand - эта группа с 1-5 on-demand instances для ресурсов с требованиям бесперебойной работы.  
-      * Spot     - эта группа с 1-6 spot instances для ресурсов которым не критично прерывание работы. 
-      * CI       - эта группа с 0-3 spot instances создающихся по требования gitlab-runner. 
   * Две приватные подсети для RDS
   * Две приватные подсети для Elastic Cache
   * Route tables для приватных сетей
   * Route tables для публичных сетей  
-* Сеть VPC для EKS
+* Autoscaling groups
+  * On-demand - эта группа с 1-5 on-demand instances для ресурсов с требованиям бесперебойной работы
+  * Spot     - эта группа с 1-6 spot instances для ресурсов которым не критично прерывание работы
+  * CI       - эта группа с 0-3 spot instances создающихся по требования gitlab-runner, расположены в публичной сети
 * EKS control plane - это узлы плоскости управления кластеров k8s
 * Route53 - сервис для управления DNS
 * Cloudwatch - сервис для получения метрик о состоянии работы ресурсов в облаке AWS
 * AWS Certificate manager - сервис для управления сертификатами AWS
-* SSM parameter store - сервис для хранения извлечения и контроля значений конфигурации. 
+* SSM parameter store - сервис для хранения извлечения и контроля значений конфигурации
 * S3 bucket - это бакет используется для хранения terraform state
 * Elastic container registry - сервис для хранения docker images
 
