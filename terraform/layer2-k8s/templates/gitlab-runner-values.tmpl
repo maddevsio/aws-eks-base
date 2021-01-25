@@ -5,6 +5,8 @@ gitlabUrl: "https://gitlab.com/"
 runnerRegistrationToken: "${registration_token}"
 concurrent: 4
 checkInterval: 30
+# TODO When a stable release of alpine-v13.8.0 is available, this variable can be removed. Related to issues gitlab-org/gitlab-runner#27152
+image: gitlab/gitlab-runner:alpine-v13.8.0-rc1
 
 rbac:
   create: true
@@ -17,7 +19,7 @@ runners:
   image: ubuntu:18.04
   privileged: true
   namespace: ${namespace}
-  tags: "teacherly-k8s"
+  tags: "eks-k8s"
   runUntagged: false
   nodeTolerations:
   - key: "purpose"
@@ -26,6 +28,14 @@ runners:
     effect: "NoSchedule"
   nodeSelector:
     purpose: ci
+  cache:
+    cacheType: s3
+    cachePath: "gitlab_runner"
+    cacheShared: false
+    s3ServerAddress: s3.amazonaws.com
+    s3BucketName: ${bucket_name}
+    s3BucketLocation: ${region}
+    s3CacheInsecure: false
 
   builds:
     cpuLimit: 950m
@@ -42,3 +52,5 @@ runners:
     memoryLimit: 2500Mi
     cpuRequests: 250m
     memoryRequests: 512Mi
+
+
