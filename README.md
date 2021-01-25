@@ -65,29 +65,23 @@
 
 Используемые в кластере чарты, с указанием неймспейса и коротким описанием.
 
-* kube-system
-  * [core-DNS](https://github.com/coredns/coredns) - это DNS сервер используемый в кластере.
-* certmanager
-  * [cert-manager](https://github.com/jetstack/cert-manager) - это сервис для автоматизации управления и получения сертификатов TLS.
-  * [cluster-issuer](https://gitlab.com/madboiler/devops/aws-eks-base/-/tree/master/helm-charts/cluster-issuer) - ресурс представляющий центр сертификации, который может генерировать подписанные сертификаты, выполняя запросы подписи.
-* Ing
-  * [nginx-ingress](https://github.com/kubernetes/ingress-nginx) - это ингресс контролер, который использует nginx в качестве реверс прокси. 
-  * [Certificate](https://gitlab.com/madboiler/devops/aws-eks-base/-/tree/master/helm-charts/certificate) - это объект сертификата, который используется для nginx-ingress
-* dns
-  * [external-dns](https://github.com/bitnami/charts/tree/master/bitnami/external-dns) - это сервис для огранизации доступа к внешним DNS из кластера. 
-* ci
-  * [gitlab-runner](https://gitlab.com/gitlab-org/charts/gitlab-runner) - это гитлаб раннер используемый для запуска агентов gitla-ci.
-* sys
-  * [aws-node-termination-handler](https://github.com/aws/eks-charts/tree/master/stable/aws-node-termination-handler) - это сервис для конроля корректного заверешения работы EC2.
-  * [autoscaler](https://github.com/kubernetes/autoscaler) - это сервис который автоматически регулирует размер k8s кластера в зависимости от требований. 
-  * [kubernetes-external-secrets](https://github.com/external-secrets/kubernetes-external-secrets) - это сервис для работы с внешними хранилищами секретов, такими как secret-manager, ssm parameter store и тд.
-  * [Reloader](https://github.com/stakater/Reloader) - это сервис который следит за изменения внешних секретов и обновляет их в кластере. 
-* monitoring  
-  * [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) - этот зонтичный чарт включает в себя группу сервисов используемых для мониторинга работы класте и визуализациия данных.   
-  * [loki-stack](https://github.com/grafana/loki/tree/master/production/helm/loki-stack) - этот зонтичный чарт включает в себя сервис сбора логов контейнеров и визуализации данных.
-* elk
-  * [elk](https://gitlab.com/madboiler/devops/aws-eks-base/-/tree/master/helm-charts/elk) - этот зонтичный чарт включает в себя группу сервисов, для сбора логов, метрик и визуализации этих данных.
-  
+| Namespace   |  service                                                                                                            | Description                                                                                                             |
+|-------------|---------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|
+| kube-system | [core-DNS](https://github.com/coredns/coredns)                                                                      | DNS сервер используемый в кластере                                                                                      |
+| certmanager | [cert-manager](https://github.com/jetstack/cert-manager)                                                            | Cервис для автоматизации управления и получения сертификатов TLS                                                        |
+| certmanager | [cluster-issuer](https://gitlab.com/madboiler/devops/aws-eks-base/-/tree/master/helm-charts/cluster-issuer)         | Ресурс представляющий центр сертификации, который может генерировать подписанные сертификаты, выполняя запросы подписи. |
+| ing         | [nginx-ingress](https://github.com/kubernetes/ingress-nginx)                                                        | Ингресс контролер, который использует nginx в качестве реверс прокси.                                                   |
+| ing         | [Certificate](https://gitlab.com/madboiler/devops/aws-eks-base/-/tree/master/helm-charts/certificate)               | Объект сертификата, который используется для nginx-ingress.                                                             |
+| dns         | [external-dns](https://github.com/bitnami/charts/tree/master/bitnami/external-dns)                                  | Сервис для огранизации доступа к внешним DNS из кластера.                                                               |
+| ci          | [gitlab-runner](https://gitlab.com/gitlab-org/charts/gitlab-runner)                                                 | Гитлаб раннер используемый для запуска агентов gitla-ci.                                                                |
+| sys         | [aws-node-termination-handler](https://github.com/aws/eks-charts/tree/master/stable/aws-node-termination-handler)   | Сервис для конроля корректного заверешения работы EC2.                                                                  |
+| sys         | [autoscaler](https://github.com/kubernetes/autoscaler)                                                              | Сервис который автоматически регулирует размер k8s кластера в зависимости от требований.                                |
+| sys         | [kubernetes-external-secrets](https://github.com/external-secrets/kubernetes-external-secrets)                      | Сервис для работы с внешними хранилищами секретов, такими как secret-manager, ssm parameter store и тд.                 |
+| sys         | [Reloader](https://github.com/stakater/Reloader)                                                                    | Сервис который следит за изменения внешних секретов и обновляет их в кластере.                                          |
+| monitoring  | [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) | Зонтичный чарт включает в себя группу сервисов используемых для мониторинга работы класте и визуализациия данных.       |
+| monitoring  | [loki-stack](https://github.com/grafana/loki/tree/master/production/helm/loki-stack)                                | Зонтичный чарт включает в себя сервис сбора логов контейнеров и визуализации данных.                                    |
+| elk         | [elk](https://gitlab.com/madboiler/devops/aws-eks-base/-/tree/master/helm-charts/elk)                               | Зонтичный чарт включает в себя группу сервисов, для сбора логов, метрик и визуализации этих данных.                     |
+
 ## Необходимый инструментарий
 
 * [tfenv](https://github.com/tfutils/tfenv) - утилита для менеджмента разных версий терраформа: `tfenv install 0.13.5`
