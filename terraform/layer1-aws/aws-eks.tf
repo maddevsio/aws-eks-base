@@ -23,7 +23,7 @@ module "eks" {
       asg_min_size            = var.worker_groups.spot.asg_min_size
       asg_desired_capacity    = var.worker_groups.spot.asg_desired_capacity
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
-      public_ip               = true
+      public_ip               = false
       additional_userdata     = file("${path.module}/templates/eks-x86-nodes-userdata.sh")
       tags = [
         {
@@ -67,6 +67,7 @@ module "eks" {
       asg_max_size            = var.worker_groups.ci.asg_max_size
       asg_min_size            = var.worker_groups.ci.asg_min_size
       asg_desired_capacity    = var.worker_groups.ci.asg_desired_capacity
+      subnets                 = module.vpc.public_subnets
       cpu_credits             = "unlimited"
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot --node-labels=purpose=ci --register-with-taints=purpose=ci:NoSchedule"
       public_ip               = true
