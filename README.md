@@ -82,9 +82,9 @@
   * [autoscaler](https://github.com/kubernetes/autoscaler) - это сервис который автоматически регулирует размер k8s кластера в зависимости от требований. 
   * [kubernetes-external-secrets](https://github.com/external-secrets/kubernetes-external-secrets) - это сервис для работы с внешними хранилищами секретов, такими как secret-manager, ssm parameter store и тд.
   * [Reloader](https://github.com/stakater/Reloader) - это сервис который следит за изменения внешних секретов и обновляет их в кластере. 
-* monitoring
-  [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) - этот зонтичный чарт включает в себя группу сервисов используемых для мониторинга работы класте и визуализациия данных. 
-  [loki-stack](https://github.com/grafana/loki/tree/master/production/helm/loki-stack) - этот зонтичный чарт включает в себя сервис сбора логов контейнеров и визуализации данных.
+* monitoring  
+  * [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) - этот зонтичный чарт включает в себя группу сервисов используемых для мониторинга работы класте и визуализациия данных.   
+  * [loki-stack](https://github.com/grafana/loki/tree/master/production/helm/loki-stack) - этот зонтичный чарт включает в себя сервис сбора логов контейнеров и визуализации данных.
 * elk
   * [elk](https://gitlab.com/madboiler/devops/aws-eks-base/-/tree/master/helm-charts/elk) - этот зонтичный чарт включает в себя группу сервисов, для сбора логов, метрик и визуализации этих данных.
   
