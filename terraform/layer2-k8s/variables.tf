@@ -24,7 +24,7 @@ variable external_dns_version {
 # Cert Manager
 variable cert_manager_version {
   description = "Version of cert-manager helm chart"
-  default     = "0.15.1"
+  default     = "v1.1.0"
 }
 
 # NGINX Ingress
