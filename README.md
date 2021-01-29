@@ -10,7 +10,7 @@
 
 ## Архитекутрная схема
 
-![aws-base-diagram](docs/aws-base-diagrams-Infrastructure-v4.svg)
+![aws-base-diagram](docs/aws-base-diagrams-Infrastructure-v5.svg)
 
 Эта схема описывает инфраструктуру создаваемую по умолчанию.
 Небольшое описание того что мы имеем на схеме. Инфраструктура в облаке AWS
