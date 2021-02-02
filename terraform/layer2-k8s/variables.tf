@@ -137,3 +137,8 @@ variable kibana_gitlab_group {
   description = "Gitlab group for kibana oauth2"
 }
 
+# Calico
+variable "calico_daemonset" {
+  description = "Version of calico helm chart"
+  default     = "0.3.4"
+}
