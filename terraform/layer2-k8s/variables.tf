@@ -18,19 +18,19 @@ variable oauth2_proxy_version {
 # External DNS
 variable external_dns_version {
   description = "Version of external-dns helm chart"
-  default     = "3.4.2"
+  default     = "4.6.0"
 }
 
 # Cert Manager
 variable cert_manager_version {
   description = "Version of cert-manager helm chart"
-  default     = "0.15.1"
+  default     = "1.1.0"
 }
 
 # NGINX Ingress
 variable nginx_ingress_controller_version {
   description = "Version of nginx-ingress helm chart"
-  default     = "3.16.1"
+  default     = "3.23.0"
 }
 
 variable nginx_ingress_ssl_terminator {
@@ -61,13 +61,13 @@ variable cluster_autoscaler_version {
 # Prometheus Operator
 variable prometheus_operator_version {
   description = "Version of prometheus operator helm chart"
-  default     = "12.8.1"
+  default     = "13.4.1"
 }
 
 # Redis
 variable redis_version {
   description = "Version of redis helm chart"
-  default     = "10.2.1"
+  default     = "12.7.3"
 }
 
 # ELK
@@ -78,20 +78,20 @@ variable elk_version {
 
 # external secrets
 variable external_secrets_version {
-  default = "5.1.0"
+  default = "6.2.0"
 }
 
 variable reloader_version {
-  default = "0.0.66"
+  default = "0.0.79"
 }
 
 variable prometheus_mysql_exporter_version {
-  default = "0.7.1"
+  default = "1.0.1"
 }
 
 variable "loki_stack" {
   type    = string
-  default = "2.1.1"
+  default = "2.1.2"
 }
 
 variable "loki_datasource_for_prometheus_stack" {
