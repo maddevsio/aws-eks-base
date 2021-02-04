@@ -50,7 +50,7 @@ resource "aws_security_group_rule" "workers_to_wp_rds" {
 
 module "db_wp" {
   source  = "terraform-aws-modules/rds/aws"
-  version = "~> 2.0"
+  version = "2.20.0"
 
   identifier = local.wp_db_name
 
