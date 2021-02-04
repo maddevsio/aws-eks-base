@@ -1,4 +1,4 @@
-module acm {
+module "acm" {
   source  = "terraform-aws-modules/acm/aws"
   version = "2.12.0"
 

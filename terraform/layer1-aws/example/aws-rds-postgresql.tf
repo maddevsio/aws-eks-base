@@ -211,7 +211,7 @@ module "ssm" {
   }
 }
 
-output db {
+output "db" {
   description = "description"
   value = {
     "username" = local.db_username

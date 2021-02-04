@@ -62,19 +62,19 @@ resource "kubernetes_storage_class" "teamcity" {
   }
 }
 
-output teamcity_domain_name {
+output "teamcity_domain_name" {
   value       = local.teamcity_domain_name
   description = "Teamcity server"
 }
 
-output teamcity_service_account_name {
+output "teamcity_service_account_name" {
   value = module.eks_rbac_teamcity.service_account_name
 }
 
-output teamcity_agent_pod_template {
+output "teamcity_agent_pod_template" {
   value = data.template_file.teamcity_agent.rendered
 }
 
-output teamcity_kubernetes_api_url {
+output "teamcity_kubernetes_api_url" {
   value = data.aws_eks_cluster.main.endpoint
 }
