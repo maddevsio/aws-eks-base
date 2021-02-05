@@ -13,7 +13,7 @@ variable "bucket_name" {
   description = "Name of the bucket to store logs"
 }
 
-variable path {
+variable "path" {
   type    = string
   default = ""
 }
@@ -28,7 +28,7 @@ variable "create_user" {
   default = false
 }
 
-variable create_role {
+variable "create_role" {
   type    = bool
   default = true
 }

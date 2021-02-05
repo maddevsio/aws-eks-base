@@ -1,15 +1,15 @@
-variable vpc_id {}
-variable public_subnets {}
-variable availability_zone {
+variable "vpc_id" {}
+variable "public_subnets" {}
+variable "availability_zone" {
   default = "us-east-1a"
 }
-variable name {
+variable "name" {
   default = "pritunl"
 }
-variable environment {
+variable "environment" {
   default = "infra"
 }
-variable instance_type {
+variable "instance_type" {
   default = "t3.small"
 }
 
