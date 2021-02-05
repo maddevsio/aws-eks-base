@@ -9,6 +9,8 @@ cache:
   paths:
     - $CI_PROJECT_DIR/terraform/layer1-aws/.terraform
     - $CI_PROJECT_DIR/terraform/layer2-k8s/.terraform
+    - $CI_PROJECT_DIR/terraform/layer1-aws/.terraform.lock.hcl
+    - $CI_PROJECT_DIR/terraform/layer2-k8s/.terraform.lock.hcl
 
 stages:
   - init
