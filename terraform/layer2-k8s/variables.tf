@@ -61,7 +61,7 @@ variable "cluster_autoscaler_version" {
 # Prometheus Operator
 variable "prometheus_operator_version" {
   description = "Version of prometheus operator helm chart"
-  default     = "13.4.1"
+  default     = "13.5.0"
 }
 
 # Redis
