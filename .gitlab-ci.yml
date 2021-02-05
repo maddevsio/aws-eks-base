@@ -1,5 +1,5 @@
 image:
-  name: hashicorp/terraform:0.13.5
+  name: hashicorp/terraform:0.14.6
   entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
