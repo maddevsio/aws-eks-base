@@ -51,12 +51,12 @@ resource "aws_security_group_rule" "workers_to_rds" {
 
 module "db" {
   source  = "terraform-aws-modules/rds/aws"
-  version = "~> 2.0"
+  version = "2.20.0"
 
   identifier = local.db_name
 
   engine            = "postgres"
-  engine_version    = "12.3"
+  engine_version    = "12.5"
   instance_class    = var.rds_instance
   allocated_storage = 30
   storage_encrypted = true
@@ -211,7 +211,7 @@ module "ssm" {
   }
 }
 
-output db {
+output "db" {
   description = "description"
   value = {
     "username" = local.db_username

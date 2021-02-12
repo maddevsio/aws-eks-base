@@ -7,7 +7,7 @@ module "aws_iam_alb_ingress_controller" {
 }
 
 data "template_file" "alb_ingress_controller" {
-  template = "${file("${path.module}/templates/alb-ingress-controller-values.yaml")}"
+  template = file("${path.module}/templates/alb-ingress-controller-values.yaml")
 
   vars = {
     role_arn     = module.aws_iam_alb_ingress_controller.role_arn
