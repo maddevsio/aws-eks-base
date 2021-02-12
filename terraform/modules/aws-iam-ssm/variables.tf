@@ -17,7 +17,7 @@ variable "eks_cluster_id" {
   default     = ""
 }
 
-variable resources {
-  type    = list
+variable "resources" {
+  type    = list(any)
   default = ["*"]
 }

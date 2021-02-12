@@ -1,6 +1,6 @@
-module acm {
+module "acm" {
   source  = "terraform-aws-modules/acm/aws"
-  version = "~> v2.0"
+  version = "2.12.0"
 
   create_certificate = var.create_acm_certificate
 
