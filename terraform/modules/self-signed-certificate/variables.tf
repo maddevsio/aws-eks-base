@@ -11,7 +11,7 @@ variable "common_name" {
 }
 
 variable "dns_names" {
-  type        = list
+  type        = list(any)
   default     = ["localhost"]
   description = ""
 }

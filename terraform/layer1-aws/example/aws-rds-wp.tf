@@ -50,7 +50,7 @@ resource "aws_security_group_rule" "workers_to_wp_rds" {
 
 module "db_wp" {
   source  = "terraform-aws-modules/rds/aws"
-  version = "~> 2.0"
+  version = "2.20.0"
 
   identifier = local.wp_db_name
 
@@ -160,7 +160,7 @@ resource "aws_s3_bucket_public_access_block" "rds_backup_wp" {
 #  }
 #}
 
-module wp_ssm {
+module "wp_ssm" {
   source = "git::https://github.com/cloudposse/terraform-aws-ssm-parameter-store"
 
   parameter_write = [{
