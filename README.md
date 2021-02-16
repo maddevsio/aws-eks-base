@@ -25,7 +25,7 @@
   * Две приватные подсети для RDS
   * Две приватные подсети для Elastic Cache
   * Route tables для приватных сетей
-  * Route tables для публичных сетей  
+  * Route tables для публичных сетей
 * Autoscaling groups
   * On-demand - эта группа с 1-5 on-demand instances для ресурсов с требованиям бесперебойной работы
   * Spot     - эта группа с 1-6 spot instances для ресурсов которым не критично прерывание работы
@@ -101,7 +101,7 @@
 
 * [editorconfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
 * [terraform](https://marketplace.visualstudio.com/items?itemName=4ops.terraform)
-* [drawio](https://marketplace.visualstudio.com/items?itemName=eightHundreds.vscode-drawio)
+* [drawio](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio)
 * [yaml](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
 * [embrace](https://marketplace.visualstudio.com/items?itemName=mycelo.embrace)
 * [js-beautify](https://marketplace.visualstudio.com/items?itemName=HookyQR.beautify)
@@ -139,7 +139,7 @@
 ### Настройка awscli
 
 * Terraform умеет работать с переменными окруения для [AWS access key ID and a secret access key](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys) или AWS профилем, в данном примере создадим aws profile:
-  
+
   ```bash
   $ aws configure --profile maddevs
   AWS Access Key ID [None]: *****************
@@ -200,7 +200,7 @@
 
 Примеры:
 
-* `aws-vpc.tf` - терраформ мманифест описывающий создание единственной vpc
+* `aws-vpc.tf` - терраформ манифест описывающий создание единственной vpc
 * `aws-vpc-stage.tf` - терраформ манифест описывающий создание одной из vpc, для стейджинга
 * `eks-namespaces.tf` - группа неймспейсов создаваемых в EKS кластере
 * `eks-external-dns.tf` - содержит описание деплоя external-dns сервиса в EKS кластер
@@ -221,7 +221,6 @@ aws-eks-base
  ┃ ┗ wordpress
  ┣ examples
  ┣ helm-charts
- ┃ ┣ calico-daemonset
  ┃ ┣ certificate
  ┃ ┣ cluster-issuer
  ┃ ┣ elk
@@ -283,18 +282,17 @@ aws-eks-base
 
 | FILE / DIRECTORY| DESCRIPTION   |
 | --------------- |:-------------:|
-| docker/      ||
-| examples/    ||
-| helm-charts/ ||
-| helm-charts/calico-daemonset ||
-| helm-charts/certificate ||
-| helm-charts/cluster-issuer ||
-| helm-charts/elk ||
-| helm-charts/teamcity ||
-|terraform/||
-|terraform/layer1-aws||
-|terraform/layer2-k8s||
-|terraform/modules||
-|.editorconfig||
+| docker/      | custom dockefiles for examples |
+| examples/    | example k8s deployments |
+| helm-charts/ | directory contains custom helm charts |
+| helm-charts/certificate | helm chart which creates ssl certificate for nginx ingress |
+| helm-charts/cluster-issuer | helmc chart whcih creates cluster-issuer using cert manager cdrs |
+| helm-charts/elk | umbrella chart to deploy elk stack |
+| helm-charts/teamcity | helm chart which deploys teamcity agent and/or server |
+|terraform/| directory contains terraform configuration files |
+|terraform/layer1-aws| directory contains aws resources |
+|terraform/layer2-k8s| directory contains recources deployed to k8s-EKS |
+|terraform/modules| directory contains terraform modules |
+|.editorconfig| |
 |.gitlab-ci.yml||
 |.pre-commit-config.yaml||
