@@ -1,0 +1,43 @@
+image:
+  repository: dymokd/pg-backups-s3
+  tag: latest
+  pullPolicy: IfNotPresent
+
+ExternalSecret:
+  enabled: true
+  Envs:
+    - key: /${name_wo_region}/infra/alertmanager/slack_url
+      name: SLACK_URL
+    - key: /${name_wo_region}/env/pg_host
+      name: PG_HOST
+    - key: /${name_wo_region}/env/pg_port
+      name: PG_PORT
+    - key: /${name_wo_region}/env/pg_user
+      name: PG_USER
+    - key: /${name_wo_region}/env/pg_database
+      name: PG_DATABASE
+    - key: /${name_wo_region}/env/pg_pass
+      name: PG_PASS
+    - key: /${name_wo_region}/env/s3/pg_backups_bucket_name
+      name: AWS_BUCKET_NAME
+    - key: /${name_wo_region}/env/s3/pg_backups_bucket_region
+      name: AWS_BUCKET_REGION
+    - key: /${name_wo_region}/env/s3/access_key_id
+      name: AWS_ACCESS_KEY_ID
+    - key: /${name_wo_region}/env/s3/access_secret_key
+      name: AWS_SECRET_ACCESS_KEY
+
+scheduler:
+  enabled: true
+  schedule: "00 17 * * *"
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  successfulJobsHistoryLimit: 5
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 5
+  restartPolicy: OnFailure

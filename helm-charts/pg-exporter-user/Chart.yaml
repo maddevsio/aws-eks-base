@@ -1,0 +1,9 @@
+apiVersion: v2
+name: pg-exporter-user
+description: A Helm chart for Kubernetes
+
+type: application
+
+version: 1.0.0
+
+appVersion: 1.0.0

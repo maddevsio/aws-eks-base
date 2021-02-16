@@ -1,0 +1,29 @@
+image:
+  repository: dymokd/pg-exporter-user
+  tag: latest
+  pullPolicy: IfNotPresent
+
+ttlSecondsAfterFinished: 0
+activeDeadlineSeconds: 3600
+backoffLimit: 6
+
+Envs:
+  - name: PG_HOST
+    value: "${pg_host}"
+  - name: PG_PORT
+    value: "${pg_port}"
+  - name: PG_USER
+    value: "${pg_user}"
+  - name: PG_PASS
+    value: "${pg_pass}"
+  - name: PG_DATABASE
+    value: "${pg_database}"
+  - name: PG_EXPORTER_PASS
+    value: "${pg_exporter_pass}"
+
+
+command: ["/bin/bash", "-c"]
+
+args: ["PGPASSWORD=$PG_PASS psql --set=generate_pass=$PG_EXPORTER_PASS -h $PG_HOST -p $PG_PORT -U $PG_USER -d $PG_DATABASE -f /app/pg_exporter_user.sql"]
+
+

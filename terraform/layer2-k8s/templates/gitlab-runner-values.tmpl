@@ -1,0 +1,54 @@
+## The GitLab Server URL (with protocol) that want to register the runner against
+## ref: https://docs.gitlab.com/runner/commands/README.html#gitlab-runner-register
+##
+gitlabUrl: "https://gitlab.com/"
+runnerRegistrationToken: "${registration_token}"
+concurrent: 4
+checkInterval: 30
+
+rbac:
+  create: true
+  clusterWideAccess: true
+  serviceAccountAnnotations:
+    eks.amazonaws.com/role-arn: ${role_arn}
+
+runners:
+  serviceAccountName: ${runner_sa}
+  image: ubuntu:18.04
+  privileged: true
+  namespace: ${namespace}
+  tags: "eks-k8s"
+  runUntagged: false
+  nodeTolerations:
+  - key: "purpose"
+    operator: "Equal"
+    value: "ci"
+    effect: "NoSchedule"
+  nodeSelector:
+    purpose: ci
+  cache:
+    cacheType: s3
+    cachePath: "gitlab_runner"
+    cacheShared: false
+    s3ServerAddress: s3.amazonaws.com
+    s3BucketName: ${bucket_name}
+    s3BucketLocation: ${region}
+    s3CacheInsecure: false
+
+  builds:
+    cpuLimit: 950m
+    memoryLimit: 2500Mi
+    cpuRequests: 250m
+    memoryRequests: 512Mi
+  services:
+    cpuLimit: 950m
+    memoryLimit: 2500Mi
+    cpuRequests: 250m
+    memoryRequests: 128Mi
+  helpers:
+    cpuLimit: 950m
+    memoryLimit: 2500Mi
+    cpuRequests: 250m
+    memoryRequests: 512Mi
+
+

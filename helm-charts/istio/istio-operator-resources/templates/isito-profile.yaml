@@ -1,0 +1,7 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: istio-default-profile
+spec:
+  profile: default
+  {{- toYaml .Values.istioOperator | nindent 2 }}

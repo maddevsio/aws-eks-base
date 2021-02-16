@@ -1,21 +1,21 @@
 # COMMON VARIABLES
 
-variable allowed_account_ids {
+variable "allowed_account_ids" {
   description = "List of allowed AWS account IDs"
   default     = []
 }
 
-variable name {
+variable "name" {
   description = "Project name, required to form unique resource names"
   default     = "maddevs"
 }
 
-variable environment {
+variable "environment" {
   default     = "demo"
   description = "Env name in case workspace wasn't used"
 }
 
-variable short_region {
+variable "short_region" {
   description = "The abbreviated name of the region, required to form unique resource names"
   default = {
     us-east-1      = "use1"  # US East (N. Virginia)
@@ -42,41 +42,41 @@ variable short_region {
   }
 }
 
-variable domain_name {
+variable "domain_name" {
   description = "Main domain name"
   default     = "maddevs.org"
 }
 
-variable zone_id {
+variable "zone_id" {
   default     = "Z058363314IT7VAKRA364"
   description = "maddevs.org zone id"
 }
 
 # VPC VARIABLES
 
-variable region {
+variable "region" {
   type        = string
   default     = "us-east-1"
   description = "Default infrastructure region"
 }
 
-variable az_count {
+variable "az_count" {
   description = "Count of avaiablity zones, min 2"
   default     = 2
 }
 
-variable cidr {
+variable "cidr" {
   description = "Default CIDR block for VPC"
   default     = "10.0.0.0/16"
 }
 
-variable create_acm_certificate {
+variable "create_acm_certificate" {
   default     = false
   description = "Whether to create acm certificate or use existing"
 }
 
-variable allowed_ips {
-  type = list
+variable "allowed_ips" {
+  type = list(any)
   default = [
     "212.42.109.196/32",
     "212.42.107.23/32",
@@ -86,12 +86,12 @@ variable allowed_ips {
 }
 
 # EKS
-variable eks_cluster_version {
+variable "eks_cluster_version" {
   default     = "1.18"
   description = "Version of the EKS K8S cluster"
 }
 
-variable worker_groups {
+variable "worker_groups" {
   default = {
     spot = {
       override_instance_types = ["t3.medium", "t3a.medium"]
@@ -115,7 +115,7 @@ variable worker_groups {
   }
 }
 
-variable map_roles {
+variable "map_roles" {
   description = "Additional IAM roles to add to the aws-auth configmap."
   type = list(object({
     rolearn  = string
@@ -133,7 +133,7 @@ variable map_roles {
   ]
 }
 
-variable map_users {
+variable "map_users" {
   description = "Additional IAM users to add to the aws-auth configmap."
   type = list(object({
     userarn  = string
@@ -151,13 +151,13 @@ variable map_users {
 }
 
 # ECR
-variable ecr_repos {
-  type        = list
+variable "ecr_repos" {
+  type        = list(any)
   default     = ["demo"]
   description = "List of docker repositories"
 }
 
-variable ecr_repo_retention_count {
+variable "ecr_repo_retention_count" {
   default     = 50
   description = "number of images to store in ECR"
 }

@@ -1,7 +1,18 @@
+data "template_file" "calico_daemonset" {
+  template = file("${path.module}/templates/calico-values.yaml")
+}
+
 resource "helm_release" "calico_daemonset" {
-  name      = "calico-daemonset"
-  chart     = "../../helm-charts/calico-daemonset"
-  namespace = "kube-system"
+  name       = "aws-calico"
+  chart      = "aws-calico"
+  repository = local.helm_repo_eks
+  version    = var.calico_daemonset
+  namespace  = "kube-system"
+  wait       = false
+
+  values = [
+    data.template_file.calico_daemonset.rendered,
+  ]
 }
 
 module "dev_ns_network_policy" {

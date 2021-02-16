@@ -1,0 +1,24 @@
+image:
+  repository: dymokd/pg-backups-s3
+  tag: latest
+  pullPolicy: IfNotPresent
+
+ExternalSecret:
+  enabled: false
+  Envs: {}
+
+scheduler:
+  enabled: false
+  schedule: "0 4 25 * *"
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  successfulJobsHistoryLimit: 5
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 5
+  restartPolicy: OnFailure
+

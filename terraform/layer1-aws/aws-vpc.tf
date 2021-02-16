@@ -10,7 +10,8 @@ locals {
 }
 
 module "vpc" {
-  source = "terraform-aws-modules/vpc/aws"
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "2.70.0"
 
   name = local.name
   cidr = var.cidr
@@ -26,6 +27,8 @@ module "vpc" {
   enable_vpn_gateway   = false
   enable_dns_hostnames = true
   enable_dns_support   = true
+
+  enable_s3_endpoint = true
 
   create_database_subnet_group = false
 

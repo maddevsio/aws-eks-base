@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "this" {
 
 module "iam_policy" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
-  version = "~> 2.0"
+  version = "3.8.0"
 
   name        = var.name
   path        = "/"
@@ -60,7 +60,7 @@ module "iam_policy" {
 
 module "this_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version = "~> 2.0"
+  version = "3.8.0"
 
   trusted_role_services = [
     "ec2.amazonaws.com"

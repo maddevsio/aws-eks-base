@@ -1,9 +1,0 @@
-# Create the ServiceAccount and roles necessary for Calico.
-
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: calico-node
-  namespace: kube-system
-  labels:
-    {{- include "calico-daemonset.labels" . | nindent 4 }}

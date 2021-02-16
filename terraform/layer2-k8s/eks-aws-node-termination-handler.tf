@@ -6,8 +6,8 @@ resource "helm_release" "aws_node_termination_handler" {
   namespace  = kubernetes_namespace.sys.id
   wait       = false
 
-  set {
-    name  = "enableSpotInterruptionDraining"
-    value = "true"
-  }
+  values = [
+    file("${path.module}/templates/aws-node-termination-handler-values.yaml")
+  ]
+
 }
