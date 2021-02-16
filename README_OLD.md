@@ -130,19 +130,20 @@ Terraform has been successfully initialized!
 ###### Save secrets in ssm parameter store
 
 > values in ssm PS
-````bash 
-/maddevs-demo/infra/grafana/gitlab_client_id	
-/maddevs-demo/infra/grafana/gitlab_client_secret	
-/maddevs-demo/infra/kibana/gitlab_client_id	  
-/maddevs-demo/infra/kibana/gitlab_client_secret 
-/maddevs-demo/infra/runner/gitlab_registration_token 
-````
+```bash
+/maddevs-demo/infra/grafana/gitlab_client_id
+/maddevs-demo/infra/grafana/gitlab_client_secret
+/maddevs-demo/infra/kibana/gitlab_client_id
+/maddevs-demo/infra/kibana/gitlab_client_secret
+/maddevs-demo/infra/runner/gitlab_registration_token
+```
+
 or
 ###### Save secrets in one secret in secret manager
 
 > secret name
-````bash 
-/maddevs-demo/infra/gitlab-tokens	 
+````bash
+/maddevs-demo/infra/gitlab-tokens
 ````
 
 > json with secret values
@@ -254,5 +255,5 @@ ip-10-0-1-60.us-east-1.compute.internal    Ready    <none>   11h   v1.16.11-eks-
 ```
 
 ### Upgrade from terraform 12 to terraform 13
-If the state was created by version 12, you need to run:  
+If the state was created by version 12, you need to run:
 `terraform init -reconfigure`
