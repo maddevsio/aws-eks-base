@@ -93,6 +93,7 @@
 * [terragrunt v0.26.7](https://terragrunt.gruntwork.io/) - небольшой wrapper для терраформа обеспечивающий DRY для некоторых статичных частей терраформ кода
 * [awsudo](https://github.com/meltwater/awsudo) - простая консольная утилита, позволяющая запускать команды awscli из под определенных ролей
 * [aws-vault](https://github.com/99designs/aws-vault) - тула для секурного менеджмента ключей AWS и запуска консольных команд
+* [aws-mfa](https://github.com/broamski/aws-mfa) - утилита дял автоматизации получения временных реквизитов доступа к AWS с включенным MFA
 * [vscode](https://code.visualstudio.com/) - ???
 
 > Опционально, можно поставить и сконфигурить пре-коммит хук для терраформа: [pre-commit-terraform](https://github.com/antonbabenko/pre-commit-terraform), что позволит форматировать и проверять код еще на этапе коммита
@@ -153,7 +154,7 @@
   ```
 
 * В качестве альтернатив можно использовать `aws-vault` и `awsudo`
-* Для того, чтобы использовать awscli и соответственно terraform с [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/) можно использовать данную [утилиту](https://github.com/broamski/aws-mfa), например
+* Для того, чтобы использовать awscli и соответственно terraform с [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/) можно использовать [aws-mfa](https://github.com/broamski/aws-mfa)
 
 ## Как использовать этот репо
 
