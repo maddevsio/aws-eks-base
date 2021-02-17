@@ -133,7 +133,6 @@
 * В разделе [Policies](https://console.aws.amazon.com/iam/home#/policies) создайте политику `MFASecurity`, запрещающую пользователям пользоваться серивисами без активации [MFA](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_aws_my-sec-creds-self-manage-mfa-only.html)
 * В разделе [Groups](https://console.aws.amazon.com/iam/home#/groups) создайте группу `admin`, в следующем окне прикрепите к ней политику `AdministratorAccess` и `MFASecurity`. Завершите создание группы.
 * В разделе [Users](https://console.aws.amazon.com/iam/home#/users) создайте пользователя для работы с AWS, выбрав обе галочки в *Select AWS access type*. В следующем окне добавьте пользователя в группу `admin`. Завершите создание и скачайте CSV с реквизитами доступа.
-* Для того, чтобы использовать awscli и соответственно terraform с [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/) можно использовать данную [утилиту](https://github.com/broamski/aws-mfa), например
 
 > В рамках этой доки мы не рассмотрели более секурный и правильный метод управления пользователями, используя внешние Identity провайдеры. Такие как G-suite, Okta и [другие](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers.html).
 
@@ -154,6 +153,7 @@
   ```
 
 * В качестве альтернатив можно использовать `aws-vault` и `awsudo`
+* Для того, чтобы использовать awscli и соответственно terraform с [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/) можно использовать данную [утилиту](https://github.com/broamski/aws-mfa), например
 
 ## Как использовать этот репо
 
