@@ -21,22 +21,23 @@ istioOperator:
       enabled: false
   meshConfig:
     defaultConfig:
+      holdApplicationUntilProxyStarts: true
       proxyStatsMatcher:
         inclusionRegexps:
           - .*circuit_breakers.*
         inclusionPrefixes:
           - upstream_rq_retry
           - upstream_cx
-    # accessLogFile: /dev/stdout  #Uncomment this if you want to get Envoy logs 
+    # accessLogFile: /dev/stdout  #Uncomment this if you want to get Envoy logs
 
   values:
     global:
       proxy:
         # This controls the default 'policy' in the sidecar injector.
-        autoInject: disabled # we don't inject sidecar by default even if namespace is annotated. 
+        autoInject: disabled # we don't inject sidecar by default even if namespace is annotated.
     sidecarInjectorWebhook:
       injectedAnnotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true" # https://github.com/kubeflow/pipelines/issues/4530
+        cluster-autoscaler.kubernetes.io/safe-to-evict: true # https://github.com/kubeflow/pipelines/issues/4530
 
 # We create istio resource 'Gateway' with name 'ingress-gateway' and open port 5100 for all vhosts. This configuration is related to istio-ingressgateway settings
 ingressGateway:
