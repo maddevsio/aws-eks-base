@@ -75,7 +75,7 @@ module "aws_iam_elastic_stack" {
 
   name              = "${local.name}-elk"
   region            = local.region
-  buckets_name      = [local.elastic_stack_bucket_name]
+  bucket_names      = [local.elastic_stack_bucket_name]
   oidc_provider_arn = local.eks_oidc_provider_arn
   create_user       = true
 }

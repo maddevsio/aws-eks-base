@@ -26,7 +26,7 @@ EOF
 
 resource "aws_iam_role_policy" "this" {
   # Need for support multi-buckets
-  count = var.create_role == true ? length(var.buckets_name) : 0
+  count = var.create_role == true ? length(var.bucket_names) : 0
 
   name_prefix = var.name
   role        = aws_iam_role.this.0.id
@@ -43,7 +43,7 @@ resource "aws_iam_role_policy" "this" {
       ],
       "Effect": "Allow",
       "Resource": [
-        "arn:aws:s3:::${var.buckets_name[count.index]}"
+        "arn:aws:s3:::${var.bucket_names[count.index]}"
       ]
     },
     {
@@ -56,7 +56,7 @@ resource "aws_iam_role_policy" "this" {
       ],
       "Effect": "Allow",
       "Resource": [
-        "arn:aws:s3:::${var.buckets_name[count.index]}/${var.path}*"
+        "arn:aws:s3:::${var.bucket_names[count.index]}/${var.path}*"
       ]
     }
   ],

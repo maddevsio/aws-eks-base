@@ -10,7 +10,7 @@ variable "name" {
 
 # changed type from string to list
 # to support multi-buckets
-variable "buckets_name" {
+variable "bucket_names" {
   default     = []
   description = "Name of the bucket to store logs"
 }
