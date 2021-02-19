@@ -86,11 +86,11 @@
 
 * [tfenv](https://github.com/tfutils/tfenv) - утилита для менеджмента разных версий терраформа, необходимую версию можно задать напрямую аргументом или через `.terraform-version`
 * [terraform](https://www.terraform.io/) - тот самый терраформ, наш главный инструмент разработки: `tfenv install`
-* [awscli v2.1.15](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html) - консольная утилита для работы с AWS API
+* [awscli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html) - консольная утилита для работы с AWS API
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) - консольная тула для работы с кубер кластерами
-* [helm v3.4.2](https://helm.sh/docs/intro/install/) - тула для создания и деплоя шаблонизированных чартов приложений в кубер
-* [helmfile v0.136.0](https://github.com/roboll/helmfile) - "докер композ" для хелм чартов
-* [terragrunt v0.26.7](https://terragrunt.gruntwork.io/) - небольшой wrapper для терраформа обеспечивающий DRY для некоторых статичных частей терраформ кода
+* [helm](https://helm.sh/docs/intro/install/) - тула для создания и деплоя шаблонизированных чартов приложений в кубер
+* [helmfile](https://github.com/roboll/helmfile) - "докер композ" для хелм чартов
+* [terragrunt](https://terragrunt.gruntwork.io/) - небольшой wrapper для терраформа обеспечивающий DRY для некоторых статичных частей терраформ кода
 * [awsudo](https://github.com/meltwater/awsudo) - простая консольная утилита, позволяющая запускать команды awscli из под определенных ролей
 * [aws-vault](https://github.com/99designs/aws-vault) - тула для секурного менеджмента ключей AWS и запуска консольных команд
 * [aws-mfa](https://github.com/broamski/aws-mfa) - утилита для автоматизации получения временных реквизитов доступа к AWS с включенным MFA
