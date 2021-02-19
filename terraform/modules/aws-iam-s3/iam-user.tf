@@ -11,7 +11,8 @@ resource "aws_iam_access_key" "this_user" {
 }
 
 resource "aws_iam_user_policy" "this_user" {
-  count = var.create_user == true ? 1 : 0
+  # Need for support multi-buckets
+  count = var.create_user == true ? length(var.buckets_name) : 0
 
   name = "${var.name}-user"
   user = aws_iam_user.this_user.0.name
@@ -28,7 +29,7 @@ resource "aws_iam_user_policy" "this_user" {
       ],
       "Effect": "Allow",
       "Resource": [
-        "arn:aws:s3:::${var.bucket_name}"
+        "arn:aws:s3:::${var.buckets_name[count.index]}"
       ]
     },
     {
@@ -41,7 +42,7 @@ resource "aws_iam_user_policy" "this_user" {
       ],
       "Effect": "Allow",
       "Resource": [
-        "arn:aws:s3:::${var.bucket_name}/${var.path}*"
+        "arn:aws:s3:::${var.buckets_name[count.index]}/${var.path}*"
       ]
     }
   ],

@@ -141,7 +141,7 @@ module "aws_iam_rds_backups" {
 
   name              = "${local.name}-rds-backups"
   region            = var.region
-  bucket_name       = [aws_s3_bucket.rds_backups.id]
+  buckets_name      = [aws_s3_bucket.rds_backups.id]
   oidc_provider_arn = module.eks.oidc_provider_arn
   create_user       = true
 }
