@@ -1,6 +1,7 @@
 resource "aws_iam_role" "this" {
   count = var.create_role == true ? 1 : 0
 
+  description        = var.description
   name_prefix        = var.name
   assume_role_policy = <<EOF
 {
@@ -24,7 +25,8 @@ EOF
 }
 
 resource "aws_iam_role_policy" "this" {
-  count = var.create_role == true ? 1 : 0
+  # Need for support multi-buckets
+  count = var.create_role == true ? length(var.bucket_name) : 0
 
   name_prefix = var.name
   role        = aws_iam_role.this.0.id
