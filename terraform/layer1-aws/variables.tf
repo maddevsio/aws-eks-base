@@ -43,7 +43,7 @@ variable "short_region" {
 }
 
 variable "domain_name" {
-  description = "Main teacherly domain name"
+  description = "Main domain name"
   default     = "maddevs.org"
 }
 
