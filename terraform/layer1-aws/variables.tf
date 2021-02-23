@@ -43,7 +43,7 @@ variable "short_region" {
 }
 
 variable "domain_name" {
-  description = "Main teacherly domain name"
+  description = "Main domain name"
   default     = "maddevs.org"
 }
 
@@ -62,7 +62,7 @@ variable "region" {
 
 variable "az_count" {
   description = "Count of avaiablity zones, min 2"
-  default     = 2
+  default     = 3
 }
 
 variable "cidr" {
