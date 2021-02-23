@@ -61,7 +61,7 @@ variable "cluster_autoscaler_version" {
 # Prometheus Operator
 variable "prometheus_operator_version" {
   description = "Version of prometheus operator helm chart"
-  default     = "13.5.0"
+  default     = "13.12.0"
 }
 
 # Redis
@@ -78,20 +78,20 @@ variable "elk_version" {
 
 # external secrets
 variable "external_secrets_version" {
-  default = "6.2.0"
+  default = "6.3.0"
 }
 
 variable "reloader_version" {
-  default = "0.0.79"
+  default = "0.0.81"
 }
 
 variable "prometheus_mysql_exporter_version" {
-  default = "1.0.1"
+  default = "1.1.0"
 }
 
 variable "loki_stack" {
   type    = string
-  default = "2.1.2"
+  default = "2.3.1"
 }
 
 variable "loki_datasource_for_prometheus_stack" {
@@ -107,7 +107,7 @@ variable "aws_node_termination_handler_version" {
 #Gitlab runner
 variable "gitlab_runner_version" {
   description = "Version of gitlab runner helm chart"
-  default     = "0.25.0"
+  default     = "0.26.0"
 }
 
 variable "elk_snapshot_retention_days" {
