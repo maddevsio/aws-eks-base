@@ -45,20 +45,19 @@
 
 ## Архитектурная схема
 
-![aws-base-diagram](docs/aws-base-diagrams-Infrastructure-v5.svg)
+![aws-base-diagram](docs/aws-base-diagrams-Infrastracture-v6.svg)
 
 Эта схема описывает инфраструктуру создаваемую по умолчанию.
 Небольшое описание того что мы имеем на схеме. Инфраструктура в облаке AWS
 
-* Мы используем две availability Zone
+* Мы используем три availability Zone
 * Основная сеть VPC
-  * Две публичные подсети для ресурсов которым нужен доступ в мир
+  * Три публичные подсети для ресурсов которым нужен доступ в мир
     * Elastic load balancing - точка входа в k8s cluster
     * Internet gateway - точка входа в созданную VPC
     * Single Nat Gateway - сервис для организации доступа для инстансов из приватных сетей в публичные.
-  * Две приватные подсети для EKS workers
-  * Две приватные подсети для RDS
-  * Две приватные подсети для Elastic Cache
+  * Три приватные подсети для EKS workers
+  * Три приватные подсети для RDS
   * Route tables для приватных сетей
   * Route tables для публичных сетей
 * Autoscaling groups
