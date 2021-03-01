@@ -58,6 +58,7 @@
     * Single Nat Gateway - сервис для организации доступа для инстансов из приватных сетей в публичные.
   * Три приватные подсети для EKS workers
   * Три приватные подсети для RDS
+  * Три дефолтныее подсети для EKS
   * Route tables для приватных сетей
   * Route tables для публичных сетей
 * Autoscaling groups
@@ -95,7 +96,7 @@
 
 На этой схему указаны неймспейсы которые используются в кластере, и ресурсы которые находятся в этих неймспесах по умолчанию.
 
-![aws-base-namespaces](docs/aws-base-diagrams-Namespaces-v3.svg)
+![aws-base-namespaces](docs/aws-base-diagrams-Infrastracturev3.svg)
 
 Используемые в кластере чарты, с указанием неймспейса и коротким описанием.
 
