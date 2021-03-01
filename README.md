@@ -45,7 +45,7 @@
 
 ## Архитектурная схема
 
-![aws-base-diagram](docs/aws-base-diagrams-Infrastracture-v6.svg)
+![aws-base-diagram](docs/aws-base-diagrams-Infrastracturev3.svg)
 
 Эта схема описывает инфраструктуру создаваемую по умолчанию.
 Небольшое описание того что мы имеем на схеме. Инфраструктура в облаке AWS
@@ -96,7 +96,7 @@
 
 На этой схему указаны неймспейсы которые используются в кластере, и ресурсы которые находятся в этих неймспесах по умолчанию.
 
-![aws-base-namespaces](docs/aws-base-diagrams-Infrastracturev3.svg)
+![aws-base-namespaces](docs/aws-base-diagrams-Namespaces-v3.svg)
 
 Используемые в кластере чарты, с указанием неймспейса и коротким описанием.
 
