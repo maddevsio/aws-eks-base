@@ -74,9 +74,9 @@ output "vpc_database_subnets" {
   value       = module.vpc.database_subnets
 }
 
-output "vpc_elasticache_subnets" {
-  description = "Elasticache subnets of infra VPC"
-  value       = module.vpc.elasticache_subnets
+output "vpc_intra_subnets" {
+  description = "Private intra subnets "
+  value       = module.vpc.intra_subnets
 }
 
 output "eks_cluster_endpoint" {
@@ -118,3 +118,5 @@ output "ssl_certificate_arn" {
   description = "ARN of SSL certificate"
   value       = local.ssl_certificate_arn
 }
+
+
