@@ -1,12 +1,13 @@
 locals {
   cidr_subnets = [for cidr_block in cidrsubnets(var.cidr, 2, 2, 2, 2) : cidrsubnets(cidr_block, 4, 4, 4, 4)]
 
-  private_subnets     = chunklist(local.cidr_subnets[0], var.az_count)[0]
-  public_subnets      = chunklist(local.cidr_subnets[1], var.az_count)[0]
-  database_subnets    = chunklist(local.cidr_subnets[2], var.az_count)[0]
-  elasticache_subnets = chunklist(local.cidr_subnets[3], var.az_count)[0]
+  private_subnets  = chunklist(local.cidr_subnets[0], var.az_count)[0]
+  public_subnets   = chunklist(local.cidr_subnets[1], var.az_count)[0]
+  database_subnets = chunklist(local.cidr_subnets[2], var.az_count)[0]
+  intra_subnets    = chunklist(local.cidr_subnets[3], var.az_count)[0]
 
   azs = chunklist(data.aws_availability_zones.available.names, var.az_count)[0]
+
 }
 
 module "vpc" {
@@ -16,11 +17,12 @@ module "vpc" {
   name = local.name
   cidr = var.cidr
 
-  azs                 = local.azs
-  private_subnets     = local.private_subnets
-  public_subnets      = local.public_subnets
-  database_subnets    = local.database_subnets
-  elasticache_subnets = local.elasticache_subnets
+  azs              = local.azs
+  private_subnets  = local.private_subnets
+  public_subnets   = local.public_subnets
+  database_subnets = local.database_subnets
+  intra_subnets    = local.intra_subnets
+
 
   enable_nat_gateway   = true
   single_nat_gateway   = true
@@ -64,4 +66,27 @@ module "vpc" {
     Name        = "${local.name}-public"
     destination = "public"
   }
+
+  database_subnet_tags = {
+    Name        = "${local.name}-database"
+    destination = "database"
+  }
+
+  database_route_table_tags = {
+    Name        = "${local.name}-database"
+    destination = "database"
+  }
+
+  intra_subnet_tags = {
+    Name        = "${local.name}-intra"
+    destination = "intra"
+  }
+
+  intra_route_table_tags = {
+    Name        = "${local.name}-intra"
+    destination = "intra"
+  }
+
 }
+
+
