@@ -129,7 +129,7 @@
 * [awsudo](https://github.com/meltwater/awsudo) - простая консольная утилита, позволяющая запускать команды awscli из-под определенных ролей
 * [aws-vault](https://github.com/99designs/aws-vault) - тула для секурного менеджмента ключей AWS и запуска консольных команд
 * [aws-mfa](https://github.com/broamski/aws-mfa) - утилита для автоматизации получения временных реквизитов доступа к AWS с включенным MFA
-* [vscode](https://code.visualstudio.com/) - ???
+* [vscode](https://code.visualstudio.com/) - основная IDE
 
 > Опционально, можно поставить и сконфигурить пре-коммит хук для терраформа: [pre-commit-terraform](https://github.com/antonbabenko/pre-commit-terraform), что позволит форматировать и проверять код еще на этапе коммита
 
@@ -160,14 +160,27 @@
 
 Итак, вы создали акк, прошли подтверждение, возможно уже даже создали Access Keys для консоли. В любом случае перейдите в настройки безопасности [аккаунта](https://console.aws.amazon.com/iam/home#/security_credentials) и обязательно выполните следующие шаги:
 
-* Задайте/смените сильный пароль
+* Задайте сильный пароль
 * Активируйте MFA для root аккаунта
 * Удалите и не создавайте access keys root аккаунта
 
 Далее в [IAM](https://console.aws.amazon.com/iam/home#/home) консоли:
 
 * В разделе [Policies](https://console.aws.amazon.com/iam/home#/policies) создайте политику `MFASecurity`, запрещающую пользователям пользоваться сервисами без активации [MFA](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_aws_my-sec-creds-self-manage-mfa-only.html)
-* В разделе [Groups](https://console.aws.amazon.com/iam/home#/groups) создайте группу `admin`, в следующем окне прикрепите к ней политику `AdministratorAccess` и `MFASecurity`. Завершите создание группы.
+* В разделе [Roles](https://console.aws.amazon.com/iam/home?region=us-east-1#/roles) создайте новую роль `administrator`. Выберете *Another AWS Account*, указав в поле Account ID номер нашего аккаунт. Отметитьте галочку *Require MFA*. В следующем окне Permissions прикрепите к ней политику `AdministratorAccess`
+* В разделе [Policies](https://console.aws.amazon.com/iam/home#/policies) создайте политику `assumeAdminRole`:
+
+  ```json
+  {
+    "Version": "2012-10-17",
+    "Statement": {
+        "Effect": "Allow",
+        "Action": "sts:AssumeRole",
+        "Resource": "arn:aws:iam::730809894724:role/administrator"
+    }
+  }
+  ```
+* В разделе [Groups](https://console.aws.amazon.com/iam/home#/groups) создайте группу `admin`, в следующем окне прикрепите к ней политику `assumeAdminRole` и `MFASecurity`. Завершите создание группы.
 * В разделе [Users](https://console.aws.amazon.com/iam/home#/users) создайте пользователя для работы с AWS, выбрав обе галочки в *Select AWS access type*. В следующем окне добавьте пользователя в группу `admin`. Завершите создание и скачайте CSV с реквизитами доступа.
 
 > В рамках этой доки мы не рассмотрели более секурный и правильный метод управления пользователями, используя внешние Identity провайдеры. Такие как G-suite, Okta и [другие](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers.html).
@@ -183,6 +196,10 @@
   Default region name [None]: us-east-1
   Default output format [None]: json
   ```
+
+  Нужно добавить в `~/.aws/config` в profile `maddevs`
+
+  `role_arn = <administrator role arn>`
 
   ```bash
   $ export AWS_PROFILE=maddevs
@@ -438,7 +455,7 @@ locals {
 
 * Имена вывода данных должны быть понятны за пределами терраформ и вне контекста модуля (когда пользователь использует модуль, должны быть понятны тип и атрибут возвращаемого значения)
 
-* Общая рекомендация для именования вывода данных заключается в том, что она должна описывать содержащееся в ней значение и не иметь излишеств
+* Общая рекомендация для именования вывода данных заключается в том, что имя должно описывать содержащееся в ней значение и не иметь излишеств
 
 * Правильная структура для имен вывода выглядит как `{name}_{type}_{attribute}` для неуникальных атрибутов и ресурсов и `{type}_{attribute}` для уникальных, например вывод одной из нескольких security групп и уникального публичного адреса:
 
