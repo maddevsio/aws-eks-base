@@ -94,8 +94,7 @@ module "eks" {
     },
   ]
 
-  map_users = var.map_users
-  #map_roles = var.map_roles
+  map_roles = var.map_roles
 
   write_kubeconfig = false
 }
