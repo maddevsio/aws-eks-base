@@ -167,7 +167,7 @@
 Далее в [IAM](https://console.aws.amazon.com/iam/home#/home) консоли:
 
 * В разделе [Policies](https://console.aws.amazon.com/iam/home#/policies) создайте политику `MFASecurity`, запрещающую пользователям пользоваться сервисами без активации [MFA](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_aws_my-sec-creds-self-manage-mfa-only.html)
-* В разделе [Roles](https://console.aws.amazon.com/iam/home?region=us-east-1#/roles) создайте новую роль `administrator`. Выберете *Another AWS Account*, указав в поле Account ID номер нашего аккаунт. Отметитьте галочку *Require MFA*. В следующем окне Permissions прикрепите к ней политику `AdministratorAccess`
+* В разделе [Roles](https://console.aws.amazon.com/iam/home?region=us-east-1#/roles) создайте новую роль `administrator`. Выберете *Another AWS Account*, указав в поле Account ID номер нашего аккаунт. Отметьте галочку *Require MFA*. В следующем окне Permissions прикрепите к ней политику `AdministratorAccess`
 * В разделе [Policies](https://console.aws.amazon.com/iam/home#/policies) создайте политику `assumeAdminRole`:
 
   ```json
