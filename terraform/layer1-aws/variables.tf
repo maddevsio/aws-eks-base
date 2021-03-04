@@ -133,23 +133,6 @@ variable "map_roles" {
   ]
 }
 
-variable "map_users" {
-  description = "Additional IAM users to add to the aws-auth configmap."
-  type = list(object({
-    userarn  = string
-    username = string
-    groups   = list(string)
-  }))
-
-  default = [
-    {
-      userarn  = "arn:aws:iam::730809894724:user/halfb00t@gmail.com"
-      username = "halfb00t@gmail.com"
-      groups   = ["system:masters"]
-    },
-  ]
-}
-
 # ECR
 variable "ecr_repos" {
   type        = list(any)
