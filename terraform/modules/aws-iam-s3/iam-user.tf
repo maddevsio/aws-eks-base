@@ -10,43 +10,43 @@ resource "aws_iam_access_key" "this_user" {
   user = aws_iam_user.this_user.0.name
 }
 
-resource "aws_iam_user_policy" "this_user" {
+resource "aws_iam_user_policy" "this" {
   # Need for support multi-buckets
-  count = var.create_user == true ? length(var.bucket_names) : 0
+  count = var.create_user == true ? 1 : 0
 
   name = "${var.name}-user"
   user = aws_iam_user.this_user.0.name
 
-  policy = <<EOF
-{
-  "Statement": [
-    {
-      "Action": [
+  policy = data.aws_iam_policy_document.policy.json
+}
+
+data "aws_iam_policy_document" "policy" {
+
+  statement {
+      actions = [
         "s3:ListBucket",
         "s3:GetBucketLocation",
         "s3:ListBucketMultipartUploads",
         "s3:ListBucketVersions"
-      ],
-      "Effect": "Allow",
-      "Resource": [
-        "arn:aws:s3:::${var.bucket_names[count.index]}"
       ]
-    },
-    {
-      "Action": [
+      effect = "Allow"
+      resources = [
+        for buckets in var.bucket_names:
+        "arn:aws:s3:::${buckets}"]
+  }
+
+  statement {
+      actions = [
         "s3:GetObject",
         "s3:PutObject",
         "s3:DeleteObject",
         "s3:AbortMultipartUpload",
         "s3:ListMultipartUploadParts"
-      ],
-      "Effect": "Allow",
-      "Resource": [
-        "arn:aws:s3:::${var.bucket_names[count.index]}/${var.path}*"
       ]
-    }
-  ],
-  "Version": "2012-10-17"
+      effect = "Allow"
+      resources = [
+        for buckets in var.bucket_names:
+        "arn:aws:s3:::${buckets}/${var.path}*"]
+  }
 }
-EOF
-}
+
