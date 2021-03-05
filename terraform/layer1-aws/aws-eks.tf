@@ -4,7 +4,7 @@ module "eks" {
 
   cluster_name    = local.name
   cluster_version = var.eks_cluster_version
-  subnets         = module.vpc.private_subnets
+  subnets         = module.vpc.intra_subnets
   enable_irsa     = true
 
   tags = {
@@ -22,6 +22,7 @@ module "eks" {
       asg_max_size            = var.worker_groups.spot.asg_max_size
       asg_min_size            = var.worker_groups.spot.asg_min_size
       asg_desired_capacity    = var.worker_groups.spot.asg_desired_capacity
+      subnets                 = module.vpc.private_subnets
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
       public_ip               = false
       additional_userdata     = file("${path.module}/templates/eks-x86-nodes-userdata.sh")
@@ -42,6 +43,7 @@ module "eks" {
       name                 = "ondemand"
       instance_type        = var.worker_groups.ondemand.instance_type
       asg_desired_capacity = var.worker_groups.ondemand.asg_desired_capacity
+      subnets              = module.vpc.private_subnets
       asg_max_size         = var.worker_groups.ondemand.asg_max_size
       cpu_credits          = "unlimited"
       kubelet_extra_args   = "--node-labels=node.kubernetes.io/lifecycle=ondemand"
@@ -92,8 +94,7 @@ module "eks" {
     },
   ]
 
-  map_users = var.map_users
-  #map_roles = var.map_roles
+  map_roles = var.map_roles
 
   write_kubeconfig = false
 }
