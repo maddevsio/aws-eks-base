@@ -39,11 +39,9 @@ jobs:
 
     - name: Terraform Init l1
       working-directory: ./terraform/layer1-aws
-      id: init
       run: terraform init -backend=false
     - name: Terraform Init l2
       working-directory: ./terraform/layer2-k8s
-      id: init
       run: terraform init -backend=false
 
   terraform-format:
