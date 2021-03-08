@@ -1,0 +1,100 @@
+name: 'Terraform-ci'
+
+on: [push, pull_request]
+
+# Use the Bash shell 
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  terraform-init:
+    name: 'Terraform-init'
+    runs-on: ubuntu-latest
+    environment: dev
+    container:
+      image: hashicorp/terraform:0.14.6
+
+    steps:
+
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+    - uses: actions/checkout@v2
+
+    # - name: Install Terraform
+    # - uses: hashicorp/setup-terraform@v1
+    #   with:
+    #     terraform_version: 0.14.6
+
+    - name: Cache
+      id: cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          - ./terraform/layer1-aws/.terraform
+          - ./terraform/layer2-k8s/.terraform
+          - ./terraform/layer1-aws/.terraform.lock.hcl
+          - ./terraform/layer2-k8s/.terraform.lock.hcl
+        key: terraform_dir
+
+    - name: Terraform Init l1
+      working-directory: ./terraform/layer1-aws
+      id: init
+      run: terraform init -backend=false
+    - name: Terraform Init l2
+      working-directory: ./terraform/layer2-k8s
+      id: init
+      run: terraform init -backend=false
+
+  terraform-format:
+    name: 'Terraform-format'
+    needs: terraform-init
+    runs-on: ubuntu-latest
+    environment: dev
+    container:
+      image: hashicorp/terraform:0.14.6
+
+    steps:
+
+    - name: Checkout
+    - uses: actions/checkout@v2
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: terraform fmt -recursive -write=false -check .
+
+  terraform-validate:
+    name: 'Terraform-validate'
+    needs: terraform-init
+    runs-on: ubuntu-latest
+    environment: dev
+    container:
+      image: hashicorp/terraform:0.14.6
+
+    steps:
+
+    # Checks that all Terraform configuration files adhere to a validate
+    - name: Terraform Validate l1
+      working-directory: ./terraform/layer1-aws
+      run: terraform validate -no-color .
+    - name: Terraform Validate l2
+      working-directory: ./terraform/layer2-k8s
+      run: terraform validate -no-color .
+
+  terraform-tflint:
+    name: 'Terraform-tflint'
+    needs: terraform-init
+    runs-on: ubuntu-latest
+    environment: dev
+    container:
+      image: wata727/tflint
+
+    steps:
+
+    # Checks that all Terraform configuration files adhere to a validate
+    - name: Terraform tflint l1
+      working-directory: ./terraform/layer1-aws
+      run: tflint --no-color
+    - name: Terraform tflint l2
+      working-directory: ./terraform/layer2-k8s
+      run: tflint --no-color
