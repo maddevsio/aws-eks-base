@@ -2,7 +2,6 @@ name: 'Terraform-ci'
 
 on: [push, pull_request]
 
-# Use the Bash shell 
 defaults:
   run:
     shell: sh
@@ -18,26 +17,20 @@ jobs:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
-
-    # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
-
-    # - name: Install Terraform
-    # - uses: hashicorp/setup-terraform@v1
-    #   with:
-    #     terraform_version: 0.14.6
 
     - name: Cache
       id: cache
       uses: actions/cache@v2
       with:
         path: |
-          - ./terraform/layer1-aws/.terraform
-          - ./terraform/layer2-k8s/.terraform
-          - ./terraform/layer1-aws/.terraform.lock.hcl
-          - ./terraform/layer2-k8s/.terraform.lock.hcl
+          ./terraform/layer1-aws/.terraform
+          ./terraform/layer2-k8s/.terraform
+          ./terraform/layer1-aws/.terraform.lock.hcl
+          ./terraform/layer2-k8s/.terraform.lock.hcl
         key: terraform_dir
+        restore-keys: terraform_dir
 
     - name: Terraform Init l1
       working-directory: ./terraform/layer1-aws
@@ -45,7 +38,14 @@ jobs:
     - name: Terraform Init l2
       working-directory: ./terraform/layer2-k8s
       run: terraform init -backend=false
+    - name: Terraform Validate l1
+      working-directory: ./terraform/layer1-aws
+      run: terraform validate -no-color .
+    - name: Terraform Validate l2
+      working-directory: ./terraform/layer2-k8s
+      run: terraform validate -no-color .
 
+  # Checks that all Terraform configuration files format
   terraform-format:
     name: 'Terraform-format'
     needs: terraform-init
@@ -57,37 +57,35 @@ jobs:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
-
     - name: Checkout
       uses: actions/checkout@v2
 
-    # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
       run: terraform fmt -recursive -write=false -check .
 
-  terraform-validate:
-    name: 'Terraform-validate'
-    needs: terraform-init
-    runs-on: ubuntu-latest
-    environment: dev
-    container:
-      image: hashicorp/terraform:0.14.6
-      env:
-        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  # # Checks that all Terraform configuration files validate
+  # terraform-validate:
+  #   name: 'Terraform-validate'
+  #   needs: terraform-init
+  #   runs-on: ubuntu-latest
+  #   environment: dev
+  #   container:
+  #     image: hashicorp/terraform:0.14.6
+  #     env:
+  #       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-    steps:
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v2
 
-    - name: Checkout
-      uses: actions/checkout@v2
+  #   - name: Terraform Validate l1
+  #     working-directory: ./terraform/layer1-aws
+  #     run: terraform validate -no-color .
+  #   - name: Terraform Validate l2
+  #     working-directory: ./terraform/layer2-k8s
+  #     run: terraform validate -no-color .
 
-    # Checks that all Terraform configuration files adhere to a validate
-    - name: Terraform Validate l1
-      working-directory: ./terraform/layer1-aws
-      run: terraform validate -no-color .
-    - name: Terraform Validate l2
-      working-directory: ./terraform/layer2-k8s
-      run: terraform validate -no-color .
-
+  # Checks that all Terraform configuration files tflint
   terraform-tflint:
     name: 'Terraform-tflint'
     needs: terraform-init
@@ -99,11 +97,9 @@ jobs:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
-
     - name: Checkout
       uses: actions/checkout@v2
 
-    # Checks that all Terraform configuration files adhere to a validate
     - name: Terraform tflint l1
       working-directory: ./terraform/layer1-aws
       run: tflint --no-color
