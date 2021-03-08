@@ -1,3 +1,21 @@
+variable "remote_state_bucket" {
+  type        = string
+  default     = "madops-terraform-state-us-east-1"
+  description = "Name of the bucket with the state"
+}
+
+variable "remote_state_key" {
+  type        = string
+  default     = "layer1-aws"
+  description = "Key of the remote state for terraform_remote_state"
+}
+
+variable "region" {
+  type        = string
+  default     = "us-east-1"
+  description = "Default infrastructure region"
+}
+
 variable "allowed_account_ids" {
   description = "List of allowed AWS account IDs"
   default     = []

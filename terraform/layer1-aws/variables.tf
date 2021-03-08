@@ -91,7 +91,7 @@ variable "eks_cluster_version" {
   description = "Version of the EKS K8S cluster"
 }
 
-variable "worker_groups" {
+variable "eks_worker_groups" {
   default = {
     spot = {
       override_instance_types = ["t3.medium", "t3a.medium"]

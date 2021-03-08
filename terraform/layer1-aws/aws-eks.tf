@@ -17,11 +17,11 @@ module "eks" {
   worker_groups_launch_template = [
     {
       name                    = "spot"
-      override_instance_types = var.worker_groups.spot.override_instance_types
-      spot_instance_pools     = var.worker_groups.spot.spot_instance_pools
-      asg_max_size            = var.worker_groups.spot.asg_max_size
-      asg_min_size            = var.worker_groups.spot.asg_min_size
-      asg_desired_capacity    = var.worker_groups.spot.asg_desired_capacity
+      override_instance_types = var.eks_worker_groups.spot.override_instance_types
+      spot_instance_pools     = var.eks_worker_groups.spot.spot_instance_pools
+      asg_max_size            = var.eks_worker_groups.spot.asg_max_size
+      asg_min_size            = var.eks_worker_groups.spot.asg_min_size
+      asg_desired_capacity    = var.eks_worker_groups.spot.asg_desired_capacity
       subnets                 = module.vpc.private_subnets
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
       public_ip               = false
@@ -41,10 +41,10 @@ module "eks" {
     },
     {
       name                 = "ondemand"
-      instance_type        = var.worker_groups.ondemand.instance_type
-      asg_desired_capacity = var.worker_groups.ondemand.asg_desired_capacity
+      instance_type        = var.eks_worker_groups.ondemand.instance_type
+      asg_desired_capacity = var.eks_worker_groups.ondemand.asg_desired_capacity
       subnets              = module.vpc.private_subnets
-      asg_max_size         = var.worker_groups.ondemand.asg_max_size
+      asg_max_size         = var.eks_worker_groups.ondemand.asg_max_size
       cpu_credits          = "unlimited"
       kubelet_extra_args   = "--node-labels=node.kubernetes.io/lifecycle=ondemand"
       public_ip            = false
@@ -64,11 +64,11 @@ module "eks" {
     },
     {
       name                    = "ci"
-      override_instance_types = var.worker_groups.ci.override_instance_types
-      spot_instance_pools     = var.worker_groups.ci.spot_instance_pools
-      asg_max_size            = var.worker_groups.ci.asg_max_size
-      asg_min_size            = var.worker_groups.ci.asg_min_size
-      asg_desired_capacity    = var.worker_groups.ci.asg_desired_capacity
+      override_instance_types = var.eks_worker_groups.ci.override_instance_types
+      spot_instance_pools     = var.eks_worker_groups.ci.spot_instance_pools
+      asg_max_size            = var.eks_worker_groups.ci.asg_max_size
+      asg_min_size            = var.eks_worker_groups.ci.asg_min_size
+      asg_desired_capacity    = var.eks_worker_groups.ci.asg_desired_capacity
       subnets                 = module.vpc.public_subnets
       cpu_credits             = "unlimited"
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot --node-labels=purpose=ci --register-with-taints=purpose=ci:NoSchedule"
