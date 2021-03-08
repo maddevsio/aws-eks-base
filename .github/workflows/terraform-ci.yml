@@ -14,6 +14,8 @@ jobs:
     environment: dev
     container:
       image: hashicorp/terraform:0.14.6
+      env:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
 
@@ -40,9 +42,13 @@ jobs:
     - name: Terraform Init l1
       working-directory: ./terraform/layer1-aws
       run: terraform init -backend=false
+      with:
+        entrypoint: /usr/bin/env
     - name: Terraform Init l2
       working-directory: ./terraform/layer2-k8s
       run: terraform init -backend=false
+      with:
+        entrypoint: /usr/bin/env
 
   terraform-format:
     name: 'Terraform-format'
@@ -51,6 +57,8 @@ jobs:
     environment: dev
     container:
       image: hashicorp/terraform:0.14.6
+      env:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
 
@@ -60,6 +68,8 @@ jobs:
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
       run: terraform fmt -recursive -write=false -check .
+      with:
+        entrypoint: /usr/bin/env
 
   terraform-validate:
     name: 'Terraform-validate'
@@ -68,6 +78,8 @@ jobs:
     environment: dev
     container:
       image: hashicorp/terraform:0.14.6
+      env:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
 
@@ -78,9 +90,13 @@ jobs:
     - name: Terraform Validate l1
       working-directory: ./terraform/layer1-aws
       run: terraform validate -no-color .
+      with:
+        entrypoint: /usr/bin/env
     - name: Terraform Validate l2
       working-directory: ./terraform/layer2-k8s
       run: terraform validate -no-color .
+      with:
+        entrypoint: /usr/bin/env
 
   terraform-tflint:
     name: 'Terraform-tflint'
@@ -89,6 +105,8 @@ jobs:
     environment: dev
     container:
       image: wata727/tflint
+      env:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     steps:
 
@@ -99,6 +117,10 @@ jobs:
     - name: Terraform tflint l1
       working-directory: ./terraform/layer1-aws
       run: tflint --no-color
+      with:
+        entrypoint: /usr/bin/env
     - name: Terraform tflint l2
       working-directory: ./terraform/layer2-k8s
       run: tflint --no-color
+      with:
+        entrypoint: /usr/bin/env
