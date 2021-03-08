@@ -1,5 +1,5 @@
 locals {
-  region                = data.terraform_remote_state.layer1-aws.outputs.region
+  region                = var.region
   short_region          = data.terraform_remote_state.layer1-aws.outputs.short_region
   az_count              = data.terraform_remote_state.layer1-aws.outputs.az_count
   name                  = data.terraform_remote_state.layer1-aws.outputs.name

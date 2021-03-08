@@ -1,13 +1,6 @@
 terraform {
   required_version = "~> 0.14.6"
 
-  backend "s3" {
-    bucket  = "madops-terraform-state-us-east-1"
-    key     = "layer1-aws/terraform.tfstate"
-    region  = "us-east-1"
-    encrypt = "true"
-  }
-
   required_providers {
     aws = {
       source  = "aws"

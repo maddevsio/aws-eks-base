@@ -308,6 +308,18 @@ Details can be found [here](https://www.terraform.io/docs/cli/run/index.html)
 
 > The first time, the `apply` command must be executed in the layers in order: first layer1, then layer2. Infrastructure `destroy` should be done in the reverse order.
 
+### terragrunt
+
+We've also used `terragrunt` to simplify s3 bucket creation and terraform backend configuration. All you need to do is to set s3 bucket name in the `TF_REMOTE_STATE_BUCKET` env variable and run terragrunt command in the `terraform/` directory:
+
+ ```bash
+ $ export TF_REMOTE_STATE_BUCKET=my-new-state-bucket
+ $ terragrunt run-all init
+ $ terragrunt run-all apply
+ ```
+
+By running this `terragrunt` will create s3 bucket, configure terraform backend and then will run `terraform init` and `terraform apply` in layer-1 and layer-2 sequentially.
+
 ## What to do after deployment
 
 After applying this configuration, you will get the infrastructure described and outlined at the beginning of the document. In AWS and within the EKS cluster, the basic resources and services necessary for the operation of the EKS k8s cluster will be created.
