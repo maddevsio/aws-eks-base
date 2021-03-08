@@ -1,79 +1,78 @@
-# Бойлерплейт базовой AWS инфраструктуры для запуска EKS-кластера
+# Boilerplate for a basic AWS infrastructure with EKS cluster
 
-В данном репозитории собраны наработки команды MadOps для быстрого развертывания Kubernetes кластера, вспомогательных сервисов и нижележащей инфраструктуры в облаке Amazon. Основным инструментом разработки и поставки является [terraform](https://www.terraform.io/)
+This repository contains the know-how of the MadOps team for the rapid deployment of a Kubernetes cluster, supporting services, and the underlying infrastructure in the Amazon cloud. The main development and delivery tool is [terraform](https://www.terraform.io/)
 
-За время работы компании мы перепробовали много инфраструктурных решений и сервисов, и прошли путь от on-premise железа до serverless. В итоге на текущий момент нашей стандартной платформой для развертывания приложений стал Kubernetes, а основным облаком - AWS. Тут стоит отметить, что несмотря на то, что 90% наших и клиентских проектов хостится на AWS, а в качестве Kubernetes платформы используется [AWS EKS](https://aws.amazon.com/eks/), мы не упираемся рогом, не тащим все подряд в Kubernetes и не заставляем хостится в AWS. Kubernetes предлагается только после сбора и анализа требований к архитектуре сервиса. А далее при выборе Kubernetes - приложениям почти не важно, как создан сам кластер - вручную, через kops или используя managed услуги облачных провайдеров - в своей основе платформа Kubernetes везде одинакова. И выбор конкретного провайдера уже складывается из дополнительный требований, экспертизы и т.д.
+In our company’s work, we have tried many infrastructure solutions and services and traveled the path from on-premise hardware to serverless. As of today, Kubernetes has become our standard platform for deploying applications, and AWS has become the main cloud. It is worth noting here that although 90% of our and our clients’ projects are hosted on AWS and [AWS EKS](https://aws.amazon.com/eks/) is used as the Kubernetes platform, we do not insist, do not drag everything to Kubernetes, and do not force anyone to be hosted on AWS. Kubernetes is offered only after the collection and analysis of service architecture requirements. And then, when choosing Kubernetes, it makes almost no difference to applications how the cluster itself is created—manually, through kops or using managed services from cloud providers—in essence, the Kubernetes platform is the same everywhere. So the choice of a particular provider is then made based on additional requirements, expertise, etc.
 
-Мы знаем, что текущая реализация далеко не идеальна. Например, в кластер мы деплоим сервисы с помощью `terraform` - это довольно топорно и против подходов кубера, но это удобно для бутстрапа - т.к. используя стейт и интерполяцию, мы передаем необходимые `ids`, `arns` и другие указатели на ресурсы и имена или секреты в шаблоны и генерим из них `values` для нужных чартов, не выходя за пределы терраформа. Есть более специфичные минусы: ресурсы `data "template_file"`, которые мы использовали для большинства шаблонов, крайне неудобны для разработки и отладки, особенно если это такие 500+ строчные рулоны, типа `terraform/layer2-k8s/templates/elk-values.yaml`. Также, смотря на `helm3` и избавление от `tiller` - большое количество helm-релизов все равно в какой-то момент приводит к зависанию плана. Частично, но не всегда решается путем таргетированного апплая `terraform apply -target`, но для консистентности стейта желательно выполнять `plan` и `apply` целиком на всей конфигурации. Если собираетесь использовать данный бойлер, желательно разбить слой `terraform/layer2-k8s` на несколько, вынеся крупные и комплексные релизы в отдельные подслои.
+We know that the current implementation is far from being perfect. For example, we deploy services to the cluster using `terraform`: it is rather clumsy and against the Kuber approaches, but it is convenient for bootstrap because, by using state and interpolation, we convey proper `IDs`, `ARNs`, and other attributes to resources and names or secrets to templates and generate values ​​from them for the required charts all within terraform. There are more specific drawbacks: the `data "template_file"` resources that we used for most templates are extremely inconvenient for development and debugging, especially if there are 500+ line rolls like `terraform/layer2-k8s/templates/elk-values.yaml`. Also, despite `helm3` got rid of the `tiller`, a large number of helm releases still at some point leads to plan hanging. Partially, but not always, it can be solved by `terraform apply -target`, but for the consistency of the state, it is desirable to execute `plan` and `apply` on the entire configuration. If you are going to use this boilerplate, it is advisable to split the `terraform/layer2-k8s` layer into several ones, taking out large and complex releases into separate modules.
 
-Могут возникнуть справедливые вопросы к количеству `.tf` файлов. Оно конечно просится на рефакторинг и "обмодуливание". Чем мы и займемся в ближайшее время, попутно решая озвученные проблемы выше.
+You may reasonably question the number of `.tf` files. This monolith certainly should be refactored and split into many micro-modules adopting `terragrunt` approach. This is exactly what we will do in the near future, solving along the way the problems described above.
 
-## Оглавление
+## Table of contents
 
-- [Архитектурная схема](#архитектурная-схема)
-- [Стоимость текущей инфры](#стоимость-текущей-инфры)
-- [Структура неймспейсов в K8S кластере](#структура-неймспейсов-в-k8s-кластере)
-- [Необходимый инструментарий](#необходимый-инструментарий)
-- [Полезные экстеншены VSCode](#полезные-экстеншены-vscode)
-- [AWS аккаунт](#aws-аккаунт)
-  - [Настройки IAM](#настройки-iam)
-  - [Настройка awscli](#настройка-awscli)
-- [Как использовать этот репо](#как-использовать-этот-репо)
-  - [Подготовка](#подготовка)
+- [Architecture diagram](#architecture-diagram)
+- [Current infrastructure cost](#current-infrastructure-cost)
+- [Namespace structure in the K8S cluster](#namespace-structure-in-the-k8s-cluster)
+- [Useful tools](#useful-tools)
+- [Useful VSCode extensions](#useful-vscode-extensions)
+- [AWS account](#aws-account)
+  - [IAM settings](#iam-settings)
+  - [Setting up awscli](#setting-up-awscli)
+- [How to use this repo](#how-to-use-this-repo)
+  - [Getting ready](#getting-ready)
     - [S3 state backend](#s3-state-backend)
-    - [Секреты](#секреты)
-    - [Домен и SSL](#домен-и-ssl)
-  - [Работа с terraform](#работа-с-terraform)
+    - [Secrets](#secrets)
+    - [Domain and SSL](#domain-and-ssl)
+  - [Working with terraform](#working-with-terraform)
     - [init](#init)
     - [plan](#plan)
     - [apply](#apply)
-- [Что делать после деплоя](#что-делать-после-деплоя)
+- [What to do after deployment](#what-to-do-after-deployment)
   - [examples](#examples)
 - [Coding conventions](#coding-conventions)
-  - [Имена и подходы используемые в коде](#имена-и-подходы-используемые-в-коде)
-    - [Базовое имя проекта](#базовое-имя-проекта)
-    - [Формирование уникального префикса имен ресурсов](#формирование-уникального-префикса-имен-ресурсов)
-    - [Разделители](#разделители)
-    - [Формирование имен ресурсов](#формирование-имен-ресурсов)
-    - [Формирование имен переменных](#формирование-имен-переменных)
-    - [Формирование имен вывода данных](#формирование-имен-вывода-данных)
-  - [Название файлов, директорий и модулей терраформа](#название-файлов-директорий-и-модулей-терраформа)
-    - [Общие конфигурационные файлы](#общие-конфигурационные-файлы)
-    - [Специфичные конфигурационные файлы](#специфичные-конфигурационные-файлы)
-    - [Модули](#модули)
-  - [Структура проекта](#структура-проекта)
+  - [Names and approaches used in code](#names-and-approaches-used-in-code)
+    - [Base project name](#base-project-name)
+    - [Unique prefix of resource names](#unique-prefix-of-resource-names)
+    - [Separators](#separators)
+    - [Resource names](#resource-names)
+    - [Variable names](#variable-names)
+    - [Output names](#output-names)
+  - [Names of terraform files, directories, and modules](#names-of-terraform-files-directories-and-modules)
+    - [General configuration files](#general-configuration-files)
+    - [Specific configuration files](#specific-configuration-files)
+    - [Modules](#modules)
+  - [Project structure](#project-structure)
 
-## Архитектурная схема
+## Architecture diagram
 
 ![aws-base-diagram](docs/aws-base-diagrams-Infrastracture-v5.svg)
 
-Эта схема описывает инфраструктуру, создаваемую по умолчанию.
-Небольшое описание того, что мы имеем на схеме. Инфраструктура в облаке AWS
+This diagram describes the default infrastructure:
 
-* Мы используем три availability Zone
-* Основная сеть VPC
-  * Три публичные подсети для ресурсов, которые должны быть доступны из интернета
-    * Elastic load balancing - точка входа в k8s cluster
-    * Internet gateway - точка входа в созданную VPC
-    * Single Nat Gateway - сервис для организации доступа для инстансов из приватных сетей в публичные.
-  * Три приватные подсети с доступом к интернету через Nat Gateway
-  * Три интра подсети без доступа в интернет
-  * Три приватные подсети для RDS
-  * Route tables для приватных сетей
-  * Route tables для публичных сетей
-* Autoscaling groups
-  * On-demand - эта группа с 1-5 on-demand instances для ресурсов с требованиями бесперебойной работы
-  * Spot     - эта группа с 1-6 spot instances для ресурсов, которым не критично прерывание работы
-  * CI       - эта группа с 0-3 spot instances, создающихся по требованию gitlab-runner, расположены в публичной сети
-* EKS control plane - это узлы плоскости управления кластеров k8s
-* Route53 - сервис для управления DNS
-* Cloudwatch - сервис для получения метрик о состоянии работы ресурсов в облаке AWS
-* AWS Certificate manager - сервис для управления сертификатами AWS
-* SSM parameter store - сервис для хранения, извлечения и контроля значений конфигурации
-* S3 bucket - это бакет используется для хранения terraform state
-* Elastic container registry - сервис для хранения docker images
+- We use three availability Zones
+- VPC
+  - Three public subnets for resources that can be accessible from the Internet
+    - Elastic load balancing - entry point to the k8s cluster
+    - Internet gateway - entry point to the created VPC
+    - Single Nat Gateway - service for organizing access for instances from private networks to public ones.
+  - Three private subnets with Internet access via Nat Gateway
+  - Three intra subnets without Internet access
+  - Three private subnets for RDS
+  - Route tables for private networks
+  - Route tables for public networks
+- Autoscaling groups
+  - On-demand - a group with 1-5 on-demand instances for resources with continuous uptime requirements
+  - Spot - a group with 1-6 spot instances for resources where interruption of work is not critical
+  - CI - a group with 0-3 spot instances created based on gitlab-runner requests; located in the public network
+- EKS control plane - nodes of the k8s clusters’ control plane
+- Route53 - DNS management service
+- Cloudwatch - service for obtaining the metrics about resources’ state of operation in the AWS cloud
+- AWS Certificate manager - service for AWS certificate management
+- SSM parameter store - service for storing, retrieving, and controlling configuration values
+- S3 bucket - this bucket is used to store terraform state
+- Elastic container registry - service for storing docker images
 
-## Стоимость текущей инфры
+## Current infrastructure cost
 
 | Resource      | Type/size                | Price per hour $ | Price per GB $ | Number | Monthly cost      |
 |---------------|--------------------------|-----------------:|---------------:|-------:|------------------:|
@@ -90,85 +89,83 @@
 | Cloudwatch    | First 10 Metrics - free  |                  |                |        | 0                 |
 |               |                          |                  |                | Total  | 216.8             |
 
-> Стоимость указана без подсчета количества трафика для Nat Gateway Load Balancer и S3
+> The cost is indicated without counting the amount of traffic for Nat Gateway Load Balancer and S3
 
-## Структура неймспейсов в K8S кластере
-
-На этой схеме указаны неймспейсы, которые используются в кластере, и ресурсы, которые находятся в этих неймспесах по умолчанию.
+## Namespace structure in the K8S cluster
 
 ![aws-base-namespaces](docs/aws-base-diagrams-Namespaces-v3.svg)
 
-Используемые в кластере чарты, с указанием неймспейса и коротким описанием.
+This diagram shows the namespaces used in the cluster and the services deployed there
 
 | Namespace   |  service                                                                                                            | Description                                                                                                             |
 |-------------|---------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------|
-| kube-system | [core-DNS](https://github.com/coredns/coredns)                                                                      | DNS сервер, используемый в кластере                                                                                      |
-| certmanager | [cert-manager](https://github.com/jetstack/cert-manager)                                                            | Cервис для автоматизации управления и получения сертификатов TLS                                                        |
-| certmanager | [cluster-issuer](https://gitlab.com/madboiler/devops/aws-eks-base/-/tree/master/helm-charts/cluster-issuer)         | Ресурс, представляющий центр сертификации, который может генерировать подписанные сертификаты, выполняя запросы подписи. |
-| ing         | [nginx-ingress](https://github.com/kubernetes/ingress-nginx)                                                        | Ингресс контролер, который использует nginx в качестве реверс прокси.                                                   |
-| ing         | [Certificate](https://gitlab.com/madboiler/devops/aws-eks-base/-/tree/master/helm-charts/certificate)               | Объект сертификата, который используется для nginx-ingress.                                                             |
-| dns         | [external-dns](https://github.com/bitnami/charts/tree/master/bitnami/external-dns)                                  | Сервис для организации доступа к внешним DNS из кластера.                                                               |
-| ci          | [gitlab-runner](https://gitlab.com/gitlab-org/charts/gitlab-runner)                                                 | Гитлаб раннер используемый для запуска агентов gitlab-ci.                                                                |
-| sys         | [aws-node-termination-handler](https://github.com/aws/eks-charts/tree/master/stable/aws-node-termination-handler)   | Сервис для контроля корректного завершения работы EC2.                                                                  |
-| sys         | [autoscaler](https://github.com/kubernetes/autoscaler)                                                              | Сервис, который автоматически регулирует размер k8s кластера в зависимости от требований.                                |
-| sys         | [kubernetes-external-secrets](https://github.com/external-secrets/kubernetes-external-secrets)                      | Сервис для работы с внешними хранилищами секретов, такими как secret-manager, ssm parameter store и тд.                 |
-| sys         | [Reloader](https://github.com/stakater/Reloader)                                                                    | Сервис, который следит за изменения внешних секретов и обновляет их в кластере.                                          |
-| monitoring  | [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) | Зонтичный чарт включает в себя группу сервисов, используемых для мониторинга работы кластера и визуализации данных.       |
-| monitoring  | [loki-stack](https://github.com/grafana/loki/tree/master/production/helm/loki-stack)                                | Зонтичный чарт включает в себя сервис сбора логов контейнеров и визуализации данных.                                    |
-| elk         | [elk](https://gitlab.com/madboiler/devops/aws-eks-base/-/tree/master/helm-charts/elk)                               | Зонтичный чарт включает в себя группу сервисов, для сбора логов, метрик и визуализации этих данных.                     |
+| kube-system | [core-DNS](https://github.com/coredns/coredns)                                                                      | DNS server used in the cluster                                                                                      |
+| certmanager | [cert-manager](https://github.com/jetstack/cert-manager)                                                            | Service for automation of management and reception of TLS certificates                                                        |
+| certmanager | [cluster-issuer](https://gitlab.com/madboiler/devops/aws-eks-base/-/tree/master/helm-charts/cluster-issuer)         | Resource representing a certification center that can generate signed certificates using different CA |
+| ing         | [nginx-ingress](https://github.com/kubernetes/ingress-nginx)                                                        | Ingress controller that uses nginx as a reverse proxy                                                   |
+| ing         | [Certificate](https://gitlab.com/madboiler/devops/aws-eks-base/-/tree/master/helm-charts/certificate)               | The certificate object used for nginx-ingress                                                             |
+| dns         | [external-dns](https://github.com/bitnami/charts/tree/master/bitnami/external-dns)                                  | Service for organizing access to external DNS from the cluster                                                               |
+| ci          | [gitlab-runner](https://gitlab.com/gitlab-org/charts/gitlab-runner)                                                 | Gitlab runner used to launch gitlab-ci agents                                                                |
+| sys         | [aws-node-termination-handler](https://github.com/aws/eks-charts/tree/master/stable/aws-node-termination-handler)   | Service for controlling the correct termination of EC2                                                                  |
+| sys         | [autoscaler](https://github.com/kubernetes/autoscaler)                                                              | Service that automatically adjusts the size of the k8s cluster depending on the requirements                                |
+| sys         | [kubernetes-external-secrets](https://github.com/external-secrets/kubernetes-external-secrets)                      | Service for working with external secret stores, such as secret-manager, ssm parameter store, etc                 |
+| sys         | [Reloader](https://github.com/stakater/Reloader)                                                                    | Service that monitors changes in external secrets and updates them in the cluster                                          |
+| monitoring  | [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) | Umbrella chart including a group of services used to monitor cluster performance and visualize data       |
+| monitoring  | [loki-stack](https://github.com/grafana/loki/tree/master/production/helm/loki-stack)                                | Umbrella chart including a service used to collect container logs and visualize data                     |
+| elk         | [elk](https://gitlab.com/madboiler/devops/aws-eks-base/-/tree/master/helm-charts/elk)                               | Umbrella chart including a group of services for collecting logs and metrics and visualizing this data                     |
 
-## Необходимый инструментарий
+## Useful tools
 
-* [tfenv](https://github.com/tfutils/tfenv) - утилита для менеджмента разных версий терраформа, необходимую версию можно задать напрямую аргументом или через `.terraform-version`
-* [terraform](https://www.terraform.io/) - тот самый терраформ, наш главный инструмент разработки: `tfenv install`
-* [awscli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html) - консольная утилита для работы с AWS API
-* [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) - консольная тула для работы с кубер кластерами
-* [helm](https://helm.sh/docs/intro/install/) - тула для создания и деплоя шаблонизированных чартов приложений в кубер
-* [helmfile](https://github.com/roboll/helmfile) - "докер композ" для хелм чартов
-* [terragrunt](https://terragrunt.gruntwork.io/) - небольшой wrapper для терраформа обеспечивающий DRY для некоторых статичных частей терраформ кода
-* [awsudo](https://github.com/meltwater/awsudo) - простая консольная утилита, позволяющая запускать команды awscli из-под определенных ролей
-* [aws-vault](https://github.com/99designs/aws-vault) - тула для секурного менеджмента ключей AWS и запуска консольных команд
-* [aws-mfa](https://github.com/broamski/aws-mfa) - утилита для автоматизации получения временных реквизитов доступа к AWS с включенным MFA
-* [vscode](https://code.visualstudio.com/) - основная IDE
+- [tfenv](https://github.com/tfutils/tfenv) - tool for managing different versions of terraform; the required version can be specified directly as an argument or via `.terraform-version`
+- [terraform](https://www.terraform.io/) - terraform itself, our main development tool: `tfenv install`
+- [awscli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html) - console utility to work with AWS API
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) - conssole utility to work with Kubernetes API
+- [helm](https://helm.sh/docs/intro/install/) - tool to create application packages and deploy them into k8s
+- [helmfile](https://github.com/roboll/helmfile) - "docker compose" for helm
+- [terragrunt](https://terragrunt.gruntwork.io/) - small terraform wrapper providing DRY approach in some cases
+- [awsudo](https://github.com/meltwater/awsudo) - simple console utility that allows running awscli commands assuming specific roles
+- [aws-vault](https://github.com/99designs/aws-vault) -  tool for securely managing AWS keys and running console commands
+- [aws-mfa](https://github.com/broamski/aws-mfa) - utility for automating the reception of temporary STS tockens when MFA is enabled
+- [vscode](https://code.visualstudio.com/) - our main IDE
 
-> Опционально, можно поставить и сконфигурить пре-коммит хук для терраформа: [pre-commit-terraform](https://github.com/antonbabenko/pre-commit-terraform), что позволит форматировать и проверять код еще на этапе коммита
+> Optionally, a pre-commit hook can be set up and configured for terraform: [pre-commit-terraform](https://github.com/antonbabenko/pre-commit-terraform), this will allow formatting and validating code at the commit stage
 
-## Полезные экстеншены VSCode
+## Useful VSCode extensions
 
-* [editorconfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
-* [terraform](https://marketplace.visualstudio.com/items?itemName=4ops.terraform)
-* [drawio](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio)
-* [yaml](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
-* [embrace](https://marketplace.visualstudio.com/items?itemName=mycelo.embrace)
-* [js-beautify](https://marketplace.visualstudio.com/items?itemName=HookyQR.beautify)
-* [docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker)
-* [git-extension-pack](https://marketplace.visualstudio.com/items?itemName=donjayamanne.git-extension-pack)
-* [githistory](https://marketplace.visualstudio.com/items?itemName=donjayamanne.githistory)
-* [kubernetes-tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)
-* [markdown-preview-enhanced](https://marketplace.visualstudio.com/items?itemName=shd101wyy.markdown-preview-enhanced)
-* [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
-* [file-tree-generator](https://marketplace.visualstudio.com/items?itemName=Shinotatwu-DS.file-tree-generator)
-* [gotemplate-syntax](https://marketplace.visualstudio.com/items?itemName=casualjim.gotemplate)
+- [editorconfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+- [terraform](https://marketplace.visualstudio.com/items?itemName=4ops.terraform)
+- [drawio](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio)
+- [yaml](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
+- [embrace](https://marketplace.visualstudio.com/items?itemName=mycelo.embrace)
+- [js-beautify](https://marketplace.visualstudio.com/items?itemName=HookyQR.beautify)
+- [docker](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker)
+- [git-extension-pack](https://marketplace.visualstudio.com/items?itemName=donjayamanne.git-extension-pack)
+- [githistory](https://marketplace.visualstudio.com/items?itemName=donjayamanne.githistory)
+- [kubernetes-tools](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)
+- [markdown-preview-enhanced](https://marketplace.visualstudio.com/items?itemName=shd101wyy.markdown-preview-enhanced)
+- [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
+- [file-tree-generator](https://marketplace.visualstudio.com/items?itemName=Shinotatwu-DS.file-tree-generator)
+- [gotemplate-syntax](https://marketplace.visualstudio.com/items?itemName=casualjim.gotemplate)
 
-## AWS аккаунт
+## AWS account
 
-Мы не будем сильно углубляться в настройки безопасности, тк требования у всех разные. Однако есть самые простые и базовые шаги, которые стоит выполнить, чтобы идти дальше. Если у вас все готово, смело пропускайте этот раздел.
+We will not go deep into security settings since everyone has different requirements. However, there are the simplest and most basic steps worth following to move on. If you have everything in place, feel free to skip this section.
 
-> Крайне не рекомендуется использовать рутовый аккаунт для работы с AWS. Не ленитесь создавать пользователей с требуемыми/ограниченными правами.
+> It is highly recommended not to use a root account to work with AWS. Make an extra effort of creating users with required/limited rights.
 
-### Настройки IAM
+### IAM settings
 
-Итак, вы создали акк, прошли подтверждение, возможно уже даже создали Access Keys для консоли. В любом случае перейдите в настройки безопасности [аккаунта](https://console.aws.amazon.com/iam/home#/security_credentials) и обязательно выполните следующие шаги:
+So, you have created an account, passed confirmation, perhaps even created Access Keys for the console. In any case, go to your [account](https://console.aws.amazon.com/iam/home#/security_credentials) security settings and be sure to follow these steps:
 
-* Задайте сильный пароль
-* Активируйте MFA для root аккаунта
-* Удалите и не создавайте access keys root аккаунта
+- Set a strong password
+- Activate MFA for the root account
+- Delete and do not create access keys of the root account
 
-Далее в [IAM](https://console.aws.amazon.com/iam/home#/home) консоли:
+Further in the [IAM](https://console.aws.amazon.com/iam/home#/home) console:
 
-* В разделе [Policies](https://console.aws.amazon.com/iam/home#/policies) создайте политику `MFASecurity`, запрещающую пользователям пользоваться сервисами без активации [MFA](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_aws_my-sec-creds-self-manage-mfa-only.html)
-* В разделе [Roles](https://console.aws.amazon.com/iam/home?region=us-east-1#/roles) создайте новую роль `administrator`. Выберете *Another AWS Account*, указав в поле Account ID номер нашего аккаунт. Отметьте галочку *Require MFA*. В следующем окне Permissions прикрепите к ней политику `AdministratorAccess`
-* В разделе [Policies](https://console.aws.amazon.com/iam/home#/policies) создайте политику `assumeAdminRole`:
+- In the [Policies](https://console.aws.amazon.com/iam/home#/policies) menu, create `MFASecurity` policy that prohibits users from using services without activating [MFA](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_examples_aws_my-sec-creds-self-manage-mfa-only.html)
+- In the [Roles](https://console.aws.amazon.com/iam/home?region=us-east-1#/roles) menu, create new role `administrator`. Select *Another AWS Account* - and enter your account number in the *Account ID* field. Check the *Require MFA* checkbox. In the next *Permissions* window, attach the `AdministratorAccess` policy to it.
+- In the [Policies](https://console.aws.amazon.com/iam/home#/policies) menu, create `assumeAdminRole` policy:
 
   ```json
   {
@@ -176,18 +173,19 @@
     "Statement": {
         "Effect": "Allow",
         "Action": "sts:AssumeRole",
-        "Resource": "arn:aws:iam::730809894724:role/administrator"
+        "Resource": "arn:aws:iam::<your-account-id>:role/administrator"
     }
   }
   ```
-* В разделе [Groups](https://console.aws.amazon.com/iam/home#/groups) создайте группу `admin`, в следующем окне прикрепите к ней политику `assumeAdminRole` и `MFASecurity`. Завершите создание группы.
-* В разделе [Users](https://console.aws.amazon.com/iam/home#/users) создайте пользователя для работы с AWS, выбрав обе галочки в *Select AWS access type*. В следующем окне добавьте пользователя в группу `admin`. Завершите создание и скачайте CSV с реквизитами доступа.
 
-> В рамках этой доки мы не рассмотрели более секурный и правильный метод управления пользователями, используя внешние Identity провайдеры. Такие как G-suite, Okta и [другие](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers.html).
+- In the [Groups](https://console.aws.amazon.com/iam/home#/groups) menu, create the `admin` group; in the next window, attach `assumeAdminRole` and `MFASecurity` policy to it. Finish creating the group.
+- In the [Users](https://console.aws.amazon.com/iam/home#/users) menu, create a user to work with AWS by selecting both checkboxes in *Select AWS access type*. In the next window, add the user to the `admin` group. Finish and download CSV with credentials.
 
-### Настройка awscli
+> In this doc, we haven't considered a more secure and correct method of user management that uses external Identity providers. These include G-suite, Okta, and [others](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers.html)
 
-* Terraform умеет работать с переменными окружения для [AWS access key ID and a secret access key](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys) или AWS профилем, в данном примере создадим aws profile:
+### Setting up awscli
+
+- Terraform can work with environment variables for [AWS access key ID and a secret access key](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys) or AWS profile; in this example, we will create an aws profile:
 
   ```bash
   $ aws configure --profile maddevs
@@ -197,28 +195,24 @@
   Default output format [None]: json
   ```
 
-  Нужно добавить в `~/.aws/config` в profile `maddevs`
-
-  `role_arn = <administrator role arn>`
-
   ```bash
   $ export AWS_PROFILE=maddevs
   ```
 
-* В качестве альтернатив можно использовать `aws-vault` и `awsudo`
-* Для того чтобы использовать awscli и соответственно terraform с [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/), можно использовать [aws-mfa](https://github.com/broamski/aws-mfa)
+- Go [here](https://docs.aws.amazon.com/neptune/latest/userguide/iam-auth-temporary-credentials.html) to learn how to get temporary session tokens and assume role
+- Alternatively, to use your `awscli`, `terraform` and other CLI utils with [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/)and roles, you can use `aws-mfa`, `aws-vault` and `awsudo`
 
-## Как использовать этот репо
+## How to use this repo
 
-### Подготовка
+### Getting ready
 
 #### S3 state backend
 
-В качестве бэкенда для хранения стейтов терраформа и для обмена данными между слоями используется S3. На текущей момент имя S3 бакета захардкожено в коде `madops-terraform-state-us-east-1`. Необходимо создать отдельный бакет в своем аккаунте указать его имя в `main.tf` для обоих слоев.
+S3 is used as a backend for storing terraform states and for exchanging data between layers. Currently, the name of the S3 bucket is hardcoded as `madops-terraform-state-us-east-1`. You need to create a separate bucket in your account and specify its name in `main.tf` for both layers.
 
-#### Секреты
+#### Secrets
 
-В корне `layer2-k8s` лежит файл `aws-ssm-gitlab-secrets.tf`, ожидающий значения, заданные в AWS SSM Parameter Store. Данные секреты используются для аутентификации в Kibana и Grafana используя GitLab. Также в параметрах задается токен для регистрации гитлаб раннера:
+At the root of `layer2-k8s` is the `aws-ssm-gitlab-secrets.tf` file waiting for values set in the AWS SSM Parameter Store. These secrets are used for authentication with Kibana and Grafana using GitLab. Also, in the parameters, a token is set for registering a gitlab runner:
 
   ```
   /maddevs-demo/infra/grafana/gitlab_client_id
@@ -228,7 +222,7 @@
   /maddevs-demo/infra/runner/gitlab_registration_token
   ```
 
-Другой способ передачи этих секретов - использовать AWS Secret Manager. В файле `examples/aws-secret-manager-gitlab-secrets.tf` находится пример использования. Данный конфиг ожидает json секрет `/maddevs-demo/infra/gitlab-tokens` с содержимым:
+Another way to set these secrets is to use AWS Secret Manager. The `examples/aws-secret-manager-gitlab-secrets.tf` file contains an example of usage. This config expects json secret `/maddevs-demo/infra/gitlab-tokens` with the following content:
 
   ```json
   {
@@ -240,25 +234,25 @@
   }
   ```
 
-Используя тот или иной способ, задайте необходимые секреты, можно задать пустые значения. В случае если вы не будете использовать данные секреты, следует удалить эти `.tf` файлы из корня `layer2-k8s`
+Using either of these methods, set proper secrets; you can set empty values. If you will not use these secrets, you should delete these `.tf` files from the `layer2-k8s` root.
 
-#### Домен и SSL
+#### Domain and SSL
 
-Необходимо будет купить или подключить уже купленный домен в Route53. Имя домена и айди зоны нужно будет задать в переменных `domain_name` и `zone_id` в слое layer1.
+You will need to purchase or use an already purchased domain in Route53. The domain name and zone ID will need to be set in the `domain_name` and `zone_id` variables in layer1.
 
-По умолчанию значение переменной `create_acm_certificate = false`. Что указывает терраформу запросить а arn существующего ACM сертификата. Установите значение `true` если вы хотите, чтобы терраформ создал новый SSL сертификат.
+By default, the variable `create_acm_certificate` is set to `false`. Which instructs terraform to search ARN of an existing ACM certificate. Set to `true` if you want terraform to create a new ACM SSL certificate.
 
-### Работа с terraform
+### Working with terraform
 
 #### init
 
-Команда `terraform init` используется для инициализации стейта и его бекенда, провайдеров, плагинов и модулей. Это первая команда, которую необходимо выполнить в `layer1` и `layer2`:
+The `terraform init` command is used to initialize the state and its backend, downloads providers, plugins, and modules. This is the first command to be executed in `layer1` and `layer2`:
 
   ```bash
   $ terraform init
   ```
 
-  Правильный аутпут:
+  Correct output:
 
   ```
   * provider.aws: version = "~> 2.10"
@@ -272,7 +266,7 @@
 
 #### plan
 
-Команда `terraform plan` считывает стейт терраформа, конфигурационные файлы и выводит список изменений и действий, которые необходимо произвести, чтобы привести стейт в соответствие с конфигурацией. Удобный способ проверить изменения перед применением. В случае использования с параметром `-out` сохраняет пакет изменений в указанный файл, который позже можно будет использовать при `terraform apply`. Пример вызова:
+The `terraform plan` command reads the terraform state and configuration files and displays a list of changes and actions that need to be performed to bring the state in line with the configuration. It's a convenient way to test changes before applying them. When used with the `-out` parameter, it saves a batch of changes to a specified file that can later be used with `terraform apply`. Call example:
 
   ```bash
   $ terraform plan
@@ -288,7 +282,7 @@
 
 #### apply
 
-Команда `terraform apply` сканирует `.tf` в текущей директории и приводит стейт к описанной в них конфигурации, производя изменения в инфраструктуре. По умолчанию перед применение производится `plan` с диалогом о продолжении. Опционально можно указать в качестве инпута сохраненный план файл:
+The `terraform apply` command scans `.tf` in the current directory and brings the state to the configuration described in them by making changes in the infrastructure. By default, `plan` with a continuation dialog is performed before applying. Optionally, you can specify a saved plan file as input:
 
   ```bash
   $ terraform apply
@@ -304,22 +298,21 @@
   Apply complete! Resources: 82 added, 0 changed, 0 destroyed.
   ```
 
-Не всегда нам нужно перечитывать и сравнивать весь стейт, если были добавлены небольшие изменения не влияющие на всю инфру. Для таких целей можно использовать таргетный `apply`, например:
+We do not always need to re-read and compare the entire state if small changes have been added that do not affect the entire infrastructure. For this, you can use targeted `apply`; for example:
 
   ```bash
   $ terraform apply -target helm_release.kibana
   ```
 
-Более подробно можно почитать по этой [ссылке](https://www.terraform.io/docs/cli/run/index.html)
+Details can be found [here](https://www.terraform.io/docs/cli/run/index.html)
 
-> Первый раз команда `apply` должна производиться в слоях по порядку: сначала layer1, следом layer2.
-А `destroy` инфраструктуры должен производиться в обратном порядке.
+> The first time, the `apply` command must be executed in the layers in order: first layer1, then layer2. Infrastructure `destroy` should be done in the reverse order.
 
-## Что делать после деплоя
+## What to do after deployment
 
-После апплая данной конфигурации вы получите инфраструктуру, описанную и обрисованную в начале документа. В AWS и внутри EKS кластера будут созданы базовые ресурсы и сервисы, необходимые для работы EKS k8s кластера.
+After applying this configuration, you will get the infrastructure described and outlined at the beginning of the document. In AWS and within the EKS cluster, the basic resources and services necessary for the operation of the EKS k8s cluster will be created.
 
-Получить доступ к кластеру можно командой:
+You can get access to the cluster using this command:
 
   ```bash
   aws eks update-kubeconfig --name maddevs-demo-use1 --region us-east-1
@@ -327,18 +320,19 @@
 
 ### examples
 
-В каждом слое находится директория `examples/`, которая содержит рабочие примеры, расширяющие базовую конфигурацию. Название файлов и содержимое соответствует нашим кодинг соглашениям, поэтому дополнительное описание не требуется. Если необходимо что-то заюзать - достаточно перенести из этой папки в корень слоя.
+Each layer has an `examples/` directory that contains working examples that expand the basic configuration. The files’ names and contents are in accordance with our coding conventions, so no additional description is required. If you need to use something, just move it from this folder to the root of the layer.
 
-Это позволит расширить вам базовый функционал запустив систему мониторинга на базе ELK или Prometheus Stack и тд
+This will allow you to expand your basic functionality by launching a monitoring system based on ELK or Prometheus Stack, etc.
+
 ## Coding conventions
 
-В данном разделе собраны самые базовые рекомендации для пользователей и контрибьютеров по написанию кода, неймингу и тд. Задача - однородный, стандартизированный, читаемый код. Дополнение, предложения и изменения - приветствуется.
+This section contains the most basic recommendations for users and contributors on coding, naming, etc. The goal is consistent, standardized, readable code. Additions, suggestions and changes are welcome.
 
-### Имена и подходы, используемые в коде
+### Names and approaches used in code
 
-#### Базовое имя проекта
+#### Base project name
 
-Базовое имя задается в переменной name в variables.tf, используется при формировании уникальных имен ресурсов:
+The base name is set in the name variable in `variables.tf` and is used to form unique resource names:
 
 ```
 variable "name" {
@@ -346,9 +340,9 @@ variable "name" {
 }
 ```
 
-#### Формирование уникального префикса имен ресурсов
+#### Unique prefix of resource names
 
-На базе переменной name, целевого региона (переменная region) и значения terraform.workspace мы формируем уникальный префикс для имен ресурсов:
+Based on the variables `name`, `region` and the `terraform.workspace` value, we form a unique prefix for resource names:
 
 ```
 locals {
@@ -358,31 +352,31 @@ locals {
 }
 ```
 
-Пример префикса:
+Prefix example:
 
-* name = "demo"
-* region = "us-east-2"
-* terraform.workspace = "test"
+- name = "demo"
+- region = "us-east-2"
+- terraform.workspace = "test"
 
 `demo-test-use2`
 
-После чего значение `local.name` используется в качестве префикса для всех атрибутов `name` и `name_prefix`. Это позволяет нам запускать копии инфраструктуры даже в одном аккаунте.
+The `local.name` value is then used as a prefix for all `name` and `name_prefix` attributes. This allows us to run copies of the infrastructure even in one account.
 
-#### Разделители
+#### Separators
 
-* Для атрибутов `name` или `name_prefix` у ресурсов, модулей и тд, а так же для значений данных вывода в качестве разделителя используется символ дефиса `-`:
+- For the `name` or `name_prefix` attributes of resources, modules, etc., as well as for output data values, the hyphen character `-` is used as the separator:
 
   ```
   name = "${local.name}-example"
   ```
 
-  или
+  or
 
   ```
   name = "demo-test-use2-example"
   ```
 
-* Для сложных имен в объявлении ресурсов, переменных, модулей, аутпутов в коде используется символ подчёркивания `_`:
+- For complex names in the declaration of resources, variables, modules, and outputs in code, the underscore character `_` is used:
 
   ```
   resource "aws_iam_role_policy_attachment" "pritunl_server"{
@@ -395,14 +389,16 @@ locals {
   }
   ```
 
-#### Формирование имен ресурсов
+> Use `name_prefix` where possible
 
-* Не следует повторять тип ресурса в имени ресурса (ни частично, ни полностью):
-  * Хорошо: `resource "aws_route_table" "public" {}`
-  * Плохо: `resource "aws_route_table" "public_route_table" {}`
-  * Плохо: `resource "aws_route_table" "public_aws_route_table" {}`
+#### Resource names
 
-* Если ресурс уникален в рамках модуля, следует при именовании использовать `this`. Например модуль содержит один ресурс типа `aws_nat_gateway` и несколько ресурсов типа `aws_route_table`, в этом случае `aws_nat_gateway` должен быть назван `this`, а  `aws_route_table` должны иметь более осмысленные имена,например `private`, `public`, `database`:
+- The resource type should not be duplicated in the resource name (either partially or in full):
+  - Good: `resource "aws_route_table" "public" {}`
+  - Bad: `resource "aws_route_table" "public_route_table" {}`
+  - Bad: `resource "aws_route_table" "public_aws_route_table" {}`
+
+- If the resource is unique within the module, you should use `this` when naming. For example, the module contains one `aws_nat_gateway` resource and several `aws_route_table` resources; in this case, `aws_nat_gateway` should be named `this`, while `aws_route_table` should have more meaningful names, e.g. `private`, `public`, `database`:
 
   ```
   resource "aws_nat_gateway" "this" {
@@ -416,15 +412,14 @@ locals {
   }
   ```
 
-* Для имен должны использоваться существительные
-* В большинстве случаев, если ресурс поддерживает параметр `name_prefix`, следует использовать его вместо параметра `name`
+- Nouns must be used for names
 
-#### Формирование имен переменных
+#### Variable names
 
-* Используйте те же имена переменных, описание и значение по умолчанию, как определено в официальной документации терраформ для ресурса, над которым вы работаете
-* Не указывать `type = "list"`, если есть `default = []`
-* Не указывать `type = "map"`, если есть `default = {}`
-* Используйте множественное число в имени переменных типа list и map:
+- Use the same variable names, description, and default value as defined in the official terraform documentation for the resource you are working on
+- Don’t specify `type = "list"` if there is `default = []`
+- Don’t specify `type = "map"` if there is `default = {}`
+- Use plurals in the names of variables like list and map:
 
   ```
   variable "rds_parameters" {
@@ -437,9 +432,8 @@ locals {
   }
   ```
 
-* Всегда используйте description для переменных
-* При объявлении переменных соблюдайте следующий порядок ключей: `description`, `type`, `default`
-* Чем выше уровень объявления переменной, тем желательней использовать семантические префиксы для каждой переменной:
+- Always use description for variables
+- The higher the level of variable declaration, the more desirable it is to use semantic prefixes for each variable:
 
   ```
   variable "ecs_instance_type" {
@@ -451,13 +445,11 @@ locals {
   }
   ```
 
-#### Формирование имен вывода данных
+#### Output names
 
-* Имена вывода данных должны быть понятны за пределами терраформ и вне контекста модуля (когда пользователь использует модуль, должны быть понятны тип и атрибут возвращаемого значения)
-
-* Общая рекомендация для именования вывода данных заключается в том, что имя должно описывать содержащееся в ней значение и не иметь излишеств
-
-* Правильная структура для имен вывода выглядит как `{name}_{type}_{attribute}` для неуникальных атрибутов и ресурсов и `{type}_{attribute}` для уникальных, например вывод одной из нескольких security групп и уникального публичного адреса:
+- Output names must be understandable outside terraforms and outside the module’s context (when a user uses the module, the type and attribute of the return value must be clear)
+- The general recommendation for data output naming is that the name should describe the value inside and should not have redundancies
+- The correct structure for output names looks like `{name}_{type}_{attribute}` for non-unique attributes and resources and `{type}_{attribute}` for unique ones; an example of displaying one of several security groups and a unique public address:
 
   ```
   output "alb_security_group_id" {
@@ -471,74 +463,64 @@ locals {
   }
   ```
 
-* Если возвращаемое значение является списком, оно должно иметь имя во множественном числе
-* Всегда используйте description для вывода данных
+- If the return value is a list, it must have a plural name
+- Use description for outputs
 
-### Название файлов, директорий и модулей терраформа
+### Names of terraform files, directories, and modules
 
-#### Общие конфигурационные файлы
+#### General configuration files
 
-Каждый модуль и конфигурация терраформа содержит набор общих файлов заканчивающихся на `.tf`:
+Each terraform module and configuration contains a set of general files ending in `.tf`:
 
-* `main.tf` - содержит настройки терраформа, если это верхний слой; или основной рабочий код, если это модуль
-* `variables.tf` - входные значения конфигурации или модуля
-* `outputs.tf` - выходные значения конфигурации или модуля
+- `main.tf` - contains terraform settings if it is the top layer; or the main working code if it is a module
+- `variables.tf` - module input values
+- `outputs.tf` - module output values
 
-Помимо этого могут присутствовать:
+Besides these, there may be:
 
-* `locals.tf` - содержит набор переменных, полученных путем интерполяции из remote state, outputs, variables и тд.
-* `providers.tf` - содержит настройки провайдеров терраформа, например `aws`, `kubernetes` и тд
-* `iam.tf` - сюда могут быть вынесены IAM конфигурации политик, ролей и тд
+- `locals.tf` - contains a set of variables obtained by interpolation from remote state, outputs, variables, etc
+- `providers.tf` - contains settings from terraform providers, e.g. `aws`, `kubernetes`, etc
+- `iam.tf` - IAM configurations of policies, roles, etc
 
-Это не конечный список, каждая конфигурация, модуль или слой могут нуждаться в дополнительных файлах и манифестах. Задача - называть их как можно ёмче и ближе по смыслу к содержимому. Префиксы не использовать.
+This is not a full list; each configuration, module, or layer may need additional files and manifests. The objective is to name them as succinctly and closer in meaning to the content as possible. Do not use prefixes.
 
-> Самом терраформу не важно, сколько файлов вы создаете. Он собирает все манифесты слоев и модулей в один объект, строит зависимости и исполняет.
+> Terraform itself doesn't care how many files you create. It collects all layer and module manifests into one object, builds dependencies, and executes.
 
-#### Специфичные конфигурационные файлы
+#### Specific configuration files
 
-К таким конфигурационным файлам и манифестам можно отнести следующее: темплейты для ресурсов `data "template_file"` или `templatefile()`, вынесенная в отдельный `.tf` файл логическая группа ресурсов, один или несколько деплойментов в кубер с помощью `resource "helm_release"`, создание aws ресурсов не требующих отдельного модуля, инициализация модуля и тд.
+These configuration files and manifests include the following: `data "template_file"` or `templatefile ()` template resources, a logical resource group placed in a separate `.tf` file, one or more deployments to k8s using `resource "helm_release"`, module initialization, aws resources that do not require a separate module, etc.
 
-> Справедливо будет заметить, что раз создается какая-то логическая группа ресурсов и это будет реюзаться, то почему не вынести это все в отдельный модуль. Но оказалось, что менеджить хелм релизы, темплейты для них и дополнительные ресурсы проще в отдельных .tf файлах в корне слоя. И для многих таких конфигураций с переездом в модули количество кода может удвоиться + в модули обычно мы переносим то, что собираемся реюзать.
+> It should be noted that since some kind of a logical group of resources is being, why not move it all into a separate module. But it turned out that it is easier to manage helm releases, templates for them, and additional resources in separate `.tf` files at the root of a layer. And for many such configurations, when moving to modules, the amount of code can double + what we move to modules is usually what we are going to reuse.
 
-Каждый специфичный `.tf` файл должен начинаться с префикса, указывающего на сервис или провайдер, к которому относится основнoй создаваемый ресурс или группа, например `aws`. Следом опционально указывается тип сервиса, например `iam`. Далее идет название главного сервиса или ресурса или группы ресурсов, которые декларируется внутри, после чего опционально может быть добавлен поясняющий суффикс, если таких файлов будет несколько. Все части имени разделены `дефисами`.
+Each specific `.tf` file must begin with a prefix indicating the service or provider to which the main resource or group being created belongs, e.g. `aws`. Optionally, the type of service is indicated next, e.g. `iam`. Next comes the name of the main service or resource or resource group declared inside, and after that, an explanatory suffix can optionally be added if there are several such files. All the parts of the name are separated by hyphens`
 
-Итого формула выглядит так:
-`provider|servicename`-[`optional resource/service type`]-`main resourcename|group-name`-[`optional suffix`].tf
+So the formula looks like this: `provider|servicename`-[`optional resource/service type`]-`main resourcename|group-name`-[`optional suffix`].tf
 
-Примеры:
+Examples:
 
-* `aws-vpc.tf` - терраформ манифест описывающий создание единственной vpc
-* `aws-vpc-stage.tf` - терраформ манифест описывающий создание одной из vpc, для стейджинга
-* `eks-namespaces.tf` - группа неймспейсов, создаваемых в EKS кластере
-* `eks-external-dns.tf` - содержит описание деплоя external-dns сервиса в EKS кластер
-* `aws-ec2-pritunl.tf` - содержит инициализацию модуля, который создает EC2 инстанс в AWS с настроенным pritunl
+- `aws-vpc.tf` - terraform manifest describing the creation of a single vpc
+- `aws-vpc-stage.tf` - terraform manifest describing the creation of one of several vpc, for staging
+- `eks-namespaces.tf` - group of namespaces created in the EKS cluster
+- `eks-external-dns.tf` - contains the description of external-dns service deployment to the EKS cluster
+- `aws-ec2-pritunl.tf` - contains the initialization of the module that creates an EC2 instance in AWS with pritunl configured
 
-#### Модули
+#### Modules
 
-Подход к названию директорий модулей точно такой же, как и к специфичным `.tf` файлам и соответствует формуле:
-`provider|servicename`-[`optional resource/service type`]-`main resourcename|group-name`-[`optional suffix`]
+The approach to naming module directories is exactly the same as for specific `.tf` files and uses this formula: `provider|servicename`-[`optional resource/service type`]-`main resourcename|group-name`-[`optional suffix`]
 
-Примеры:
+Examples:
 
-* `eks-rbac-ci` - модуль для создания рбак для CI внутри EKS кластера
-* `aws-iam-autoscaler` - модуль для создания IAM политик для автоскейлера
-* `aws-ec2-pritunl` -  модуль для создания pritunl ec2 инстанса
+- `eks-rbac-ci` - module for creating rbac for CI inside the EKS cluster
+- `aws-iam-autoscaler` - module for creating IAM policies for autoscaler
+- `aws-ec2-pritunl` - module for creating pritunl ec2 instance
 
-### Структура проекта
+### Project structure
 
 ```
 aws-eks-base
  ┣ docker
- ┃ ┣ aws-eks-utils
- ┃ ┣ elasticsearch
- ┃ ┣ teamcity-agent
- ┃ ┗ wordpress
  ┣ examples
  ┣ helm-charts
- ┃ ┣ certificate
- ┃ ┣ cluster-issuer
- ┃ ┣ elk
- ┃ ┗ teamcity
  ┣ terraform
  ┃ ┣ layer1-aws
  ┃ ┃ ┣ examples
@@ -600,7 +582,7 @@ aws-eks-base
 | examples/    | example k8s deployments |
 | helm-charts/ | directory contains custom helm charts |
 | helm-charts/certificate | helm chart which creates ssl certificate for nginx ingress |
-| helm-charts/cluster-issuer | helmc chart which creates cluster-issuer using cert manager cdrs |
+| helm-charts/cluster-issuer | helm chart which creates cluster-issuer using cert manager cdrs |
 | helm-charts/elk | umbrella chart to deploy elk stack |
 | helm-charts/teamcity | helm chart which deploys teamcity agent and/or server |
 |terraform/| directory contains terraform configuration files |
