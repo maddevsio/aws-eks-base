@@ -5,7 +5,7 @@ on: [push, pull_request]
 # Use the Bash shell 
 defaults:
   run:
-    shell: bash
+    shell: sh
 
 jobs:
   terraform-init:
