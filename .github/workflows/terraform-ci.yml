@@ -25,12 +25,12 @@ jobs:
       uses: actions/cache@v2
       with:
         path: |
-          ./terraform/layer1-aws/.terraform
-          ./terraform/layer2-k8s/.terraform
-          ./terraform/layer1-aws/.terraform.lock.hcl
-          ./terraform/layer2-k8s/.terraform.lock.hcl
-        key: terraform_dir
-        restore-keys: terraform_dir
+          /terraform/layer1-aws/.terraform
+          /terraform/layer2-k8s/.terraform
+          /terraform/layer1-aws/.terraform.lock.hcl
+          /terraform/layer2-k8s/.terraform.lock.hcl
+        key: terraform_dir-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: terraform_dir-
 
     - name: Terraform Init l1
       working-directory: ./terraform/layer1-aws
