@@ -3,7 +3,7 @@ module "aws_iam_wp_buckup_s3" {
 
   name              = "${local.name}-rds-wp"
   region            = local.region
-  bucket_name       = local.wp_db_backup_bucket
+  bucket_names      = [local.wp_db_backup_bucket]
   oidc_provider_arn = local.eks_oidc_provider_arn
   create_user       = true
 }

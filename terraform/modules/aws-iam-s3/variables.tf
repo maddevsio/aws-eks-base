@@ -1,5 +1,6 @@
 variable "oidc_provider_arn" {
   description = "The ARN of the OIDC Provider"
+  type        = string
   default     = ""
 }
 
@@ -8,8 +9,10 @@ variable "name" {
   default     = ""
 }
 
-variable "bucket_name" {
-  default     = ""
+# changed type from string to list
+# to support multi-buckets
+variable "bucket_names" {
+  default     = []
   description = "Name of the bucket to store logs"
 }
 
@@ -31,4 +34,9 @@ variable "create_user" {
 variable "create_role" {
   type    = bool
   default = true
+}
+
+variable "description" {
+  type    = string
+  default = ""
 }
