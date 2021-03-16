@@ -61,6 +61,6 @@ data "aws_iam_policy_document" "policy" {
     effect = "Allow"
     resources = [
       for buckets in var.bucket_names :
-    "arn:aws:s3:::${var.bucket_names}/${var.path}*"]
+    "arn:aws:s3:::${buckets}/${var.path}*"]
   }
 }
