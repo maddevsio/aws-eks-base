@@ -120,7 +120,7 @@ This diagram shows the namespaces used in the cluster and the services deployed 
 - [terraform](https://www.terraform.io/) - terraform itself, our main development tool: `tfenv install`
 - [awscli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html) - console utility to work with AWS API
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) - conssole utility to work with Kubernetes API
-- [kubectx + kubens](https://github.com/ahmetb/kubectx) - power tools for kubectl helps you switch between Kubernetes clusters and namespaces
+- [kubectx + kubens](https://github.com/ahmetb/kubectx) - power tools for kubectl help you switch between Kubernetes clusters and namespaces
 - [helm](https://helm.sh/docs/intro/install/) - tool to create application packages and deploy them into k8s
 - [helmfile](https://github.com/roboll/helmfile) - "docker compose" for helm
 - [terragrunt](https://terragrunt.gruntwork.io/) - small terraform wrapper providing DRY approach in some cases
