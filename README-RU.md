@@ -123,6 +123,7 @@
 - [terraform](https://www.terraform.io/) - тот самый терраформ, наш главный инструмент разработки: `tfenv install`
 - [awscli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html) - консольная утилита для работы с AWS API
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) - консольная тула для работы с кубер кластерами
+- [kubectx + kubens](https://github.com/ahmetb/kubectx) - консольные тулы для kubectl помогают переключаться между кластерами и неймспейсами Kubernetes
 - [helm](https://helm.sh/docs/intro/install/) - пакетный менеджер для деплоя приоложений в кубер
 - [helmfile](https://github.com/roboll/helmfile) - "докер композ" для хелм чартов
 - [terragrunt](https://terragrunt.gruntwork.io/) - небольшой wrapper для терраформа обеспечивающий DRY для некоторых статичных частей терраформ кода
