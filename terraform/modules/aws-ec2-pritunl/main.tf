@@ -1,23 +1,4 @@
 data "aws_region" "current" {}
-data "aws_availability_zones" "available" {}
-data "aws_subnet_ids" "selected" {
-  # availability_zone = data.aws_availability_zones.available.names[0]
-  vpc_id = var.vpc_id
-  filter {
-    name   = "availabilityZone"
-    values = [data.aws_availability_zones.available.names[0]] # insert values here
-  }
-}
-resource "aws_ebs_volume" "mongodb_data" {
-  availability_zone = data.aws_availability_zones.available.names[0]
-  size              = 10
-
-  tags = {
-    Name        = var.name
-    Environment = var.environment
-  }
-}
-
 resource "aws_eip" "this" {
   vpc = true
   tags = {
@@ -26,22 +7,12 @@ resource "aws_eip" "this" {
   }
 }
 
-data "template_file" "userdata_script" {
-  template = file("${path.module}/templates/user-data.sh")
-
-  vars = {
-    aws_region = data.aws_region.current.name
-    eipalloc   = aws_eip.this.id
-    volume_id  = aws_ebs_volume.mongodb_data.id
-  }
-}
-
 resource "aws_launch_template" "this" {
   name_prefix            = var.name
   image_id               = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
   ebs_optimized          = false
-  vpc_security_group_ids = [aws_security_group.this.id]
+  vpc_security_group_ids = [module.ec2_sg.this_security_group_id]
 
   iam_instance_profile {
     arn = aws_iam_instance_profile.this_instance_profile.arn
@@ -53,7 +24,13 @@ resource "aws_launch_template" "this" {
     http_put_response_hop_limit = 3
   }
 
-  user_data = base64encode(data.template_file.userdata_script.rendered)
+  user_data = base64encode(templatefile("${path.module}/templates/user-data.sh",
+    {
+      aws_region = data.aws_region.current.name
+      eipalloc   = aws_eip.this.id
+      efs_id     = aws_efs_file_system.this.id
+    })
+  )
 
   monitoring {
     enabled = false
@@ -67,6 +44,8 @@ resource "aws_launch_template" "this" {
     }
   }
 
+  depends_on = [aws_efs_mount_target.this]
+
 }
 
 resource "aws_autoscaling_group" "this" {
@@ -76,14 +55,14 @@ resource "aws_autoscaling_group" "this" {
   min_size             = 1
   default_cooldown     = 30
   force_delete         = true
-  termination_policies = ["OldestLaunchConfiguration", "OldestInstance"]
+  termination_policies = ["OldestLaunchTemplate", "OldestInstance"]
 
   launch_template {
     id      = aws_launch_template.this.id
     version = "$Latest"
   }
 
-  vpc_zone_identifier = [tolist(data.aws_subnet_ids.selected.ids)[0]]
+  vpc_zone_identifier = var.public_subnets
 
   tag {
     key                 = "Name"

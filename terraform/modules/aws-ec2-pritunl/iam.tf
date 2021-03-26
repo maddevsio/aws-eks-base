@@ -1,13 +1,20 @@
 data "aws_iam_policy_document" "this" {
   statement {
-    sid = "AllowAttachDetachVolume"
-    actions = ["ec2:AttachVolume",
-      "ec2:DetachVolume",
-      "ec2:DescribeVolumes"
+    sid = "AllowMountEFS"
+    actions = [
+      "elasticfilesystem:ClientMount",
+      "elasticfilesystem:ClientWrite"
     ]
-    resources = ["arn:aws:ec2:*:*:volume/${aws_ebs_volume.mongodb_data.id}",
-      "arn:aws:ec2:*:*:instance/*"
+    resources = [
+      "arn:aws:elasticfilesystem:*:*:file-system/${aws_efs_file_system.this.id}"
     ]
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+
+      values = [var.encrypted]
+    }
   }
 
   statement {
@@ -73,11 +80,29 @@ module "this_role" {
 
   custom_role_policy_arns = [
     module.iam_policy.arn,
-    "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+    "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   ]
 }
 
 resource "aws_iam_instance_profile" "this_instance_profile" {
-  name = "${var.name}-discovery-profile"
+  name = var.name
   role = module.this_role.this_iam_role_name
+}
+
+module "backup_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
+  version = "3.8.0"
+
+  trusted_role_services = [
+    "backup.amazonaws.com"
+  ]
+
+  create_role = true
+
+  role_name         = "${var.name}-backup-role"
+  role_requires_mfa = false
+
+  custom_role_policy_arns = [
+    "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
+  ]
 }
