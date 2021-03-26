@@ -605,3 +605,5 @@ aws-eks-base
 |.editorconfig| |
 |.gitlab-ci.yml||
 |.pre-commit-config.yaml||
+
+![Analytics](https://ga-beacon.appspot.com/UA-83208754-8/maddevsio/aws-eks-base)
