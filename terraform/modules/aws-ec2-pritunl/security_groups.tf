@@ -1,34 +1,37 @@
-resource "aws_security_group" "this" {
+module "ec2_sg" {
+  source = "terraform-aws-modules/security-group/aws"
+
   name        = var.name
   description = "${var.name} security group"
   vpc_id      = var.vpc_id
 
-  ingress {
-    protocol    = "6"
-    from_port   = 80
-    to_port     = 80
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  ingress_with_source_security_group_id = var.ingress_with_source_security_group_id
 
-  dynamic "ingress" {
-    for_each = var.pritunl_sg_rules
+  ingress_with_cidr_blocks = var.ingress_with_cidr_blocks
 
-    content {
-      protocol    = ingress.value["protocol"]
-      from_port   = ingress.value["from_port"]
-      to_port     = ingress.value["to_port"]
-      cidr_blocks = ingress.value["cidr_blocks"]
+  egress_with_cidr_blocks = [
+    {
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      cidr_blocks = "0.0.0.0/0"
     }
-  }
+  ]
+}
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+module "efs_sg" {
+  source = "terraform-aws-modules/security-group/aws"
 
-  tags = {
-    Name = "${var.name} security group"
-  }
+  name        = "${var.name}-efs"
+  description = "${var.name} efs security group"
+  vpc_id      = var.vpc_id
+
+  ingress_with_source_security_group_id = [
+    {
+      protocol                 = "6"
+      from_port                = 2049
+      to_port                  = 2049
+      source_security_group_id = module.ec2_sg.this_security_group_id
+    }
+  ]
 }

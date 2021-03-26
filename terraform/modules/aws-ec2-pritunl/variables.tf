@@ -1,8 +1,6 @@
 variable "vpc_id" {}
 variable "public_subnets" {}
-variable "availability_zone" {
-  default = "us-east-1a"
-}
+
 variable "name" {
   default = "pritunl"
 }
@@ -13,12 +11,29 @@ variable "instance_type" {
   default = "t3.small"
 }
 
-variable "pritunl_sg_rules" {
+variable "encrypted" {
+  default = true
+}
+
+variable "kms_key_id" {
+  default = null
+}
+variable "ingress_with_source_security_group_id" {
+  type = list(object({
+    protocol        = string
+    from_port       = string
+    to_port         = string
+    security_groups = string
+  }))
+
+  default = []
+}
+variable "ingress_with_cidr_blocks" {
   type = list(object({
     protocol    = string
     from_port   = string
     to_port     = string
-    cidr_blocks = list(string)
+    cidr_blocks = string
   }))
 
   default = []
