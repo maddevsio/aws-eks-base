@@ -45,7 +45,7 @@ You may reasonably question the number of `.tf` files. This monolith certainly s
 
 ## Architecture diagram
 
-![aws-base-diagram](docs/aws-base-diagrams-Infrastracture-v5.svg)
+![aws-base-diagram](docs/aws-base-diagrams-Infrastracture-v6.svg)
 
 This diagram describes the default infrastructure:
 
