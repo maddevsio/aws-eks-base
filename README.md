@@ -606,4 +606,4 @@ aws-eks-base
 |.gitlab-ci.yml||
 |.pre-commit-config.yaml||
 
-![Analytics](https://ga-beacon.appspot.com/UA-83208754-8/maddevsio/aws-eks-base)
+[![Analytics](https://ga-beacon.appspot.com/UA-83208754-8/aws-eks-base/readme?pixel)](https://github.com/igrigorik/ga-beacon)
