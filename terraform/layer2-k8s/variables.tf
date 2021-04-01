@@ -36,7 +36,7 @@ variable "oauth2_proxy_version" {
 # External DNS
 variable "external_dns_version" {
   description = "Version of external-dns helm chart"
-  default     = "4.6.0"
+  default     = "4.9.4"
 }
 
 # Cert Manager

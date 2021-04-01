@@ -24,4 +24,4 @@ metrics:
 sources:
   - service
   - ingress
-  - istio-virtualservice
+#  - istio-virtualservice
