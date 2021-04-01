@@ -1,5 +1,22 @@
 # Boilerplate for a basic AWS infrastructure with EKS cluster
 
+## Advantages of this boilerplate
+
+- Infrastructure as Code (IaC): using Terraform, you get an infrastructure that’s smooth and efficient
+- State management: Terraform saves the current infrastructure state, so you can review further changes without applying them. Also, state can be stored remotely, so you can work on the infrastructure in a team
+- Scalability and flexibility: the infrastructure built based on this boilerplate can be expanded and updated anytime
+- Comprehensiveness: you get scaling and monitoring instruments along with the basic infrastructure. You don’t need to manually modify anything in the infrastructure; you can simply make changes in Terraform as needed and deploy them to AWS and Kubernetes
+- Control over resources: the IaC approach makes the infrastructure more observable and prevents waste of resources
+- Clear documentation: your Terraform code effectively becomes your project documentation. It means that you can add new members to the team, and it won’t take them too much time to figure out how the infrastructure works
+
+## Why you should use this boilerplate
+
+- Safe and polished: we’ve used these solutions in our own large-scale, high-load projects. We’ve been perfecting this infrastructure building process for months, making sure that it results in a system that is safe to use, secure, and reliable
+- Saves time: you can spend weeks doing your own research and making the unavoidable mistakes to build an infrastructure like this. Instead, you can rely on this boilerplate and create the infrastructure you need within a day
+- It’s free: we’re happy to share the results of our work
+
+## Description
+
 This repository contains the know-how of the MadOps team for the rapid deployment of a Kubernetes cluster, supporting services, and the underlying infrastructure in the Amazon cloud. The main development and delivery tool is [terraform](https://www.terraform.io/)
 
 In our company’s work, we have tried many infrastructure solutions and services and traveled the path from on-premise hardware to serverless. As of today, Kubernetes has become our standard platform for deploying applications, and AWS has become the main cloud. It is worth noting here that although 90% of our and our clients’ projects are hosted on AWS and [AWS EKS](https://aws.amazon.com/eks/) is used as the Kubernetes platform, we do not insist, do not drag everything to Kubernetes, and do not force anyone to be hosted on AWS. Kubernetes is offered only after the collection and analysis of service architecture requirements. And then, when choosing Kubernetes, it makes almost no difference to applications how the cluster itself is created—manually, through kops or using managed services from cloud providers—in essence, the Kubernetes platform is the same everywhere. So the choice of a particular provider is then made based on additional requirements, expertise, etc.
