@@ -103,6 +103,7 @@ output "eks_kubectl_console_config" {
 output "eks_config_map_aws_auth" {
   description = "A kubernetes configuration to authenticate to this EKS cluster."
   value       = module.eks.config_map_aws_auth
+  sensitive   = true
 }
 
 output "eks_cluster_id" {
