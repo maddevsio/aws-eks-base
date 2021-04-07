@@ -1,5 +1,8 @@
 # Boilerplate for a basic AWS infrastructure with EKS cluster
 
+[![Developed by Mad Devs](https://maddevs.io/badge-dark.svg)](https://maddevs.io/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Advantages of this boilerplate
 
 - Infrastructure as Code (IaC): using Terraform, you get an infrastructure that’s smooth and efficient
@@ -17,7 +20,7 @@
 
 ## Description
 
-This repository contains the know-how of the MadOps team for the rapid deployment of a Kubernetes cluster, supporting services, and the underlying infrastructure in the Amazon cloud. The main development and delivery tool is [terraform](https://www.terraform.io/)
+This repository contains the know-how of the Mad Devs team for the rapid deployment of a Kubernetes cluster, supporting services, and the underlying infrastructure in the Amazon cloud. The main development and delivery tool is [terraform](https://www.terraform.io/)
 
 In our company’s work, we have tried many infrastructure solutions and services and traveled the path from on-premise hardware to serverless. As of today, Kubernetes has become our standard platform for deploying applications, and AWS has become the main cloud. It is worth noting here that although 90% of our and our clients’ projects are hosted on AWS and [AWS EKS](https://aws.amazon.com/eks/) is used as the Kubernetes platform, we do not insist, do not drag everything to Kubernetes, and do not force anyone to be hosted on AWS. Kubernetes is offered only after the collection and analysis of service architecture requirements. And then, when choosing Kubernetes, it makes almost no difference to applications how the cluster itself is created—manually, through kops or using managed services from cloud providers—in essence, the Kubernetes platform is the same everywhere. So the choice of a particular provider is then made based on additional requirements, expertise, etc.
 
@@ -44,6 +47,7 @@ You may reasonably question the number of `.tf` files. This monolith certainly s
     - [init](#init)
     - [plan](#plan)
     - [apply](#apply)
+  - [terragrunt](#terragrunt)
 - [What to do after deployment](#what-to-do-after-deployment)
   - [examples](#examples)
 - [Coding conventions](#coding-conventions)
