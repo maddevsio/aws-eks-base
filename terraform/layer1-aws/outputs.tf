@@ -21,7 +21,7 @@ output "env" {
 
 output "route53_zone_id" {
   description = "ID of domain zone"
-  value       = var.zone_id
+  value       = local.zone_id
 }
 
 output "region" {

@@ -43,13 +43,8 @@ variable "short_region" {
 }
 
 variable "domain_name" {
-  description = "Main domain name"
+  description = "Main public domain name"
   default     = "maddevs.org"
-}
-
-variable "zone_id" {
-  default     = "Z058363314IT7VAKRA364"
-  description = "maddevs.org zone id"
 }
 
 # VPC VARIABLES
