@@ -7,8 +7,8 @@ resource "aws_efs_file_system" "this" {
   kms_key_id     = var.kms_key_id
 
   tags = {
-      "Name" = var.name
-    }
+    "Name" = var.name
+  }
   lifecycle {
     ignore_changes = [
       tags,
@@ -17,7 +17,7 @@ resource "aws_efs_file_system" "this" {
 }
 
 resource "aws_efs_mount_target" "this" {
-  count = length(var.public_subnets)
+  count          = length(var.public_subnets)
   file_system_id = aws_efs_file_system.this.id
   subnet_id      = var.public_subnets[count.index]
   security_groups = [

@@ -1,0 +1,67 @@
+name: 'Terraform-ci'
+
+on: [push, pull_request]
+
+defaults:
+  run:
+    shell: sh
+
+jobs:
+  # Terraform init and validate configuration
+  terraform-init:
+    name: 'Terraform-init'
+    runs-on: ubuntu-latest
+    environment: dev
+    container:
+      image: hashicorp/terraform:0.14.6
+      env:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Terraform Init l1
+      working-directory: ./terraform/layer1-aws
+      run: terraform init -backend=false
+    - name: Terraform Init l2
+      working-directory: ./terraform/layer2-k8s
+      run: terraform init -backend=false
+    - name: Terraform Validate l1
+      working-directory: ./terraform/layer1-aws
+      run: terraform validate -no-color .
+    - name: Terraform Validate l2
+      working-directory: ./terraform/layer2-k8s
+      run: terraform validate -no-color .
+
+  # Checks that all Terraform configuration files format
+  terraform-format:
+    name: 'Terraform-format'
+    runs-on: ubuntu-latest
+    environment: dev
+    container:
+      image: hashicorp/terraform:0.14.6
+      env:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Terraform Format
+      run: terraform fmt -recursive -write=false -check .
+
+  # Checks that all Terraform configuration files tflint
+  terraform-tflint:
+    name: 'Terraform-tflint'
+    runs-on: ubuntu-latest
+    environment: dev
+    container:
+      image: wata727/tflint
+      env:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Terraform tflint l1
+      working-directory: ./terraform/layer1-aws
+      run: tflint --no-color
+    - name: Terraform tflint l2
+      working-directory: ./terraform/layer2-k8s
+      run: tflint --no-color
