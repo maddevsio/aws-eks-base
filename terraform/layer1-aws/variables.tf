@@ -7,7 +7,6 @@ variable "allowed_account_ids" {
 
 variable "name" {
   description = "Project name, required to form unique resource names"
-  default     = "maddevs"
 }
 
 variable "environment" {
@@ -44,7 +43,21 @@ variable "short_region" {
 
 variable "domain_name" {
   description = "Main public domain name"
-  default     = "maddevs.org"
+}
+
+variable "zone_id" {
+  default     = null
+  description = "R53 zone id for public domain"
+}
+
+variable "create_r53_zone" {
+  default     = false
+  description = "Create R53 zone for main public domain"
+}
+
+variable "create_acm_certificate" {
+  default     = false
+  description = "Whether to create acm certificate or use existing"
 }
 
 # VPC VARIABLES
@@ -65,19 +78,13 @@ variable "cidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "create_acm_certificate" {
-  default     = false
-  description = "Whether to create acm certificate or use existing"
-}
-
 variable "allowed_ips" {
   type = list(any)
-  default = [
-    "212.42.109.196/32",
-    "212.42.107.23/32",
-    "212.42.107.134/32",
-    "212.112.100.80/32"
-  ]
+}
+
+variable "single_nat_gateway" {
+  default     = true
+  description = "Flag to create single nat gateway for all AZs"
 }
 
 # EKS
@@ -118,14 +125,7 @@ variable "map_roles" {
     groups   = list(string)
   }))
 
-  default = [
-    {
-      // This shouldn't be hard coded - use remote state or some other method
-      rolearn  = "arn:aws:iam::730809894724:role/administrator"
-      username = "administrator"
-      groups   = ["system:masters"]
-    },
-  ]
+  default = null
 }
 
 # ECR
