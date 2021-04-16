@@ -79,7 +79,9 @@ variable "cidr" {
 }
 
 variable "allowed_ips" {
-  type = list(any)
+  type        = list(any)
+  default     = []
+  description = "IP addresses allowed to connect to private resources"
 }
 
 variable "single_nat_gateway" {
@@ -94,6 +96,7 @@ variable "eks_cluster_version" {
 }
 
 variable "eks_worker_groups" {
+  description = "EKS Worker groups configuration"
   default = {
     spot = {
       override_instance_types = ["t3.medium", "t3a.medium"]
@@ -117,7 +120,7 @@ variable "eks_worker_groups" {
   }
 }
 
-variable "map_roles" {
+variable "eks_map_roles" {
   description = "Additional IAM roles to add to the aws-auth configmap."
   type = list(object({
     rolearn  = string
@@ -125,7 +128,12 @@ variable "map_roles" {
     groups   = list(string)
   }))
 
-  default = null
+  default = []
+}
+
+variable "eks_write_kubeconfig" {
+  default     = false
+  description = "Flag for eks module to write kubeconfig"
 }
 
 # ECR
