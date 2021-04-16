@@ -6,7 +6,7 @@ variable "allowed_account_ids" {
 }
 
 variable "name" {
-  description = "Project name, required to form unique resource names"
+  description = "Project name, required to create unique resource names"
 }
 
 variable "environment" {
