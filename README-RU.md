@@ -224,7 +224,7 @@
   $ export AWS_PROFILE=maddevs
   ```
 - Далее пройдите по [ссылке](https://docs.aws.amazon.com/neptune/latest/userguide/iam-auth-temporary-credentials.html), чтобы узнать как получить временные токены
-- В качетве альтернативы, для того чтобы использовать `awscli` и соответственно `terraform` с [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/), можно использовать `aws-mfa`, `aws-vault` и `awsudo`
+- В качестве альтернативы, для того чтобы использовать `awscli` и соответственно `terraform` с [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/), можно использовать `aws-mfa`, `aws-vault` и `awsudo`
 
 ## Как использовать этот репо
 
@@ -232,7 +232,18 @@
 
 #### S3 state backend
 
-В качестве бэкенда для хранения стейтов терраформа и для обмена данными между слоями используется S3. На текущей момент имя S3 бакета захардкожено в коде `madops-terraform-state-us-east-1`. Необходимо создать отдельный бакет в своем аккаунте указать его имя в `main.tf` для обоих слоев.
+В качестве бэкенда для хранения стейтов терраформа и для обмена данными между слоями используется S3. Есть два способа настроить бэкенд - создать вручную `backend.tf` файл в каджом слое. Более простой способ, это выполнить:
+
+  ```bash
+  $ export TF_REMOTE_STATE_BUCKET=my-new-state-bucket
+  $ terragrunt run-all init
+  ```
+
+#### Входные данные
+
+В файле `terraform/demo.tfvars.example` представлен пример со значениями для терраформа. Скопируйте его в `terraform/terraform.tfvars` и отредактируйте по своему сомотрению.
+
+> Все возможные параметры можно посмотреть в Readme для каждого слоя.
 
 #### Секреты
 
@@ -264,16 +275,16 @@
 
 Необходимо будет купить или подключить уже купленный домен в Route53. Имя домена и айди зоны нужно будет задать в переменных `domain_name` и `zone_id` в слое layer1.
 
-По умолчанию значение переменной `create_acm_certificate = false`. Что указывает терраформу запросить а arn существующего ACM сертификата. Установите значение `true` если вы хотите, чтобы терраформ создал новый SSL сертификат.
+По умолчанию значение переменной `create_acm_certificate = false`. Что указывает терраформу запросить arn существующего ACM сертификата. Установите значение `true` если вы хотите, чтобы терраформ создал новый SSL сертификат.
 
 ### Работа с terraform
 
 #### init
 
-Команда `terraform init` используется для инициализации стейта и его бекенда, провайдеров, плагинов и модулей. Это первая команда, которую необходимо выполнить в `layer1` и `layer2`:
+Команда `terraform init` используется для инициализации стейта и его бэкенда, провайдеров, плагинов и модулей. Это первая команда, которую необходимо выполнить в `layer1` и `layer2`:
 
   ```bash
-  $ terraform init
+  $ terraform init --var-file=../terraform.tfvars
   ```
 
   Правильный аутпут:
@@ -293,7 +304,7 @@
 Команда `terraform plan` считывает стейт терраформа, конфигурационные файлы и выводит список изменений и действий, которые необходимо произвести, чтобы привести стейт в соответствие с конфигурацией. Удобный способ проверить изменения перед применением. В случае использования с параметром `-out` сохраняет пакет изменений в указанный файл, который позже можно будет использовать при `terraform apply`. Пример вызова:
 
   ```bash
-  $ terraform plan
+  $ terraform plan --var-file=../terraform.tfvars
   # ~600 rows skipped
   Plan: 82 to add, 0 to change, 0 to destroy.
 
@@ -309,7 +320,7 @@
 Команда `terraform apply` сканирует `.tf` в текущей директории и приводит стейт к описанной в них конфигурации, производя изменения в инфраструктуре. По умолчанию перед применение производится `plan` с диалогом о продолжении. Опционально можно указать в качестве инпута сохраненный план файл:
 
   ```bash
-  $ terraform apply
+  $ terraform apply --var-file=../terraform.tfvars
   # ~600 rows skipped
   Plan: 82 to add, 0 to change, 0 to destroy.
 
@@ -339,8 +350,8 @@
 
  ```bash
  $ export TF_REMOTE_STATE_BUCKET=my-new-state-bucket
- $ terragrunt run-all init
- $ terragrunt run-all apply
+ $ terragrunt run-all init --var-file=../terraform.tfvars
+ $ terragrunt run-all apply --var-file=../terraform.tfvars
  ```
 
 Таким образом `terragrunt` создаст бакет, подготовит бэкенд терраформа, последовательно в layer-1 и layer-2 произведет `terraform init` и `terraform apply`.
