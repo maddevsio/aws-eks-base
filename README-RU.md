@@ -251,29 +251,23 @@ $ cp terraform/layer1-aws/demo.tfvars.example terraform/layer1-aws/terraform.tfv
 
 #### Секреты
 
-В корне `layer2-k8s` лежит файл `aws-ssm-gitlab-secrets.tf`, ожидающий значения, заданные в AWS SSM Parameter Store. Данные секреты используются для аутентификации в Kibana и Grafana используя GitLab. Также в параметрах задается токен для регистрации гитлаб раннера:
-
-  ```
-  /maddevs-demo/infra/grafana/gitlab_client_id
-  /maddevs-demo/infra/grafana/gitlab_client_secret
-  /maddevs-demo/infra/kibana/gitlab_client_id
-  /maddevs-demo/infra/kibana/gitlab_client_secret
-  /maddevs-demo/infra/runner/gitlab_registration_token
-  ```
-
-Другой способ передачи этих секретов - использовать AWS Secret Manager. В файле `examples/aws-secret-manager-gitlab-secrets.tf` находится пример использования. Данный конфиг ожидает json секрет `/maddevs-demo/infra/gitlab-tokens` с содержимым:
+В корне `layer2-k8s` лежит файл `aws-sm-secrets.tf`, ожидающий значения, заданные в секрете `/${local.name}-${local.environment}/infra/layer2-k8s` AWS Secrets Manager. Данные секреты используются для аутентификации в Kibana и Grafana используя GitLab. Также задается токен для регистрации гитлаб раннера, параметры slack для алертменеджера:
 
   ```json
   {
     "kibana_gitlab_client_id": "access key token",
     "kibana_gitlab_client_secret": "secret key token",
+    "kibana_gitlab_group": "gitlab group",
     "grafana_gitlab_client_id": "access key token",
     "grafana_gitlab_client_secret": "secret key token",
-    "gitlab_registration_token": "gitlab-runner token"
+    "gitlab_registration_token": "gitlab-runner token",
+    "grafana_gitlab_group": "gitlab group",
+    "alertmanager_slack_url": "slack url",
+    "alertmanager_slack_channel": "slack channel"
   }
   ```
 
-Используя тот или иной способ, задайте необходимые секреты, можно задать пустые значения. В случае если вы не будете использовать данные секреты, следует удалить эти `.tf` файлы из корня `layer2-k8s`
+> Задайте все необходимые значения, можно задать пустые значения. В случае если вы не будете использовать данные секреты, следует удалить этот `.tf` файл из корня `layer2-k8s`
 
 #### Домен и SSL
 

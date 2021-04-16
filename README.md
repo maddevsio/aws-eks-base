@@ -249,29 +249,23 @@ $ cp terraform/layer1-aws/demo.tfvars.example terraform/layer1-aws/terraform.tfv
 
 #### Secrets
 
-At the root of `layer2-k8s` is the `aws-ssm-gitlab-secrets.tf` file waiting for values set in the AWS SSM Parameter Store. These secrets are used for authentication with Kibana and Grafana using GitLab. Also, in the parameters, a token is set for registering a gitlab runner:
-
-  ```
-  /maddevs-demo/infra/grafana/gitlab_client_id
-  /maddevs-demo/infra/grafana/gitlab_client_secret
-  /maddevs-demo/infra/kibana/gitlab_client_id
-  /maddevs-demo/infra/kibana/gitlab_client_secret
-  /maddevs-demo/infra/runner/gitlab_registration_token
-  ```
-
-Another way to set these secrets is to use AWS Secret Manager. The `examples/aws-secret-manager-gitlab-secrets.tf` file contains an example of usage. This config expects json secret `/maddevs-demo/infra/gitlab-tokens` with the following content:
+In the root of `layer2-k8s` is the `aws-sm-secrets.tf` where several local variables expect AWS Secrets Manager secret with the pattern `/${local.name}-${local.environment}/infra/layer2-k8s`. These secrets are used for authentication with Kibana and Grafana using GitLab and register gitlab runner.
 
   ```json
   {
     "kibana_gitlab_client_id": "access key token",
     "kibana_gitlab_client_secret": "secret key token",
+    "kibana_gitlab_group": "gitlab group",
     "grafana_gitlab_client_id": "access key token",
     "grafana_gitlab_client_secret": "secret key token",
-    "gitlab_registration_token": "gitlab-runner token"
+    "gitlab_registration_token": "gitlab-runner token",
+    "grafana_gitlab_group": "gitlab group",
+    "alertmanager_slack_url": "slack url",
+    "alertmanager_slack_channel": "slack channel"
   }
   ```
 
-Using either of these methods, set proper secrets; you can set empty values. If you will not use these secrets, you should delete these `.tf` files from the `layer2-k8s` root.
+> Set proper secrets; you can set empty/mock values. If you won't use these secrets, delete this `.tf` file from the `layer2-k8s` root.
 
 #### Domain and SSL
 

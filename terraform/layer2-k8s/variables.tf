@@ -1,7 +1,6 @@
 variable "remote_state_bucket" {
   type        = string
-  default     = "madops-terraform-state-us-east-1"
-  description = "Name of the bucket with the state"
+  description = "Name of the bucket for terraform state"
 }
 
 variable "remote_state_key" {
@@ -140,24 +139,6 @@ variable "elk_snapshot_retention_days" {
 variable "elk_index_retention_days" {
   description = "Days before remove index from system elasticsearch"
   default     = 14
-}
-
-variable "grafana_gitlab_group" {
-  type        = string
-  default     = "madops"
-  description = "Gitlab group for grafana oauth"
-}
-
-variable "alertmanager_slack_channel" {
-  type        = string
-  default     = "madops-demo-alerts"
-  description = "Slack channel for alertmanager alerts"
-}
-
-variable "kibana_gitlab_group" {
-  type        = string
-  default     = "madops"
-  description = "Gitlab group for kibana oauth2"
 }
 
 # Calico
