@@ -75,7 +75,7 @@ grafana:
     GF_AUTH_GITLAB_AUTH_URL: "https://gitlab.com/oauth/authorize"
     GF_AUTH_GITLAB_TOKEN_URL: "https://gitlab.com/oauth/token"
     GF_AUTH_GITLAB_API_URL: "https://gitlab.com/api/v4"
-    GF_AUTH_GITLAB_ALLOWED_GROUPS: "madops"
+    GF_AUTH_GITLAB_ALLOWED_GROUPS: "${gitlab_group}"
 
   persistence:
     enabled: false
@@ -95,19 +95,16 @@ grafana:
           jsonData:
             authType: credentials
             defaultRegion: "${default_region}"
-        %{ if loki_datasource_for_prometheus_stack == true }
         - name: Loki
           type: loki
           url: http://loki-stack:3100
           jsonData:
             maxLines: 1000
-        %{ endif }
 
   dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1
       providers:
-      %{ if loki_datasource_for_prometheus_stack == true }
       - name: 'logs'
         orgId: 1
         folder: 'logs'
@@ -116,15 +113,6 @@ grafana:
         editable: true
         options:
           path: /var/lib/grafana/dashboards/logs
-      %{ endif }
-      - name: 'aws'
-        orgId: 1
-        folder: 'aws'
-        type: file
-        disableDeletion: true
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/aws
       - name: 'k8s'
         orgId: 1
         folder: 'k8s'
@@ -135,24 +123,15 @@ grafana:
           path: /var/lib/grafana/dashboards/k8s
 
   dashboards:
-    %{ if loki_datasource_for_prometheus_stack == true }
     logs:
       logs:
         url: https://gist.githubusercontent.com/khalezin/49766ed2976d49b0dc84a9c7809392e5/raw/53c0d067713e4da0e6cf187c6515a19e5dd996f5/loki-dashboard-quick-search.json
-    %{ endif }
-    aws:
-      rds-postgresql:
-        url: https://grafana-dashboards.maddevs.org/common/aws-eks-base/postgresql-database.json
-      database-dev:
-        url: https://gist.githubusercontent.com/halfb00t/1515ad62b068a38c2f739cdf1db69ed5/raw/b7b27d03fb3b28e9ae9ca43da977f56fa31eb137/rds-mysql-wp.json
     k8s:
       nginx-ingress:
         gnetId: 6927
         datasource: Prometheus
-      %{ if loki_datasource_for_prometheus_stack == true }
       loki-promtail:
         url: https://gist.githubusercontent.com/khalezin/dd63440a404afc7ff13815dded04e74a/raw/613f52a7c57b824ec52c15a8e89ff6ba2ba2f73d/loki-promtail.json
-      %{ endif }
 
   affinity:
     nodeAffinity:

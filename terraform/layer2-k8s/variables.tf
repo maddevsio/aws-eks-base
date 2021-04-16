@@ -115,11 +115,6 @@ variable "loki_stack" {
   default     = "2.3.1"
 }
 
-variable "loki_datasource_for_prometheus_stack" {
-  description = "Enable Loki Datasource in prometheus stack chart"
-  default     = false
-}
-
 variable "aws_node_termination_handler_version" {
   description = "Version of aws-node-termination-handler helm chart"
   default     = "0.13.3"
