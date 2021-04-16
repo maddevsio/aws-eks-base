@@ -232,7 +232,7 @@
 
 #### S3 state backend
 
-В качестве бэкенда для хранения стейтов терраформа и для обмена данными между слоями используется S3. Есть два способа настроить бэкенд - создать вручную `backend.tf` файл в каджом слое. Более простой способ, это выполнить:
+В качестве бэкенда для хранения стейтов терраформа и для обмена данными между слоями используется S3. Есть два способа настроить бэкенд: создать вручную `backend.tf` файл в каждом слое и более простой способ - выполнить из `terraform/`:
 
   ```bash
   $ export TF_REMOTE_STATE_BUCKET=my-new-state-bucket
@@ -241,7 +241,11 @@
 
 #### Входные данные
 
-В файле `terraform/demo.tfvars.example` представлен пример со значениями для терраформа. Скопируйте его в `terraform/terraform.tfvars` и отредактируйте по своему сомотрению.
+В файле `terraform/demo.tfvars.example` представлен пример со значениями для терраформа. Скопируйте его в `terraform/terraform.tfvars` и отредактируйте по своему усмотрению:
+
+```bash
+$ cp terraform/layer1-aws/demo.tfvars.example terraform/layer1-aws/terraform.tfvars
+```
 
 > Все возможные параметры можно посмотреть в Readme для каждого слоя.
 
@@ -284,7 +288,7 @@
 Команда `terraform init` используется для инициализации стейта и его бэкенда, провайдеров, плагинов и модулей. Это первая команда, которую необходимо выполнить в `layer1` и `layer2`:
 
   ```bash
-  $ terraform init --var-file=../terraform.tfvars
+  $ terraform init
   ```
 
   Правильный аутпут:
@@ -304,7 +308,7 @@
 Команда `terraform plan` считывает стейт терраформа, конфигурационные файлы и выводит список изменений и действий, которые необходимо произвести, чтобы привести стейт в соответствие с конфигурацией. Удобный способ проверить изменения перед применением. В случае использования с параметром `-out` сохраняет пакет изменений в указанный файл, который позже можно будет использовать при `terraform apply`. Пример вызова:
 
   ```bash
-  $ terraform plan --var-file=../terraform.tfvars
+  $ terraform plan
   # ~600 rows skipped
   Plan: 82 to add, 0 to change, 0 to destroy.
 
@@ -320,7 +324,7 @@
 Команда `terraform apply` сканирует `.tf` в текущей директории и приводит стейт к описанной в них конфигурации, производя изменения в инфраструктуре. По умолчанию перед применение производится `plan` с диалогом о продолжении. Опционально можно указать в качестве инпута сохраненный план файл:
 
   ```bash
-  $ terraform apply --var-file=../terraform.tfvars
+  $ terraform apply
   # ~600 rows skipped
   Plan: 82 to add, 0 to change, 0 to destroy.
 
@@ -350,8 +354,8 @@
 
  ```bash
  $ export TF_REMOTE_STATE_BUCKET=my-new-state-bucket
- $ terragrunt run-all init --var-file=../terraform.tfvars
- $ terragrunt run-all apply --var-file=../terraform.tfvars
+ $ terragrunt run-all init
+ $ terragrunt run-all apply
  ```
 
 Таким образом `terragrunt` создаст бакет, подготовит бэкенд терраформа, последовательно в layer-1 и layer-2 произведет `terraform init` и `terraform apply`.

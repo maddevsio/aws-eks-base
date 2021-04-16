@@ -230,7 +230,7 @@ Further in the [IAM](https://console.aws.amazon.com/iam/home#/home) console:
 
 #### S3 state backend
 
-S3 is used as a backend for storing terraform state and for exchanging data between layers. You can manually create s3 bucket and then put backend setting into `backend.tf` file in each layer. Alternatively you can run:
+S3 is used as a backend for storing terraform state and for exchanging data between layers. You can manually create s3 bucket and then put backend setting into `backend.tf` file in each layer. Alternatively you can run from `terraform/` directory:
 
   ```bash
   $ export TF_REMOTE_STATE_BUCKET=my-new-state-bucket
@@ -239,7 +239,13 @@ S3 is used as a backend for storing terraform state and for exchanging data betw
 
 #### Inputs
 
-File `terraform/demo.tfvars.example` contains example values. Copy this file to `terraform/terraform.tfvars` and set you values. You can find all possible variables in each layer's Readme.
+File `terraform/layer1-aws/demo.tfvars.example` contains example values. Copy this file to `terraform/layer1-aws/terraform.tfvars` and set you values:
+
+```bash
+$ cp terraform/layer1-aws/demo.tfvars.example terraform/layer1-aws/terraform.tfvars
+```
+
+> You can find all possible variables in each layer's Readme.
 
 #### Secrets
 
@@ -280,7 +286,7 @@ By default, the variable `create_acm_certificate` is set to `false`. Which instr
 The `terraform init` command is used to initialize the state and its backend, downloads providers, plugins, and modules. This is the first command to be executed in `layer1` and `layer2`:
 
   ```bash
-  $ terraform init --var-file=../terraform.tfvars
+  $ terraform init
   ```
 
   Correct output:
@@ -300,7 +306,7 @@ The `terraform init` command is used to initialize the state and its backend, do
 The `terraform plan` command reads terraform state and configuration files and displays a list of changes and actions that need to be performed to bring the state in line with the configuration. It's a convenient way to test changes before applying them. When used with the `-out` parameter, it saves a batch of changes to a specified file that can later be used with `terraform apply`. Call example:
 
   ```bash
-  $ terraform plan --var-file=../terraform.tfvars
+  $ terraform plan
   # ~600 rows skipped
   Plan: 82 to add, 0 to change, 0 to destroy.
 
@@ -316,7 +322,7 @@ The `terraform plan` command reads terraform state and configuration files and d
 The `terraform apply` command scans `.tf` in the current directory and brings the state to the configuration described in them by making changes in the infrastructure. By default, `plan` with a continuation dialog is performed before applying. Optionally, you can specify a saved plan file as input:
 
   ```bash
-  $ terraform apply --var-file=../terraform.tfvars
+  $ terraform apply
   # ~600 rows skipped
   Plan: 82 to add, 0 to change, 0 to destroy.
 
@@ -345,8 +351,8 @@ We've also used `terragrunt` to simplify s3 bucket creation and terraform backen
 
  ```bash
  $ export TF_REMOTE_STATE_BUCKET=my-new-state-bucket
- $ terragrunt run-all init --var-file=../terraform.tfvars
- $ terragrunt run-all apply --var-file=../terraform.tfvars
+ $ terragrunt run-all init
+ $ terragrunt run-all apply
  ```
 
 By running this `terragrunt` will create s3 bucket, configure terraform backend and then will run `terraform init` and `terraform apply` in layer-1 and layer-2 sequentially.
