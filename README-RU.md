@@ -251,7 +251,7 @@ $ cp terraform/layer1-aws/demo.tfvars.example terraform/layer1-aws/terraform.tfv
 
 #### Секреты
 
-В корне `layer2-k8s` лежит файл `aws-sm-secrets.tf`, ожидающий значения, заданные в секрете `/${local.name}-${local.environment}/infra/layer2-k8s` AWS Secrets Manager. Данные секреты используются для аутентификации в Kibana и Grafana используя GitLab. Также задается токен для регистрации гитлаб раннера, параметры slack для алертменеджера:
+В корне `layer2-k8s` лежит файл `aws-sm-secrets.tf`, ожидающий значения, заданные в секрете `/${local.name}-${local.environment}/infra/layer2-k8s` сервиса [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home). Данный секрет используется для аутентификации в Kibana и Grafana используя GitLab. Также задается токен для регистрации гитлаб раннера, параметры slack для алертменеджера:
 
   ```json
   {

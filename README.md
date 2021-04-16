@@ -249,7 +249,7 @@ $ cp terraform/layer1-aws/demo.tfvars.example terraform/layer1-aws/terraform.tfv
 
 #### Secrets
 
-In the root of `layer2-k8s` is the `aws-sm-secrets.tf` where several local variables expect AWS Secrets Manager secret with the pattern `/${local.name}-${local.environment}/infra/layer2-k8s`. These secrets are used for authentication with Kibana and Grafana using GitLab and register gitlab runner.
+In the root of `layer2-k8s` is the `aws-sm-secrets.tf` where several local variables expect [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name}-${local.environment}/infra/layer2-k8s`. These secrets are used for authentication with Kibana and Grafana using GitLab and register gitlab runner.
 
   ```json
   {
