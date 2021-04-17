@@ -7,11 +7,10 @@ defaults:
     shell: sh
 
 jobs:
-  # Terraform init and validate configuration
-  terraform-init:
-    name: 'Terraform-init'
+  # Terraform validate configuration
+  terraform-validate:
+    name: 'Terraform-validate'
     runs-on: ubuntu-latest
-    environment: dev
     container:
       image: hashicorp/terraform:0.14.6
       env:
@@ -36,7 +35,6 @@ jobs:
   terraform-format:
     name: 'Terraform-format'
     runs-on: ubuntu-latest
-    environment: dev
     container:
       image: hashicorp/terraform:0.14.6
       env:
@@ -51,7 +49,6 @@ jobs:
   terraform-tflint:
     name: 'Terraform-tflint'
     runs-on: ubuntu-latest
-    environment: dev
     container:
       image: wata727/tflint
       env:
