@@ -3,7 +3,7 @@
 [![Developed by Mad Devs](https://maddevs.io/badge-dark.svg)](https://maddevs.io?utm_source=github&utm_medium=madboiler)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[![boilerplate asciicast](https://asciinema.org/a/wCS0HdC6UViWDKO7GypyIJjaB.png)](https://asciinema.org/a/wCS0HdC6UViWDKO7GypyIJjaB?speed=2)
+[![boilerplate asciicast](https://asciinema.org/a/wCS0HdC6UViWDKO7GypyIJjaB.png)](https://asciinema.org/a/wCS0HdC6UViWDKO7GypyIJjaB??autoplay=1&speed=2)
 
 ## Advantages of this boilerplate
 
