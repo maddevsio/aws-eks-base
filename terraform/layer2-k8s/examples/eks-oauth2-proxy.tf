@@ -22,7 +22,7 @@ data "template_file" "oauth2_proxy" {
 
   vars = {
     domain_name  = local.kibana_domain_name
-    gitlab_group = var.kibana_gitlab_group
+    gitlab_group = local.kibana_gitlab_group
   }
 }
 

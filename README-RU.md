@@ -224,7 +224,7 @@
   $ export AWS_PROFILE=maddevs
   ```
 - Далее пройдите по [ссылке](https://docs.aws.amazon.com/neptune/latest/userguide/iam-auth-temporary-credentials.html), чтобы узнать как получить временные токены
-- В качетве альтернативы, для того чтобы использовать `awscli` и соответственно `terraform` с [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/), можно использовать `aws-mfa`, `aws-vault` и `awsudo`
+- В качестве альтернативы, для того чтобы использовать `awscli` и соответственно `terraform` с [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/), можно использовать `aws-mfa`, `aws-vault` и `awsudo`
 
 ## Как использовать этот репо
 
@@ -232,45 +232,54 @@
 
 #### S3 state backend
 
-В качестве бэкенда для хранения стейтов терраформа и для обмена данными между слоями используется S3. На текущей момент имя S3 бакета захардкожено в коде `madops-terraform-state-us-east-1`. Необходимо создать отдельный бакет в своем аккаунте указать его имя в `main.tf` для обоих слоев.
+В качестве бэкенда для хранения стейтов терраформа и для обмена данными между слоями используется S3. Есть два способа настроить бэкенд: создать вручную `backend.tf` файл в каждом слое и более простой способ - выполнить из `terraform/`:
+
+  ```bash
+  $ export TF_REMOTE_STATE_BUCKET=my-new-state-bucket
+  $ terragrunt run-all init
+  ```
+
+#### Входные данные
+
+В файле `terraform/demo.tfvars.example` представлен пример со значениями для терраформа. Скопируйте его в `terraform/terraform.tfvars` и отредактируйте по своему усмотрению:
+
+```bash
+$ cp terraform/layer1-aws/demo.tfvars.example terraform/layer1-aws/terraform.tfvars
+```
+
+> Все возможные параметры можно посмотреть в Readme для каждого слоя.
 
 #### Секреты
 
-В корне `layer2-k8s` лежит файл `aws-ssm-gitlab-secrets.tf`, ожидающий значения, заданные в AWS SSM Parameter Store. Данные секреты используются для аутентификации в Kibana и Grafana используя GitLab. Также в параметрах задается токен для регистрации гитлаб раннера:
-
-  ```
-  /maddevs-demo/infra/grafana/gitlab_client_id
-  /maddevs-demo/infra/grafana/gitlab_client_secret
-  /maddevs-demo/infra/kibana/gitlab_client_id
-  /maddevs-demo/infra/kibana/gitlab_client_secret
-  /maddevs-demo/infra/runner/gitlab_registration_token
-  ```
-
-Другой способ передачи этих секретов - использовать AWS Secret Manager. В файле `examples/aws-secret-manager-gitlab-secrets.tf` находится пример использования. Данный конфиг ожидает json секрет `/maddevs-demo/infra/gitlab-tokens` с содержимым:
+В корне `layer2-k8s` лежит файл `aws-sm-secrets.tf`, ожидающий значения, заданные в секрете `/${local.name}-${local.environment}/infra/layer2-k8s` сервиса [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home). Данный секрет используется для аутентификации в Kibana и Grafana используя GitLab. Также задается токен для регистрации гитлаб раннера, параметры slack для алертменеджера:
 
   ```json
   {
     "kibana_gitlab_client_id": "access key token",
     "kibana_gitlab_client_secret": "secret key token",
+    "kibana_gitlab_group": "gitlab group",
     "grafana_gitlab_client_id": "access key token",
     "grafana_gitlab_client_secret": "secret key token",
-    "gitlab_registration_token": "gitlab-runner token"
+    "gitlab_registration_token": "gitlab-runner token",
+    "grafana_gitlab_group": "gitlab group",
+    "alertmanager_slack_url": "slack url",
+    "alertmanager_slack_channel": "slack channel"
   }
   ```
 
-Используя тот или иной способ, задайте необходимые секреты, можно задать пустые значения. В случае если вы не будете использовать данные секреты, следует удалить эти `.tf` файлы из корня `layer2-k8s`
+> Задайте все необходимые значения, можно задать пустые значения. В случае если вы не будете использовать данные секреты, следует удалить этот `.tf` файл из корня `layer2-k8s`
 
 #### Домен и SSL
 
 Необходимо будет купить или подключить уже купленный домен в Route53. Имя домена и айди зоны нужно будет задать в переменных `domain_name` и `zone_id` в слое layer1.
 
-По умолчанию значение переменной `create_acm_certificate = false`. Что указывает терраформу запросить а arn существующего ACM сертификата. Установите значение `true` если вы хотите, чтобы терраформ создал новый SSL сертификат.
+По умолчанию значение переменной `create_acm_certificate = false`. Что указывает терраформу запросить arn существующего ACM сертификата. Установите значение `true` если вы хотите, чтобы терраформ создал новый SSL сертификат.
 
 ### Работа с terraform
 
 #### init
 
-Команда `terraform init` используется для инициализации стейта и его бекенда, провайдеров, плагинов и модулей. Это первая команда, которую необходимо выполнить в `layer1` и `layer2`:
+Команда `terraform init` используется для инициализации стейта и его бэкенда, провайдеров, плагинов и модулей. Это первая команда, которую необходимо выполнить в `layer1` и `layer2`:
 
   ```bash
   $ terraform init

@@ -6,7 +6,7 @@ module "acm" {
 
   domain_name               = local.domain_name
   subject_alternative_names = ["*.${local.domain_name}"]
-  zone_id                   = var.zone_id
+  zone_id                   = local.zone_id
 
   tags = {
     Name        = local.name

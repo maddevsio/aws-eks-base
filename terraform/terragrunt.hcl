@@ -1,5 +1,5 @@
 locals{
-  remote_state_bucket = "${get_env("TF_REMOTE_STATE_BUCKET", "madops-terraform-state-us-east-1")}"
+  remote_state_bucket = "${get_env("TF_REMOTE_STATE_BUCKET")}"
   region              = "${get_env("TF_REGION", "us-east-1")}"
 }
 

@@ -94,7 +94,7 @@ module "eks" {
     },
   ]
 
-  map_roles = var.map_roles
+  map_roles = local.eks_map_roles
 
-  write_kubeconfig = false
+  write_kubeconfig = var.eks_write_kubeconfig
 }

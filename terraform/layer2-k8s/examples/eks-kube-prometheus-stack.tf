@@ -1,23 +1,23 @@
 locals {
   grafana_password         = random_string.grafana_password.result
-  grafana_domain_name      = "grafana.${local.domain_name}"
-  prometheus_domain_name   = "prometheus.${local.domain_name}"
-  alertmanager_domain_name = "alertmanager.${local.domain_name}"
+  grafana_domain_name      = "grafana-${local.domain_suffix}"
+  prometheus_domain_name   = "prometheus-${local.domain_suffix}"
+  alertmanager_domain_name = "alertmanager-${local.domain_suffix}"
 
   kube_prometheus_stack_template = templatefile("${path.module}/templates/prometheus-values.tmpl",
     {
-      prometheus_domain_name               = local.prometheus_domain_name
-      alertmanager_domain_name             = local.alertmanager_domain_name
-      ip_whitelist                         = local.ip_whitelist
-      default_region                       = local.region
-      grafana_domain_name                  = local.grafana_domain_name
-      grafana_password                     = local.grafana_password
-      role_arn                             = module.aws_iam_grafana.role_arn
-      gitlab_client_id                     = local.grafana_gitlab_client_id
-      gitlab_client_secret                 = local.grafana_gitlab_client_secret
-      alertmanager_slack_url               = local.alertmanager_slack_url
-      alertmanager_slack_channel           = var.alertmanager_slack_channel
-      loki_datasource_for_prometheus_stack = var.loki_datasource_for_prometheus_stack
+      prometheus_domain_name     = local.prometheus_domain_name
+      alertmanager_domain_name   = local.alertmanager_domain_name
+      ip_whitelist               = local.ip_whitelist
+      default_region             = local.region
+      grafana_domain_name        = local.grafana_domain_name
+      grafana_password           = local.grafana_password
+      role_arn                   = module.aws_iam_grafana.role_arn
+      gitlab_client_id           = local.grafana_gitlab_client_id
+      gitlab_client_secret       = local.grafana_gitlab_client_secret
+      gitlab_group               = local.grafana_gitlab_group
+      alertmanager_slack_url     = local.alertmanager_slack_url
+      alertmanager_slack_channel = local.alertmanager_slack_channel
   })
 }
 

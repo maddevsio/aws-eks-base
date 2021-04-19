@@ -230,33 +230,42 @@ Further in the [IAM](https://console.aws.amazon.com/iam/home#/home) console:
 
 #### S3 state backend
 
-S3 is used as a backend for storing terraform states and for exchanging data between layers. Currently, the name of the S3 bucket is hardcoded as `madops-terraform-state-us-east-1`. You need to create a separate bucket in your account and specify its name in `main.tf` for both layers.
+S3 is used as a backend for storing terraform state and for exchanging data between layers. You can manually create s3 bucket and then put backend setting into `backend.tf` file in each layer. Alternatively you can run from `terraform/` directory:
+
+  ```bash
+  $ export TF_REMOTE_STATE_BUCKET=my-new-state-bucket
+  $ terragrunt run-all init
+  ```
+
+#### Inputs
+
+File `terraform/layer1-aws/demo.tfvars.example` contains example values. Copy this file to `terraform/layer1-aws/terraform.tfvars` and set you values:
+
+```bash
+$ cp terraform/layer1-aws/demo.tfvars.example terraform/layer1-aws/terraform.tfvars
+```
+
+> You can find all possible variables in each layer's Readme.
 
 #### Secrets
 
-At the root of `layer2-k8s` is the `aws-ssm-gitlab-secrets.tf` file waiting for values set in the AWS SSM Parameter Store. These secrets are used for authentication with Kibana and Grafana using GitLab. Also, in the parameters, a token is set for registering a gitlab runner:
-
-  ```
-  /maddevs-demo/infra/grafana/gitlab_client_id
-  /maddevs-demo/infra/grafana/gitlab_client_secret
-  /maddevs-demo/infra/kibana/gitlab_client_id
-  /maddevs-demo/infra/kibana/gitlab_client_secret
-  /maddevs-demo/infra/runner/gitlab_registration_token
-  ```
-
-Another way to set these secrets is to use AWS Secret Manager. The `examples/aws-secret-manager-gitlab-secrets.tf` file contains an example of usage. This config expects json secret `/maddevs-demo/infra/gitlab-tokens` with the following content:
+In the root of `layer2-k8s` is the `aws-sm-secrets.tf` where several local variables expect [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name}-${local.environment}/infra/layer2-k8s`. These secrets are used for authentication with Kibana and Grafana using GitLab and register gitlab runner.
 
   ```json
   {
     "kibana_gitlab_client_id": "access key token",
     "kibana_gitlab_client_secret": "secret key token",
+    "kibana_gitlab_group": "gitlab group",
     "grafana_gitlab_client_id": "access key token",
     "grafana_gitlab_client_secret": "secret key token",
-    "gitlab_registration_token": "gitlab-runner token"
+    "gitlab_registration_token": "gitlab-runner token",
+    "grafana_gitlab_group": "gitlab group",
+    "alertmanager_slack_url": "slack url",
+    "alertmanager_slack_channel": "slack channel"
   }
   ```
 
-Using either of these methods, set proper secrets; you can set empty values. If you will not use these secrets, you should delete these `.tf` files from the `layer2-k8s` root.
+> Set proper secrets; you can set empty/mock values. If you won't use these secrets, delete this `.tf` file from the `layer2-k8s` root.
 
 #### Domain and SSL
 
@@ -288,7 +297,7 @@ The `terraform init` command is used to initialize the state and its backend, do
 
 #### plan
 
-The `terraform plan` command reads the terraform state and configuration files and displays a list of changes and actions that need to be performed to bring the state in line with the configuration. It's a convenient way to test changes before applying them. When used with the `-out` parameter, it saves a batch of changes to a specified file that can later be used with `terraform apply`. Call example:
+The `terraform plan` command reads terraform state and configuration files and displays a list of changes and actions that need to be performed to bring the state in line with the configuration. It's a convenient way to test changes before applying them. When used with the `-out` parameter, it saves a batch of changes to a specified file that can later be used with `terraform apply`. Call example:
 
   ```bash
   $ terraform plan

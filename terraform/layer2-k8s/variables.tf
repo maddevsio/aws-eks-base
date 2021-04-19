@@ -1,7 +1,6 @@
 variable "remote_state_bucket" {
   type        = string
-  default     = "madops-terraform-state-us-east-1"
-  description = "Name of the bucket with the state"
+  description = "Name of the bucket for terraform state"
 }
 
 variable "remote_state_key" {
@@ -22,8 +21,9 @@ variable "allowed_account_ids" {
 }
 
 variable "additional_allowed_ips" {
-  type    = list(any)
-  default = []
+  type        = list(any)
+  default     = []
+  description = "IP addresses allowed to connect to private resources"
 }
 
 # OAUTH PROXY
@@ -61,7 +61,7 @@ variable "nginx_ingress_ssl_terminator" {
 
 # ALB Ingress
 variable "alb_ingress_image_tag" {
-  description = "Tag of docker image alb-ingress controller"
+  description = "Tag of docker image for alb-ingress controller"
   default     = "v1.1.5"
 }
 
@@ -90,31 +90,29 @@ variable "redis_version" {
 
 # ELK
 variable "elk_version" {
-  type    = string
-  default = "7.8.0"
+  description = "Version of ELK helm chart"
+  default     = "7.8.0"
 }
 
 # external secrets
 variable "external_secrets_version" {
-  default = "6.3.0"
+  description = "Version of external-secrets helm chart"
+  default     = "6.3.0"
 }
 
 variable "reloader_version" {
-  default = "0.0.81"
+  description = "Version of reloader helm chart"
+  default     = "0.0.81"
 }
 
 variable "prometheus_mysql_exporter_version" {
-  default = "1.1.0"
+  description = "Version of prometheus mysql-exporter helm chart"
+  default     = "1.1.0"
 }
 
 variable "loki_stack" {
-  type    = string
-  default = "2.3.1"
-}
-
-variable "loki_datasource_for_prometheus_stack" {
-  type    = bool
-  default = false
+  description = "Version of Loki Stack helm chart"
+  default     = "2.3.1"
 }
 
 variable "aws_node_termination_handler_version" {
@@ -136,24 +134,6 @@ variable "elk_snapshot_retention_days" {
 variable "elk_index_retention_days" {
   description = "Days before remove index from system elasticsearch"
   default     = 14
-}
-
-variable "grafana_gitlab_group" {
-  type        = string
-  default     = "madops"
-  description = "Gitlab group for grafana oauth"
-}
-
-variable "alertmanager_slack_channel" {
-  type        = string
-  default     = "madops-demo-alerts"
-  description = "Slack channel for alertmanager alerts"
-}
-
-variable "kibana_gitlab_group" {
-  type        = string
-  default     = "madops"
-  description = "Gitlab group for kibana oauth2"
 }
 
 # Calico

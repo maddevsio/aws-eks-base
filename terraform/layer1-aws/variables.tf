@@ -6,8 +6,7 @@ variable "allowed_account_ids" {
 }
 
 variable "name" {
-  description = "Project name, required to form unique resource names"
-  default     = "maddevs"
+  description = "Project name, required to create unique resource names"
 }
 
 variable "environment" {
@@ -43,13 +42,22 @@ variable "short_region" {
 }
 
 variable "domain_name" {
-  description = "Main domain name"
-  default     = "maddevs.org"
+  description = "Main public domain name"
 }
 
 variable "zone_id" {
-  default     = "Z058363314IT7VAKRA364"
-  description = "maddevs.org zone id"
+  default     = null
+  description = "R53 zone id for public domain"
+}
+
+variable "create_r53_zone" {
+  default     = false
+  description = "Create R53 zone for main public domain"
+}
+
+variable "create_acm_certificate" {
+  default     = false
+  description = "Whether to create acm certificate or use existing"
 }
 
 # VPC VARIABLES
@@ -70,19 +78,15 @@ variable "cidr" {
   default     = "10.0.0.0/16"
 }
 
-variable "create_acm_certificate" {
-  default     = false
-  description = "Whether to create acm certificate or use existing"
+variable "allowed_ips" {
+  type        = list(any)
+  default     = []
+  description = "IP addresses allowed to connect to private resources"
 }
 
-variable "allowed_ips" {
-  type = list(any)
-  default = [
-    "212.42.109.196/32",
-    "212.42.107.23/32",
-    "212.42.107.134/32",
-    "212.112.100.80/32"
-  ]
+variable "single_nat_gateway" {
+  default     = true
+  description = "Flag to create single nat gateway for all AZs"
 }
 
 # EKS
@@ -92,6 +96,7 @@ variable "eks_cluster_version" {
 }
 
 variable "eks_worker_groups" {
+  description = "EKS Worker groups configuration"
   default = {
     spot = {
       override_instance_types = ["t3.medium", "t3a.medium"]
@@ -115,7 +120,7 @@ variable "eks_worker_groups" {
   }
 }
 
-variable "map_roles" {
+variable "eks_map_roles" {
   description = "Additional IAM roles to add to the aws-auth configmap."
   type = list(object({
     rolearn  = string
@@ -123,14 +128,12 @@ variable "map_roles" {
     groups   = list(string)
   }))
 
-  default = [
-    {
-      // This shouldn't be hard coded - use remote state or some other method
-      rolearn  = "arn:aws:iam::730809894724:role/administrator"
-      username = "administrator"
-      groups   = ["system:masters"]
-    },
-  ]
+  default = []
+}
+
+variable "eks_write_kubeconfig" {
+  default     = false
+  description = "Flag for eks module to write kubeconfig"
 }
 
 # ECR

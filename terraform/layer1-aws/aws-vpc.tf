@@ -23,9 +23,8 @@ module "vpc" {
   database_subnets = local.database_subnets
   intra_subnets    = local.intra_subnets
 
-
+  single_nat_gateway   = var.single_nat_gateway
   enable_nat_gateway   = true
-  single_nat_gateway   = true
   enable_vpn_gateway   = false
   enable_dns_hostnames = true
   enable_dns_support   = true
