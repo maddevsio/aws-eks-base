@@ -3,8 +3,6 @@
 [![Developed by Mad Devs](https://maddevs.io/badge-dark.svg)](https://maddevs.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-[![boilerplate asciicast](https://asciinema.org/a/wCS0HdC6UViWDKO7GypyIJjaB.png)](https://asciinema.org/a/wCS0HdC6UViWDKO7GypyIJjaB?autoplay=1&speed=2)
-
 ## Преимущества этого бойлерплейта
 
 - Инфраструктура как код (IaC): используя Terraform, вы получаете налаженную и продуктивную инфраструктуру
@@ -19,6 +17,8 @@
 - Безопасный и отшлифованный: мы использовали эти решения в наших собственных крупномасштабных, высоконагруженных проектах. Мы месяцами совершенствовали этот процесс построения инфраструктуры, чтобы в результате получилась безопасная в использовании, защищенная и надежная система
 - Экономит время: вы можете потратить недели на собственные поиски и неизбежные ошибки, чтобы построить такую инфраструктуру. Или же вы можете положиться на этот бойлерплейт и поднять нужную инфраструктуру в течение дня
 - Свободный: мы рады делиться результатами своей работы
+
+[![boilerplate asciicast](https://asciinema.org/a/wCS0HdC6UViWDKO7GypyIJjaB.png)](https://asciinema.org/a/wCS0HdC6UViWDKO7GypyIJjaB?autoplay=1&speed=2)
 
 ## Описание
 
