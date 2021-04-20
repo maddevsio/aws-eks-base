@@ -18,6 +18,8 @@
 - **Saves time**: you can spend weeks doing your own research and making the unavoidable mistakes to build an infrastructure like this. Instead, you can rely on this boilerplate and create the infrastructure you need within a day
 - **It’s free**: we’re happy to share the results of our work
 
+[![boilerplate asciicast](https://asciinema.org/a/wCS0HdC6UViWDKO7GypyIJjaB.png)](https://asciinema.org/a/wCS0HdC6UViWDKO7GypyIJjaB?autoplay=1&speed=2)
+
 ## Description
 
 This repository contains the know-how of the Mad Devs team for the rapid deployment of a Kubernetes cluster, supporting services, and the underlying infrastructure in the Amazon cloud. The main development and delivery tool is [terraform](https://www.terraform.io/)
