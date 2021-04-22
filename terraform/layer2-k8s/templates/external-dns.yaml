@@ -19,7 +19,8 @@ metrics:
     enabled: false
     namespace: monitoring
     selector:
-      prometheus: prometheus-operator
+      app: kube-prometheus-stack-operator
+      release: kube-prometheus-stack
 
 sources:
   - service

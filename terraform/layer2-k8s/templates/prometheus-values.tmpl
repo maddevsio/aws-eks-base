@@ -125,13 +125,25 @@ grafana:
   dashboards:
     logs:
       logs:
-        url: https://gist.githubusercontent.com/khalezin/49766ed2976d49b0dc84a9c7809392e5/raw/53c0d067713e4da0e6cf187c6515a19e5dd996f5/loki-dashboard-quick-search.json
+        url: https://s3.amazonaws.com/grafana-dashboards.maddevs.org/common/aws-eks-base/loki-dashboard-quick-search.json
+
     k8s:
       nginx-ingress:
         gnetId: 6927
         datasource: Prometheus
       loki-promtail:
-        url: https://gist.githubusercontent.com/khalezin/dd63440a404afc7ff13815dded04e74a/raw/613f52a7c57b824ec52c15a8e89ff6ba2ba2f73d/loki-promtail.json
+        url: https://s3.amazonaws.com/grafana-dashboards.maddevs.org/common/aws-eks-base/loki-promtail.json
+      core-dns:
+        url: https://s3.amazonaws.com/grafana-dashboards.maddevs.org/common/aws-eks-base/core-dns.json
+      cluster-autoscaler:
+        url: https://s3.amazonaws.com/grafana-dashboards.maddevs.org/common/aws-eks-base/cluster-autoscaler.json
+
+
+  plugins:
+    - grafana-piechart-panel
+    - simpod-json-datasource
+    - devopsprodigy-kubegraf-app
+    - grafana-worldmap-panel
 
   affinity:
     nodeAffinity:

@@ -10,10 +10,12 @@ autoDiscovery:
   clusterName: ${cluster_name}
 
 serviceMonitor:
-  enabled: false
+  enabled: true
+  interval: 10s
   namespace: monitoring
   selector:
-    prometheus: prometheus-operator
+    app: kube-prometheus-stack-operator
+    release: kube-prometheus-stack
   path: /metrics
 
 affinity:
@@ -23,5 +25,6 @@ affinity:
       - matchExpressions:
         - key: node.kubernetes.io/lifecycle
           operator: In
-          values: 
+          values:
             - ondemand
+
