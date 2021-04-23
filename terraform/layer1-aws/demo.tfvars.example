@@ -18,7 +18,7 @@ single_nat_gateway = true
 ##########
 # EKS
 ##########
-eks_cluster_version = "1.18"
+eks_cluster_version = "1.19"
 
 eks_worker_groups = {
   spot = {
