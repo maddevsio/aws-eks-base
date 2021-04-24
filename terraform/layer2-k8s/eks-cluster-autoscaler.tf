@@ -14,14 +14,15 @@ data "template_file" "cluster_autoscaler" {
     role_arn     = module.aws_iam_autoscaler.role_arn
     region       = local.region
     cluster_name = local.eks_cluster_id
+    version      = var.cluster_autoscaler_version
   }
 }
 
 resource "helm_release" "cluster_autoscaler" {
-  name       = "cluster-autoscaler-chart"
-  chart      = "cluster-autoscaler-chart"
+  name       = "cluster-autoscaler"
+  chart      = "cluster-autoscaler"
   repository = local.helm_repo_cluster_autoscaler
-  version    = var.cluster_autoscaler_version
+  version    = var.cluster_autoscaler_chart_version
   namespace  = kubernetes_namespace.sys.id
 
   values = [

@@ -1,3 +1,6 @@
+image:
+  tag: ${version}
+
 awsRegion: ${region}
 
 rbac:
@@ -23,5 +26,5 @@ affinity:
       - matchExpressions:
         - key: node.kubernetes.io/lifecycle
           operator: In
-          values: 
+          values:
             - ondemand
