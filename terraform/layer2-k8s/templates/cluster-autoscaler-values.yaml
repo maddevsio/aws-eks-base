@@ -13,10 +13,9 @@ autoDiscovery:
   clusterName: ${cluster_name}
 
 serviceMonitor:
-  enabled: false
+  enabled: true
+  interval: 10s
   namespace: monitoring
-  selector:
-    prometheus: prometheus-operator
   path: /metrics
 
 affinity:

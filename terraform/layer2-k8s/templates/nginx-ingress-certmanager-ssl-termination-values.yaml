@@ -30,9 +30,7 @@ controller:
   metrics:
     enabled: true
     serviceMonitor:
-      enabled: false
-      additionalLabels:
-        release: prometheus-operator
+      enabled: true
 
   affinity:
     nodeAffinity:
@@ -41,7 +39,7 @@ controller:
         - matchExpressions:
           - key: node.kubernetes.io/lifecycle
             operator: In
-            values: 
+            values:
               - ondemand
 
 rbac:

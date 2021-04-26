@@ -18,8 +18,6 @@ metrics:
   serviceMonitor:
     enabled: false
     namespace: monitoring
-    selector:
-      prometheus: prometheus-operator
 
 sources:
   - service

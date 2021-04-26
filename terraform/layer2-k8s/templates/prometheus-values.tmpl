@@ -13,6 +13,7 @@ prometheus:
     - hosts:
       - ${prometheus_domain_name}
   prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
     storageSpec:
       volumeClaimTemplate:
         spec:
@@ -125,13 +126,22 @@ grafana:
   dashboards:
     logs:
       logs:
-        url: https://gist.githubusercontent.com/khalezin/49766ed2976d49b0dc84a9c7809392e5/raw/53c0d067713e4da0e6cf187c6515a19e5dd996f5/loki-dashboard-quick-search.json
+        ## Dashboard for quick search application logs for loki with two datasources loki and prometheus - https://grafana.com/grafana/dashboards/12019
+        url: https://s3.amazonaws.com/grafana-dashboards.maddevs.org/common/aws-eks-base/loki-dashboard-quick-search.json
+
     k8s:
       nginx-ingress:
-        gnetId: 6927
+      ## Dashboard for nginx-ingress metrics - https://grafana.com/grafana/dashboards/9614
+        gnetId: 9614
         datasource: Prometheus
       loki-promtail:
-        url: https://gist.githubusercontent.com/khalezin/dd63440a404afc7ff13815dded04e74a/raw/613f52a7c57b824ec52c15a8e89ff6ba2ba2f73d/loki-promtail.json
+      ## Dashboard for loki and promtail metrics - https://grafana.com/grafana/dashboards/10880
+        gnetId: 10880
+        datasource: Prometheus
+      cluster-autoscaler:
+      ## Dashboard for cluster-autoscaler metrics - https://grafana.com/grafana/dashboards/3831
+        gnetId: 3831
+        datasource: Prometheus
 
   affinity:
     nodeAffinity:

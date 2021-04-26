@@ -1,7 +1,5 @@
 serviceMonitor:
-  enabled: false
-  additionalLabels:
-    release: prometheus-operator
+  enabled: true
 
 mysql:
   existingSecret: mysql-exporter
@@ -13,5 +11,5 @@ affinity:
       - matchExpressions:
         - key: node.kubernetes.io/lifecycle
           operator: In
-          values: 
+          values:
             - spot

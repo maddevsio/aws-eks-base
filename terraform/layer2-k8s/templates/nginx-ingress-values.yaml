@@ -21,9 +21,7 @@ controller:
   metrics:
     enabled: true
     serviceMonitor:
-      enabled: false
-      additionalLabels:
-        release: prometheus-operator
+      enabled: true
 
   podAnnotations:
     co.elastic.logs/module: nginx
@@ -37,7 +35,7 @@ controller:
         - matchExpressions:
           - key: node.kubernetes.io/lifecycle
             operator: In
-            values: 
+            values:
               - ondemand
 
 rbac:
