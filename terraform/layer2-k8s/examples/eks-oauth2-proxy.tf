@@ -27,15 +27,16 @@ data "template_file" "oauth2_proxy" {
 }
 
 resource "helm_release" "oauth2_proxy" {
-  name       = "oauth2-proxy"
-  chart      = "oauth2-proxy"
-  repository = local.helm_repo_stable
-  version    = var.oauth2_proxy_version
-  namespace  = kubernetes_namespace.elk.id
-  wait       = false
+  name        = "oauth2-proxy"
+  chart       = "oauth2-proxy"
+  repository  = local.helm_repo_stable
+  version     = var.oauth2_proxy_version
+  namespace   = kubernetes_namespace.elk.id
+  wait        = false
+  max_history = "3"
 
   values = [
-    "${data.template_file.oauth2_proxy.rendered}",
+    data.template_file.oauth2_proxy.rendered
   ]
 }
 

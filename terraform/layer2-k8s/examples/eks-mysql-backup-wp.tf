@@ -34,15 +34,16 @@ data "template_file" "mysql_backup_wp" {
 }
 
 resource "helm_release" "mysql_backup_wp" {
-  name       = "mysql-backup"
-  chart      = "mysql-backup"
-  repository = local.helm_repo_softonic
-  version    = "2.1.4"
-  namespace  = kubernetes_namespace.wp.id
-  wait       = false
+  name        = "mysql-backup"
+  chart       = "mysql-backup"
+  repository  = local.helm_repo_softonic
+  version     = "2.1.4"
+  namespace   = kubernetes_namespace.wp.id
+  wait        = false
+  max_history = "3"
 
   values = [
-    "${data.template_file.mysql_backup_wp.rendered}",
+    data.template_file.mysql_backup_wp.rendered
   ]
 
   # This dep needs for correct apply

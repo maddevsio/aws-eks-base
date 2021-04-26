@@ -19,11 +19,12 @@ data "template_file" "cluster_autoscaler" {
 }
 
 resource "helm_release" "cluster_autoscaler" {
-  name       = "cluster-autoscaler"
-  chart      = "cluster-autoscaler"
-  repository = local.helm_repo_cluster_autoscaler
-  version    = var.cluster_autoscaler_chart_version
-  namespace  = kubernetes_namespace.sys.id
+  name        = "cluster-autoscaler"
+  chart       = "cluster-autoscaler"
+  repository  = local.helm_repo_cluster_autoscaler
+  version     = var.cluster_autoscaler_chart_version
+  namespace   = kubernetes_namespace.sys.id
+  max_history = "3"
 
   values = [
     data.template_file.cluster_autoscaler.rendered,

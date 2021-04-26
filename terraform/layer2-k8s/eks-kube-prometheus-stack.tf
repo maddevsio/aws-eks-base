@@ -35,17 +35,13 @@ module "aws_iam_grafana" {
 }
 
 resource "helm_release" "prometheus_operator" {
-  name       = "kube-prometheus-stack"
-  chart      = "kube-prometheus-stack"
-  repository = local.helm_repo_prometheus_community
-  namespace  = kubernetes_namespace.monitoring.id
-  version    = var.prometheus_operator_version
-  wait       = false
-
-  set {
-    name  = "rbac.create"
-    value = "true"
-  }
+  name        = "kube-prometheus-stack"
+  chart       = "kube-prometheus-stack"
+  repository  = local.helm_repo_prometheus_community
+  namespace   = kubernetes_namespace.monitoring.id
+  version     = var.prometheus_operator_version
+  wait        = false
+  max_history = "3"
 
   values = [
     local.kube_prometheus_stack_template

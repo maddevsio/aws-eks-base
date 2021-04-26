@@ -8,10 +8,11 @@ data "template_file" "certificate" {
 }
 
 resource "helm_release" "certificate" {
-  name      = "certificate"
-  chart     = "../../helm-charts/certificate"
-  namespace = module.ing_namespace.name
-  wait      = false
+  name        = "certificate"
+  chart       = "../../helm-charts/certificate"
+  namespace   = module.ing_namespace.name
+  wait        = false
+  max_history = "3"
 
   values = [
     data.template_file.certificate.rendered,

@@ -7,15 +7,16 @@ data "template_file" "apm-server" {
 }
 
 resource "helm_release" "apm-server" {
-  name       = "apm-server"
-  chart      = "apm-server"
-  repository = local.helm_repo_elastic
-  version    = var.elk_version
-  namespace  = kubernetes_namespace.elk.id
-  wait       = false
+  name        = "apm-server"
+  chart       = "apm-server"
+  repository  = local.helm_repo_elastic
+  version     = var.elk_version
+  namespace   = kubernetes_namespace.elk.id
+  wait        = false
+  max_history = "3"
 
   values = [
-    "${data.template_file.apm.rendered}",
+    data.template_file.apm.rendered,
   ]
 
   # This dep needs for correct apply

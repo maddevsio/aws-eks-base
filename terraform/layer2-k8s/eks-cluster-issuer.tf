@@ -9,10 +9,11 @@ data "template_file" "cluster_issuer" {
 }
 
 resource "helm_release" "cluster_issuer" {
-  name      = "cluster-issuer"
-  chart     = "../../helm-charts/cluster-issuer"
-  namespace = kubernetes_namespace.certmanager.id
-  wait      = false
+  name        = "cluster-issuer"
+  chart       = "../../helm-charts/cluster-issuer"
+  namespace   = kubernetes_namespace.certmanager.id
+  wait        = false
+  max_history = "3"
 
   values = [
     data.template_file.cluster_issuer.rendered,

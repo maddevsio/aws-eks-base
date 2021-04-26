@@ -3,15 +3,16 @@ data "template_file" "metricbeat" {
 }
 
 resource "helm_release" "metricbeat" {
-  name       = "metricbeat"
-  chart      = "metricbeat"
-  repository = local.helm_repo_elastic
-  version    = var.elk_version
-  namespace  = kubernetes_namespace.elk.id
-  wait       = false
+  name        = "metricbeat"
+  chart       = "metricbeat"
+  repository  = local.helm_repo_elastic
+  version     = var.elk_version
+  namespace   = kubernetes_namespace.elk.id
+  wait        = false
+  max_history = "3"
 
   values = [
-    "${data.template_file.metricbeat.rendered}",
+    data.template_file.metricbeat.rendered
   ]
 
   # This dep needs for correct apply

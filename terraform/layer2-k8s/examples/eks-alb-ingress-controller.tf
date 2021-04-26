@@ -19,13 +19,14 @@ data "template_file" "alb_ingress_controller" {
 }
 
 resource "helm_release" "alb_ingress_controller" {
-  name       = "aws-alb-ingress-controller"
-  chart      = "aws-alb-ingress-controller"
-  repository = local.helm_repo_incubator
-  version    = var.alb_ingress_chart_version
-  namespace  = kubernetes_namespace.ing.id
+  name        = "aws-alb-ingress-controller"
+  chart       = "aws-alb-ingress-controller"
+  repository  = local.helm_repo_incubator
+  version     = var.alb_ingress_chart_version
+  namespace   = kubernetes_namespace.ing.id
+  max_history = "3"
 
   values = [
-    "${data.template_file.alb_ingress_controller.rendered}",
+    data.template_file.alb_ingress_controller.rendered
   ]
 }

@@ -8,15 +8,16 @@ data "template_file" "elasticsearch" {
 }
 
 resource "helm_release" "elasticsearch" {
-  name       = "elasticsearch"
-  chart      = "elasticsearch"
-  repository = local.helm_repo_elastic
-  version    = var.elk_version
-  namespace  = kubernetes_namespace.elk.id
-  wait       = false
+  name        = "elasticsearch"
+  chart       = "elasticsearch"
+  repository  = local.helm_repo_elastic
+  version     = var.elk_version
+  namespace   = kubernetes_namespace.elk.id
+  wait        = false
+  max_history = "3"
 
   values = [
-    "${data.template_file.elasticsearch.rendered}",
+    data.template_file.elasticsearch.rendered
   ]
 
   # This dep needs for correct apply

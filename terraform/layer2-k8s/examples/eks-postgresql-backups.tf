@@ -6,10 +6,11 @@ locals {
 }
 
 resource "helm_release" "postgresql_backups" {
-  name      = "postgresql-backups"
-  chart     = "../../helm-charts/postgresql-backups"
-  namespace = kubernetes_namespace.prod.id
-  wait      = false
+  name        = "postgresql-backups"
+  chart       = "../../helm-charts/postgresql-backups"
+  namespace   = kubernetes_namespace.prod.id
+  wait        = false
+  max_history = "3"
 
   values = [
     local.postgresql_backups_template

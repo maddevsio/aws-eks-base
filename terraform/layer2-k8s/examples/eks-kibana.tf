@@ -36,15 +36,16 @@ data "template_file" "kibana" {
 }
 
 resource "helm_release" "kibana" {
-  name       = "kibana"
-  chart      = "kibana"
-  repository = local.helm_repo_elastic
-  version    = var.elk_version
-  namespace  = kubernetes_namespace.elk.id
-  wait       = false
+  name        = "kibana"
+  chart       = "kibana"
+  repository  = local.helm_repo_elastic
+  version     = var.elk_version
+  namespace   = kubernetes_namespace.elk.id
+  wait        = false
+  max_history = "3"
 
   values = [
-    "${data.template_file.kibana.rendered}",
+    data.template_file.kibana.rendered
   ]
 
   # This dep needs for correct apply

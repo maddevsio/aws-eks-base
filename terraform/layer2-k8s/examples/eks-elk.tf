@@ -21,13 +21,14 @@ data "template_file" "elk" {
 }
 
 resource "helm_release" "elk" {
-  name      = "elk"
-  chart     = "../../helm-charts/elk"
-  namespace = kubernetes_namespace.elk.id
-  wait      = false
+  name        = "elk"
+  chart       = "../../helm-charts/elk"
+  namespace   = kubernetes_namespace.elk.id
+  wait        = false
+  max_history = "3"
 
   values = [
-    "${data.template_file.elk.rendered}",
+    data.template_file.elk.rendered
   ]
 }
 

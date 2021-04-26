@@ -19,12 +19,13 @@ data "template_file" "nginx_ingress" {
 }
 
 resource "helm_release" "nginx_ingress" {
-  name       = "ingress-nginx"
-  chart      = "ingress-nginx"
-  repository = local.helm_repo_ingress_nginx
-  namespace  = module.ing_namespace.name
-  version    = var.nginx_ingress_controller_version
-  wait       = false
+  name        = "ingress-nginx"
+  chart       = "ingress-nginx"
+  repository  = local.helm_repo_ingress_nginx
+  namespace   = module.ing_namespace.name
+  version     = var.nginx_ingress_controller_version
+  wait        = false
+  max_history = "3"
 
   values = [
     data.template_file.nginx_ingress.rendered,
