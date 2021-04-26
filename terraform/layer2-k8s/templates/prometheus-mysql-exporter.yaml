@@ -1,8 +1,5 @@
 serviceMonitor:
   enabled: true
-  additionalLabels:
-    app: kube-prometheus-stack-operator
-    release: kube-prometheus-stack
 
 mysql:
   existingSecret: mysql-exporter

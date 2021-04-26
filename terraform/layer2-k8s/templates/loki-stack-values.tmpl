@@ -15,9 +15,6 @@ loki:
   serviceMonitor:
     enabled: true
     interval: ""
-    additionalLabels:
-      app: kube-prometheus-stack-operator
-      release: kube-prometheus-stack
     annotations: {}
     scrapeTimeout: 10s
 
@@ -29,9 +26,6 @@ promtail:
   serviceMonitor:
     enabled: true
     interval: ""
-    additionalLabels:
-      app: kube-prometheus-stack-operator
-      release: kube-prometheus-stack
     annotations: {}
     # scrapeTimeout: 10s
   tolerations:
@@ -122,5 +116,6 @@ grafana:
   dashboards:
     logs:
       logs:
+        ## Dashboard for quick search application logs for loki with two datasources loki and prometheus - https://grafana.com/grafana/dashboards/12019
         url: https://s3.amazonaws.com/grafana-dashboards.maddevs.org/common/aws-eks-base/loki-dashboard-quick-search.json
 

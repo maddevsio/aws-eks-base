@@ -72,8 +72,13 @@ variable "alb_ingress_chart_version" {
 
 # Cluster autoscaler
 variable "cluster_autoscaler_version" {
-  description = "Version of autoscaler helm chart"
-  default     = "1.1.0"
+  description = "Version of cluster autoscaler"
+  default     = "v1.19.0"
+}
+
+variable "cluster_autoscaler_chart_version" {
+  description = "Version of cluster autoscaler helm chart"
+  default     = "9.9.2"
 }
 
 # Prometheus Operator

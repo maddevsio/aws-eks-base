@@ -22,9 +22,6 @@ controller:
     enabled: true
     serviceMonitor:
       enabled: true
-      additionalLabels:
-        app: kube-prometheus-stack-operator
-        release: kube-prometheus-stack
 
   podAnnotations:
     co.elastic.logs/module: nginx

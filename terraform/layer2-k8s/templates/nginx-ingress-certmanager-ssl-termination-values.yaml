@@ -31,9 +31,6 @@ controller:
     enabled: true
     serviceMonitor:
       enabled: true
-      additionalLabels:
-        app: kube-prometheus-stack-operator
-        release: kube-prometheus-stack
 
   affinity:
     nodeAffinity:

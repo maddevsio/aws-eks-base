@@ -12,9 +12,6 @@ serviceMonitor:
   namespace: monitoring
   interval: 30s
   telemetryPath: /metrics
-  labels:
-    app: kube-prometheus-stack-operator
-    release: kube-prometheus-stack
   timeout: 10s
 
 affinity:
