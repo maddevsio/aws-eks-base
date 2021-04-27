@@ -24,7 +24,7 @@ resource "helm_release" "alb_ingress_controller" {
   repository  = local.helm_repo_incubator
   version     = var.alb_ingress_chart_version
   namespace   = kubernetes_namespace.ing.id
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     data.template_file.alb_ingress_controller.rendered

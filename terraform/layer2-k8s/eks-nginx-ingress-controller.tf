@@ -25,7 +25,7 @@ resource "helm_release" "nginx_ingress" {
   namespace   = module.ing_namespace.name
   version     = var.nginx_ingress_controller_version
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     data.template_file.nginx_ingress.rendered,

@@ -18,7 +18,7 @@ resource "helm_release" "loki_stack" {
   namespace   = kubernetes_namespace.monitoring.id
   version     = var.loki_stack
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     local.loki_stack_template

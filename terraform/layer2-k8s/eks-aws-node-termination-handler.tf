@@ -5,7 +5,7 @@ resource "helm_release" "aws_node_termination_handler" {
   repository  = local.helm_repo_eks
   namespace   = kubernetes_namespace.sys.id
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     file("${path.module}/templates/aws-node-termination-handler-values.yaml")

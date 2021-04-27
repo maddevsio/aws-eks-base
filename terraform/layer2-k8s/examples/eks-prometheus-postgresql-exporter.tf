@@ -31,7 +31,7 @@ resource "helm_release" "postgresql_exporter_user" {
   chart       = "../../helm-charts/pg-exporter-user"
   namespace   = kubernetes_namespace.monitoring.id
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     local.postgresql_exporter_user_template
@@ -45,7 +45,7 @@ resource "helm_release" "postgresql_exporter" {
   version     = "1.4.0"
   namespace   = kubernetes_namespace.monitoring.id
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     local.prometheus_postgresql_exporter_template

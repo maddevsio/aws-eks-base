@@ -13,7 +13,7 @@ resource "helm_release" "cluster_issuer" {
   chart       = "../../helm-charts/cluster-issuer"
   namespace   = kubernetes_namespace.certmanager.id
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     data.template_file.cluster_issuer.rendered,

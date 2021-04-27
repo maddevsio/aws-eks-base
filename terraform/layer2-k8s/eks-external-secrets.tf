@@ -21,7 +21,7 @@ resource "helm_release" "external_secrets" {
   repository  = local.helm_repo_external_secrets
   version     = var.external_secrets_version
   namespace   = kubernetes_namespace.sys.id
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     data.template_file.external_secrets.rendered,
@@ -35,7 +35,7 @@ resource "helm_release" "reloader" {
   version     = var.reloader_version
   namespace   = kubernetes_namespace.sys.id
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 }
 
 #module "aws_iam_wp_external_secrets" {

@@ -33,7 +33,7 @@ resource "helm_release" "oauth2_proxy" {
   version     = var.oauth2_proxy_version
   namespace   = kubernetes_namespace.elk.id
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     data.template_file.oauth2_proxy.rendered

@@ -9,7 +9,7 @@ resource "helm_release" "prometheus_mysql_exporter_wp" {
   repository  = local.helm_repo_prometheus_community
   namespace   = kubernetes_namespace.wp.id
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     data.template_file.prometheus_mysql_exporter.rendered

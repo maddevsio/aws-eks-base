@@ -9,7 +9,7 @@ resource "helm_release" "filebeat" {
   version     = var.elk_version
   namespace   = kubernetes_namespace.elk.id
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     data.template_file.filebeat.rendered

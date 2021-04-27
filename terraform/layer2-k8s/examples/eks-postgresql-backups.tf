@@ -10,7 +10,7 @@ resource "helm_release" "postgresql_backups" {
   chart       = "../../helm-charts/postgresql-backups"
   namespace   = kubernetes_namespace.prod.id
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     local.postgresql_backups_template

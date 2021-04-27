@@ -40,7 +40,7 @@ resource "helm_release" "mysql_backup_wp" {
   version     = "2.1.4"
   namespace   = kubernetes_namespace.wp.id
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     data.template_file.mysql_backup_wp.rendered

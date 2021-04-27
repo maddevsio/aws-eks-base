@@ -38,7 +38,7 @@ resource "helm_release" "gitlab_runner" {
   version     = var.gitlab_runner_version
   namespace   = kubernetes_namespace.ci.id
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     local.gitlab_runner_template

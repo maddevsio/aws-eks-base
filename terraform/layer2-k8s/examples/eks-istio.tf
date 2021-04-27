@@ -15,7 +15,7 @@ resource "helm_release" "istio_operator_resources" {
 
   namespace   = module.istio_system_namespace.name
   wait        = true
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     file("${path.module}/templates/istio/istio-resources-values.yaml")
@@ -36,7 +36,7 @@ resource "helm_release" "istio_resources" {
 
   namespace   = module.istio_system_namespace.name
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     file("${path.module}/templates/istio/istio-resources-values.yaml")
@@ -52,7 +52,7 @@ resource "helm_release" "kiali" {
   namespace   = module.kiali_namespace.name
   version     = var.kiali_version
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     file("${path.module}/templates/istio/istio-kiali-values.yaml")

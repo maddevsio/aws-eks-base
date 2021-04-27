@@ -12,7 +12,7 @@ resource "helm_release" "certificate" {
   chart       = "../../helm-charts/certificate"
   namespace   = module.ing_namespace.name
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     data.template_file.certificate.rendered,

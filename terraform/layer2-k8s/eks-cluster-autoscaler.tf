@@ -24,7 +24,7 @@ resource "helm_release" "cluster_autoscaler" {
   repository  = local.helm_repo_cluster_autoscaler
   version     = var.cluster_autoscaler_chart_version
   namespace   = kubernetes_namespace.sys.id
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     data.template_file.cluster_autoscaler.rendered,

@@ -41,7 +41,7 @@ resource "helm_release" "prometheus_operator" {
   namespace   = kubernetes_namespace.monitoring.id
   version     = var.prometheus_operator_version
   wait        = false
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     local.kube_prometheus_stack_template

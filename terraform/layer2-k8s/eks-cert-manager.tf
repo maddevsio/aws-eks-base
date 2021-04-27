@@ -21,7 +21,7 @@ resource "helm_release" "cert_manager" {
   namespace   = kubernetes_namespace.certmanager.id
   version     = var.cert_manager_version
   wait        = true
-  max_history = "3"
+  max_history = var.helm_release_history_size
 
   values = [
     data.template_file.cert_manager.rendered,

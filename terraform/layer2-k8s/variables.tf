@@ -146,3 +146,8 @@ variable "calico_daemonset" {
   description = "Version of calico helm chart"
   default     = "0.3.4"
 }
+
+variable "helm_release_history_size" {
+  description = "How much helm releases to store"
+  default     = 5
+}
