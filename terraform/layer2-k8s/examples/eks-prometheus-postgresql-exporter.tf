@@ -27,10 +27,11 @@ locals {
 }
 
 resource "helm_release" "postgresql_exporter_user" {
-  name      = "pg-exporter-user"
-  chart     = "../../helm-charts/pg-exporter-user"
-  namespace = kubernetes_namespace.monitoring.id
-  wait      = false
+  name        = "pg-exporter-user"
+  chart       = "../../helm-charts/pg-exporter-user"
+  namespace   = kubernetes_namespace.monitoring.id
+  wait        = false
+  max_history = var.helm_release_history_size
 
   values = [
     local.postgresql_exporter_user_template
@@ -38,12 +39,13 @@ resource "helm_release" "postgresql_exporter_user" {
 }
 
 resource "helm_release" "postgresql_exporter" {
-  name       = "prometheus-postgres-exporter"
-  chart      = "prometheus-postgres-exporter"
-  repository = local.helm_repo_prometheus_community
-  version    = "1.4.0"
-  namespace  = kubernetes_namespace.monitoring.id
-  wait       = false
+  name        = "prometheus-postgres-exporter"
+  chart       = "prometheus-postgres-exporter"
+  repository  = local.helm_repo_prometheus_community
+  version     = "1.4.0"
+  namespace   = kubernetes_namespace.monitoring.id
+  wait        = false
+  max_history = var.helm_release_history_size
 
   values = [
     local.prometheus_postgresql_exporter_template

@@ -12,12 +12,13 @@ locals {
 }
 
 resource "helm_release" "loki_stack" {
-  name       = "loki-stack"
-  chart      = "loki-stack"
-  repository = local.helm_repo_grafana
-  namespace  = kubernetes_namespace.monitoring.id
-  version    = var.loki_stack
-  wait       = false
+  name        = "loki-stack"
+  chart       = "loki-stack"
+  repository  = local.helm_repo_grafana
+  namespace   = kubernetes_namespace.monitoring.id
+  version     = var.loki_stack
+  wait        = false
+  max_history = var.helm_release_history_size
 
   values = [
     local.loki_stack_template

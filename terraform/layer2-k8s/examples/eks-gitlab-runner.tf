@@ -32,12 +32,13 @@ module "eks_rbac_gitlab_runner" {
 }
 
 resource "helm_release" "gitlab_runner" {
-  name       = "gitlab-runner"
-  chart      = "gitlab-runner"
-  repository = local.helm_repo_gitlab
-  version    = var.gitlab_runner_version
-  namespace  = kubernetes_namespace.ci.id
-  wait       = false
+  name        = "gitlab-runner"
+  chart       = "gitlab-runner"
+  repository  = local.helm_repo_gitlab
+  version     = var.gitlab_runner_version
+  namespace   = kubernetes_namespace.ci.id
+  wait        = false
+  max_history = var.helm_release_history_size
 
   values = [
     local.gitlab_runner_template

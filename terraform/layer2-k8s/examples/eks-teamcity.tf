@@ -43,8 +43,10 @@ resource "helm_release" "teamcity" {
   namespace       = kubernetes_namespace.ci.id
   wait            = false
   cleanup_on_fail = true
+  max_history     = var.helm_release_history_size
+
   values = [
-    "${data.template_file.teamcity.rendered}",
+    data.template_file.teamcity.rendered
   ]
 }
 

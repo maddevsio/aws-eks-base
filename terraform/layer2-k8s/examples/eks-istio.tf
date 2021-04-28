@@ -13,8 +13,9 @@ resource "helm_release" "istio_operator_resources" {
   name  = "istio-operator-resources"
   chart = "../../helm-charts/istio/istio-operator-resources"
 
-  namespace = module.istio_system_namespace.name
-  wait      = true
+  namespace   = module.istio_system_namespace.name
+  wait        = true
+  max_history = var.helm_release_history_size
 
   values = [
     file("${path.module}/templates/istio/istio-resources-values.yaml")
@@ -33,8 +34,9 @@ resource "helm_release" "istio_resources" {
   name  = "istio-resources"
   chart = "../../helm-charts/istio/istio-resources"
 
-  namespace = module.istio_system_namespace.name
-  wait      = false
+  namespace   = module.istio_system_namespace.name
+  wait        = false
+  max_history = var.helm_release_history_size
 
   values = [
     file("${path.module}/templates/istio/istio-resources-values.yaml")
@@ -44,12 +46,13 @@ resource "helm_release" "istio_resources" {
 }
 
 resource "helm_release" "kiali" {
-  name       = "kiali-server"
-  chart      = "kiali-server"
-  repository = local.helm_repo_kiali
-  namespace  = module.kiali_namespace.name
-  version    = var.kiali_version
-  wait       = false
+  name        = "kiali-server"
+  chart       = "kiali-server"
+  repository  = local.helm_repo_kiali
+  namespace   = module.kiali_namespace.name
+  version     = var.kiali_version
+  wait        = false
+  max_history = var.helm_release_history_size
 
   values = [
     file("${path.module}/templates/istio/istio-kiali-values.yaml")

@@ -15,12 +15,13 @@ data "template_file" "cert_manager" {
 }
 
 resource "helm_release" "cert_manager" {
-  name       = "cert-manager"
-  chart      = "cert-manager"
-  repository = local.helm_repo_certmanager
-  namespace  = kubernetes_namespace.certmanager.id
-  version    = var.cert_manager_version
-  wait       = true
+  name        = "cert-manager"
+  chart       = "cert-manager"
+  repository  = local.helm_repo_certmanager
+  namespace   = kubernetes_namespace.certmanager.id
+  version     = var.cert_manager_version
+  wait        = true
+  max_history = var.helm_release_history_size
 
   values = [
     data.template_file.cert_manager.rendered,
