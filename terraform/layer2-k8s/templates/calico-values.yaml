@@ -10,7 +10,7 @@ calico:
   tag: v3.15.1
 
   typha:
-    logseverity: Info #Debug, Info, Warning, Error, Fatal
+    logseverity: Warning #Debug, Info, Warning, Error, Fatal
     image: quay.io/calico/typha
     resources:
       requests:
@@ -24,7 +24,7 @@ calico:
       beta.kubernetes.io/os: linux
     podAnnotations: {}
   node:
-    logseverity: Info #Debug, Info, Warning, Error, Fatal
+    logseverity: Warning #Debug, Info, Warning, Error, Fatal
     image: quay.io/calico/node
     resources:
       requests:
