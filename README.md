@@ -26,7 +26,7 @@ This repository contains the know-how of the Mad Devs team for the rapid deploym
 
 In our company’s work, we have tried many infrastructure solutions and services and traveled the path from on-premise hardware to serverless. As of today, Kubernetes has become our standard platform for deploying applications, and AWS has become the main cloud.
 
-It is worth noting here that although 90% of our and our clients’ projects are hosted on AWS and [AWS EKS](https://aws.amazon.com/eks/) is used as the Kubernetes platform, we do not insist, do not drag everything to Kubernetes, and do not force anyone to be hosted on AWS. Kubernetes is offered only after the collection and analysis of service architecture requirements. 
+It is worth noting here that although 90% of our and our clients’ projects are hosted on AWS and [AWS EKS](https://aws.amazon.com/eks/) is used as the Kubernetes platform, we do not insist, do not drag everything to Kubernetes, and do not force anyone to be hosted on AWS. Kubernetes is offered only after the collection and analysis of service architecture requirements.
 
 And then, when choosing Kubernetes, it makes almost no difference to applications how the cluster itself is created—manually, through kops or using managed services from cloud providers—in essence, the Kubernetes platform is the same everywhere. So the choice of a particular provider is then made based on additional requirements, expertise, etc.
 
@@ -368,6 +368,41 @@ You can get access to the cluster using this command:
   ```bash
   aws eks update-kubeconfig --name maddevs-demo-use1 --region us-east-1
   ```
+
+## Update terraform version
+
+Change terraform version in this files
+
+`terraform/.terraform-version` - the main terraform version for tfenv tool
+
+`.github/workflows/terraform-ci.yml` - the terraform version for github actions need for `terraform-validate` and `terraform-format`.
+
+Terraform version in each layer.
+```
+terraform/layer1-aws/main.tf
+terraform/layer2-k8s/main.tf
+```
+
+## Updated terraform providers
+
+Change terraform providers version in this files
+
+```
+terraform/layer1-aws/main.tf
+terraform/layer2-k8s/main.tf
+```
+
+When we changed terraform provider versions, we need to update terraform state. For update terraform state in layers we need to run this command:
+
+```
+terragrunt run-all init -upgrade
+```
+
+Or in each layer run command:
+
+```
+terragrunt init -upgrade
+```
 
 ### examples
 
