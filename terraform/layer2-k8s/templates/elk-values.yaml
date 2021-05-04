@@ -145,17 +145,13 @@ filebeat:
             hints.default_config:
               type: container
               paths:
-                - /var/log/containers/*-$${data.kubernetes.container.id}.log
+                - /var/log/containers/*$${data.kubernetes.container.id}.log
 
       processors:
         - drop_event:
             when:
               equals:
                 kubernetes.container.name: "filebeat"
-
-        - add_cloud_metadata:
-        - add_kubernetes_metadata:
-        - add_docker_metadata:
 
       output.elasticsearch:
         username: '$${ELASTICSEARCH_USERNAME}'
