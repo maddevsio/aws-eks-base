@@ -30,4 +30,6 @@ resource "helm_release" "nginx_ingress" {
   values = [
     data.template_file.nginx_ingress.rendered,
   ]
+
+  depends_on = [helm_release.prometheus_operator]
 }
