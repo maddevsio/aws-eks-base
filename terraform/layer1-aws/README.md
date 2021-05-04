@@ -2,15 +2,15 @@
 
 | Name | Version |
 |------|---------|
-| terraform | ~> 0.14.6 |
-| aws | 3.26.0 |
-| kubernetes | 2.0.2 |
+| terraform | 0.15.1 |
+| aws | 3.38.0 |
+| kubernetes | 2.1.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | 3.26.0 |
+| aws | 3.38.0 |
 
 ## Inputs
 
