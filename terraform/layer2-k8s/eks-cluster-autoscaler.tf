@@ -29,4 +29,6 @@ resource "helm_release" "cluster_autoscaler" {
   values = [
     data.template_file.cluster_autoscaler.rendered,
   ]
+
+  depends_on = [helm_release.prometheus_operator]
 }

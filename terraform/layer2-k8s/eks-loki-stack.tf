@@ -24,6 +24,7 @@ resource "helm_release" "loki_stack" {
     local.loki_stack_template
   ]
 
+  depends_on = [helm_release.prometheus_operator]
 }
 
 resource "random_string" "grafana_loki_password" {
