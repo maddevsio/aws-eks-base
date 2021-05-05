@@ -3,7 +3,7 @@ name: 'aws-eks-utils'
 on:
   push:
     branches:
-      - 'feature/terraform-utils'
+      - 'main'
     paths:
       - 'docker/aws-eks-utils/Dockerfile'
 
