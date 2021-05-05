@@ -5,7 +5,7 @@ on:
     branches:
       - 'feature/terraform-utils'
     paths:
-      - 'aws-eks-utils/Dockerfile'
+      - 'docker/aws-eks-utils/Dockerfile'
 
 jobs:
   push_to_registries:
