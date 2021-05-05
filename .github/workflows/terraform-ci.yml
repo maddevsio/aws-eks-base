@@ -44,6 +44,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Terraform Format
       run: terraform fmt -recursive -write=false -check .
+      working-directory: ./terraform
 
   # Checks that all Terraform configuration files tflint
   terraform-tflint:

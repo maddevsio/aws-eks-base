@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - 'feature/terraform-utils'
-    #paths:
-    #  - 'docker/terraform-utils/Dockerfile'
+    paths:
+      - 'docker/terraform-utils/Dockerfile'
 
 jobs:
   push_to_registries:
