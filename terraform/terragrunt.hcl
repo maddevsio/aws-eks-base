@@ -22,3 +22,6 @@ remote_state {
     encrypt        = true
   }
 }
+
+terragrunt_version_constraint = "= 0.29.2"
+
