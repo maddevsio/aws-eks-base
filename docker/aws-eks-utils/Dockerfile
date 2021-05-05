@@ -60,5 +60,4 @@ RUN wget https://github.com/roboll/helmfile/releases/download/v${HELMFILE_VERSIO
 # Install ssh
 RUN apk add openssh
 
-
 ENTRYPOINT [""]

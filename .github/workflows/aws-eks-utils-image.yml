@@ -3,9 +3,9 @@ name: 'aws-eks-utils'
 on:
   push:
     branches:
-      - 'main'
-    paths:
       - 'feature/terraform-utils'
+    paths:
+      - 'aws-eks-utils/Dockerfile'
 
 jobs:
   push_to_registries:
