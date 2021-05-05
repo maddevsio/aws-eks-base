@@ -12,7 +12,7 @@ jobs:
     name: 'Terraform-validate'
     runs-on: ubuntu-latest
     container:
-      image: hashicorp/terraform:0.15.1
+      image: maddevsio/terraform-utils:latest
       env:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
@@ -36,7 +36,7 @@ jobs:
     name: 'Terraform-format'
     runs-on: ubuntu-latest
     container:
-      image: hashicorp/terraform:0.15.1
+      image: maddevsio/terraform-utils:latest
       env:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
@@ -50,7 +50,7 @@ jobs:
     name: 'Terraform-tflint'
     runs-on: ubuntu-latest
     container:
-      image: wata727/tflint
+      image: maddevsio/terraform-utils:latest
       env:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
