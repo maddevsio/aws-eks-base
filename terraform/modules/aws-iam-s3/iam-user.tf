@@ -17,10 +17,10 @@ resource "aws_iam_user_policy" "this" {
   name = "${var.name}-user"
   user = aws_iam_user.this_user.0.name
 
-  policy = data.aws_iam_policy_document.policy.json
+  policy = data.aws_iam_policy_document.user_policy.json
 }
 
-data "aws_iam_policy_document" "policy" {
+data "aws_iam_policy_document" "user_policy" {
 
   statement {
     actions = [
