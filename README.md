@@ -349,6 +349,9 @@ Details can be found [here](https://www.terraform.io/docs/cli/run/index.html)
 
 ### terragrunt
 
+* Terragrunt version: `0.29.2`
+> Terragrunt version pinned in `terragrunt.hcl` file.
+
 We've also used `terragrunt` to simplify s3 bucket creation and terraform backend configuration. All you need to do is to set s3 bucket name in the `TF_REMOTE_STATE_BUCKET` env variable and run terragrunt command in the `terraform/` directory:
 
  ```bash
