@@ -146,6 +146,7 @@ This diagram shows the namespaces used in the cluster and the services deployed 
 ## Useful tools
 
 - [tfenv](https://github.com/tfutils/tfenv) - tool for managing different versions of terraform; the required version can be specified directly as an argument or via `.terraform-version`
+- [tgenv](https://github.com/cunymatthieu/tgenv) - tool for managing different versions of terragrunt.
 - [terraform](https://www.terraform.io/) - terraform itself, our main development tool: `tfenv install`
 - [awscli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html) - console utility to work with AWS API
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) - conssole utility to work with Kubernetes API
@@ -361,6 +362,43 @@ We've also used `terragrunt` to simplify s3 bucket creation and terraform backen
  ```
 
 By running this `terragrunt` will create s3 bucket, configure terraform backend and then will run `terraform init` and `terraform apply` in layer-1 and layer-2 sequentially.
+
+#### Apply infrastructure by layers with `terragrunt`
+
+Go to layer folder `terraform/layer1-aws/` or `terraform/layer2-k8s/` and run this command:
+
+```
+terragrunt apply
+```
+
+> The `layer2-k8s` has a dependence on `layer1-aws`.
+
+#### Target apply by `terragrunt`
+
+Go to layer folder `terraform/layer1-aws/` or `terraform/layer2-k8s/` and run this command:
+
+```
+terragrunt apply -target=module.eks
+```
+
+> The `-target` is formed from the following parts `resource type` and `resource name`.
+> For example: `-target=module.eks`, `-target=helm_release.loki_stack`
+
+#### Destroy infrastructure by `terragrunt`
+
+For destroy both layers, run this command from `terraform/` folder:
+
+```
+terragrant run-all destroy
+```
+
+For destroy `layer2-k8s`, run this command from `terraform/layare2-k8s` folder:
+
+```
+terragrunt destroy
+```
+
+> The `layer2-k8s` has dependence from `layer1-aws` and when you destroy `layer1-aws`, `layer2-k8s` destroyed automatically.
 
 ## What to do after deployment
 
