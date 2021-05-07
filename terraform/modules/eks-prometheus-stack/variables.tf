@@ -53,6 +53,24 @@ variable "ip_whitelist" {
   default     = ""
 }
 
+variable "prometheus_storage_size" {
+  description = "Prometheus storage size"
+  type        = string
+  default     = "30Gi"
+}
+
+variable "grafana_enabled" {
+  description = "Enable or disable grafana"
+  type        = bool
+  default     = true
+}
+
+variable "grafana_storage_size" {
+  description = "Grafana storage size"
+  type        = string
+  default     = "5Gi"
+}
+
 variable "grafana_gitlab_oauth_enabled" {
   description = "Enable or disable gitlab oauth for grafana"
   type        = bool
@@ -93,6 +111,12 @@ variable "grafana_oauth_github_allowed_org" {
   description = "Github allowed organizations"
   type        = string
   default     = ""
+}
+
+variable "alertmanager_enabled" {
+  description = "Enable or disable alertmanager"
+  type        = bool
+  default     = false
 }
 
 variable "alertmanager_slack_url" {

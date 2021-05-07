@@ -20,7 +20,7 @@ prometheus:
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 30Gi
+              storage: "${prometheus_storage_size}"
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -44,7 +44,7 @@ prometheusOperator:
 
 # Grafana settings
 grafana:
-  enabled: true
+  enabled: "${grafana_enabled}"
   image:
     tag: 7.2.0
   deploymentStrategy:
@@ -95,7 +95,7 @@ grafana:
   persistence:
     enabled: false
     accessModes: ["ReadWriteOnce"]
-    size: 5Gi
+    size: "${grafana_storage_size}"
 
   sidecar:
     datasources:
@@ -169,7 +169,7 @@ grafana:
 
 # Alertmanager parameters
 alertmanager:
-  enabled: false
+  enabled: "${alertmanager_enabled}""
   ingress:
     enabled: true
     annotations:

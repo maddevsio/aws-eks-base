@@ -10,6 +10,9 @@ locals {
       alertmanager_domain_name         = local.alertmanager_domain_name
       ip_whitelist                     = var.ip_whitelist
       default_region                   = var.region
+      prometheus_storage_size          = var.prometheus_storage_size
+      grafana_storage_size             = var.grafana_storage_size
+      grafana_enabled                  = var.grafana_enabled
       grafana_domain_name              = local.grafana_domain_name
       grafana_password                 = local.grafana_password
       role_arn                         = module.aws_iam_grafana.role_arn
@@ -20,8 +23,8 @@ locals {
       grafana_oauth_gitlab_group       = var.grafana_oauth_gitlab_group
       grafana_oauth_github_teams_ids   = var.grafana_oauth_github_teams_ids
       grafana_oauth_github_allowed_org = var.grafana_oauth_github_allowed_org
-
-      alertmanager_slack_url     = var.alertmanager_slack_url
-      alertmanager_slack_channel = var.alertmanager_slack_channel
+      alertmanager_enabled             = var.alertmanager_enabled
+      alertmanager_slack_url           = var.alertmanager_slack_url
+      alertmanager_slack_channel       = var.alertmanager_slack_channel
   })
 }
