@@ -146,14 +146,14 @@ This diagram shows the namespaces used in the cluster and the services deployed 
 ## Useful tools
 
 - [tfenv](https://github.com/tfutils/tfenv) - tool for managing different versions of terraform; the required version can be specified directly as an argument or via `.terraform-version`
-- [tgenv](https://github.com/cunymatthieu/tgenv) - tool for managing different versions of terragrunt.
+- [tgenv](https://github.com/cunymatthieu/tgenv) - tool for managing different versions of terragrunt; the required version can be specified directly as an argument or via `.terragrunt-version`
 - [terraform](https://www.terraform.io/) - terraform itself, our main development tool: `tfenv install`
 - [awscli](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html) - console utility to work with AWS API
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) - conssole utility to work with Kubernetes API
 - [kubectx + kubens](https://github.com/ahmetb/kubectx) - power tools for kubectl help you switch between Kubernetes clusters and namespaces
 - [helm](https://helm.sh/docs/intro/install/) - tool to create application packages and deploy them into k8s
 - [helmfile](https://github.com/roboll/helmfile) - "docker compose" for helm
-- [terragrunt](https://terragrunt.gruntwork.io/) - small terraform wrapper providing DRY approach in some cases
+- [terragrunt](https://terragrunt.gruntwork.io/) - small terraform wrapper providing DRY approach in some cases: `tgenv install`
 - [awsudo](https://github.com/meltwater/awsudo) - simple console utility that allows running awscli commands assuming specific roles
 - [aws-vault](https://github.com/99designs/aws-vault) -  tool for securely managing AWS keys and running console commands
 - [aws-mfa](https://github.com/broamski/aws-mfa) - utility for automating the reception of temporary STS tockens when MFA is enabled
