@@ -386,13 +386,13 @@ terragrunt apply -target=module.eks
 
 #### Destroy infrastructure by `terragrunt`
 
-For destroy both layers, run this command from `terraform/` folder:
+To destroy both layers, run this command from `terraform/` folder:
 
 ```
 terragrant run-all destroy
 ```
 
-For destroy `layer2-k8s`, run this command from `terraform/layare2-k8s` folder:
+To destroy `layer2-k8s`, run this command from `terraform/layare2-k8s` folder:
 
 ```
 terragrunt destroy
