@@ -14,7 +14,7 @@ affinity:
       - matchExpressions:
         - key: node.kubernetes.io/lifecycle
           operator: In
-          values: 
+          values:
             - ondemand
 
 cainjector:
