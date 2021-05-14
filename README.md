@@ -36,6 +36,9 @@ There are more specific drawbacks: the `data "template_file"` resources that we 
 
 You may reasonably question the number of .tf files. This monolith certainly should be refactored and split into many micro-modules adopting terragrunt approach. This is exactly what we will do in the near future, solving along the way the problems described above.
 
+You can find more about this project in Anton Babenko stream:
+[![boilerplate stream with Anton Babenko](https://img.youtube.com/vi/giVShrQHf8E/0.jpg)](https://youtu.be/giVShrQHf8E)
+
 ## Table of contents
 
 - [Architecture diagram](#architecture-diagram)
