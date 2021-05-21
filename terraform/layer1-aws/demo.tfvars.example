@@ -16,6 +16,11 @@ allowed_ips = [
 single_nat_gateway = true
 
 ##########
+# Route 53
+##########
+zone_id = ""
+
+##########
 # EKS
 ##########
 eks_cluster_version = "1.19"
