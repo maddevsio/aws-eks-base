@@ -81,12 +81,6 @@ variable "cluster_autoscaler_chart_version" {
   default     = "9.9.2"
 }
 
-# Prometheus Operator
-variable "prometheus_operator_version" {
-  description = "Version of prometheus operator helm chart"
-  default     = "13.12.0"
-}
-
 # Redis
 variable "redis_version" {
   description = "Version of redis helm chart"
@@ -150,4 +144,9 @@ variable "calico_daemonset" {
 variable "helm_release_history_size" {
   description = "How much helm releases to store"
   default     = 5
+}
+
+variable "kube_prometheus_stack_enable" {
+  description = "Enable or Disable kube-prometheus-stack"
+  default     = true
 }
