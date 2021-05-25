@@ -148,5 +148,7 @@ variable "helm_release_history_size" {
 
 variable "kube_prometheus_stack_enable" {
   description = "Enable or Disable kube-prometheus-stack"
+  type        = bool
   default     = true
 }
+
