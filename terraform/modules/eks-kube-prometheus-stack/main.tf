@@ -11,7 +11,7 @@ module "aws_iam_grafana" {
   oidc_provider_arn = var.eks_oidc_provider_arn
 }
 
-resource "helm_release" "prometheus_operator" {
+resource "helm_release" "kube_prometheus_stack" {
   name        = "kube-prometheus-stack"
   chart       = "kube-prometheus-stack"
   repository  = var.helm_repo_prometheus_community

@@ -1,5 +1,5 @@
 module "kube_prometheus_stack" {
-  source = "../modules/eks-prometheus-stack"
+  source = "../modules/eks-kube-prometheus-stack"
   count  = var.kube_prometheus_stack_enable ? 1 : 0
 
   name                  = local.name

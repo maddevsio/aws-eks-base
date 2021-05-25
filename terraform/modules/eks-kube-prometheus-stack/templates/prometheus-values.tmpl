@@ -1,4 +1,4 @@
-# Prometheus Server parameters
+#Prometheus Server parameters
 prometheus:
   ingress:
     enabled: true
@@ -42,7 +42,7 @@ prometheusOperator:
             values:
               - ondemand
 
-# Grafana settings
+#Grafana settings
 grafana:
   enabled: "${grafana_enabled}"
   image:
@@ -65,7 +65,7 @@ grafana:
     - hosts:
       - ${grafana_domain_name}
   env:
-    # all values must be quoted
+    #all values must be quoted
     GF_SERVER_ROOT_URL: "https://${grafana_domain_name}"
     GF_USERS_ALLOW_SIGN_UP: "false"
 %{ if grafana_gitlab_oauth_enabled == true }
@@ -140,20 +140,20 @@ grafana:
   dashboards:
     logs:
       logs:
-        ## Dashboard for quick search application logs for loki with two datasources loki and prometheus - https://grafana.com/grafana/dashboards/12019
+        #Dashboard for quick search application logs for loki with two datasources loki and prometheus - https://grafana.com/grafana/dashboards/12019
         url: https://s3.amazonaws.com/grafana-dashboards.maddevs.org/common/aws-eks-base/loki-dashboard-quick-search.json
 
     k8s:
       nginx-ingress:
-      ## Dashboard for nginx-ingress metrics - https://grafana.com/grafana/dashboards/9614
+      #Dashboard for nginx-ingress metrics - https://grafana.com/grafana/dashboards/9614
         gnetId: 9614
         datasource: Prometheus
       loki-promtail:
-      ## Dashboard for loki and promtail metrics - https://grafana.com/grafana/dashboards/10880
+      #Dashboard for loki and promtail metrics - https://grafana.com/grafana/dashboards/10880
         gnetId: 10880
         datasource: Prometheus
       cluster-autoscaler:
-      ## Dashboard for cluster-autoscaler metrics - https://grafana.com/grafana/dashboards/3831
+      #Dashboard for cluster-autoscaler metrics - https://grafana.com/grafana/dashboards/3831
         gnetId: 3831
         datasource: Prometheus
 
@@ -169,7 +169,7 @@ grafana:
 
 # Alertmanager parameters
 alertmanager:
-  enabled: "${alertmanager_enabled}""
+  enabled: "${alertmanager_enabled}"
   ingress:
     enabled: true
     annotations:
