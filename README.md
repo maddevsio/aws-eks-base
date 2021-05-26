@@ -280,6 +280,28 @@ In the root of `layer2-k8s` is the `aws-sm-secrets.tf` where several local varia
 
 > Set proper secrets; you can set empty/mock values. If you won't use these secrets, delete this `.tf` file from the `layer2-k8s` root.
 
+#### Oauth tokens for Grafana and Oauth2 tokens for Kibana
+
+##### Grafana
+
+###### Gitlab
+* [How to create gitlab oauth tokens](https://docs.gitlab.com/ce/integration/oauth_provider.html)
+* [More information about gitlab oauth for grafana](https://grafana.com/docs/grafana/latest/auth/gitlab/)
+
+##### Github
+* [How to create github oauth tokens](https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app)
+* [More informantion about github oauth2 for grafana](https://grafana.com/docs/grafana/latest/auth/github/)
+
+##### Kibana Oauth2
+
+* [More information about gitlab oauth2 for Kibana](https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/oauth_provider#gitlab-auth-provider)
+
+* [More information about github oauth2 for Kibana](https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/oauth_provider/#github-auth-provider)
+
+##### Alertmanager slack webhook
+
+* [More information about slack webhook](https://api.slack.com/messaging/webhooks)
+
 #### Domain and SSL
 
 You will need to purchase or use an already purchased domain in Route53. The domain name and zone ID will need to be set in the `domain_name` and `zone_id` variables in layer1.
@@ -413,6 +435,15 @@ You can get access to the cluster using this command:
   ```bash
   aws eks update-kubeconfig --name maddevs-demo-use1 --region us-east-1
   ```
+
+## Get Grafana password if you used default authentication method login/password
+
+```
+kubectl -n monitoring get secret kube-prometheus-stack-grafana -o jsonpath='{.data.admin-password}' | base64 -d
+```
+
+* This command output the Grafana password, you can it for authentication.
+* Default user for Grafana - `admin`
 
 ## Update terraform version
 
