@@ -152,3 +152,4 @@ variable "kube_prometheus_stack_enable" {
   default     = true
 }
 
+

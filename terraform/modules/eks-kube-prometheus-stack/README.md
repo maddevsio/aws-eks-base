@@ -7,7 +7,6 @@ No requirements.
 | Name | Version |
 |------|---------|
 | helm | n/a |
-| kubernetes | n/a |
 | random | n/a |
 
 ## Inputs
@@ -28,6 +27,7 @@ No requirements.
 | grafana\_oauth\_github\_teams\_ids | Github teams ids | `string` | `""` | no |
 | grafana\_oauth\_gitlab\_group | Gitlab group | `string` | `""` | no |
 | grafana\_storage\_size | Grafana storage size | `string` | `"5Gi"` | no |
+| helm\_release\_create\_namespace | Helm release create kubernetes namespace | `bool` | `true` | no |
 | helm\_release\_history\_size | How much helm releases to store | `number` | `5` | no |
 | helm\_release\_wait | Will wait until all resources are in a ready state before marking the release as successful. It will wait for as long as timeout. Defaults to true. | `string` | `false` | no |
 | helm\_repo\_prometheus\_community | Repository name for kube-prometheus-stack | `string` | `"https://prometheus-community.github.io/helm-charts"` | no |

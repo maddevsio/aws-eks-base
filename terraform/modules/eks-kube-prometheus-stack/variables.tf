@@ -30,6 +30,12 @@ variable "kubernetes_namespace" {
   default     = "monitoring"
 }
 
+variable "helm_release_create_namespace" {
+  description = "Helm release create kubernetes namespace"
+  type        = bool
+  default     = true
+}
+
 variable "kube_prometheus_stack_version" {
   description = "Kube-prometheus-stack chart version"
   type        = string
