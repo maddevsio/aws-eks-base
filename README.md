@@ -727,7 +727,8 @@ aws-eks-base
 [![Analytics](https://ga-beacon.appspot.com/UA-83208754-8/aws-eks-base/readme?pixel)](https://github.com/igrigorik/ga-beacon)
 
 ---------------------
-## Terraform module for manifests with helm_release
+## Terraform modules for manifests with helm_release and its dependencies
+
 * We have started work on creating modules instead of `terraform` manifests to deploy `helm_release` with its dependencies. This is the first step to improving our boilerplate.
 * The problem which we encounter is changing the location of `terraform` resource state when we move resources to the module.
 * Here is an example of how you can change the location of `terraform` state in the existing and using `terraform` state.
@@ -755,12 +756,6 @@ resource "aws_iam_role_policy" "this"
 
 Go to `terraform/layer2-k8s/` folder
 
-* List all `terraform` state for `layer2-k8s`
-
-```
-terraform state list
-```
-
 * Move terraform state for `kube-prometheus-stack` to module location
 
 ```
@@ -770,10 +765,17 @@ terragrunt state mv 'module.aws_iam_grafana.aws_iam_role.this' 'module.kube_prom
 terragrunt state mv 'module.aws_iam_grafana.aws_iam_role_policy.this' 'module.kube_prometheus_stack[0].module.aws_iam_grafana.aws_iam_role_policy.this'
 ```
 
-* With module for `kube-prometheus-stack` we use option `create_namespace` for `helm_release`. With this option we need to remove resource `kubernetes_namespace.monitoring` from `terraform` state.
+* With module for `kube-prometheus-stack` we use option `create_namespace` for `helm_release`. With this option kubernetes namespace created automatically if it does not exist.
+* We need to remove resource `kubernetes_namespace.monitoring` from `terraform` state.
 
 ```
 terragrunt state rm kubernetes_namespace.monitoring
+```
+
+* List all `terraform` state for `layer2-k8s`
+
+```
+terraform state list
 ```
 
 > If you use `terraform` for managing code, you can use command `terraform state mv current_state_name new_state_name`
