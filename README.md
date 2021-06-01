@@ -235,7 +235,7 @@ Further in the [IAM](https://console.aws.amazon.com/iam/home#/home) console:
   ```
 
 - Go [here](https://docs.aws.amazon.com/neptune/latest/userguide/iam-auth-temporary-credentials.html) to learn how to get temporary session tokens and assume role
-- Alternatively, to use your `awscli`, `terraform` and other CLI utils with [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/)and roles, you can use `aws-mfa`, `aws-vault` and `awsudo`
+- Alternatively, to use your `awscli`, `terraform` and other CLI utils with [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/) and roles, you can use `aws-mfa`, `aws-vault` and `awsudo`
 
 ## How to use this repo
 
