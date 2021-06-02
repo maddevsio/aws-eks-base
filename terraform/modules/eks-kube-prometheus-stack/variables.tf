@@ -8,8 +8,23 @@ variable "region" {
   type        = string
 }
 
-variable "domain_suffix" {
+variable "domain_name" {
   description = "Domain name used to build subdomains"
+  type        = string
+}
+
+variable "grafana_domain_name" {
+  description = "Domain name for grafana"
+  type        = string
+}
+
+variable "prometheus_domain_name" {
+  description = "Domain name for prometheus"
+  type        = string
+}
+
+variable "alertmanager_domain_name" {
+  description = "Domain name for alertmanager"
   type        = string
 }
 
@@ -27,13 +42,6 @@ variable "helm_repo_prometheus_community" {
 variable "kubernetes_namespace" {
   description = "Name of kubernetes namespace for prometheus stack"
   type        = string
-  default     = "monitoring"
-}
-
-variable "helm_release_create_namespace" {
-  description = "Helm release create kubernetes namespace"
-  type        = bool
-  default     = true
 }
 
 variable "kube_prometheus_stack_version" {

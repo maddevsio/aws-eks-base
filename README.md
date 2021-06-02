@@ -796,13 +796,6 @@ terragrunt state mv 'module.aws_iam_grafana.aws_iam_role.this' 'module.kube_prom
 terragrunt state mv 'module.aws_iam_grafana.aws_iam_role_policy.this' 'module.kube_prometheus_stack[0].module.aws_iam_grafana.aws_iam_role_policy.this'
 ```
 
-* With module for `kube-prometheus-stack` we use option `create_namespace` for `helm_release`. With this option kubernetes namespace created automatically if it does not exist.
-* We need to remove resource `kubernetes_namespace.monitoring` from `terraform` state.
-
-```
-terragrunt state rm kubernetes_namespace.monitoring
-```
-
 * List all `terraform` state for `layer2-k8s`
 
 ```

@@ -4,7 +4,8 @@ module "kube_prometheus_stack" {
 
   name                  = local.name
   region                = local.region
-  domain_suffix         = local.domain_suffix
+  domain_name           = local.domain_suffix
+  kubernetes_namespace  = kubernetes_namespace.monitoring.id
   eks_oidc_provider_arn = local.eks_oidc_provider_arn
   ip_whitelist          = local.ip_whitelist
 }
