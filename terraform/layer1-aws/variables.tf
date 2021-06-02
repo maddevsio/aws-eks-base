@@ -1,20 +1,24 @@
 # COMMON VARIABLES
 
 variable "allowed_account_ids" {
+  type        = list(string)
   description = "List of allowed AWS account IDs"
   default     = []
 }
 
 variable "name" {
+  type        = string
   description = "Project name, required to create unique resource names"
 }
 
 variable "environment" {
+  type        = string
   default     = "demo"
   description = "Env name in case workspace wasn't used"
 }
 
 variable "short_region" {
+  type        = string
   description = "The abbreviated name of the region, required to form unique resource names"
   default = {
     us-east-1      = "use1"  # US East (N. Virginia)
@@ -42,20 +46,24 @@ variable "short_region" {
 }
 
 variable "domain_name" {
+  type        = string
   description = "Main public domain name"
 }
 
 variable "zone_id" {
+  type        = string
   default     = null
   description = "R53 zone id for public domain"
 }
 
 variable "create_r53_zone" {
+  type        = bool
   default     = false
   description = "Create R53 zone for main public domain"
 }
 
 variable "create_acm_certificate" {
+  type        = bool
   default     = false
   description = "Whether to create acm certificate or use existing"
 }
@@ -69,11 +77,13 @@ variable "region" {
 }
 
 variable "az_count" {
+  type        = number
   description = "Count of avaiablity zones, min 2"
   default     = 3
 }
 
 variable "cidr" {
+  type        = string
   description = "Default CIDR block for VPC"
   default     = "10.0.0.0/16"
 }
@@ -85,17 +95,26 @@ variable "allowed_ips" {
 }
 
 variable "single_nat_gateway" {
+  type        = bool
   default     = true
   description = "Flag to create single nat gateway for all AZs"
 }
 
 # EKS
 variable "eks_cluster_version" {
+  type        = string
   default     = "1.19"
   description = "Version of the EKS K8S cluster"
 }
 
 variable "eks_worker_groups" {
+  type        = map(object({
+    override_instance_types = optional(list(string))
+    spot_instance_pools     = optional(number)
+    asg_max_size            = number
+    asg_min_size            = optional(number)
+    asg_desired_capacity    = number
+  }))
   description = "EKS Worker groups configuration"
   default = {
     spot = {
@@ -132,6 +151,7 @@ variable "eks_map_roles" {
 }
 
 variable "eks_write_kubeconfig" {
+  type        = bool
   default     = false
   description = "Flag for eks module to write kubeconfig"
 }
@@ -144,6 +164,7 @@ variable "ecr_repos" {
 }
 
 variable "ecr_repo_retention_count" {
+  type        = number
   default     = 50
   description = "number of images to store in ECR"
 }
