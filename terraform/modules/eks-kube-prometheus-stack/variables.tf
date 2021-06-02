@@ -16,16 +16,19 @@ variable "domain_name" {
 variable "grafana_domain_name" {
   description = "Domain name for grafana"
   type        = string
+  default     = ""
 }
 
 variable "prometheus_domain_name" {
   description = "Domain name for prometheus"
   type        = string
+  default     = ""
 }
 
 variable "alertmanager_domain_name" {
   description = "Domain name for alertmanager"
   type        = string
+  default     = ""
 }
 
 variable "eks_oidc_provider_arn" {
