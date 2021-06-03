@@ -45,6 +45,7 @@ variable "helm_repo_prometheus_community" {
 variable "kubernetes_namespace" {
   description = "Name of kubernetes namespace for prometheus stack"
   type        = string
+  default     = ""
 }
 
 variable "kube_prometheus_stack_version" {

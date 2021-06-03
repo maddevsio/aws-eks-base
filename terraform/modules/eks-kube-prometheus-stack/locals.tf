@@ -1,10 +1,10 @@
 locals {
   grafana_password              = random_string.grafana_password.result
-  grafana_domain_name           = var.grafana_domain_name ? var.grafana_domain_name : "grafana.${var.domain_name}"
-  prometheus_domain_name        = var.prometheus_domain_name ? var.prometheus_domain_name : "prometheus.${var.domain_name}"
-  alertmanager_domain_name      = var.alertmanager_domain_name ? var.alertmanager_domain_name : "alertmanager.${var.domain_name}"
-  kubernetes_namespace          = var.kubernetes_namespace ? var.kubernetes_namespace : "monitoring"
-  helm_release_create_namespace = var.kubernetes_namespace ? false : true
+  grafana_domain_name           = var.grafana_domain_name != "" ? var.grafana_domain_name : "grafana.${var.domain_name}"
+  prometheus_domain_name        = var.prometheus_domain_name != "" ? var.prometheus_domain_name : "prometheus.${var.domain_name}"
+  alertmanager_domain_name      = var.alertmanager_domain_name != "" ? var.alertmanager_domain_name : "alertmanager.${var.domain_name}"
+  kubernetes_namespace          = var.kubernetes_namespace != "" ? var.kubernetes_namespace : "monitoring"
+  helm_release_create_namespace = var.kubernetes_namespace != "" ? false : true
 
   kube_prometheus_stack_template = templatefile("${path.module}/templates/prometheus-values.tmpl",
     {
