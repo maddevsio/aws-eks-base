@@ -235,7 +235,7 @@ Further in the [IAM](https://console.aws.amazon.com/iam/home#/home) console:
   ```
 
 - Go [here](https://docs.aws.amazon.com/neptune/latest/userguide/iam-auth-temporary-credentials.html) to learn how to get temporary session tokens and assume role
-- Alternatively, to use your `awscli`, `terraform` and other CLI utils with [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/)and roles, you can use `aws-mfa`, `aws-vault` and `awsudo`
+- Alternatively, to use your `awscli`, `terraform` and other CLI utils with [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/) and roles, you can use `aws-mfa`, `aws-vault` and `awsudo`
 
 ## How to use this repo
 
@@ -262,7 +262,7 @@ $ cp terraform/layer1-aws/demo.tfvars.example terraform/layer1-aws/terraform.tfv
 
 #### Secrets
 
-In the root of `layer2-k8s` is the `aws-sm-secrets.tf` where several local variables expect [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name}-${local.environment}/infra/layer2-k8s`. These secrets are used for authentication with Kibana and Grafana using GitLab and register gitlab runner.
+In the root of `layer2-k8s` is the `aws-sm-secrets.tf` where several local variables expect [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`. These secrets are used for authentication with Kibana and Grafana using GitLab and register gitlab runner.
 
   ```json
   {
