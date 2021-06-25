@@ -108,8 +108,9 @@ variable "eks_cluster_version" {
 }
 
 variable "eks_worker_groups" {
-  type        = map(object({
+  type = map(object({
     override_instance_types = optional(list(string))
+    instance_type           = optional(string)
     spot_instance_pools     = optional(number)
     asg_max_size            = number
     asg_min_size            = optional(number)
