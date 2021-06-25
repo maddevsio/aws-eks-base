@@ -18,7 +18,7 @@ variable "environment" {
 }
 
 variable "short_region" {
-  type        = string
+  type        = map(string)
   description = "The abbreviated name of the region, required to form unique resource names"
   default = {
     us-east-1      = "use1"  # US East (N. Virginia)
