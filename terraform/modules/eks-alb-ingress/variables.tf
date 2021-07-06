@@ -1,42 +1,55 @@
 variable "name" {
-  default = ""
+  description = "Project name, required to create unique resource names"
+  default     = ""
 }
 variable "region" {
-  default = ""
+  description = "eks infrastructure region"
+  default     = ""
 }
 variable "oidc_provider_arn" {
-  default = ""
+  description = "ARN of EKS oidc provider"
+  default     = ""
 }
 variable "aws-load-balancer-controller" {
-  default = "aws-load-balancer-controller"
+  description = "Helm  Release name"
+  default     = "aws-load-balancer-controller"
 }
 variable "chart_name" {
-  default = "aws-load-balancer-controller"
+  description = "Helm  Chart name"
+  default     = "aws-load-balancer-controller"
 }
 variable "repository" {
-  default = "https://aws.github.io/eks-charts"
+  description = "Repository name for eks"
+  default     = "https://aws.github.io/eks-charts"
 }
 variable "chart_version" {
-  default = "aws-alb-ingress-controller"
+  description = "Chart version repository name"
+  default     = "aws-alb-ingress-controller"
 }
 variable "namespace" {
-  default = ""
+  description = "Name of kubernetes namespace for alb_ingres"
+  default     = ""
 }
 variable "max_history" {
-  default = "5"
+  description = "How much helm releases to store"
+  default     = "5"
 }
 
 variable "values" {
-  type    = map(any)
-  default = {}
+  description = "helm chat template file"
+  type        = map(any)
+  default     = {}
 }
 variable "eks_cluster_id" {
-  default = ""
+  description = "EKC identity cluster"
+  default     = ""
 }
 
 variable "vpc_id" {
-  default = ""
+  description = "EKS cluster vps identity"
+  default     = ""
 }
 variable "alb_ingress_image_tag" {
-  default = "1.2.3"
+  description = "chart version alb ingress"
+  default     = "1.2.3"
 }

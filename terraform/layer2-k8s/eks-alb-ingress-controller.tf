@@ -1,6 +1,6 @@
 module "eks_alb_ingress" {
   source = "./modules/eks-alb-ingress"
-  count  = var.eks_alb_ingress_enable ? 1 : 0
+  count  = var.alb_ingress_enable ? 1 : 0
 
   name              = local.name
   region            = local.region

@@ -60,7 +60,7 @@ variable "nginx_ingress_ssl_terminator" {
 }
 
 # ALB Ingress
-variable "eks_alb_ingress_enable " {
+variable "alb_ingress_enable " {
   description = "Disable or Enable alb-ingress"
   type        = bool
   default     = false

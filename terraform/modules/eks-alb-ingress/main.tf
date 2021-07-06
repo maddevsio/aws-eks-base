@@ -6,21 +6,14 @@ module "aws_iam_alb_ingress_controller" {
 }
 
 resource "helm_release" "alb_ingress_controller" {
-  name        = var.aws-load-balancer-controller
-  chart       = var.chart_name
-  repository  = var.repository
-  version     = var.chart_version
-  namespace   = var.namespace
+  name             = var.aws-load-balancer-controller
+  chart            = var.chart_name
+  repository       = var.repository
+  version          = var.chart_version
+  namespace        = var.namespace
   create_namespace = true
-  max_history = var.max_history
+  max_history      = var.max_history
   values = [
-    templatefile("${path.module}/templates/alb-ingress-controller-values.yaml",
-      {
-        role_arn     = module.aws_iam_alb_ingress_controller.role_arn,
-        region       = var.region,
-        cluster_name = var.eks_cluster_id,
-        vpc_id       = var.vpc_id,
-        image_tag    = var.alb_ingress_image_tag,
-    })
+    local.alb_ingress_controller
   ]
 }
