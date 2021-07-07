@@ -1,12 +1,12 @@
 resource "aws_wafv2_ip_set" "owasp_10_detect_blacklisted_ips" {
-  name               = "${var.name}-${var.waf_scope}-owasp-10-detect-blacklisted-ips"
+  name               = "${var.name}-${lower(var.waf_scope)}-owasp-10-detect-blacklisted-ips"
   scope              = var.waf_scope
   ip_address_version = "IPV4"
   addresses          = var.blacklisted_cidrs
 }
 
 resource "aws_wafv2_rule_group" "owasp_top10_rules" {
-  name     = "${var.name}-${var.waf_scope}-owasp-top10-security-issues"
+  name     = "${var.name}-${lower(var.waf_scope)}-owasp-top10-security-issues"
   scope    = var.waf_scope
   capacity = 580
 
@@ -999,7 +999,7 @@ resource "aws_wafv2_rule_group" "owasp_top10_rules" {
 
   visibility_config {
     cloudwatch_metrics_enabled = var.cloudwatch_metrics_enabled
-    metric_name                = "${var.name}-${var.waf_scope}-owasp-top10-security-issues"
+    metric_name                = "${var.name}-${lower(var.waf_scope)}-owasp-top10-security-issues"
     sampled_requests_enabled   = false
   }
 }
