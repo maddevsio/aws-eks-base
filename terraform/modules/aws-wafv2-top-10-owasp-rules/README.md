@@ -22,7 +22,7 @@ module "wafv2_owasp_top_10_rules" {
   blacklisted_cidrs          = ["10.0.0.0/8", "192.168.0.0/16", "169.254.0.0/16", "172.16.0.0/16", "127.0.0.1/32"]
 }
 
-resource "aws_wafv2_web_acl" "this" {
+resource "aws_wafv2_web_acl" "example" {
   name  = "${var.name}-${local.env}-webacl"
   scope = "CLOUDFRONT"
 
@@ -58,4 +58,9 @@ resource "aws_wafv2_web_acl" "this" {
   }
 }
 
+resource "aws_cloudfront_distribution" "example" {
+  ...
+  web_acl_id = aws_wafv2_web_acl.example.arn
+  ...
+}
 ```
