@@ -6,7 +6,7 @@ module "aws_iam_alb_ingress_controller" {
 }
 
 resource "helm_release" "alb_ingress_controller" {
-  name             = var.aws-load-balancer-controller
+  name             = var.release_name
   chart            = var.chart_name
   repository       = var.repository
   version          = var.chart_version

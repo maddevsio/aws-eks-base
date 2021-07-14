@@ -13,7 +13,7 @@ variable "oidc_provider_arn" {
   type        = string
   default     = ""
 }
-variable "aws-load-balancer-controller" {
+variable "release_name" {
   description = "Helm  Release name"
   type        = string
   default     = "aws-load-balancer-controller"
