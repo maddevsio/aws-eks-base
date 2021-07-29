@@ -7,5 +7,5 @@ module "eks_alb_ingress" {
   oidc_provider_arn = local.eks_oidc_provider_arn
   eks_cluster_id    = local.eks_cluster_id
   vpc_id            = local.vpc_id
-  namespace         = kubernetes_namespace.ing.id
+  namespace         = module.ing_namespace.name
 }
