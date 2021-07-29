@@ -1,0 +1,23 @@
+clusterName: ${cluster_name}
+awsRegion: ${region}
+
+awsVpcID: ${vpc_id}
+
+rbac:
+  create: true
+  serviceAccountName: "alb-ingress"
+  serviceAccountAnnotations:
+     "eks.amazonaws.com/role-arn": ${role_arn}
+
+image:
+  tag: ${image_tag}
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node.kubernetes.io/lifecycle
+          operator: In
+          values:
+            - ondemand
