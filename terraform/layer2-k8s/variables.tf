@@ -60,10 +60,10 @@ variable "nginx_ingress_ssl_terminator" {
 }
 
 # ALB Ingress
-variable "alb_ingress_enable" {
-  description = "Disable or Enable alb-ingress"
+variable "aws_loadbalancer_controller_enable" {
+  description = "Disable or Enable aws-loadbalancer-controller"
   type        = bool
-  default     = false
+  default     = true
 }
 
 # Cluster autoscaler
