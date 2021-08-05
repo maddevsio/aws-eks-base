@@ -1,11 +1,11 @@
-module "aws_iam_alb_ingress_controller" {
-  source            = "../aws-iam-alb-ingress-controller"
+module "aws_iam_aws_loadbalancer_controller" {
+  source            = "../aws-iam-aws-loadbalancer-controller"
   name              = var.name
   region            = var.region
   oidc_provider_arn = var.oidc_provider_arn
 }
 
-resource "helm_release" "alb_ingress_controller" {
+resource "helm_release" "aws_loadbalancer_controller" {
   name             = var.release_name
   chart            = var.chart_name
   repository       = var.repository

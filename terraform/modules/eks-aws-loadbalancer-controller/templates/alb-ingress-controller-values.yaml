@@ -1,12 +1,13 @@
+replicaCount: ${replica_count}
+
 clusterName: ${cluster_name}
-awsRegion: ${region}
 
-awsVpcID: ${vpc_id}
+region: ${region}
+vpcId: ${vpc_id}
 
-rbac:
+serviceAccount:
   create: true
-  serviceAccountName: "alb-ingress"
-  serviceAccountAnnotations:
+  annotations:
      "eks.amazonaws.com/role-arn": ${role_arn}
 
 image:

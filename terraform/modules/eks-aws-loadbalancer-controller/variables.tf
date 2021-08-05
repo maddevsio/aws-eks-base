@@ -31,7 +31,7 @@ variable "repository" {
 variable "chart_version" {
   description = "Chart version repository name"
   type        = string
-  default     = "aws-alb-ingress-controller"
+  default     = "1.2.6"
 }
 variable "namespace" {
   description = "Name of kubernetes namespace for alb_ingres"
@@ -60,8 +60,14 @@ variable "vpc_id" {
   type        = string
   default     = ""
 }
-variable "alb_ingress_image_tag" {
+variable "image_tag" {
   description = "chart version alb ingress"
   type        = string
-  default     = "1.2.3"
+  default     = "v2.2.3"
+}
+
+variable "replica_count" {
+  description = "Default number of replicas"
+  type        = number
+  default     = 1
 }
