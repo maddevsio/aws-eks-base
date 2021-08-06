@@ -20,6 +20,8 @@ single_nat_gateway = true
 ##########
 eks_cluster_version = "1.19"
 
+eks_cluster_encryption_config_enable = true
+
 eks_worker_groups = {
   spot = {
     override_instance_types = ["t3.medium", "t3a.medium"]
