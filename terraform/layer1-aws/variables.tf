@@ -147,3 +147,9 @@ variable "ecr_repo_retention_count" {
   default     = 50
   description = "number of images to store in ECR"
 }
+
+variable "eks_cluster_encryption_config_enable" {
+  type        = bool
+  default     = false
+  description = "Enable or not encryption for k8s secrets with aws-kms"
+}
