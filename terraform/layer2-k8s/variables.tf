@@ -60,14 +60,10 @@ variable "nginx_ingress_ssl_terminator" {
 }
 
 # ALB Ingress
-variable "alb_ingress_image_tag" {
-  description = "Tag of docker image for alb-ingress controller"
-  default     = "v1.1.5"
-}
-
-variable "alb_ingress_chart_version" {
-  description = "Version of alb-ingress helm chart"
-  default     = "1.0.4"
+variable "aws_loadbalancer_controller_enable" {
+  description = "Disable or Enable aws-loadbalancer-controller"
+  type        = bool
+  default     = true
 }
 
 # Cluster autoscaler
