@@ -6,13 +6,12 @@ locals {
   database_subnets = chunklist(local.cidr_subnets[2], var.az_count)[0]
   intra_subnets    = chunklist(local.cidr_subnets[3], var.az_count)[0]
 
-  azs = chunklist(data.aws_availability_zones.available.names, var.az_count)[0]
-
+  azs = data.aws_availability_zones.available.names
 }
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "2.70.0"
+  version = "3.2.0"
 
   name = local.name
   cidr = var.cidr
@@ -28,8 +27,6 @@ module "vpc" {
   enable_vpn_gateway   = false
   enable_dns_hostnames = true
   enable_dns_support   = true
-
-  enable_s3_endpoint = true
 
   create_database_subnet_group = false
 
@@ -87,5 +84,3 @@ module "vpc" {
   }
 
 }
-
-
