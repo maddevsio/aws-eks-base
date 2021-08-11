@@ -9,13 +9,19 @@ module "vpc_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "3.2.0"
 
-  vpc_id             = module.vpc.vpc_id
-  security_group_ids = [data.aws_security_group.default.id]
+  vpc_id = module.vpc.vpc_id
+
+  security_group_ids = [
+  data.aws_security_group.default.id]
 
   endpoints = {
     s3 = {
       service = "s3"
-      tags    = { Name = "s3-vpc-endpoint" }
+      tags = {
+        Name = "s3-vpc-endpoint"
+      }
     },
   }
+
+  tags = local.tags
 }
