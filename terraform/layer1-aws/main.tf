@@ -4,11 +4,11 @@ terraform {
   required_providers {
     aws = {
       source  = "aws"
-      version = "3.38.0"
+      version = "3.53.0"
     }
     kubernetes = {
       source  = "kubernetes"
-      version = "2.1.0"
+      version = "2.4.1"
     }
   }
 }

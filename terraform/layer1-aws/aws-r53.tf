@@ -1,16 +1,13 @@
 module "r53_zone" {
   source  = "terraform-aws-modules/route53/aws//modules/zones"
-  version = "~> 1.9.0"
+  version = "2.1.0"
 
   create = var.create_r53_zone
 
   zones = {
     (var.domain_name) = {
       comment = var.domain_name
-      tags = {
-        Name        = local.name
-        Environment = local.env
-      }
+      tags    = local.tags
     }
   }
 }

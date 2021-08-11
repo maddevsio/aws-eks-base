@@ -68,5 +68,3 @@ output "grafana_admin_password" {
   sensitive   = true
   description = "Grafana admin password"
 }
-
-
