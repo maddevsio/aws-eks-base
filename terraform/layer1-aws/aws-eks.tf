@@ -14,6 +14,13 @@ module "eks" {
 
   vpc_id = module.vpc.vpc_id
 
+  cluster_encryption_config = var.eks_cluster_encryption_config_enable ? [
+    {
+      provider_key_arn = aws_kms_key.eks[0].arn
+      resources        = ["secrets"]
+    }
+  ] : []
+
   worker_groups_launch_template = [
     {
       name                    = "spot"
