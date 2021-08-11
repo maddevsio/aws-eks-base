@@ -69,6 +69,7 @@ variable "region" {
 }
 
 variable "az_count" {
+  type        = number
   description = "Count of avaiablity zones, min 2"
   default     = 3
 }
@@ -136,6 +137,18 @@ variable "eks_write_kubeconfig" {
   description = "Flag for eks module to write kubeconfig"
 }
 
+variable "eks_cluster_enabled_log_types" {
+  type        = list(string)
+  default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  description = "A list of the desired control plane logging to enable. For more information, see Amazon EKS Control Plane Logging documentation (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)"
+}
+
+variable "eks_cluster_log_retention_in_days" {
+  type        = number
+  default     = 90
+  description = "Number of days to retain log events. Default retention - 90 days."
+}
+
 # ECR
 variable "ecr_repos" {
   type        = list(any)
@@ -144,6 +157,7 @@ variable "ecr_repos" {
 }
 
 variable "ecr_repo_retention_count" {
+  type        = number
   default     = 50
   description = "number of images to store in ECR"
 }
