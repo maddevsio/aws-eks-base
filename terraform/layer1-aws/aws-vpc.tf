@@ -1,3 +1,12 @@
+locals {
+  cidr_subnets     = [for cidr_block in cidrsubnets(var.cidr, 2, 2, 2, 2) : cidrsubnets(cidr_block, 4, 4, 4, 4)]
+  private_subnets  = chunklist(local.cidr_subnets[0], var.az_count)[0]
+  public_subnets   = chunklist(local.cidr_subnets[1], var.az_count)[0]
+  database_subnets = chunklist(local.cidr_subnets[2], var.az_count)[0]
+  intra_subnets    = chunklist(local.cidr_subnets[3], var.az_count)[0]
+  azs              = data.aws_availability_zones.available.names
+}
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "3.2.0"
@@ -68,5 +77,4 @@ module "vpc" {
     Name        = "${local.name}-intra"
     destination = "intra"
   }
-
 }

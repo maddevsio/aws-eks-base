@@ -1,3 +1,28 @@
+locals {
+  eks_map_roles = concat(var.eks_map_roles,
+    [
+      {
+        rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/administrator"
+        username = "administrator"
+        groups = [
+        "system:masters"]
+    }]
+  )
+
+  worker_tags = [
+    {
+      "key"                 = "k8s.io/cluster-autoscaler/enabled"
+      "propagate_at_launch" = "false"
+      "value"               = "true"
+    },
+    {
+      "key"                 = "k8s.io/cluster-autoscaler/${local.name}"
+      "propagate_at_launch" = "false"
+      "value"               = "true"
+    }
+  ]
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "17.1.0"
