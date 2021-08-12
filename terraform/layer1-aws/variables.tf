@@ -139,14 +139,20 @@ variable "eks_write_kubeconfig" {
 
 variable "eks_cluster_enabled_log_types" {
   type        = list(string)
-  default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
-  description = "A list of the desired control plane logging to enable. For more information, see Amazon EKS Control Plane Logging documentation (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)"
+  default     = ["audit"]
+  description = "A list of the desired control plane logging to enable. For more information, see Amazon EKS Control Plane Logging documentation (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html). Possible values: api, audit, authenticator, controllerManager, scheduler"
 }
 
 variable "eks_cluster_log_retention_in_days" {
   type        = number
   default     = 90
   description = "Number of days to retain log events. Default retention - 90 days."
+}
+
+variable "eks_cluster_encryption_config_enable" {
+  type        = bool
+  default     = false
+  description = "Enable or not encryption for k8s secrets with aws-kms"
 }
 
 # ECR
@@ -162,8 +168,3 @@ variable "ecr_repo_retention_count" {
   description = "number of images to store in ECR"
 }
 
-variable "eks_cluster_encryption_config_enable" {
-  type        = bool
-  default     = false
-  description = "Enable or not encryption for k8s secrets with aws-kms"
-}
