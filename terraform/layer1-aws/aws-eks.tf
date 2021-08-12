@@ -1,3 +1,28 @@
+locals {
+  eks_map_roles = concat(var.eks_map_roles,
+    [
+      {
+        rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/administrator"
+        username = "administrator"
+        groups = [
+        "system:masters"]
+    }]
+  )
+
+  worker_tags = [
+    {
+      "key"                 = "k8s.io/cluster-autoscaler/enabled"
+      "propagate_at_launch" = "false"
+      "value"               = "true"
+    },
+    {
+      "key"                 = "k8s.io/cluster-autoscaler/${local.name}"
+      "propagate_at_launch" = "false"
+      "value"               = "true"
+    }
+  ]
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "17.1.0"
@@ -6,6 +31,9 @@ module "eks" {
   cluster_version = var.eks_cluster_version
   subnets         = module.vpc.intra_subnets
   enable_irsa     = true
+
+  cluster_enabled_log_types     = var.eks_cluster_enabled_log_types
+  cluster_log_retention_in_days = var.eks_cluster_log_retention_in_days
 
   tags = {
     ClusterName = local.name
@@ -33,18 +61,8 @@ module "eks" {
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
       public_ip               = false
       additional_userdata     = file("${path.module}/templates/eks-x86-nodes-userdata.sh")
-      tags = [
-        {
-          "key"                 = "k8s.io/cluster-autoscaler/enabled"
-          "propagate_at_launch" = "false"
-          "value"               = "true"
-        },
-        {
-          "key"                 = "k8s.io/cluster-autoscaler/${local.name}"
-          "propagate_at_launch" = "false"
-          "value"               = "true"
-        }
-      ]
+
+      tags = local.worker_tags
     },
     {
       name                 = "ondemand"
@@ -56,18 +74,8 @@ module "eks" {
       kubelet_extra_args   = "--node-labels=node.kubernetes.io/lifecycle=ondemand"
       public_ip            = false
       additional_userdata  = file("${path.module}/templates/eks-x86-nodes-userdata.sh")
-      tags = [
-        {
-          "key"                 = "k8s.io/cluster-autoscaler/enabled"
-          "propagate_at_launch" = "true"
-          "value"               = "true"
-        },
-        {
-          "key"                 = "k8s.io/cluster-autoscaler/${local.name}"
-          "propagate_at_launch" = "true"
-          "value"               = "true"
-        }
-      ]
+
+      tags = local.worker_tags
     },
     {
       name                    = "ci"
@@ -81,27 +89,33 @@ module "eks" {
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot --node-labels=purpose=ci --register-with-taints=purpose=ci:NoSchedule"
       public_ip               = true
       additional_userdata     = file("${path.module}/templates/eks-x86-nodes-userdata.sh")
-      tags = [
-        {
-          "key"                 = "k8s.io/cluster-autoscaler/enabled"
-          "propagate_at_launch" = "false"
-          "value"               = "true"
-        },
-        {
-          "key"                 = "k8s.io/cluster-autoscaler/${local.name}"
-          "propagate_at_launch" = "false"
-          "value"               = "true"
-        },
-        {
-          "key"                 = "k8s.io/cluster-autoscaler/node-template/label/purpose"
-          "propagate_at_launch" = "true"
-          "value"               = "ci"
-        }
-      ]
+
+      tags = concat(local.worker_tags, [{
+        "key"                 = "k8s.io/cluster-autoscaler/node-template/label/purpose"
+        "propagate_at_launch" = "true"
+        "value"               = "ci"
+      }])
     },
   ]
 
-  map_roles = local.eks_map_roles
+  fargate_profiles = {
+    default = {
+      name = "fargate"
 
+      selectors = [
+        {
+          namespace = "fargate"
+        }
+      ]
+
+      subnets = module.vpc.private_subnets
+
+      tags = merge(local.tags, {
+        Namespace = "fargate"
+      })
+    }
+  }
+
+  map_roles        = local.eks_map_roles
   write_kubeconfig = var.eks_write_kubeconfig
 }
