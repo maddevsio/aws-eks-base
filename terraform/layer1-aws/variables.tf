@@ -92,7 +92,7 @@ variable "single_nat_gateway" {
 
 # EKS
 variable "eks_cluster_version" {
-  default     = "1.19"
+  default     = "1.20"
   description = "Version of the EKS K8S cluster"
 }
 
