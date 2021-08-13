@@ -31,5 +31,5 @@ resource "helm_release" "nginx_ingress" {
     data.template_file.nginx_ingress.rendered,
   ]
 
-  depends_on = [helm_release.prometheus_operator]
+  depends_on = [module.kube_prometheus_stack]
 }

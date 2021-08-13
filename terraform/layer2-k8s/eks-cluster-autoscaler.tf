@@ -30,5 +30,5 @@ resource "helm_release" "cluster_autoscaler" {
     data.template_file.cluster_autoscaler.rendered,
   ]
 
-  depends_on = [helm_release.prometheus_operator]
+  depends_on = [module.kube_prometheus_stack]
 }

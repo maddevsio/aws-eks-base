@@ -57,3 +57,5 @@ resource "kubernetes_namespace" "monitoring" {
   }
 }
 
+
+
