@@ -5,22 +5,23 @@ data "aws_security_group" "default" {
   vpc_id = module.vpc.vpc_id
 }
 
-module "vpc_endpoints" {
+module "vpc_gateway_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "3.2.0"
 
   vpc_id = module.vpc.vpc_id
 
-  security_group_ids = [
-  data.aws_security_group.default.id]
-
   endpoints = {
     s3 = {
-      service = "s3"
+      service      = "s3"
+      service_type = "Gateway"
+      route_table_ids = flatten([
+        module.vpc.intra_route_table_ids,
+      module.vpc.private_route_table_ids])
       tags = {
-        Name = "s3-vpc-endpoint"
+        Name = "${local.name}-s3"
       }
-    },
+    }
   }
 
   tags = local.tags
