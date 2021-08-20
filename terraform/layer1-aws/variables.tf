@@ -118,6 +118,13 @@ variable "eks_worker_groups" {
       asg_min_size            = 0
       asg_desired_capacity    = 0
     },
+    bottlerocket_spot = {
+      override_instance_types = ["t3.medium", "t3a.medium"]
+      spot_instance_pools     = 2
+      asg_max_size            = 3
+      asg_min_size            = 0
+      asg_desired_capacity    = 0
+    },
   }
 }
 
