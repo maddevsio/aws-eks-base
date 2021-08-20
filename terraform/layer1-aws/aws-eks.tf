@@ -42,6 +42,9 @@ module "eks" {
 
   vpc_id = module.vpc.vpc_id
 
+  workers_additional_policies = [
+  "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
+
   cluster_encryption_config = var.eks_cluster_encryption_config_enable ? [
     {
       provider_key_arn = aws_kms_key.eks[0].arn
@@ -50,6 +53,37 @@ module "eks" {
   ] : []
 
   worker_groups_launch_template = [
+    {
+      name                    = "bottlerocket-spot"
+      ami_id                  = data.aws_ami.bottlerocket_ami.id
+      override_instance_types = var.eks_worker_groups.bottlerocket_spot.override_instance_types
+      spot_instance_pools     = var.eks_worker_groups.bottlerocket_spot.spot_instance_pools
+      asg_max_size            = var.eks_worker_groups.bottlerocket_spot.asg_max_size
+      asg_min_size            = var.eks_worker_groups.bottlerocket_spot.asg_min_size
+      asg_desired_capacity    = var.eks_worker_groups.bottlerocket_spot.asg_desired_capacity
+      subnets                 = module.vpc.private_subnets
+      kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
+      public_ip               = false
+      userdata_template_file  = "${path.module}/templates/userdata-bottlerocket.tpl"
+      userdata_template_extra_args = {
+        enable_admin_container   = false
+        enable_control_container = true
+      }
+      additional_userdata = <<EOT
+[settings.kubernetes.node-labels]
+"node.kubernetes.io/lifecycle" = "spot"
+"purpose" = "experimental"
+
+[settings.kubernetes.node-taints]
+"node" = "bottlerocket:NoSchedule"
+EOT
+
+      tags = concat(local.worker_tags, [{
+        "key"                 = "k8s.io/cluster-autoscaler/node-template/label/purpose"
+        "propagate_at_launch" = "true"
+        "value"               = "experimental"
+      }])
+    },
     {
       name                    = "spot"
       override_instance_types = var.eks_worker_groups.spot.override_instance_types
@@ -60,7 +94,6 @@ module "eks" {
       subnets                 = module.vpc.private_subnets
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
       public_ip               = false
-      additional_userdata     = file("${path.module}/templates/eks-x86-nodes-userdata.sh")
 
       tags = local.worker_tags
     },
@@ -73,7 +106,6 @@ module "eks" {
       cpu_credits          = "unlimited"
       kubelet_extra_args   = "--node-labels=node.kubernetes.io/lifecycle=ondemand"
       public_ip            = false
-      additional_userdata  = file("${path.module}/templates/eks-x86-nodes-userdata.sh")
 
       tags = local.worker_tags
     },
@@ -88,7 +120,6 @@ module "eks" {
       cpu_credits             = "unlimited"
       kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot --node-labels=purpose=ci --register-with-taints=purpose=ci:NoSchedule"
       public_ip               = true
-      additional_userdata     = file("${path.module}/templates/eks-x86-nodes-userdata.sh")
 
       tags = concat(local.worker_tags, [{
         "key"                 = "k8s.io/cluster-autoscaler/node-template/label/purpose"
