@@ -1,4 +1,4 @@
-FROM alpine:3.13.5
+FROM alpine:latest
 ARG TERRAFORM_VERSION="0.15.1"
 
 WORKDIR /tmp
