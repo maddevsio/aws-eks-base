@@ -137,7 +137,7 @@ module "eks" {
       }
       additional_userdata = <<EOT
 [settings.kubernetes.node-labels]
-"node.kubernetes.io/lifecycle" = "spot"
+"eks.amazonaws.com/capacityType" = "SPOT"
 "nodegoup" = "bottlerocket"
 
 [settings.kubernetes.node-taints]
@@ -145,9 +145,9 @@ module "eks" {
 EOT
 
       tags = concat(local.worker_tags, [{
-        "key"                 = "k8s.io/cluster-autoscaler/node-template/label/purpose"
+        "key"                 = "k8s.io/cluster-autoscaler/node-template/label/nodegroup"
         "propagate_at_launch" = "true"
-        "value"               = "experimental"
+        "value"               = "bottlerocket"
       }])
     }
   ]
