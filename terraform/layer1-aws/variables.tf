@@ -102,29 +102,83 @@ variable "eks_worker_groups" {
     spot = {
       override_instance_types = ["t3.medium", "t3a.medium"]
       spot_instance_pools     = 2
-      asg_max_size            = 5
+      asg_max_size            = 0
       asg_min_size            = 0
-      asg_desired_capacity    = 1
+      asg_desired_capacity    = 0
     },
     ondemand = {
       instance_type        = "t3a.medium"
-      asg_desired_capacity = 1
-      asg_max_size         = 6
+      asg_desired_capacity = 0
+      asg_max_size         = 0
     },
     ci = {
       override_instance_types = ["t3.medium", "t3a.medium"]
       spot_instance_pools     = 2
-      asg_max_size            = 3
+      asg_max_size            = 0
       asg_min_size            = 0
       asg_desired_capacity    = 0
     },
     bottlerocket_spot = {
       override_instance_types = ["t3.medium", "t3a.medium"]
       spot_instance_pools     = 2
-      asg_max_size            = 3
+      asg_max_size            = 0
       asg_min_size            = 0
       asg_desired_capacity    = 0
     },
+  }
+}
+
+variable "node_pool_spot" {
+  type = object({
+    instance_types   = list(string)
+    capacity_type    = string
+    max_capacity     = number
+    min_capacity     = number
+    desired_capacity = number
+  })
+
+  default = {
+    instance_types   = ["t3a.medium", "t3.medium"]
+    capacity_type    = "SPOT"
+    max_capacity     = 5
+    min_capacity     = 0
+    desired_capacity = 1
+  }
+}
+
+variable "node_pool_ci" {
+  type = object({
+    instance_types   = list(string)
+    capacity_type    = string
+    max_capacity     = number
+    min_capacity     = number
+    desired_capacity = number
+  })
+
+  default = {
+    instance_types   = ["t3a.medium", "t3.medium"]
+    capacity_type    = "SPOT"
+    max_capacity     = 5
+    min_capacity     = 0
+    desired_capacity = 0
+  }
+}
+
+variable "node_pool_ondemand" {
+  type = object({
+    instance_types   = list(string)
+    capacity_type    = string
+    max_capacity     = number
+    min_capacity     = number
+    desired_capacity = number
+  })
+
+  default = {
+    instance_types   = ["t3a.medium"]
+    capacity_type    = "ON_DEMAND"
+    max_capacity     = 5
+    min_capacity     = 1
+    desired_capacity = 1
   }
 }
 

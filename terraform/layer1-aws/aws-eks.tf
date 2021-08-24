@@ -18,7 +18,7 @@ locals {
     {
       "key"                 = "k8s.io/cluster-autoscaler/${local.name}"
       "propagate_at_launch" = "false"
-      "value"               = "true"
+      "value"               = "owned"
     }
   ]
 }
@@ -52,6 +52,73 @@ module "eks" {
     }
   ] : []
 
+  # Create security group rules to allow communication between pods on workers and pods in managed node groups.
+  # Set this to true if you have AWS-Managed node groups and Self-Managed worker groups.
+  # See https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1089
+  worker_create_cluster_primary_security_group_rules = true
+
+  node_groups_defaults = {
+    ami_type  = "AL2_x86_64"
+    disk_size = 100
+  }
+
+  node_groups = {
+    spot = {
+      desired_capacity = var.node_pool_spot.desired_capacity
+      max_capacity     = var.node_pool_spot.max_capacity
+      min_capacity     = var.node_pool_spot.min_capacity
+      instance_types   = var.node_pool_spot.instance_types
+      capacity_type    = var.node_pool_spot.capacity_type
+      subnets          = module.vpc.private_subnets
+
+      k8s_labels = {
+        Environment = local.env
+        nodegroup   = "spot"
+      }
+      additional_tags = {
+        Name = "${local.name}-spot"
+      }
+    },
+    ondemand = {
+      desired_capacity = var.node_pool_ondemand.desired_capacity
+      max_capacity     = var.node_pool_ondemand.max_capacity
+      min_capacity     = var.node_pool_ondemand.min_capacity
+      instance_types   = var.node_pool_ondemand.instance_types
+      capacity_type    = var.node_pool_ondemand.capacity_type
+      subnets          = module.vpc.private_subnets
+
+      k8s_labels = {
+        Environment = local.env
+        nodegroup   = "ondemand"
+      }
+      additional_tags = {
+        Name = "${local.name}-ondemand"
+      }
+    },
+    ci = {
+      desired_capacity = var.node_pool_ci.desired_capacity
+      max_capacity     = var.node_pool_ci.max_capacity
+      min_capacity     = var.node_pool_ci.min_capacity
+      instance_types   = var.node_pool_ci.instance_types
+      capacity_type    = var.node_pool_ci.capacity_type
+      subnets          = module.vpc.private_subnets
+
+      k8s_labels = {
+        Environment = local.env
+        nodegroup   = "ci"
+      }
+      additional_tags = {
+        Name = "${local.name}-ci"
+      }
+      taints = [
+        {
+          key    = "nodegroup"
+          value  = "ci"
+          effect = "NO_SCHEDULE"
+      }]
+    }
+  }
+
   worker_groups_launch_template = [
     {
       name                    = "bottlerocket-spot"
@@ -62,7 +129,6 @@ module "eks" {
       asg_min_size            = var.eks_worker_groups.bottlerocket_spot.asg_min_size
       asg_desired_capacity    = var.eks_worker_groups.bottlerocket_spot.asg_desired_capacity
       subnets                 = module.vpc.private_subnets
-      kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
       public_ip               = false
       userdata_template_file  = "${path.module}/templates/userdata-bottlerocket.tpl"
       userdata_template_extra_args = {
@@ -72,10 +138,10 @@ module "eks" {
       additional_userdata = <<EOT
 [settings.kubernetes.node-labels]
 "node.kubernetes.io/lifecycle" = "spot"
-"purpose" = "experimental"
+"nodegoup" = "bottlerocket"
 
 [settings.kubernetes.node-taints]
-"node" = "bottlerocket:NoSchedule"
+"nodegroup" = "bottlerocket:NoSchedule"
 EOT
 
       tags = concat(local.worker_tags, [{
@@ -83,50 +149,7 @@ EOT
         "propagate_at_launch" = "true"
         "value"               = "experimental"
       }])
-    },
-    {
-      name                    = "spot"
-      override_instance_types = var.eks_worker_groups.spot.override_instance_types
-      spot_instance_pools     = var.eks_worker_groups.spot.spot_instance_pools
-      asg_max_size            = var.eks_worker_groups.spot.asg_max_size
-      asg_min_size            = var.eks_worker_groups.spot.asg_min_size
-      asg_desired_capacity    = var.eks_worker_groups.spot.asg_desired_capacity
-      subnets                 = module.vpc.private_subnets
-      kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot"
-      public_ip               = false
-
-      tags = local.worker_tags
-    },
-    {
-      name                 = "ondemand"
-      instance_type        = var.eks_worker_groups.ondemand.instance_type
-      asg_desired_capacity = var.eks_worker_groups.ondemand.asg_desired_capacity
-      subnets              = module.vpc.private_subnets
-      asg_max_size         = var.eks_worker_groups.ondemand.asg_max_size
-      cpu_credits          = "unlimited"
-      kubelet_extra_args   = "--node-labels=node.kubernetes.io/lifecycle=ondemand"
-      public_ip            = false
-
-      tags = local.worker_tags
-    },
-    {
-      name                    = "ci"
-      override_instance_types = var.eks_worker_groups.ci.override_instance_types
-      spot_instance_pools     = var.eks_worker_groups.ci.spot_instance_pools
-      asg_max_size            = var.eks_worker_groups.ci.asg_max_size
-      asg_min_size            = var.eks_worker_groups.ci.asg_min_size
-      asg_desired_capacity    = var.eks_worker_groups.ci.asg_desired_capacity
-      subnets                 = module.vpc.public_subnets
-      cpu_credits             = "unlimited"
-      kubelet_extra_args      = "--node-labels=node.kubernetes.io/lifecycle=spot --node-labels=purpose=ci --register-with-taints=purpose=ci:NoSchedule"
-      public_ip               = true
-
-      tags = concat(local.worker_tags, [{
-        "key"                 = "k8s.io/cluster-autoscaler/node-template/label/purpose"
-        "propagate_at_launch" = "true"
-        "value"               = "ci"
-      }])
-    },
+    }
   ]
 
   fargate_profiles = {
