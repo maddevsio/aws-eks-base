@@ -20,12 +20,12 @@ runners:
   tags: "eks-k8s"
   runUntagged: false
   nodeTolerations:
-  - key: "purpose"
+  - key: "nodegroup"
     operator: "Equal"
     value: "ci"
     effect: "NoSchedule"
   nodeSelector:
-    purpose: ci
+    nodegroup: ci
   cache:
     cacheType: s3
     cachePath: "gitlab_runner"

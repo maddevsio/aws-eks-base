@@ -9,7 +9,7 @@ affinity:
     requiredDuringSchedulingIgnoredDuringExecution:
       nodeSelectorTerms:
       - matchExpressions:
-        - key: node.kubernetes.io/lifecycle
+        - key: eks.amazonaws.com/capacityType
           operator: In
           values:
-            - spot
+            - SPOT

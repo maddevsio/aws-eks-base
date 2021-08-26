@@ -1,4 +1,4 @@
 enableSpotInterruptionDraining: true
 enableRebalanceMonitoring: true
 nodeSelector:
-  node.kubernetes.io/lifecycle: spot
+  eks.amazonaws.com/capacityType: SPOT

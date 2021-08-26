@@ -37,10 +37,10 @@ controller:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: node.kubernetes.io/lifecycle
+          - key: eks.amazonaws.com/capacityType
             operator: In
             values:
-              - ondemand
+              - ON_DEMAND
 
 rbac:
   create: true

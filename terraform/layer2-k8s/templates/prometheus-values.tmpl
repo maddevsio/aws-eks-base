@@ -26,10 +26,10 @@ prometheus:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
           - matchExpressions:
-            - key: node.kubernetes.io/lifecycle
+            - key: eks.amazonaws.com/capacityType
               operator: In
               values:
-                - ondemand
+                - ON_DEMAND
 
 prometheusOperator:
   affinity:
@@ -37,10 +37,10 @@ prometheusOperator:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: node.kubernetes.io/lifecycle
+          - key: eks.amazonaws.com/capacityType
             operator: In
             values:
-              - ondemand
+              - ON_DEMAND
 
 # Grafana settings
 grafana:
@@ -148,10 +148,10 @@ grafana:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: node.kubernetes.io/lifecycle
+          - key: eks.amazonaws.com/capacityType
             operator: In
             values:
-              - spot
+              - SPOT
 
 # Alertmanager parameters
 alertmanager:
@@ -218,7 +218,7 @@ alertmanager:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
           - matchExpressions:
-              - key: purpose
+              - key: eks.amazonaws.com/capacityType
                 operator: In
                 values:
-                  - ondemand
+                  - ON_DEMAND

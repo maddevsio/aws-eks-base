@@ -69,12 +69,12 @@ variable "aws_loadbalancer_controller_enable" {
 # Cluster autoscaler
 variable "cluster_autoscaler_version" {
   description = "Version of cluster autoscaler"
-  default     = "v1.19.0"
+  default     = "v1.20.0"
 }
 
 variable "cluster_autoscaler_chart_version" {
   description = "Version of cluster autoscaler helm chart"
-  default     = "9.9.2"
+  default     = "9.10.5"
 }
 
 # Prometheus Operator
