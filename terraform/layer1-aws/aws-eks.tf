@@ -25,7 +25,7 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "17.1.0"
+  version = "17.3.0"
 
   cluster_name    = local.name
   cluster_version = var.eks_cluster_version
@@ -52,6 +52,9 @@ module "eks" {
     }
   ] : []
 
+  map_roles        = local.eks_map_roles
+  write_kubeconfig = var.eks_write_kubeconfig
+
   # Create security group rules to allow communication between pods on workers and pods in managed node groups.
   # Set this to true if you have AWS-Managed node groups and Self-Managed worker groups.
   # See https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1089
@@ -64,12 +67,14 @@ module "eks" {
 
   node_groups = {
     spot = {
-      desired_capacity = var.node_pool_spot.desired_capacity
-      max_capacity     = var.node_pool_spot.max_capacity
-      min_capacity     = var.node_pool_spot.min_capacity
-      instance_types   = var.node_pool_spot.instance_types
-      capacity_type    = var.node_pool_spot.capacity_type
+      desired_capacity = var.node_group_spot.desired_capacity
+      max_capacity     = var.node_group_spot.max_capacity
+      min_capacity     = var.node_group_spot.min_capacity
+      instance_types   = var.node_group_spot.instance_types
+      capacity_type    = var.node_group_spot.capacity_type
       subnets          = module.vpc.private_subnets
+
+      force_update_version = var.node_group_spot.force_update_version
 
       k8s_labels = {
         Environment = local.env
@@ -80,12 +85,14 @@ module "eks" {
       }
     },
     ondemand = {
-      desired_capacity = var.node_pool_ondemand.desired_capacity
-      max_capacity     = var.node_pool_ondemand.max_capacity
-      min_capacity     = var.node_pool_ondemand.min_capacity
-      instance_types   = var.node_pool_ondemand.instance_types
-      capacity_type    = var.node_pool_ondemand.capacity_type
+      desired_capacity = var.node_group_ondemand.desired_capacity
+      max_capacity     = var.node_group_ondemand.max_capacity
+      min_capacity     = var.node_group_ondemand.min_capacity
+      instance_types   = var.node_group_ondemand.instance_types
+      capacity_type    = var.node_group_ondemand.capacity_type
       subnets          = module.vpc.private_subnets
+
+      force_update_version = var.node_group_ondemand.force_update_version
 
       k8s_labels = {
         Environment = local.env
@@ -96,12 +103,14 @@ module "eks" {
       }
     },
     ci = {
-      desired_capacity = var.node_pool_ci.desired_capacity
-      max_capacity     = var.node_pool_ci.max_capacity
-      min_capacity     = var.node_pool_ci.min_capacity
-      instance_types   = var.node_pool_ci.instance_types
-      capacity_type    = var.node_pool_ci.capacity_type
+      desired_capacity = var.node_group_ci.desired_capacity
+      max_capacity     = var.node_group_ci.max_capacity
+      min_capacity     = var.node_group_ci.min_capacity
+      instance_types   = var.node_group_ci.instance_types
+      capacity_type    = var.node_group_ci.capacity_type
       subnets          = module.vpc.private_subnets
+
+      force_update_version = var.node_group_ci.force_update_version
 
       k8s_labels = {
         Environment = local.env
@@ -169,7 +178,4 @@ EOT
       })
     }
   }
-
-  map_roles        = local.eks_map_roles
-  write_kubeconfig = var.eks_write_kubeconfig
 }
