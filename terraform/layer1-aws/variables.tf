@@ -128,57 +128,63 @@ variable "eks_worker_groups" {
   }
 }
 
-variable "node_pool_spot" {
+variable "node_group_spot" {
   type = object({
-    instance_types   = list(string)
-    capacity_type    = string
-    max_capacity     = number
-    min_capacity     = number
-    desired_capacity = number
+    instance_types       = list(string)
+    capacity_type        = string
+    max_capacity         = number
+    min_capacity         = number
+    desired_capacity     = number
+    force_update_version = bool
   })
 
   default = {
-    instance_types   = ["t3a.medium", "t3.medium"]
-    capacity_type    = "SPOT"
-    max_capacity     = 5
-    min_capacity     = 0
-    desired_capacity = 1
+    instance_types       = ["t3a.medium", "t3.medium"]
+    capacity_type        = "SPOT"
+    max_capacity         = 5
+    min_capacity         = 0
+    desired_capacity     = 1
+    force_update_version = true
   }
 }
 
-variable "node_pool_ci" {
+variable "node_group_ci" {
   type = object({
-    instance_types   = list(string)
-    capacity_type    = string
-    max_capacity     = number
-    min_capacity     = number
-    desired_capacity = number
+    instance_types       = list(string)
+    capacity_type        = string
+    max_capacity         = number
+    min_capacity         = number
+    desired_capacity     = number
+    force_update_version = bool
   })
 
   default = {
-    instance_types   = ["t3a.medium", "t3.medium"]
-    capacity_type    = "SPOT"
-    max_capacity     = 5
-    min_capacity     = 0
-    desired_capacity = 0
+    instance_types       = ["t3a.medium", "t3.medium"]
+    capacity_type        = "SPOT"
+    max_capacity         = 5
+    min_capacity         = 0
+    desired_capacity     = 0
+    force_update_version = true
   }
 }
 
-variable "node_pool_ondemand" {
+variable "node_group_ondemand" {
   type = object({
-    instance_types   = list(string)
-    capacity_type    = string
-    max_capacity     = number
-    min_capacity     = number
-    desired_capacity = number
+    instance_types       = list(string)
+    capacity_type        = string
+    max_capacity         = number
+    min_capacity         = number
+    desired_capacity     = number
+    force_update_version = bool
   })
 
   default = {
-    instance_types   = ["t3a.medium"]
-    capacity_type    = "ON_DEMAND"
-    max_capacity     = 5
-    min_capacity     = 1
-    desired_capacity = 1
+    instance_types       = ["t3a.medium"]
+    capacity_type        = "ON_DEMAND"
+    max_capacity         = 5
+    min_capacity         = 1
+    desired_capacity     = 1
+    force_update_version = true
   }
 }
 
