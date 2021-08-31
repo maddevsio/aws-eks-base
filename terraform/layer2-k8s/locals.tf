@@ -22,7 +22,7 @@ locals {
   helm_repo_eks                  = "https://aws.github.io/eks-charts"
   helm_repo_softonic             = "https://charts.softonic.io"
   helm_repo_elastic              = "https://helm.elastic.co"
-  helm_repo_external_secrets     = "https://external-secrets.github.io/kubernetes-external-secrets"
+  helm_repo_external_secrets     = "https://external-secrets.github.io/kubernetes-external-secrets" #tfsec:ignore:general-secrets-sensitive-in-local
   helm_repo_stakater             = "https://stakater.github.io/stakater-charts"
   helm_repo_cluster_autoscaler   = "https://kubernetes.github.io/autoscaler"
   helm_repo_ingress_nginx        = "https://kubernetes.github.io/ingress-nginx"

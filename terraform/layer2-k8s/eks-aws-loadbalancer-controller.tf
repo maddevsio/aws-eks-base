@@ -1,3 +1,4 @@
+#tfsec:ignore:aws-iam-no-policy-wildcards
 module "eks_alb_ingress" {
   source = "../modules/eks-aws-loadbalancer-controller"
   count  = var.aws_loadbalancer_controller_enable ? 1 : 0

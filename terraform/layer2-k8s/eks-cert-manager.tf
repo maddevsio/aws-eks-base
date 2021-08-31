@@ -1,3 +1,4 @@
+#tfsec:ignore:aws-iam-no-policy-wildcards
 module "aws_iam_cert_manager" {
   source = "../modules/aws-iam-external-dns"
 
