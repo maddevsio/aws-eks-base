@@ -91,33 +91,18 @@ jobs:
       with:
         name: l1
         path: ./terraform/layer1-aws/.terraform
-    - name: Terraform tfsec l1
-      working-directory: ./terraform
-      run: tfsec layer1-aws
+    - name: tfsec
+      uses: tfsec/tfsec-sarif-action@master
+      with:
+        sarif_file: tfsec.sarif
+        working_directory: ./terraform
+        tfsec_args: layer1-aws
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v1
+      with:
+        # Path to SARIF file relative to the root of the repository
+        sarif_file: tfsec.sarif
     - uses: geekyeggo/delete-artifact@v1
       with:
         name: l1
-        failOnError: false
-
-  terraform-tfsec-l2:
-    name: 'Terraform-tfsec-l2'
-    needs: terraform-validate
-    runs-on: ubuntu-latest
-    container:
-      image: tfsec/tfsec
-      options: --user root
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Download init for l2
-      uses: actions/download-artifact@v2
-      with:
-        name: l2
-        path: ./terraform/layer2-k8s/.terraform
-    - name: Terraform tfsec l2
-      working-directory: ./terraform
-      run: tfsec layer2-k8s
-    - uses: geekyeggo/delete-artifact@v1
-      with:
-        name: l2
         failOnError: false
