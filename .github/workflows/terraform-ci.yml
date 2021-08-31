@@ -36,12 +36,12 @@ jobs:
         name: l1
         path: ./terraform/layer1-aws/.terraform
         retention-days: 1
-    - name: Upload files for l2
-      uses: actions/upload-artifact@v2
-      with:
-        name: l2
-        path: ./terraform/layer2-k8s/.terraform
-        retention-days: 1
+    # - name: Upload files for l2
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: l2
+    #     path: ./terraform/layer2-k8s/.terraform
+    #     retention-days: 1
 
   # Checks that all Terraform configuration files format
   terraform-format:
@@ -95,8 +95,7 @@ jobs:
       uses: tfsec/tfsec-sarif-action@master
       with:
         sarif_file: tfsec.sarif
-        working_directory: ./terraform
-        tfsec_args: layer1-aws
+        working_directory: ./terraform/layer1-aws
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
