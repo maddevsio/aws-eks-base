@@ -96,6 +96,8 @@ jobs:
       with:
         sarif_file: tfsec.sarif
         working_directory: ./terraform/layer1-aws
+    - name: test
+      run: cat tfsec.sarif || ls -la
     - name: Upload SARIF file
       uses: github/codeql-action/upload-sarif@v1
       with:
