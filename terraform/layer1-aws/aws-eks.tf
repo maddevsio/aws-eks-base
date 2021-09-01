@@ -42,9 +42,6 @@ module "eks" {
 
   vpc_id = module.vpc.vpc_id
 
-  workers_additional_policies = [
-  "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
-
   cluster_encryption_config = var.eks_cluster_encryption_config_enable ? [
     {
       provider_key_arn = aws_kms_key.eks[0].arn
@@ -59,6 +56,8 @@ module "eks" {
   # Set this to true if you have AWS-Managed node groups and Self-Managed worker groups.
   # See https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1089
   worker_create_cluster_primary_security_group_rules = true
+
+  workers_additional_policies = var.eks_workers_additional_policies
 
   node_groups_defaults = {
     ami_type  = "AL2_x86_64"

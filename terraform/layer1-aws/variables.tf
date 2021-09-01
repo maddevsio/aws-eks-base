@@ -96,6 +96,12 @@ variable "eks_cluster_version" {
   description = "Version of the EKS K8S cluster"
 }
 
+variable "eks_workers_additional_policies" {
+  type = list(any)
+  default = [
+  "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
+}
+
 variable "node_group_spot" {
   type = object({
     instance_types       = list(string)
