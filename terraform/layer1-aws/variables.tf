@@ -100,6 +100,7 @@ variable "eks_workers_additional_policies" {
   type = list(any)
   default = [
   "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
+  description = "Additional IAM policy attached to EKS worker nodes"
 }
 
 variable "node_group_spot" {
@@ -120,6 +121,7 @@ variable "node_group_spot" {
     desired_capacity     = 1
     force_update_version = true
   }
+  description = "Node group configuration"
 }
 
 variable "node_group_ci" {
@@ -140,6 +142,7 @@ variable "node_group_ci" {
     desired_capacity     = 0
     force_update_version = true
   }
+  description = "Node group configuration"
 }
 
 variable "node_group_ondemand" {
@@ -160,6 +163,7 @@ variable "node_group_ondemand" {
     desired_capacity     = 1
     force_update_version = true
   }
+  description = "Node group configuration"
 }
 
 variable "worker_group_bottlerocket" {
@@ -180,6 +184,7 @@ variable "worker_group_bottlerocket" {
     desired_capacity    = 0
     spot_instance_pools = 2
   }
+  description = "Bottlerocket worker group configuration"
 }
 
 variable "eks_map_roles" {
