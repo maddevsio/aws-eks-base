@@ -1,3 +1,4 @@
+#tfsec:ignore:aws-iam-no-policy-wildcards
 module "aws_iam_autoscaler" {
   source = "../modules/aws-iam-autoscaler"
 

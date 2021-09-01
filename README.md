@@ -42,39 +42,51 @@ You can find more about this project in Anton Babenko stream:
 
 ## Table of contents
 
-- [Architecture diagram](#architecture-diagram)
-- [Current infrastructure cost](#current-infrastructure-cost)
-- [Namespace structure in the K8S cluster](#namespace-structure-in-the-k8s-cluster)
-- [Useful tools](#useful-tools)
-- [Useful VSCode extensions](#useful-vscode-extensions)
-- [AWS account](#aws-account)
-  - [IAM settings](#iam-settings)
-  - [Setting up awscli](#setting-up-awscli)
-- [How to use this repo](#how-to-use-this-repo)
-  - [Getting ready](#getting-ready)
-    - [S3 state backend](#s3-state-backend)
-    - [Secrets](#secrets)
-    - [Domain and SSL](#domain-and-ssl)
-  - [Working with terraform](#working-with-terraform)
-    - [init](#init)
-    - [plan](#plan)
-    - [apply](#apply)
-  - [terragrunt](#terragrunt)
-- [What to do after deployment](#what-to-do-after-deployment)
-  - [examples](#examples)
-- [Coding conventions](#coding-conventions)
-  - [Names and approaches used in code](#names-and-approaches-used-in-code)
-    - [Base project name](#base-project-name)
-    - [Unique prefix of resource names](#unique-prefix-of-resource-names)
-    - [Separators](#separators)
-    - [Resource names](#resource-names)
-    - [Variable names](#variable-names)
-    - [Output names](#output-names)
-  - [Names of terraform files, directories, and modules](#names-of-terraform-files-directories-and-modules)
-    - [General configuration files](#general-configuration-files)
-    - [Specific configuration files](#specific-configuration-files)
-    - [Modules](#modules)
-  - [Project structure](#project-structure)
+- [Boilerplate for a basic AWS infrastructure with EKS cluster](#boilerplate-for-a-basic-aws-infrastructure-with-eks-cluster)
+  - [Advantages of this boilerplate](#advantages-of-this-boilerplate)
+  - [Why you should use this boilerplate](#why-you-should-use-this-boilerplate)
+  - [Description](#description)
+  - [Table of contents](#table-of-contents)
+  - [Architecture diagram](#architecture-diagram)
+  - [Current infrastructure cost](#current-infrastructure-cost)
+  - [Namespace structure in the K8S cluster](#namespace-structure-in-the-k8s-cluster)
+  - [Useful tools](#useful-tools)
+  - [Useful VSCode extensions](#useful-vscode-extensions)
+  - [AWS account](#aws-account)
+    - [IAM settings](#iam-settings)
+    - [Setting up awscli](#setting-up-awscli)
+  - [How to use this repo](#how-to-use-this-repo)
+    - [Getting ready](#getting-ready)
+      - [S3 state backend](#s3-state-backend)
+      - [Inputs](#inputs)
+      - [Secrets](#secrets)
+      - [Domain and SSL](#domain-and-ssl)
+    - [Working with terraform](#working-with-terraform)
+      - [init](#init)
+      - [plan](#plan)
+      - [apply](#apply)
+    - [terragrunt](#terragrunt)
+      - [Apply infrastructure by layers with `terragrunt`](#apply-infrastructure-by-layers-with-terragrunt)
+      - [Target apply by `terragrunt`](#target-apply-by-terragrunt)
+      - [Destroy infrastructure by `terragrunt`](#destroy-infrastructure-by-terragrunt)
+  - [What to do after deployment](#what-to-do-after-deployment)
+  - [Update terraform version](#update-terraform-version)
+  - [Updated terraform providers](#updated-terraform-providers)
+    - [examples](#examples)
+  - [TFSEC](#tfsec)
+  - [Coding conventions](#coding-conventions)
+    - [Names and approaches used in code](#names-and-approaches-used-in-code)
+      - [Base project name](#base-project-name)
+      - [Unique prefix of resource names](#unique-prefix-of-resource-names)
+      - [Separators](#separators)
+      - [Resource names](#resource-names)
+      - [Variable names](#variable-names)
+      - [Output names](#output-names)
+    - [Names of terraform files, directories, and modules](#names-of-terraform-files-directories-and-modules)
+      - [General configuration files](#general-configuration-files)
+      - [Specific configuration files](#specific-configuration-files)
+      - [Modules](#modules)
+    - [Project structure](#project-structure)
 
 ## Architecture diagram
 
@@ -454,6 +466,28 @@ terragrunt init -upgrade
 Each layer has an `examples/` directory that contains working examples that expand the basic configuration. The files’ names and contents are in accordance with our coding conventions, so no additional description is required. If you need to use something, just move it from this folder to the root of the layer.
 
 This will allow you to expand your basic functionality by launching a monitoring system based on ELK or Prometheus Stack, etc.
+
+## TFSEC
+We use GitHub Actions and [tfsec](https://github.com/aquasecurity/tfsec) to check our terraform code using static analysis to spot potential security issues. However, we needed to skip some checks. The list of those checks is below:
+
+| Layer         | Security issue           | Description    | Why skipped?    |
+|---------------|--------------------------|----------------|-----------------|
+| layer1-aws/aws-eks.tf | aws-vpc-no-public-egress-sgr | Resource 'module.eks:aws_security_group_rule.cluster_egress_internet[0]' defines a fully open egress security group rule. | We use recommended option. [More info](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html) |
+| layer1-aws/aws-eks.tf | aws-eks-enable-control-plane-logging | Resource 'module.eks:aws_eks_cluster.this[0]' is missing the control plane log type 'scheduler' | By default we enable only audit logs. Can be changed via variable eks_cluster_enabled_log_types |
+| layer1-aws/aws-eks.tf | aws-eks-encrypt-secrets | Resource 'module.eks:aws_eks_cluster.this[0]' has no encryptionConfigBlock block | By default encryption is disabled, but can be enabled via setting *eks_cluster_encryption_config_enable = true* in your tfvars file. |
+| layer1-aws/aws-eks.tf | aws-eks-no-public-cluster-access | Resource 'module.eks:aws_eks_cluster.this[0]' has public access is explicitly set to enabled | By default we create public accessible EKS cluster from anywhere |
+| layer1-aws/aws-eks.tf | aws-eks-no-public-cluster-access-to-cidr | Resource 'module.eks:aws_eks_cluster.this[0]' has public access cidr explicitly set to wide open | By default we create public accessible EKS cluster from anywhere |
+| layer1-aws/aws-eks.tf | aws-vpc-no-public-egress-sgr | Resource 'module.eks:aws_security_group_rule.workers_egress_internet[0]' defines a fully open egress security group rule | We use recommended option. [More info](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html) |
+| modules/aws-iam-ssm/iam.tf | aws-iam-no-policy-wildcards | Resource 'module.aws_iam_external_secrets:data.aws_iam_policy_document.this' defines a policy with wildcarded resources. | We use aws-iam-ssm module for external-secrets and grant it access to all secrets. |
+| modules/aws-iam-autoscaler/iam.tf | aws-iam-no-policy-wildcards | Resource 'module.aws_iam_autoscaler:data.aws_iam_policy_document.this' defines a policy with wildcarded resources | We use condition to allow run actions only for certain autoscaling groups |
+| modules/kubernetes-network-policy-namespace/main.tf | kubernetes-network-no-public-ingress | Resource 'module.dev_ns_network_policy:kubernetes_network_policy.deny-all' allows all ingress traffic by default | We deny all ingress trafic by default, but tfsec doesn't work as expected (bug) |
+| modules/kubernetes-network-policy-namespace/main.tf | kubernetes-network-no-public-egress | Resource 'module.dev_ns_network_policy:kubernetes_network_policy.deny-all' allows all egress traffic by default | We don't want to deny egress traffic in a default installation |
+| kubernetes-network-policy-namespace/main.tf | kubernetes-network-no-public-egress | Resource 'module.dev_ns_network_policy:kubernetes_network_policy.allow-from-this' allows all egress traffic by default | We don't want to deny egress traffic in a default installation |
+| modules/kubernetes-network-policy-namespace/main.tf | kubernetes-network-no-public-egress | Resource 'module.dev_ns_network_policy:kubernetes_network_policy.allow-from-ns[0]' allows all egress traffic by default | We don't want to deny egress traffic in a default installation |
+| modules/aws-iam-aws-loadbalancer-controller/iam.tf | aws-iam-no-policy-wildcards | Resource 'module.eks_alb_ingress[0]:module.aws_iam_aws_loadbalancer_controller:aws_iam_role_policy.this' defines a policy with wildcarded resources | We use recommended [policy](https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json) |
+| layer2-k8s/locals.tf | general-secrets-sensitive-in-local | Local 'locals.' includes a potentially sensitive value which is defined within the project | tfsec complains on helm_repo_external_secrets url because it contains the word *secret* |
+| modules/aws-iam-external-dns/main.tf | aws-iam-no-policy-wildcards | Resource 'module.aws_iam_external_dns:aws_iam_role_policy.this' defines a policy with wildcarded resources | We use the policy from the [documentation](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md#iam-policy)
+| modules/aws-iam-external-dns/main.tf | aws-iam-no-policy-wildcards | Resource 'module.aws_iam_cert_manager:aws_iam_role_policy.this' defines a policy with wildcarded resources | Certmanager uses Route53 to create DNS records and validate wildcard certificates. By default we allow it to manage all zones |
 
 ## Coding conventions
 

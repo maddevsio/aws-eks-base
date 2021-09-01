@@ -1,3 +1,4 @@
+#tfsec:ignore:aws-iam-no-policy-wildcards
 module "aws_iam_external_secrets" {
   source = "../modules/aws-iam-ssm"
 
