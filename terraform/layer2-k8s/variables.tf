@@ -69,7 +69,7 @@ variable "aws_loadbalancer_controller_enable" {
 # Cluster autoscaler
 variable "cluster_autoscaler_version" {
   description = "Version of cluster autoscaler"
-  default     = "v1.20.0"
+  default     = "v1.21.0"
 }
 
 variable "cluster_autoscaler_chart_version" {

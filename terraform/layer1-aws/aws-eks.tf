@@ -132,11 +132,11 @@ module "eks" {
     {
       name                    = "bottlerocket-spot"
       ami_id                  = data.aws_ami.bottlerocket_ami.id
-      override_instance_types = var.eks_worker_groups.bottlerocket_spot.override_instance_types
-      spot_instance_pools     = var.eks_worker_groups.bottlerocket_spot.spot_instance_pools
-      asg_max_size            = var.eks_worker_groups.bottlerocket_spot.asg_max_size
-      asg_min_size            = var.eks_worker_groups.bottlerocket_spot.asg_min_size
-      asg_desired_capacity    = var.eks_worker_groups.bottlerocket_spot.asg_desired_capacity
+      override_instance_types = var.worker_group_bottlerocket.instance_types
+      spot_instance_pools     = var.worker_group_bottlerocket.spot_instance_pools
+      asg_max_size            = var.worker_group_bottlerocket.max_capacity
+      asg_min_size            = var.worker_group_bottlerocket.min_capacity
+      asg_desired_capacity    = var.worker_group_bottlerocket.desired_capacity
       subnets                 = module.vpc.private_subnets
       public_ip               = false
       userdata_template_file  = "${path.module}/templates/userdata-bottlerocket.tpl"

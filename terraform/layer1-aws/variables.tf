@@ -92,40 +92,8 @@ variable "single_nat_gateway" {
 
 # EKS
 variable "eks_cluster_version" {
-  default     = "1.20"
+  default     = "1.21"
   description = "Version of the EKS K8S cluster"
-}
-
-variable "eks_worker_groups" {
-  description = "EKS Worker groups configuration"
-  default = {
-    spot = {
-      override_instance_types = ["t3.medium", "t3a.medium"]
-      spot_instance_pools     = 2
-      asg_max_size            = 0
-      asg_min_size            = 0
-      asg_desired_capacity    = 0
-    },
-    ondemand = {
-      instance_type        = "t3a.medium"
-      asg_desired_capacity = 0
-      asg_max_size         = 0
-    },
-    ci = {
-      override_instance_types = ["t3.medium", "t3a.medium"]
-      spot_instance_pools     = 2
-      asg_max_size            = 0
-      asg_min_size            = 0
-      asg_desired_capacity    = 0
-    },
-    bottlerocket_spot = {
-      override_instance_types = ["t3.medium", "t3a.medium"]
-      spot_instance_pools     = 2
-      asg_max_size            = 0
-      asg_min_size            = 0
-      asg_desired_capacity    = 0
-    },
-  }
 }
 
 variable "node_group_spot" {
@@ -185,6 +153,26 @@ variable "node_group_ondemand" {
     min_capacity         = 1
     desired_capacity     = 1
     force_update_version = true
+  }
+}
+
+variable "worker_group_bottlerocket" {
+  type = object({
+    instance_types      = list(string)
+    capacity_type       = string
+    max_capacity        = number
+    min_capacity        = number
+    desired_capacity    = number
+    spot_instance_pools = number
+  })
+
+  default = {
+    instance_types      = ["t3a.medium", "t3.medium"]
+    capacity_type       = "SPOT"
+    max_capacity        = 5
+    min_capacity        = 0
+    desired_capacity    = 0
+    spot_instance_pools = 2
   }
 }
 
