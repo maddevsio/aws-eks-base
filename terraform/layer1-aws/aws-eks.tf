@@ -146,7 +146,7 @@ module "eks" {
       additional_userdata = <<EOT
 [settings.kubernetes.node-labels]
 "eks.amazonaws.com/capacityType" = "SPOT"
-"nodegoup" = "bottlerocket"
+"nodegroup" = "bottlerocket"
 
 [settings.kubernetes.node-taints]
 "nodegroup" = "bottlerocket:NoSchedule"
