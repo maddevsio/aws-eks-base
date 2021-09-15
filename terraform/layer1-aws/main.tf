@@ -11,6 +11,8 @@ terraform {
       version = "2.4.1"
     }
   }
+
+  experiments = [module_variable_optional_attrs]
 }
 
 data "aws_availability_zones" "available" {}
