@@ -92,33 +92,99 @@ variable "single_nat_gateway" {
 
 # EKS
 variable "eks_cluster_version" {
-  default     = "1.19"
+  default     = "1.21"
   description = "Version of the EKS K8S cluster"
 }
 
-variable "eks_worker_groups" {
-  description = "EKS Worker groups configuration"
+variable "eks_workers_additional_policies" {
+  type = list(any)
+  default = [
+  "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
+  description = "Additional IAM policy attached to EKS worker nodes"
+}
+
+variable "node_group_spot" {
+  type = object({
+    instance_types       = list(string)
+    capacity_type        = string
+    max_capacity         = number
+    min_capacity         = number
+    desired_capacity     = number
+    force_update_version = bool
+  })
+
   default = {
-    spot = {
-      override_instance_types = ["t3.medium", "t3a.medium"]
-      spot_instance_pools     = 2
-      asg_max_size            = 5
-      asg_min_size            = 0
-      asg_desired_capacity    = 1
-    },
-    ondemand = {
-      instance_type        = "t3a.medium"
-      asg_desired_capacity = 1
-      asg_max_size         = 6
-    },
-    ci = {
-      override_instance_types = ["t3.medium", "t3a.medium"]
-      spot_instance_pools     = 2
-      asg_max_size            = 3
-      asg_min_size            = 0
-      asg_desired_capacity    = 0
-    },
+    instance_types       = ["t3a.medium", "t3.medium"]
+    capacity_type        = "SPOT"
+    max_capacity         = 5
+    min_capacity         = 0
+    desired_capacity     = 1
+    force_update_version = true
   }
+  description = "Node group configuration"
+}
+
+variable "node_group_ci" {
+  type = object({
+    instance_types       = list(string)
+    capacity_type        = string
+    max_capacity         = number
+    min_capacity         = number
+    desired_capacity     = number
+    force_update_version = bool
+  })
+
+  default = {
+    instance_types       = ["t3a.medium", "t3.medium"]
+    capacity_type        = "SPOT"
+    max_capacity         = 5
+    min_capacity         = 0
+    desired_capacity     = 0
+    force_update_version = true
+  }
+  description = "Node group configuration"
+}
+
+variable "node_group_ondemand" {
+  type = object({
+    instance_types       = list(string)
+    capacity_type        = string
+    max_capacity         = number
+    min_capacity         = number
+    desired_capacity     = number
+    force_update_version = bool
+  })
+
+  default = {
+    instance_types       = ["t3a.medium"]
+    capacity_type        = "ON_DEMAND"
+    max_capacity         = 5
+    min_capacity         = 1
+    desired_capacity     = 1
+    force_update_version = true
+  }
+  description = "Node group configuration"
+}
+
+variable "worker_group_bottlerocket" {
+  type = object({
+    instance_types      = list(string)
+    capacity_type       = string
+    max_capacity        = number
+    min_capacity        = number
+    desired_capacity    = number
+    spot_instance_pools = number
+  })
+
+  default = {
+    instance_types      = ["t3a.medium", "t3.medium"]
+    capacity_type       = "SPOT"
+    max_capacity        = 5
+    min_capacity        = 0
+    desired_capacity    = 0
+    spot_instance_pools = 2
+  }
+  description = "Bottlerocket worker group configuration"
 }
 
 variable "eks_map_roles" {

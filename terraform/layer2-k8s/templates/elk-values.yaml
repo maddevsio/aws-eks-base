@@ -49,10 +49,10 @@ apm-server:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: node.kubernetes.io/lifecycle
-            operator: NotIn
+          - key: eks.amazonaws.com/capacityType
+            operator: In
             values:
-              - spot
+              - ON_DEMAND
 
 elasticsearch:
   enabled: true
@@ -123,10 +123,10 @@ elasticsearch:
     requiredDuringSchedulingIgnoredDuringExecution:
       nodeSelectorTerms:
       - matchExpressions:
-        - key: node.kubernetes.io/lifecycle
-          operator: NotIn
+        - key: eks.amazonaws.com/capacityType
+          operator: In
           values:
-            - spot
+            - ON_DEMAND
 
 filebeat:
   enabled: true
@@ -386,10 +386,10 @@ kibana:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: node.kubernetes.io/lifecycle
+          - key: eks.amazonaws.com/capacityType
             operator: In
             values:
-              - spot
+              - SPOT
 
   extraInitContainers:
     - name: es-check

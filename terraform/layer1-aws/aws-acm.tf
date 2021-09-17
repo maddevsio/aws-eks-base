@@ -5,9 +5,9 @@ module "acm" {
   create_certificate = var.create_acm_certificate
 
   domain_name = local.domain_name
+  zone_id     = local.zone_id
   subject_alternative_names = [
   "*.${local.domain_name}"]
-  zone_id = local.zone_id
 
   tags = local.tags
 }

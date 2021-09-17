@@ -19,7 +19,7 @@ loki:
     scrapeTimeout: 10s
 
   nodeSelector:
-    node.kubernetes.io/lifecycle: ondemand
+    eks.amazonaws.com/capacityType: ON_DEMAND
 
 promtail:
   enabled: true
@@ -60,10 +60,10 @@ grafana:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: node.kubernetes.io/lifecycle
+          - key: eks.amazonaws.com/capacityType
             operator: In
             values:
-              - spot
+              - SPOT
 
   persistence:
     type: pvc

@@ -21,9 +21,9 @@ spec:
       #   cpu: "4000m"
   serviceAccountName: ${service_account_name}
   nodeSelector:
-    node.kubernetes.io/lifecycle: spot
+    nodegroup: spot
   tolerations:
-  - key: "purpose"
+  - key: "nodegroup"
     operator: "Equal"
     value: "ci"
     effect: "NoSchedule"
