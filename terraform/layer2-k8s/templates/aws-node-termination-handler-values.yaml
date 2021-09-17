@@ -1,4 +1,14 @@
 enableSpotInterruptionDraining: true
 enableRebalanceMonitoring: true
-nodeSelector:
-  eks.amazonaws.com/capacityType: SPOT
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: eks.amazonaws.com/capacityType
+          operator: In
+          values:
+          - SPOT
+        - key: eks.amazonaws.com/nodegroup
+          operator: DoesNotExist
