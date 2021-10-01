@@ -49,6 +49,7 @@ You can find more about this project in Anton Babenko stream:
   - [Table of contents](#table-of-contents)
   - [Architecture diagram](#architecture-diagram)
   - [Current infrastructure cost](#current-infrastructure-cost)
+  - [EKS Upgrading](#eks-upgrading)
   - [Namespace structure in the K8S cluster](#namespace-structure-in-the-k8s-cluster)
   - [Useful tools](#useful-tools)
   - [Useful VSCode extensions](#useful-vscode-extensions)
@@ -136,6 +137,19 @@ This diagram describes the default infrastructure:
 
 > The cost is indicated without counting the amount of traffic for Nat Gateway Load Balancer and S3
 
+## EKS Upgrading
+To upgrade k8s cluster to a new version, please use [official guide](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html) and check changelog/breaking changes. 
+Starting from v1.18 EKS supports K8S add-ons. We use them to update things like vpc-cni, kube-proxy, coredns. To get the latest add-ons versions, run:
+```bash
+aws eks describe-addon-versions --kubernetes-version 1.21 --query 'addons[].[addonName, addonVersions[0].addonVersion]'
+```
+where 1.21 - is a k8s version on which we are updating. 
+DO NOT FORGET!!! to update cluster-autoscaler too. It's version must be the same as the cluster version.  
+Also ***IT'S VERY RECOMMENDED*** to check that deployed objects have actual apiVersions that won't be deleted after upgrading. There is a tool [*pluto*](https://github.com/FairwindsOps/pluto) that can help to do it.  
+```bash
+Switch to the correct cluster
+Run `pluto detect-helm -o markdown --target-versions k8s=v1.22.0`, where `k8s=v1.22.0` is a k8s version we want to update to. 
+``` 
 ## Namespace structure in the K8S cluster
 
 ![aws-base-namespaces](docs/aws-base-diagrams-Namespaces-v3.svg)
