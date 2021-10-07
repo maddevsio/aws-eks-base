@@ -178,6 +178,7 @@ EOT
       })
     }
   }
+  depends_on = [module.vpc]
 }
 
 resource "aws_eks_addon" "vpc_cni" {
