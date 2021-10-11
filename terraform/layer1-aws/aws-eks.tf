@@ -214,6 +214,7 @@ resource "aws_eks_addon" "coredns" {
   addon_name        = "coredns"
   resolve_conflicts = "OVERWRITE"
   addon_version     = var.addon_coredns_version
+  depends_on        = [module.eks]
   tags = {
     Environment = local.env
   }
