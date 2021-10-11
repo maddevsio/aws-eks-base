@@ -178,6 +178,7 @@ EOT
       })
     }
   }
+
   depends_on = [module.vpc]
 }
 
@@ -192,6 +193,8 @@ resource "aws_eks_addon" "vpc_cni" {
   tags = {
     Environment = local.env
   }
+
+  depends_on        = [module.eks]
 }
 
 resource "aws_eks_addon" "kube_proxy" {
@@ -205,6 +208,8 @@ resource "aws_eks_addon" "kube_proxy" {
   tags = {
     Environment = local.env
   }
+
+  depends_on        = [module.eks]
 }
 
 resource "aws_eks_addon" "coredns" {
@@ -214,8 +219,10 @@ resource "aws_eks_addon" "coredns" {
   addon_name        = "coredns"
   resolve_conflicts = "OVERWRITE"
   addon_version     = var.addon_coredns_version
-  depends_on        = [module.eks]
+
   tags = {
     Environment = local.env
   }
+
+  depends_on        = [module.eks]
 }
