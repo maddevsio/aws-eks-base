@@ -578,8 +578,8 @@ When you need to add depends_on to resource or module you should add it in end a
 resource "aws_eks_addon" "coredns" {
   ...
   addon_version     = var.addon_coredns_version
-  
-  depends_on        = [module.eks]
+
+  depends_on = [module.eks]
 }
 ```
 

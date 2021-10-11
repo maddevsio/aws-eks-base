@@ -194,7 +194,7 @@ resource "aws_eks_addon" "vpc_cni" {
     Environment = local.env
   }
 
-  depends_on        = [module.eks]
+  depends_on = [module.eks]
 }
 
 resource "aws_eks_addon" "kube_proxy" {
@@ -209,7 +209,7 @@ resource "aws_eks_addon" "kube_proxy" {
     Environment = local.env
   }
 
-  depends_on        = [module.eks]
+  depends_on = [module.eks]
 }
 
 resource "aws_eks_addon" "coredns" {
@@ -224,5 +224,5 @@ resource "aws_eks_addon" "coredns" {
     Environment = local.env
   }
 
-  depends_on        = [module.eks]
+  depends_on = [module.eks]
 }
