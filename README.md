@@ -80,6 +80,7 @@ You can find more about this project in Anton Babenko stream:
       - [Base project name](#base-project-name)
       - [Unique prefix of resource names](#unique-prefix-of-resource-names)
       - [Separators](#separators)
+      - [Depends_on](#depends_on)
       - [Resource names](#resource-names)
       - [Variable names](#variable-names)
       - [Output names](#output-names)
@@ -569,6 +570,19 @@ The `local.name` value is then used as a prefix for all `name` and `name_prefix`
   ```
 
 > Use `name_prefix` where possible
+
+#### Depends_on
+
+When you need to add `depends_on` to a resource or a module you should put it at the end of the block with empty line in front of it.
+
+```
+resource "aws_eks_addon" "coredns" {
+  ...
+  addon_version     = var.addon_coredns_version
+
+  depends_on = [module.eks]
+}
+```
 
 #### Resource names
 
