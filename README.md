@@ -573,7 +573,7 @@ The `local.name` value is then used as a prefix for all `name` and `name_prefix`
 
 #### Depends_on
 
-When you need to add depends_on to resource or module you should add it in end and put empty line in front of it. Example:
+When you need to add `depends_on` to resource or module you should add it in end and put empty line in front of it. Example:
 ```
 resource "aws_eks_addon" "coredns" {
   ...
