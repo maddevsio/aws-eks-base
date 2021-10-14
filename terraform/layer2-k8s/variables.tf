@@ -63,7 +63,7 @@ variable "nginx_ingress_ssl_terminator" {
 variable "aws_loadbalancer_controller_enable" {
   description = "Disable or Enable aws-loadbalancer-controller"
   type        = bool
-  default     = true
+  default     = false
 }
 
 # Cluster autoscaler
