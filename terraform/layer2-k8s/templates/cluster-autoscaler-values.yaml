@@ -12,6 +12,15 @@ rbac:
 autoDiscovery:
   clusterName: ${cluster_name}
 
+extraArgs:
+  expander: priority
+
+expanderPriorities: |
+  10:
+    - eks-${cluster_name}-ondemand.*
+  50:
+    - eks-${cluster_name}-spot.*
+
 serviceMonitor:
   enabled: true
   interval: 10s
