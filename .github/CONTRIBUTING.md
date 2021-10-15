@@ -12,6 +12,7 @@ Please note we have a code of conduct, please follow it in all your interactions
   - [Pull Request Process](#pull-request-process)
   - [Checklists for contributions](#checklists-for-contributions)
   - [Semantic Pull Requests](#semantic-pull-requests)
+  - [Updating changelog](#updating-changelog)
   - [Coding conventions](#coding-conventions)
     - [Names and approaches used in code](#names-and-approaches-used-in-code)
       - [Base project name](#base-project-name)
@@ -52,6 +53,38 @@ To generate changelog, Pull Requests or Commits must have semantic and must foll
 - `chore:` for chores stuff
 
 The `chore` prefix skipped during changelog generation. It can be used for `chore: update changelog` commit message by example.
+
+## Updating changelog
+
+All changes had been made before version 1.0.0 described in **CHANGELOG.previous.md** file. Starting from that version our Pull Requests or Commits have semantic and follow conventional specs above. So, we decided to keep new changes in **CHANGELOG.md** file. 
+
+**CHANGELOG.md** file should be updated after each change merged in the `main` branch. If there are several Pull Requests will be merged consistently, it's possible to update **CHANGELOG.md** once after merging all of them. 
+
+How to generate CHANGELOG automatically:
+1. Merge Pull Request using `Squash`. Your commit message must follow next rule: `doc: my commit message (#1)`, where
+  - `doc` - type of changes (see Semantic Pull Requests)
+  - `my commit message` - commit message
+  - `(#1)` - Pull Request number
+2. Pull the latest changes from `main` branch
+3. Create a tag with new version using the semver approach
+```bash
+  git tag v1.10.0
+```
+4. Run next command:
+```bash
+git-chglog -o CHANGELOG.md v1.1.0..v1.10.0
+```
+This version `v1.1.0` must always be first.
+5. Delete tag
+```
+git tag -d v1.10.0
+```
+7. Create a new branch, commit and push your changes
+8. Open Pull Request using prefix `chore:`
+9. Merge Pull reques. Make sure your commit message starts with `chore:`
+10. Create a new tag (v1.10.0) in Github UI
+11. Create a new Release for new tag.
+
 
 ## Coding conventions
 
