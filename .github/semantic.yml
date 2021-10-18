@@ -19,7 +19,7 @@ types:
   - feat
   - fix
   - improvement
-  - docs
+  - doc
   - refactor
   - test
   - ci

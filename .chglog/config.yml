@@ -11,7 +11,7 @@ options:
         - feat
         - fix
         - improvement
-        - docs
+        - doc
         - refactor
         - test
         - ci
@@ -24,14 +24,14 @@ options:
       - improvement
       - refactor
       - fix
-      - docs
+      - doc
       - test
       - ci
     title_maps:
       feat: FEATURES
       fix: BUG FIXES
       improvement: ENHANCEMENTS
-      docs: DOCS
+      doc: DOCS
       refactor: REFACTORS
       test: TESTS
       ci: CI

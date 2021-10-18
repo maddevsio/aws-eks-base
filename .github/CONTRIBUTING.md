@@ -46,7 +46,7 @@ To generate changelog, Pull Requests or Commits must have semantic and must foll
 - `feat:` for new features
 - `fix:` for bug fixes
 - `improvement:` for enhancements
-- `docs:` for documentation and examples
+- `doc:` for documentation and examples
 - `refactor:` for code refactoring
 - `test:` for tests
 - `ci:` for CI purpose
