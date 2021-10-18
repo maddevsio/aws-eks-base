@@ -70,6 +70,12 @@ How to generate CHANGELOG automatically:
 ```bash
 git-chglog -o CHANGELOG.md --next-tag $(semtag final -s minor -o)
 ```
+where:
+`minor` - is a type of changes related to the semver
+
+Utilities:
+* [git-chlog](https://github.com/git-chglog/git-chglog) 
+* [semtag](https://github.com/nico2sh/semtag)
 4. Create a new branch, commit and push your changes
 5. Open Pull Request using prefix `chore:`
 6. Merge Pull request. Make sure your commit message looks like: `chore: Update CHANGELOG`
