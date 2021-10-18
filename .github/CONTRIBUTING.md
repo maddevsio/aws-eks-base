@@ -78,7 +78,7 @@ Utilities:
 * [semtag](https://github.com/nico2sh/semtag)
 4. Create a new branch, commit and push your changes
 5. Open Pull Request using prefix `chore:`
-6. Merge Pull request. Make sure your commit message looks like: `chore: Update CHANGELOG`
+6. Merge Pull request. Make sure your commit message looks like: `chore: Update CHANGELOG` and don't forget to clean `optional extended description`
 7. Create a new Release and create the new tag (you got it when ran `$(semtag final -s minor -o)`). Click `Auto-generate release notes` and edit message leaving only commit messages:
 ```bash
 How it was:
