@@ -36,6 +36,8 @@ project adheres to [Semantic Versioning](http://semver.org/).
 {{ end -}}
 
 {{ range .Versions }}
+{{ if ne .Tag.Name "v1.0.0" }}
+
 <a name="{{ .Tag.Name }}"></a>
 ## {{ if .Tag.Previous }}[{{ .Tag.Name }}]{{ else }}{{ .Tag.Name }}{{ end }} - {{ datetime "2006-01-02" .Tag.Date }}
 {{ if .CommitGroups -}}
@@ -61,6 +63,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 {{ range .Notes -}}
 - {{ .Body }}
 {{ end }}
+{{ end -}}
 {{ end -}}
 {{ end -}}
 {{ end -}}

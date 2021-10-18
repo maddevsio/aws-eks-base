@@ -65,26 +65,33 @@ How to generate CHANGELOG automatically:
   - `doc` - type of changes (see Semantic Pull Requests)
   - `my commit message` - commit message
   - `(#1)` - Pull Request number
-2. Pull the latest changes from `main` branch
-3. Create a tag with new version using the semver approach
+2. Rebase your local main branch on the latest changes from `main` branch
+3. Run next command:
 ```bash
-  git tag v1.10.0
+git-chglog -o CHANGELOG.md --next-tag $(semtag final -s minor -o)
 ```
-4. Run next command:
+4. Create a new branch, commit and push your changes
+5. Open Pull Request using prefix `chore:`
+6. Merge Pull request. Make sure your commit message looks like: `chore: Update CHANGELOG`
+7. Create a new Release and create the new tag (you got it when ran `$(semtag final -s minor -o)`). Click `Auto-generate release notes` and edit message leaving only commit messages:
 ```bash
-git-chglog -o CHANGELOG.md v1.1.0..v1.10.0
-```
-This version `v1.1.0` must always be first.
-5. Delete tag
-```
-git tag -d v1.10.0
-```
-7. Create a new branch, commit and push your changes
-8. Open Pull Request using prefix `chore:`
-9. Merge Pull reques. Make sure your commit message starts with `chore:`
-10. Create a new tag (v1.10.0) in Github UI
-11. Create a new Release for new tag.
+How it was:
 
+## What's Changed
+* doc: Changelog process by @user_name in https://github.com/maddevsio/aws-eks-base/pull/#number
+* chore: Update CHANGELOG by @user_name in https://github.com/maddevsio/aws-eks-base/pull/#number
+
+
+**Full Changelog**: https://github.com/maddevsio/aws-eks-base/compare/previous_tag...new_tag
+```
+
+```bash
+How it should be:
+
+## What's Changed
+* doc: Changelog process
+* chore: Update CHANGELOG
+```
 
 ## Coding conventions
 
