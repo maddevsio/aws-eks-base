@@ -11,7 +11,8 @@ options:
         - feat
         - fix
         - improvement
-        - docs
+        - enh
+        - doc
         - refactor
         - test
         - ci
@@ -22,16 +23,18 @@ options:
     title_order:
       - feat
       - improvement
+      - enh
       - refactor
       - fix
-      - docs
+      - doc
       - test
       - ci
     title_maps:
       feat: FEATURES
       fix: BUG FIXES
       improvement: ENHANCEMENTS
-      docs: DOCS
+      enh: ENHANCEMENTS
+      doc: DOCS
       refactor: REFACTORS
       test: TESTS
       ci: CI

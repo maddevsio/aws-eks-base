@@ -12,6 +12,7 @@ Please note we have a code of conduct, please follow it in all your interactions
   - [Pull Request Process](#pull-request-process)
   - [Checklists for contributions](#checklists-for-contributions)
   - [Semantic Pull Requests](#semantic-pull-requests)
+  - [Updating changelog](#updating-changelog)
   - [Coding conventions](#coding-conventions)
     - [Names and approaches used in code](#names-and-approaches-used-in-code)
       - [Base project name](#base-project-name)
@@ -45,13 +46,59 @@ To generate changelog, Pull Requests or Commits must have semantic and must foll
 - `feat:` for new features
 - `fix:` for bug fixes
 - `improvement:` for enhancements
-- `docs:` for documentation and examples
+- `enh:` for enhancements
+- `doc:` for documentation and examples
 - `refactor:` for code refactoring
 - `test:` for tests
 - `ci:` for CI purpose
 - `chore:` for chores stuff
 
 The `chore` prefix skipped during changelog generation. It can be used for `chore: update changelog` commit message by example.
+
+## Updating changelog
+
+All changes had been made before version 1.0.0 described in **CHANGELOG.previous.md** file. Starting from that version our Pull Requests or Commits have semantic and follow conventional specs above. So, we decided to keep new changes in **CHANGELOG.md** file. 
+
+**CHANGELOG.md** file should be updated after each change merged in the `main` branch. If there are several Pull Requests will be merged consistently, it's possible to update **CHANGELOG.md** once after merging all of them. 
+
+How to generate CHANGELOG automatically:
+1. Merge Pull Request using `Squash`. Your commit message must follow next rule: `doc: my commit message (#1)`, where
+  - `doc` - type of changes (see Semantic Pull Requests)
+  - `my commit message` - commit message
+  - `(#1)` - Pull Request number
+2. Rebase your local main branch on the latest changes from `main` branch
+3. Run next command:
+```bash
+git-chglog -o CHANGELOG.md --next-tag $(semtag final -s minor -o)
+```
+where:
+`minor` - is a type of changes related to the semver
+
+Utilities:
+* [git-chlog](https://github.com/git-chglog/git-chglog) 
+* [semtag](https://github.com/nico2sh/semtag)
+4. Create a new branch, commit and push your changes
+5. Open Pull Request using prefix `chore:`
+6. Merge Pull request. Make sure your commit message looks like: `chore: Update CHANGELOG` and don't forget to clean `optional extended description`
+7. Create a new Release and create the new tag (you got it when ran `$(semtag final -s minor -o)`). Click `Auto-generate release notes` and edit message leaving only commit messages:
+```bash
+How it was:
+
+## What's Changed
+* doc: Changelog process by @user_name in https://github.com/maddevsio/aws-eks-base/pull/#number
+* chore: Update CHANGELOG by @user_name in https://github.com/maddevsio/aws-eks-base/pull/#number
+
+
+**Full Changelog**: https://github.com/maddevsio/aws-eks-base/compare/previous_tag...new_tag
+```
+
+```bash
+How it should be:
+
+## What's Changed
+* doc: Changelog process
+* chore: Update CHANGELOG
+```
 
 ## Coding conventions
 
