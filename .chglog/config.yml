@@ -11,6 +11,7 @@ options:
         - feat
         - fix
         - improvement
+        - enh
         - doc
         - refactor
         - test
@@ -22,6 +23,7 @@ options:
     title_order:
       - feat
       - improvement
+      - enh
       - refactor
       - fix
       - doc
@@ -31,6 +33,7 @@ options:
       feat: FEATURES
       fix: BUG FIXES
       improvement: ENHANCEMENTS
+      enh: ENHANCEMENTS
       doc: DOCS
       refactor: REFACTORS
       test: TESTS
