@@ -137,7 +137,7 @@ resource "aws_s3_bucket_public_access_block" "rds_backups" {
 }
 
 module "aws_iam_rds_backups" {
-  source = "../modules/aws-iam-s3"
+  source = "../modules/aws-iam-user-with-policy"
 
   name = "${local.name}-rds-backups"
   policy = jsonencode({
