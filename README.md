@@ -474,6 +474,7 @@ This will allow you to expand your basic functionality by launching a monitoring
 * If you want to deploy **`Pritunl VPN`** server just move `layer1-aws/examples/aws-ec2-pritunl.tf` to the root of the layer.
 * If you want to deploy **`Gitlab runner`** that runs workers as k8s pods (in EKS cluster), move `layer1-aws/examples/aws-s3-bucket-gitlab-runner-cache.tf` and `layer2-k8s/examples/eks-gitlab-runner.tf` to the root of the layers.
 * If you want to deploy `Istio Operator` move `layer2-k8s/examples/eks-istio.tf` to the root of the layer.
+* If you want to deploy `Teamcity` move `layer2-k8s/examples/eks-teamcity.tf` to the root of the layer.
 
 ## TFSEC
 
