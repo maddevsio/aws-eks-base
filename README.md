@@ -469,6 +469,12 @@ Each layer has an `examples/` directory that contains working examples that expa
 
 This will allow you to expand your basic functionality by launching a monitoring system based on ELK or Prometheus Stack, etc.
 
+
+* If you want to deploy **`ELK stack`**, move `layer1-aws/examples/aws-s3-bucket-elastic-stack.tf` and `layer2-k8s/examples/eks-elk.tf` to the root of the layers. 
+* If you want to deploy **`Pritunl VPN`** server just move `layer1-aws/examples/aws-ec2-pritunl.tf` to the root of the layer.
+* If you want to deploy **`Gitlab runner`** that runs workers as k8s pods (in EKS cluster), move `layer1-aws/examples/aws-s3-bucket-gitlab-runner-cache.tf` and `layer2-k8s/examples/eks-gitlab-runner.tf` to the root of the layers.
+* If you want to deploy `Istio Operator` move `layer2-k8s/examples/eks-istio.tf` to the root of the layer.
+
 ## TFSEC
 
 We use GitHub Actions and [tfsec](https://github.com/aquasecurity/tfsec) to check our terraform code using static analysis to spot potential security issues. However, we needed to skip some checks. The list of those checks is below:
