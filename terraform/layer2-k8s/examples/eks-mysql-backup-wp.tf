@@ -1,11 +1,37 @@
 module "aws_iam_wp_buckup_s3" {
-  source = "../modules/aws-iam-s3"
+  source = "../modules/aws-iam-user-with-policy"
 
   name              = "${local.name}-rds-wp"
-  region            = local.region
-  bucket_names      = [local.wp_db_backup_bucket]
-  oidc_provider_arn = local.eks_oidc_provider_arn
-  create_user       = true
+  policy =   policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:ListBucket",
+          "s3:GetBucketLocation",
+          "s3:ListBucketMultipartUploads",
+          "s3:ListBucketVersions"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::${local.wp_db_backup_bucket}"
+        ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:AbortMultipartUpload",
+          "s3:ListMultipartUploadParts"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::${local.wp_db_backup_bucket}/*"
+        ]
+      }
+    ]
+  })
 }
 
 resource "kubernetes_secret" "wp_backup_s3" {

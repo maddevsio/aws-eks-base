@@ -1,13 +1,3 @@
-#tfsec:ignore:aws-iam-no-policy-wildcards
-module "aws_iam_autoscaler" {
-  source = "../modules/aws-iam-autoscaler"
-
-  name              = local.name
-  region            = local.region
-  oidc_provider_arn = local.eks_oidc_provider_arn
-  eks_cluster_id    = local.eks_cluster_id
-}
-
 data "template_file" "cluster_autoscaler" {
   template = file("${path.module}/templates/cluster-autoscaler-values.yaml")
 
@@ -32,4 +22,46 @@ resource "helm_release" "cluster_autoscaler" {
   ]
 
   depends_on = [helm_release.prometheus_operator]
+}
+
+#tfsec:ignore:aws-iam-no-policy-wildcards
+module "aws_iam_autoscaler" {
+  source = "../modules/aws-iam-eks-trusted"
+
+  name              = "${local.name}-autoscaler"
+  region            = local.region
+  oidc_provider_arn = local.eks_oidc_provider_arn
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "clusterAutoscalerAll",
+        "Effect" : "Allow",
+        "Action" : [
+          "ec2:DescribeLaunchTemplateVersions",
+          "autoscaling:DescribeTags",
+          "autoscaling:DescribeLaunchConfigurations",
+          "autoscaling:DescribeAutoScalingInstances",
+          "autoscaling:DescribeAutoScalingGroups",
+        ],
+        "Resource" : "*"
+      },
+      {
+        "Sid" : "clusterAutoscalerOwn",
+        "Effect" : "Allow",
+        "Action" : [
+          "autoscaling:UpdateAutoScalingGroup",
+          "autoscaling:TerminateInstanceInAutoScalingGroup",
+          "autoscaling:SetDesiredCapacity",
+        ],
+        "Resource" : "*",
+        "Condition" : {
+          "StringEquals" : {
+            "autoscaling:ResourceTag/kubernetes.io/cluster/${local.eks_cluster_id}" : ["owned"],
+            "autoscaling:ResourceTag/k8s.io/cluster-autoscaler/enabled" : ["true"]
+          }
+        }
+      }
+    ]
+  })
 }

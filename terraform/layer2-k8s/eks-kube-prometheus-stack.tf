@@ -26,14 +26,6 @@ resource "random_string" "grafana_password" {
   special = true
 }
 
-module "aws_iam_grafana" {
-  source = "../modules/aws-iam-grafana"
-
-  name              = local.name
-  region            = local.region
-  oidc_provider_arn = local.eks_oidc_provider_arn
-}
-
 resource "helm_release" "prometheus_operator" {
   name        = "kube-prometheus-stack"
   chart       = "kube-prometheus-stack"
@@ -46,6 +38,45 @@ resource "helm_release" "prometheus_operator" {
   values = [
     local.kube_prometheus_stack_template
   ]
+}
+
+module "aws_iam_grafana" {
+  source = "../modules/aws-iam-eks-trusted"
+
+  name              = "${local.name}-grafana"
+  region            = local.region
+  oidc_provider_arn = local.eks_oidc_provider_arn
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "AllowReadingMetricsFromCloudWatch",
+        "Effect" : "Allow",
+        "Action" : [
+          "cloudwatch:ListMetrics",
+          "cloudwatch:GetMetricStatistics",
+          "cloudwatch:GetMetricData"
+        ],
+        "Resource" : "*"
+      },
+      {
+        "Sid" : "AllowReadingTagsInstancesRegionsFromEC2",
+        "Effect" : "Allow",
+        "Action" : [
+          "ec2:DescribeTags",
+          "ec2:DescribeInstances",
+          "ec2:DescribeRegions"
+        ],
+        "Resource" : "*"
+      },
+      {
+        "Sid" : "AllowReadingResourcesForTags",
+        "Effect" : "Allow",
+        "Action" : "tag:GetResources",
+        "Resource" : "*"
+      }
+    ]
+  })
 }
 
 output "grafana_domain_name" {

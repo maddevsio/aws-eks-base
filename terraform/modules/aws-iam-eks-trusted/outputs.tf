@@ -1,4 +1,4 @@
 output "role_arn" {
-  description = "Cluster autoscaler role arn"
+  description = "This role ARN"
   value       = aws_iam_role.this.arn
 }

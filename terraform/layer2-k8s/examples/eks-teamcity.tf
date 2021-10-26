@@ -2,15 +2,6 @@ locals {
   teamcity_domain_name = "teamcity-${local.domain_suffix}"
 }
 
-module "aws_iam_teamcity" {
-  source = "../modules/aws-iam-ci"
-
-  name              = "${local.name}-teamcity"
-  region            = local.region
-  oidc_provider_arn = local.eks_oidc_provider_arn
-  eks_cluster_id    = local.eks_cluster_id
-}
-
 module "eks_rbac_teamcity" {
   source = "../modules/eks-rbac-ci"
 
@@ -62,6 +53,26 @@ resource "kubernetes_storage_class" "teamcity" {
     encrypted = true
     fsType    = "ext4"
   }
+}
+
+module "aws_iam_teamcity" {
+  source = "../modules/aws-iam-eks-trusted"
+
+  name              = "${local.name}-teamcity"
+  region            = local.region
+  oidc_provider_arn = local.eks_oidc_provider_arn
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ecr:*",
+        ],
+        "Resource" : "*"
+      }
+    ]
+  })
 }
 
 output "teamcity_domain_name" {

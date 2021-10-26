@@ -7,13 +7,6 @@ resource "aws_iam_role" "this" {
     {
       "Effect": "Allow",
       "Principal": {
-        "Service": ["ec2.amazonaws.com"]
-      },
-      "Action": "sts:AssumeRole"
-    },
-    {
-      "Effect": "Allow",
-      "Principal": {
         "Federated": "${var.oidc_provider_arn}"
       },
       "Action": "sts:AssumeRoleWithWebIdentity",
@@ -31,17 +24,5 @@ EOF
 resource "aws_iam_role_policy" "this" {
   name_prefix = var.name
   role        = aws_iam_role.this.id
-  policy      = data.aws_iam_policy_document.this.json
-}
-
-data "aws_iam_policy_document" "this" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "ssm:GetParameter",
-    ]
-
-    resources = var.resources
-  }
+  policy      = var.policy
 }

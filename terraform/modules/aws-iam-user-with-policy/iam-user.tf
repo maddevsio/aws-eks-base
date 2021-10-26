@@ -1,23 +1,16 @@
 resource "aws_iam_user" "this_user" {
-  count = var.create_user == true ? 1 : 0
-
   name = var.name
 }
 
 resource "aws_iam_access_key" "this_user" {
-  count = var.create_user == true ? 1 : 0
-
-  user = aws_iam_user.this_user.0.name
+  user = aws_iam_user.this_user.name
 }
 
 resource "aws_iam_user_policy" "this" {
-  # Need for support multi-buckets
-  count = var.create_user == true ? 1 : 0
+  name = var.name
+  user = aws_iam_user.this_user.name
 
-  name = "${var.name}-user"
-  user = aws_iam_user.this_user.0.name
-
-  policy = data.aws_iam_policy_document.user_policy.json
+  policy = var.policy
 }
 
 data "aws_iam_policy_document" "user_policy" {
