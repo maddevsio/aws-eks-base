@@ -1,12 +1,3 @@
-#tfsec:ignore:aws-iam-no-policy-wildcards
-module "aws_iam_cert_manager" {
-  source = "../modules/aws-iam-external-dns"
-
-  name              = local.name
-  region            = local.region
-  oidc_provider_arn = local.eks_oidc_provider_arn
-}
-
 data "template_file" "cert_manager" {
   template = file("${path.module}/templates/cert-manager-values.yaml")
 
@@ -33,4 +24,45 @@ resource "kubernetes_namespace" "certmanager" {
   metadata {
     name = "certmanager"
   }
+}
+
+#tfsec:ignore:aws-iam-no-policy-wildcards
+module "aws_iam_cert_manager" {
+  source = "../modules/aws-iam-eks-trusted"
+
+  name              = "${local.name}-certmanager"
+  region            = local.region
+  oidc_provider_arn = local.eks_oidc_provider_arn
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : "route53:GetChange",
+        "Resource" : "arn:aws:route53:::change/*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "route53:ChangeResourceRecordSets",
+          "route53:ListResourceRecordSets"
+        ],
+        "Resource" : [
+          "arn:aws:route53:::hostedzone/*"
+        ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "route53:ListHostedZones"
+        ],
+        "Resource" : ["*"]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : "route53:ListHostedZonesByName",
+        "Resource" : "*"
+      }
+    ]
+  })
 }

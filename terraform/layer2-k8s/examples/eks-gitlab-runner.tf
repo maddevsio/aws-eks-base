@@ -13,16 +13,6 @@ locals {
 
 }
 
-module "aws_iam_gitlab_runner" {
-  source = "../modules/aws-iam-ci"
-
-  name              = local.name
-  region            = local.region
-  oidc_provider_arn = local.eks_oidc_provider_arn
-  eks_cluster_id    = local.eks_cluster_id
-  s3_bucket_name    = local.gitlab_runner_cache_bucket_name
-}
-
 module "eks_rbac_gitlab_runner" {
   source = "../modules/eks-rbac-ci"
 
@@ -45,5 +35,32 @@ resource "helm_release" "gitlab_runner" {
   ]
 }
 
+module "aws_iam_gitlab_runner" {
+  source = "../modules/aws-iam-eks-trusted"
 
-
+  name              = "${local.name}-ci"
+  region            = local.region
+  oidc_provider_arn = local.eks_oidc_provider_arn
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ecr:*",
+        ],
+        "Resource" : "*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:*"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::${local.gitlab_runner_cache_bucket_name}",
+          "arn:aws:s3:::${local.gitlab_runner_cache_bucket_name}/*"
+        ]
+      }
+    ]
+  })
+}

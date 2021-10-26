@@ -26,7 +26,7 @@ Please note we have a code of conduct, please follow it in all your interactions
       - [General configuration files](#general-configuration-files)
       - [Specific configuration files](#specific-configuration-files)
       - [Modules](#modules)
-    - [Project structure](#project-structure)
+  - [### Project structure](#-project-structure)
 
 ## Pull Request Process
 
@@ -304,65 +304,6 @@ Examples:
 - `aws-ec2-pritunl` - module for creating pritunl ec2 instance
 
 ### Project structure
-
-```
-aws-eks-base
- ┣ docker
- ┣ examples
- ┣ helm-charts
- ┣ terraform
- ┃ ┣ layer1-aws
- ┃ ┃ ┣ examples
- ┃ ┃ ┣ templates
- ┃ ┃ ┣ aws-acm.tf
- ┃ ┃ ┣ aws-eks.tf
- ┃ ┃ ┣ aws-vpc.tf
- ┃ ┃ ┣ locals.tf
- ┃ ┃ ┣ main.tf
- ┃ ┃ ┣ outputs.tf
- ┃ ┃ ┣ providers.tf
- ┃ ┃ ┗ variables.tf
- ┃ ┣ layer2-k8s
- ┃ ┃ ┣ examples
- ┃ ┃ ┣ templates
- ┃ ┃ ┣ eks-aws-node-termination-handler.tf
- ┃ ┃ ┣ eks-cert-manager.tf
- ┃ ┃ ┣ eks-certificate.tf
- ┃ ┃ ┣ eks-cluster-autoscaler.tf
- ┃ ┃ ┣ eks-cluster-issuer.tf
- ┃ ┃ ┣ eks-external-dns.tf
- ┃ ┃ ┣ eks-external-secrets.tf
- ┃ ┃ ┣ eks-namespaces.tf
- ┃ ┃ ┣ eks-network-policy.tf
- ┃ ┃ ┣ eks-nginx-ingress-controller.tf
- ┃ ┃ ┣ locals.tf
- ┃ ┃ ┣ main.tf
- ┃ ┃ ┣ outputs.tf
- ┃ ┃ ┣ providers.tf
- ┃ ┃ ┣ ssm-ps-secrets.tf
- ┃ ┃ ┗ variables.tf
- ┃ ┗ modules
- ┃ ┃ ┣ aws-iam-alb-ingress-controller
- ┃ ┃ ┣ aws-iam-autoscaler
- ┃ ┃ ┣ aws-iam-ci
- ┃ ┃ ┣ aws-iam-external-dns
- ┃ ┃ ┣ aws-iam-grafana
- ┃ ┃ ┣ aws-iam-roles
- ┃ ┃ ┣ aws-iam-s3
- ┃ ┃ ┣ aws-iam-ssm
- ┃ ┃ ┣ eks-rbac-ci
- ┃ ┃ ┣ kubernetes-namespace
- ┃ ┃ ┣ kubernetes-network-policy-namespace
- ┃ ┃ ┣ pritunl
- ┃ ┃ ┗ self-signed-certificate
- ┣ .editorconfig
- ┣ .gitignore
- ┣ .gitlab-ci.yml
- ┣ .pre-commit-config.yaml
- ┣ README.md
- ┗ README_OLD.md
-```
-
 ---
 
 | FILE / DIRECTORY| DESCRIPTION   |

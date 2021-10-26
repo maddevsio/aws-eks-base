@@ -125,13 +125,39 @@ resource "random_string" "kibana_password" {
 }
 
 module "aws_iam_elastic_stack" {
-  source = "../modules/aws-iam-s3"
+  source = "../modules/aws-iam-user-with-policy"
 
-  name              = "${local.name}-elk"
-  region            = local.region
-  bucket_names      = [local.elastic_stack_bucket_name]
-  oidc_provider_arn = local.eks_oidc_provider_arn
-  create_user       = true
+  name = "${local.name}-elk"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:ListBucket",
+          "s3:GetBucketLocation",
+          "s3:ListBucketMultipartUploads",
+          "s3:ListBucketVersions"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::${local.elastic_stack_bucket_name}"
+        ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:AbortMultipartUpload",
+          "s3:ListMultipartUploadParts"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::${local.elastic_stack_bucket_name}/*"
+        ]
+      }
+    ]
+  })
 }
 
 output "kibana_domain_name" {

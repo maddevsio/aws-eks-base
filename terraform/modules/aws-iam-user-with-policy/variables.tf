@@ -3,8 +3,6 @@ variable "name" {
   default     = ""
 }
 
-variable "account_id" {
-  type        = string
-  default     = ""
-  description = "description"
+variable "policy" {
+  description = "IAM policy that will be attached to user"
 }

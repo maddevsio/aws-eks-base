@@ -1,12 +1,3 @@
-#tfsec:ignore:aws-iam-no-policy-wildcards
-module "aws_iam_external_secrets" {
-  source = "../modules/aws-iam-ssm"
-
-  name              = local.name
-  region            = local.region
-  oidc_provider_arn = local.eks_oidc_provider_arn
-}
-
 data "template_file" "external_secrets" {
   template = file("${path.module}/templates/external-secrets-values.yaml")
 
@@ -39,15 +30,21 @@ resource "helm_release" "reloader" {
   max_history = var.helm_release_history_size
 }
 
-#module "aws_iam_wp_external_secrets" {
-#  source = "../modules/aws-iam-ssm"
-#
-#  name              = local.name
-#  region            = local.region
-#  oidc_provider_arn = local.eks_oidc_provider_arn
-#  resources         = ["arn:aws:ssm:${local.region}:${data.aws_caller_identity.current.account_id}:parameter/wp/*"]
-#}
-#
-#output wordpress_external_secrets_role_arn {
-#  value       = module.aws_iam_wp_external_secrets.role_arn
-#}
+#tfsec:ignore:aws-iam-no-policy-wildcards
+module "aws_iam_external_secrets" {
+  source = "../modules/aws-iam-eks-trusted"
+
+  name              = "${local.name}-ext-secrets"
+  region            = local.region
+  oidc_provider_arn = local.eks_oidc_provider_arn
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : "ssm:GetParameter",
+        "Resource" : "*"
+      }
+    ]
+  })
+}
