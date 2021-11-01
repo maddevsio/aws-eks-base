@@ -18,7 +18,7 @@ Please note we have a code of conduct, please follow it in all your interactions
       - [Base project name](#base-project-name)
       - [Unique prefix of resource names](#unique-prefix-of-resource-names)
       - [Separators](#separators)
-      - [Depends_on](#depends_on)
+      - [Resource and Data Source Conventions](#resource-and-data-source-conventions)
       - [Resource names](#resource-names)
       - [Variable names](#variable-names)
       - [Output names](#output-names)
@@ -167,16 +167,50 @@ The `local.name` value is then used as a prefix for all `name` and `name_prefix`
 
 > Use `name_prefix` where possible
 
-#### Depends_on
-
-When you need to add `depends_on` to a resource or a module you should put it at the end of the block with empty line in front of it.
+#### Resource and Data Source Conventions
+- Include `count` an argument inside resource blocks as the first argument at the top and separate by newline after it:
 
 ```
-resource "aws_eks_addon" "coredns" {
+resource "aws_instance" "app" {
+  count = "3"
+  
   ...
-  addon_version     = var.addon_coredns_version
+}
+```
 
-  depends_on = [module.eks]
+- Include `tags` the argument, if supported by resource as the last real argument, following by `depends_on` and `lifecycle`, if necessary. All of these should be separated by a single empty line:
+
+```
+resource "aws_instance" "app" {
+  count = "1"
+  
+  ...
+
+  tags = {
+    Name = "..."
+  }
+
+  depends_on = []
+
+  lifecycle {}
+}
+```
+
+- When using condition in `count` argument use boolean value if it makes sense, otherwise use `length` or other interpolation:
+
+```
+resource "aws_instance" "app" {
+  count = var.run_app_instance ? 1 : 0
+
+  ...
+}
+```
+
+```
+resource "aws_route_table_association" "intra" {
+  count = var.create_vpc && length(var.intra_subnets) > 0 ? length(var.intra_subnets) : 0
+
+  ...
 }
 ```
 
@@ -202,6 +236,9 @@ resource "aws_eks_addon" "coredns" {
   ```
 
 - Nouns must be used for names
+- Always use singular nouns for names
+  - Good: `resource "aws_route_table" "public" {}`
+  - Bad: `resource "aws_route_table" "publics" {}`
 
 #### Variable names
 

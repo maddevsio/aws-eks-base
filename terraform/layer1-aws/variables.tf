@@ -245,17 +245,3 @@ variable "eks_cluster_encryption_config_enable" {
   default     = false
   description = "Enable or not encryption for k8s secrets with aws-kms"
 }
-
-# ECR
-variable "ecr_repos" {
-  type        = list(any)
-  default     = ["demo"]
-  description = "List of docker repositories"
-}
-
-variable "ecr_repo_retention_count" {
-  type        = number
-  default     = 50
-  description = "number of images to store in ECR"
-}
-

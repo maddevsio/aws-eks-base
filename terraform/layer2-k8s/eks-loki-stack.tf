@@ -1,7 +1,7 @@
 locals {
   grafana_loki_password = random_string.grafana_loki_password.result
 
-  loki_stack_template = templatefile("${path.module}/templates/loki-stack-values.tmpl",
+  loki_stack_template = templatefile("${path.module}/templates/loki-stack-values.yaml",
     {
       grafana_domain_name  = "grafana-${local.domain_suffix}"
       grafana_password     = local.grafana_loki_password
