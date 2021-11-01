@@ -4,7 +4,7 @@ locals {
   prometheus_domain_name   = "prometheus-${local.domain_suffix}"
   alertmanager_domain_name = "alertmanager-${local.domain_suffix}"
 
-  kube_prometheus_stack_template = templatefile("${path.module}/templates/prometheus-values.tmpl",
+  kube_prometheus_stack_template = templatefile("${path.module}/templates/prometheus-values.yaml",
     {
       prometheus_domain_name     = local.prometheus_domain_name
       alertmanager_domain_name   = local.alertmanager_domain_name
