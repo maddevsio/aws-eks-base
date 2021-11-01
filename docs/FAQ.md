@@ -14,7 +14,7 @@ Run `pluto detect-helm -o markdown --target-versions k8s=v1.22.0`, where `k8s=v1
 
 ## K8S namespace features:
 We strongly recommend using our terraform module `kubernetes-namespace` to manage (create) k8s namespaces. It provides additional functionalities. 
-* By default, containers run with unbounded compute resources on a Kubernetes cluster. This module has a policy (**`LimitRange`**) to constrain resource allocations (to Pods or Containers) in a namespace. Default value is:
+* By default, containers run with unbounded compute resources on a Kubernetes cluster. This module has a policy [**LimitRange**](https://kubernetes.io/docs/concepts/policy/limit-range/) to constrain resource allocations (to Pods or Containers) in a namespace. Default value is:
 ```
     {
       type = "Container"
@@ -30,7 +30,7 @@ We strongly recommend using our terraform module `kubernetes-namespace` to manag
 ```
 If you don't specify requests or limits for containers these default values will be applied.
 
-* When several users or teams share a cluster with a fixed number of nodes, there is a concern that one team could use more than its fair share of resources. Using this module you can define **`ResourceQuota`** to provide constraints that limit aggregate resource consumption per namespace. It can limit the quantity of objects that can be created in a namespace by type, as well as the total amount of compute resources that may be consumed by resources in that namespace. Default value is empty (No any resource quotas)
+* When several users or teams share a cluster with a fixed number of nodes, there is a concern that one team could use more than its fair share of resources. Using this module you can define [**ResourceQuota**](https://kubernetes.io/docs/concepts/policy/resource-quotas/) to provide constraints that limit aggregate resource consumption per namespace. It can limit the quantity of objects that can be created in a namespace by type, as well as the total amount of compute resources that may be consumed by resources in that namespace. Default value is empty (No any resource quotas)
 
 Example of configuring namespace LimitRange and ResourceQuota:
 ```
