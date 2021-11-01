@@ -7,7 +7,7 @@ module "eks_rbac_teamcity" {
 
   name      = "${local.name}-teamcity"
   role_arn  = module.aws_iam_teamcity.role_arn
-  namespace = kubernetes_namespace.ci.id
+  namespace = module.ci_namespace.name
 }
 
 data "template_file" "teamcity_agent" {
@@ -31,7 +31,7 @@ data "template_file" "teamcity" {
 resource "helm_release" "teamcity" {
   name            = "teamcity"
   chart           = "../../helm-charts/teamcity"
-  namespace       = kubernetes_namespace.ci.id
+  namespace       = module.ci_namespace.name
   wait            = false
   cleanup_on_fail = true
   max_history     = var.helm_release_history_size

@@ -15,7 +15,7 @@ resource "helm_release" "loki_stack" {
   name        = "loki-stack"
   chart       = "loki-stack"
   repository  = local.helm_repo_grafana
-  namespace   = kubernetes_namespace.monitoring.id
+  namespace   = module.monitoring_namespace.name
   version     = var.loki_stack
   wait        = false
   max_history = var.helm_release_history_size

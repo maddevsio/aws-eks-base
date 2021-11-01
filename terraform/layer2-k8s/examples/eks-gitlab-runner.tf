@@ -4,7 +4,7 @@ locals {
   gitlab_runner_template = templatefile("${path.module}/templates/gitlab-runner-values.tmpl",
     {
       registration_token = local.gitlab_registration_token
-      namespace          = kubernetes_namespace.ci.id
+      namespace          = module.ci_namespace.name
       role_arn           = module.aws_iam_gitlab_runner.role_arn
       runner_sa          = module.eks_rbac_gitlab_runner.sa_name
       bucket_name        = local.gitlab_runner_cache_bucket_name
@@ -18,7 +18,7 @@ module "eks_rbac_gitlab_runner" {
 
   name      = "${local.name}-gl"
   role_arn  = module.aws_iam_gitlab_runner.role_arn
-  namespace = kubernetes_namespace.ci.id
+  namespace = module.ci_namespace.name
 }
 
 resource "helm_release" "gitlab_runner" {
@@ -26,7 +26,7 @@ resource "helm_release" "gitlab_runner" {
   chart       = "gitlab-runner"
   repository  = local.helm_repo_gitlab
   version     = var.gitlab_runner_version
-  namespace   = kubernetes_namespace.ci.id
+  namespace   = module.ci_namespace.name
   wait        = false
   max_history = var.helm_release_history_size
 

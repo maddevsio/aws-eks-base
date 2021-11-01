@@ -23,7 +23,7 @@ data "template_file" "elk" {
 resource "helm_release" "elk" {
   name        = "elk"
   chart       = "../../helm-charts/elk"
-  namespace   = kubernetes_namespace.elk.id
+  namespace   = module.elk_namespace.name
   wait        = false
   max_history = var.helm_release_history_size
 
@@ -53,7 +53,7 @@ module "elastic_tls" {
 
   name                  = local.name
   common_name           = "elasticsearch-master"
-  dns_names             = [local.domain_name, "*.${local.domain_name}", "elasticsearch-master", "elasticsearch-master.${kubernetes_namespace.elk.id}", "kibana", "kibana.${kubernetes_namespace.elk.id}", "kibana-kibana", "kibana-kibana.${kubernetes_namespace.elk.id}", "logstash", "logstash.${kubernetes_namespace.elk.id}"]
+  dns_names             = [local.domain_name, "*.${local.domain_name}", "elasticsearch-master", "elasticsearch-master.${module.elk_namespace.name}", "kibana", "kibana.${module.elk_namespace.name}", "kibana-kibana", "kibana-kibana.${module.elk_namespace.name}", "logstash", "logstash.${module.elk_namespace.name}"]
   validity_period_hours = 8760
   early_renewal_hours   = 336
 }
@@ -61,7 +61,7 @@ module "elastic_tls" {
 resource "kubernetes_secret" "elasticsearch_credentials" {
   metadata {
     name      = "elastic-credentials"
-    namespace = kubernetes_namespace.elk.id
+    namespace = module.elk_namespace.name
   }
 
   data = {
@@ -73,7 +73,7 @@ resource "kubernetes_secret" "elasticsearch_credentials" {
 resource "kubernetes_secret" "elasticsearch_certificates" {
   metadata {
     name      = "elastic-certificates"
-    namespace = kubernetes_namespace.elk.id
+    namespace = module.elk_namespace.name
   }
 
   data = {
@@ -86,7 +86,7 @@ resource "kubernetes_secret" "elasticsearch_certificates" {
 resource "kubernetes_secret" "elasticsearch_s3_user_creds" {
   metadata {
     name      = "elasticsearch-s3-user-creds"
-    namespace = kubernetes_namespace.elk.id
+    namespace = module.elk_namespace.name
   }
 
   data = {
@@ -104,7 +104,7 @@ resource "random_string" "elasticsearch_password" {
 resource "kubernetes_secret" "kibana_enc_key" {
   metadata {
     name      = "kibana-encryption-key"
-    namespace = kubernetes_namespace.elk.id
+    namespace = module.elk_namespace.name
   }
 
   data = {

@@ -11,7 +11,7 @@ data "template_file" "cluster_issuer" {
 resource "helm_release" "cluster_issuer" {
   name        = "cluster-issuer"
   chart       = "../../helm-charts/cluster-issuer"
-  namespace   = kubernetes_namespace.certmanager.id
+  namespace   = module.certmanager_namespace.name
   wait        = false
   max_history = var.helm_release_history_size
 
@@ -20,5 +20,5 @@ resource "helm_release" "cluster_issuer" {
   ]
 
   # This dep needs for correct apply
-  depends_on = [helm_release.cert_manager, kubernetes_namespace.certmanager]
+  depends_on = [helm_release.cert_manager]
 }

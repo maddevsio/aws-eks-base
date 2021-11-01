@@ -10,7 +10,7 @@ resource "helm_release" "cert_manager" {
   name        = "cert-manager"
   chart       = "cert-manager"
   repository  = local.helm_repo_certmanager
-  namespace   = kubernetes_namespace.certmanager.id
+  namespace   = module.certmanager_namespace.name
   version     = var.cert_manager_version
   wait        = true
   max_history = var.helm_release_history_size
@@ -20,10 +20,9 @@ resource "helm_release" "cert_manager" {
   ]
 }
 
-resource "kubernetes_namespace" "certmanager" {
-  metadata {
-    name = "certmanager"
-  }
+module "certmanager_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "certmanager"
 }
 
 #tfsec:ignore:aws-iam-no-policy-wildcards

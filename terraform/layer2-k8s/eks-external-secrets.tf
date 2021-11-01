@@ -12,7 +12,7 @@ resource "helm_release" "external_secrets" {
   chart       = "kubernetes-external-secrets"
   repository  = local.helm_repo_external_secrets
   version     = var.external_secrets_version
-  namespace   = kubernetes_namespace.sys.id
+  namespace   = module.sys_namespace.name
   max_history = var.helm_release_history_size
 
   values = [
@@ -25,7 +25,7 @@ resource "helm_release" "reloader" {
   chart       = "reloader"
   repository  = local.helm_repo_stakater
   version     = var.reloader_version
-  namespace   = kubernetes_namespace.sys.id
+  namespace   = module.sys_namespace.name
   wait        = false
   max_history = var.helm_release_history_size
 }

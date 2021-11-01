@@ -30,7 +30,7 @@ resource "helm_release" "prometheus_operator" {
   name        = "kube-prometheus-stack"
   chart       = "kube-prometheus-stack"
   repository  = local.helm_repo_prometheus_community
-  namespace   = kubernetes_namespace.monitoring.id
+  namespace   = module.monitoring_namespace.name
   version     = var.prometheus_operator_version
   wait        = false
   max_history = var.helm_release_history_size

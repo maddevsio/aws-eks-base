@@ -19,7 +19,7 @@ resource "helm_release" "calico_daemonset" {
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "dev_ns_network_policy" {
   source                = "../modules/kubernetes-network-policy-namespace"
-  namespace             = kubernetes_namespace.dev.metadata[0].name
+  namespace             = module.dev_namespace.name
   allow_from_namespaces = [module.ing_namespace.labels_name]
 
   depends = [helm_release.calico_daemonset]
