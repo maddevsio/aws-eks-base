@@ -39,6 +39,7 @@ The entities that a Pod can communicate with are identified through a combinatio
 Other pods that are allowed (exception: a pod cannot block access to itself)
 Namespaces that are allowed
 IP blocks (exception: traffic to and from the node where a Pod is running is always allowed, regardless of the IP address of the Pod or the node)
+Default value is empty (No any NetworkPolicies - all traffic is allowed)
 
 Example of configuring namespace LimitRange, ResourceQuota and NetworkPolicy:
 ```
