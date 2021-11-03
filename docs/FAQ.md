@@ -128,7 +128,7 @@ module "test_namespace" {
       }
     },
     {
-      name        = "allow-egress-to-staging"
+      name        = "allow-egress-to-dev"
       policy_type = ["Egress"]
       egress = {
         ports = [
