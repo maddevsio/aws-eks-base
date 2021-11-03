@@ -1,7 +1,6 @@
-resource "kubernetes_namespace" "dns" {
-  metadata {
-    name = "dns"
-  }
+module "dns_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "dns"
 }
 
 module "ing_namespace" {
@@ -9,51 +8,27 @@ module "ing_namespace" {
   name   = "ing"
 }
 
-resource "kubernetes_namespace" "elk" {
-  metadata {
-    name = "elk"
-  }
+module "elk_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "elk"
 }
 
-resource "kubernetes_namespace" "prod" {
-  metadata {
-    name = "prod"
-  }
+module "fargate_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "fargate"
 }
 
-resource "kubernetes_namespace" "staging" {
-  metadata {
-    name = "staging"
-  }
+module "ci_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "ci"
 }
 
-resource "kubernetes_namespace" "dev" {
-  metadata {
-    name = "dev"
-  }
+module "sys_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "sys"
 }
 
-resource "kubernetes_namespace" "fargate" {
-  metadata {
-    name = "fargate"
-  }
+module "monitoring_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "monitoring"
 }
-
-resource "kubernetes_namespace" "ci" {
-  metadata {
-    name = "ci"
-  }
-}
-
-resource "kubernetes_namespace" "sys" {
-  metadata {
-    name = "sys"
-  }
-}
-
-resource "kubernetes_namespace" "monitoring" {
-  metadata {
-    name = "monitoring"
-  }
-}
-

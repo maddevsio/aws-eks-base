@@ -3,7 +3,7 @@ resource "helm_release" "aws_node_termination_handler" {
   chart       = "aws-node-termination-handler"
   version     = var.aws_node_termination_handler_version
   repository  = local.helm_repo_eks
-  namespace   = kubernetes_namespace.sys.id
+  namespace   = module.sys_namespace.name
   wait        = false
   max_history = var.helm_release_history_size
 

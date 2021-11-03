@@ -22,7 +22,34 @@ variable "depends" {
 }
 
 variable "enable" {
-  description = "If set to true, create namespace"
   type        = bool
   default     = true
+  description = "If set to true, create namespace"
+}
+
+variable "limits" {
+  type = any
+  default = [
+    {
+      type = "Container"
+      default = {
+        cpu    = "150m"
+        memory = "128Mi"
+      }
+      default_request = {
+        cpu    = "100m"
+        memory = "64Mi"
+      }
+    }
+  ]
+}
+
+variable "resource_quotas" {
+  type    = any
+  default = []
+}
+
+variable "network_policies" {
+  type    = any
+  default = []
 }

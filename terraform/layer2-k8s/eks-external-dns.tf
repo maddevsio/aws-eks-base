@@ -14,7 +14,7 @@ resource "helm_release" "external_dns" {
   chart       = "external-dns"
   repository  = local.helm_repo_bitnami
   version     = var.external_dns_version
-  namespace   = kubernetes_namespace.dns.id
+  namespace   = module.dns_namespace.name
   max_history = var.helm_release_history_size
 
   values = [
