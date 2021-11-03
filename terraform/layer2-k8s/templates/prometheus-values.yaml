@@ -21,6 +21,13 @@ prometheus:
           resources:
             requests:
               storage: 30Gi
+    resources:
+      requests:
+        cpu: 200m
+        memory: 1024Mi
+      limits:
+        cpu: 400m
+        memory: 1024Mi
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
