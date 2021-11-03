@@ -12,6 +12,21 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+<a name="v2.0.0"></a>
+## [v2.0.0] - 2021-11-03
+FEATURES:
+- Add limitrange, resourcequota and networkpolicy features for k8s namespace ([#147](https://github.com/maddevsio/aws-eks-base/issues/147))
+
+REFACTORS:
+- Delete unused examples ([#144](https://github.com/maddevsio/aws-eks-base/issues/144))
+- Use aws-iam-eks-trusted module to create all roles used in k8s ([#143](https://github.com/maddevsio/aws-eks-base/issues/143))
+
+DOCS:
+- Add some notes about coding conventions ([#146](https://github.com/maddevsio/aws-eks-base/issues/146))
+
+
+
+
 <a name="v1.1.0"></a>
 ## [v1.1.0] - 2021-10-19
 ENHANCEMENTS:
@@ -26,5 +41,6 @@ DOCS:
 
 
 
-[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v2.0.0...HEAD
+[v2.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v1.1.0...v2.0.0
 [v1.1.0]: https://github.com/maddevsio/aws-eks-base/compare/v1.0.0...v1.1.0
