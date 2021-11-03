@@ -13,21 +13,6 @@ module "elk_namespace" {
   name   = "elk"
 }
 
-module "prod_namespace" {
-  source = "../modules/kubernetes-namespace"
-  name   = "prod"
-}
-
-module "staging_namespace" {
-  source = "../modules/kubernetes-namespace"
-  name   = "staging"
-}
-
-module "dev_namespace" {
-  source = "../modules/kubernetes-namespace"
-  name   = "dev"
-}
-
 module "fargate_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "fargate"
@@ -46,4 +31,9 @@ module "sys_namespace" {
 module "monitoring_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "monitoring"
+}
+
+module "calico_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "calico"
 }

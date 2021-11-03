@@ -48,3 +48,8 @@ variable "resource_quotas" {
   type    = any
   default = []
 }
+
+variable "network_policies" {
+  type    = any
+  default = []
+}

@@ -14,7 +14,7 @@ Run `pluto detect-helm -o markdown --target-versions k8s=v1.22.0`, where `k8s=v1
 
 ## K8S namespace features:
 We strongly recommend using our terraform module `kubernetes-namespace` to manage (create) k8s namespaces. It provides additional functionalities. 
-* By default, containers run with unbounded compute resources on a Kubernetes cluster. This module has a policy [**LimitRange**](https://kubernetes.io/docs/concepts/policy/limit-range/) to constrain resource allocations (to Pods or Containers) in a namespace. Default value is:
+* **LimitRange**: By default, containers run with unbounded compute resources on a Kubernetes cluster. This module has a policy [**LimitRange**](https://kubernetes.io/docs/concepts/policy/limit-range/) to constrain resource allocations (to Pods or Containers) in a namespace. Default value is:
 ```
     {
       type = "Container"
@@ -30,9 +30,17 @@ We strongly recommend using our terraform module `kubernetes-namespace` to manag
 ```
 If you don't specify requests or limits for containers these default values will be applied.
 
-* When several users or teams share a cluster with a fixed number of nodes, there is a concern that one team could use more than its fair share of resources. Using this module you can define [**ResourceQuota**](https://kubernetes.io/docs/concepts/policy/resource-quotas/) to provide constraints that limit aggregate resource consumption per namespace. It can limit the quantity of objects that can be created in a namespace by type, as well as the total amount of compute resources that may be consumed by resources in that namespace. Default value is empty (No any resource quotas)
+* **ResourceQuota**: When several users or teams share a cluster with a fixed number of nodes, there is a concern that one team could use more than its fair share of resources. Using this module you can define [**ResourceQuota**](https://kubernetes.io/docs/concepts/policy/resource-quotas/) to provide constraints that limit aggregate resource consumption per namespace. It can limit the quantity of objects that can be created in a namespace by type, as well as the total amount of compute resources that may be consumed by resources in that namespace. Default value is empty (No any resource quotas)
 
-Example of configuring namespace LimitRange and ResourceQuota:
+* **NetworkPolicy**: If you want to control traffic flow at the IP address or port level (OSI layer 3 or 4), then you might consider using Kubernetes NetworkPolicies for particular applications in your cluster. [**NetworkPolicies**](https://kubernetes.io/docs/concepts/services-networking/network-policies/) are an application-centric construct which allow you to specify how a pod is allowed to communicate with various network "entities" (we use the word "entity" here to avoid overloading the more common terms such as "endpoints" and "services", which have specific Kubernetes connotations) over the network.
+
+The entities that a Pod can communicate with are identified through a combination of the following 3 identifiers:
+
+Other pods that are allowed (exception: a pod cannot block access to itself)
+Namespaces that are allowed
+IP blocks (exception: traffic to and from the node where a Pod is running is always allowed, regardless of the IP address of the Pod or the node)
+
+Example of configuring namespace LimitRange, ResourceQuota and NetworkPolicy:
 ```
 module "test_namespace" {
   source = "../modules/kubernetes-namespace"
@@ -84,6 +92,59 @@ module "test_namespace" {
         secrets                  = 10
         services                 = 10
         "services.loadbalancers" = 2
+      }
+    }
+  ]
+  network_policies = [
+    {
+      name         = "allow-this-namespace"
+      policy_types = ["Ingress"]
+      ingress = {
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "test"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-from-ingress-namespace"
+      policy_types = ["Ingress"]
+      ingress = {
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "ing"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name        = "allow-egress-to-staging"
+      policy_type = ["Egress"]
+      egress = {
+        ports = [
+          {
+            port     = "80"
+            protocol = "TCP"
+          }
+        ]
+        to = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "dev"
+              }
+            }
+          }
+        ]
       }
     }
   ]
