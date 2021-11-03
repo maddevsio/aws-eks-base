@@ -7,7 +7,7 @@ resource "helm_release" "calico_daemonset" {
   chart       = "aws-calico"
   repository  = local.helm_repo_eks
   version     = var.calico_daemonset
-  namespace   = module.calico_namespace.name
+  namespace   = "kube-system"
   max_history = var.helm_release_history_size
   wait        = false
 

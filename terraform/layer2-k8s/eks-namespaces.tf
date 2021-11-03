@@ -32,8 +32,3 @@ module "monitoring_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "monitoring"
 }
-
-module "calico_namespace" {
-  source = "../modules/kubernetes-namespace"
-  name   = "calico"
-}
