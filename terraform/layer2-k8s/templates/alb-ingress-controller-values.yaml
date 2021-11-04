@@ -1,5 +1,3 @@
-replicaCount: ${replica_count}
-
 clusterName: ${cluster_name}
 
 region: ${region}
@@ -9,9 +7,6 @@ serviceAccount:
   create: true
   annotations:
      "eks.amazonaws.com/role-arn": ${role_arn}
-
-image:
-  tag: ${image_tag}
 
 affinity:
   nodeAffinity:
