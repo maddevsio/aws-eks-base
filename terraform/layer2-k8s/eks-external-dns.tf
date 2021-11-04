@@ -13,7 +13,6 @@ data "template_file" "external_dns" {
     role_arn    = module.aws_iam_external_dns.role_arn
     domain_name = local.domain_name
     zone_type   = "public"
-    region      = local.region
   }
 }
 

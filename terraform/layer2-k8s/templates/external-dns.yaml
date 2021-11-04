@@ -9,15 +9,12 @@ serviceAccount:
 
 provider: aws
 domainFilters: [${domain_name}]
-aws:
-  region: ${region}
-  zoneType: ${zone_type}
+extraArgs:
+  - --aws-zone-type=${zone_type}
+  - --aws-batch-change-size=1000
 
-metrics:
-  enabled: true
-  serviceMonitor:
-    enabled: false
-    namespace: monitoring
+serviceMonitor:
+  enabled: false
 
 sources:
   - service
