@@ -1,3 +1,11 @@
+locals {
+  external-dns = {
+    chart         = local.helm_charts[index(local.helm_charts.*.id, "external-dns")].chart
+    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "external-dns")], "repository", null)
+    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "external-dns")], "version", null)
+  }
+}
+
 data "template_file" "external_dns" {
   template = file("${path.module}/templates/external-dns.yaml")
 
@@ -11,9 +19,9 @@ data "template_file" "external_dns" {
 
 resource "helm_release" "external_dns" {
   name        = "external-dns"
-  chart       = "external-dns"
-  repository  = local.helm_repo_bitnami
-  version     = var.external_dns_version
+  chart       = local.external-dns.chart
+  repository  = local.external-dns.repository
+  version     = local.external-dns.chart_version
   namespace   = module.dns_namespace.name
   max_history = var.helm_release_history_size
 

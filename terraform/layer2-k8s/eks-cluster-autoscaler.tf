@@ -1,3 +1,11 @@
+locals {
+  cluster-autoscaler = {
+    chart         = local.helm_charts[index(local.helm_charts.*.id, "cluster-autoscaler")].chart
+    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "cluster-autoscaler")], "repository", null)
+    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "cluster-autoscaler")], "version", null)
+  }
+}
+
 data "template_file" "cluster_autoscaler" {
   template = file("${path.module}/templates/cluster-autoscaler-values.yaml")
 
@@ -11,9 +19,9 @@ data "template_file" "cluster_autoscaler" {
 
 resource "helm_release" "cluster_autoscaler" {
   name        = "cluster-autoscaler"
-  chart       = "cluster-autoscaler"
-  repository  = local.helm_repo_cluster_autoscaler
-  version     = var.cluster_autoscaler_chart_version
+  chart       = local.cluster-autoscaler.chart
+  repository  = local.cluster-autoscaler.repository
+  version     = local.cluster-autoscaler.chart_version
   namespace   = module.sys_namespace.name
   max_history = var.helm_release_history_size
 

@@ -1,0 +1,81 @@
+charts:
+  - id: aws-loadbalancer-controller
+    chart: aws-loadbalancer-controller
+    repository: https://aws.github.io/eks-charts
+    version: 1.2.6
+  - id: aws-node-termination-handler
+    chart: aws-node-termination-handler
+    repository: https://aws.github.io/eks-charts
+    version: 0.13.3
+  - id: aws-calico
+    chart: aws-calico
+    repository: https://aws.github.io/eks-charts
+    version: 0.3.4
+  - id: cert-manager
+    chart: cert-manager
+    repository: https://charts.jetstack.io
+    version: 1.1.0
+  - id: cert-mananger-certificate
+    chart: ../../helm-charts/certificate
+    repository:
+    version:
+  - id: cluster-autoscaler
+    chart: cluster-autoscaler
+    repository: https://kubernetes.github.io/autoscaler
+    version: 9.10.5
+  - id: cert-manager-cluster-issuer
+    chart: ../../helm-charts/cluster-issuer
+    repository:
+    version:
+  - id: elk
+    chart: ../../helm-charts/elk
+    repository:
+    version:
+  - id: external-dns
+    chart: external-dns
+    repository: https://charts.bitnami.com/bitnami
+    version: 4.9.4
+  - id: external-secrets
+    chart: kubernetes-external-secrets
+    repository: https://external-secrets.github.io/kubernetes-external-secrets
+    version: 6.3.0
+  - id: gitlab-runner
+    chart: gitlab-runner
+    repository: https://charts.gitlab.io
+    version: 0.26.0
+  - id: ingress-nginx
+    chart: ingress-nginx
+    repository: https://kubernetes.github.io/ingress-nginx
+    version: 3.23.0
+  - id: istio-operator
+    chart: ../../helm-charts/istio/istio-operator
+    repository:
+    version:
+  - id: istio-operator-resources
+    chart: ../../helm-charts/istio/istio-operator-resources
+    repository:
+    version:
+  - id: istio-resources
+    chart: ../../helm-charts/istio/istio-resources
+    repository:
+    version: 
+  - id: kiali-server
+    chart: kiali-server
+    repository: https://kiali.org/helm-charts
+    version: 1.36
+  - id: kube-prometheus-stack
+    chart: kube-prometheus-stack
+    repository: https://prometheus-community.github.io/helm-charts
+    version: 13.12.0
+  - id: loki-stack
+    chart: loki-stack
+    repository: https://grafana.github.io/helm-charts
+    version: 2.3.1
+  - id: reloader
+    chart: reloader
+    repository: https://stakater.github.io/stakater-charts
+    version: 0.0.81
+  - id: teamcity
+    chart: ../../helm-charts/teamcity
+    repository:
+    version:

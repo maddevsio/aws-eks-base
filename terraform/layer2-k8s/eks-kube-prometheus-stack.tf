@@ -1,4 +1,9 @@
 locals {
+  kube-prometheus-stack = {
+    chart         = local.helm_charts[index(local.helm_charts.*.id, "kube-prometheus-stack")].chart
+    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "kube-prometheus-stack")], "repository", null)
+    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "kube-prometheus-stack")], "version", null)
+  }
   grafana_password         = random_string.grafana_password.result
   grafana_domain_name      = "grafana-${local.domain_suffix}"
   prometheus_domain_name   = "prometheus-${local.domain_suffix}"
@@ -28,10 +33,10 @@ resource "random_string" "grafana_password" {
 
 resource "helm_release" "prometheus_operator" {
   name        = "kube-prometheus-stack"
-  chart       = "kube-prometheus-stack"
-  repository  = local.helm_repo_prometheus_community
+  chart       = local.kube-prometheus-stack.chart
+  repository  = local.kube-prometheus-stack.repository
+  version     = local.kube-prometheus-stack.chart_version
   namespace   = module.monitoring_namespace.name
-  version     = var.prometheus_operator_version
   wait        = false
   max_history = var.helm_release_history_size
 

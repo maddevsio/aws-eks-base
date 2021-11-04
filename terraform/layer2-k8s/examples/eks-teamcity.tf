@@ -1,4 +1,9 @@
 locals {
+  teamcity = {
+    chart         = local.helm_charts[index(local.helm_charts.*.id, "teamcity")].chart
+    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "teamcity")], "repository", null)
+    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "teamcity")], "version", null)
+  }
   teamcity_domain_name = "teamcity-${local.domain_suffix}"
 }
 
@@ -30,7 +35,9 @@ data "template_file" "teamcity" {
 
 resource "helm_release" "teamcity" {
   name            = "teamcity"
-  chart           = "../../helm-charts/teamcity"
+  chart           = local.teamcity.chart
+  repository      = local.teamcity.repository
+  version         = local.teamcity.chart_version
   namespace       = module.ci_namespace.name
   wait            = false
   cleanup_on_fail = true
