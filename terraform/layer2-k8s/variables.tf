@@ -41,7 +41,7 @@ variable "nginx_ingress_ssl_terminator" {
 
 # ALB Ingress
 variable "aws_loadbalancer_controller_enable" {
-  description = "Disable or Enable aws-loadbalancer-controller. You have to enable it if you want to use Fargate"
+  description = "Disable or Enable aws-loadbalancer-controller. You need to enable it if you want to use Fargate"
   type        = bool
   default     = false
 }
