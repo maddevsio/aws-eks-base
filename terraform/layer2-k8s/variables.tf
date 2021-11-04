@@ -46,6 +46,13 @@ variable "aws_loadbalancer_controller_enable" {
   default     = false
 }
 
+# Cluster autoscaler
+variable "cluster_autoscaler_version" {
+  description = "Version of cluster autoscaler"
+  default     = "v1.21.0"
+}
+
+# ELK
 variable "elk_snapshot_retention_days" {
   description = "Days to capture index in snapshot"
   default     = 90
