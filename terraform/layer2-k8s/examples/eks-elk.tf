@@ -1,4 +1,9 @@
 locals {
+  elk = {
+    chart         = local.helm_charts[index(local.helm_charts.*.id, "elk")].chart
+    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "elk")], "repository", null)
+    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "elk")], "version", null)
+  }
   kibana_domain_name        = "kibana-${local.domain_suffix}"
   apm_domain_name           = "apm-${local.domain_suffix}"
   elastic_stack_bucket_name = data.terraform_remote_state.layer1-aws.outputs.elastic_stack_bucket_name
@@ -22,7 +27,9 @@ data "template_file" "elk" {
 
 resource "helm_release" "elk" {
   name        = "elk"
-  chart       = "../../helm-charts/elk"
+  chart       = local.elk.chart
+  repository  = local.elk.repository
+  version     = local.elk.chart_version
   namespace   = module.elk_namespace.name
   wait        = false
   max_history = var.helm_release_history_size

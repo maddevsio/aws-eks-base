@@ -1,3 +1,11 @@
+locals {
+  cert-manager = {
+    chart         = local.helm_charts[index(local.helm_charts.*.id, "cert-manager")].chart
+    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "cert-manager")], "repository", null)
+    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "cert-manager")], "version", null)
+  }
+}
+
 data "template_file" "cert_manager" {
   template = file("${path.module}/templates/cert-manager-values.yaml")
 
@@ -8,10 +16,10 @@ data "template_file" "cert_manager" {
 
 resource "helm_release" "cert_manager" {
   name        = "cert-manager"
-  chart       = "cert-manager"
-  repository  = local.helm_repo_certmanager
+  chart       = local.cert-manager.chart
+  repository  = local.cert-manager.repository
+  version     = local.cert-manager.chart_version
   namespace   = module.certmanager_namespace.name
-  version     = var.cert_manager_version
   wait        = true
   max_history = var.helm_release_history_size
 

@@ -1,4 +1,9 @@
 locals {
+  gitlab-runner = {
+    chart         = local.helm_charts[index(local.helm_charts.*.id, "gitlab-runner")].chart
+    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "gitlab-runner")], "repository", null)
+    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "gitlab-runner")], "version", null)
+  }
   gitlab_runner_cache_bucket_name = data.terraform_remote_state.layer1-aws.outputs.gitlab_runner_cache_bucket_name
 
   gitlab_runner_template = templatefile("${path.module}/templates/gitlab-runner-values.tmpl",
@@ -23,9 +28,9 @@ module "eks_rbac_gitlab_runner" {
 
 resource "helm_release" "gitlab_runner" {
   name        = "gitlab-runner"
-  chart       = "gitlab-runner"
-  repository  = local.helm_repo_gitlab
-  version     = var.gitlab_runner_version
+  chart       = local.gitlab-runner.chart
+  repository  = local.gitlab-runner.repository
+  version     = local.gitlab-runner.chart_version
   namespace   = module.ci_namespace.name
   wait        = false
   max_history = var.helm_release_history_size

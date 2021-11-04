@@ -1,4 +1,9 @@
 locals {
+  loki-stack = {
+    chart         = local.helm_charts[index(local.helm_charts.*.id, "loki-stack")].chart
+    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "loki-stack")], "repository", null)
+    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "loki-stack")], "version", null)
+  }
   grafana_loki_password = random_string.grafana_loki_password.result
 
   loki_stack_template = templatefile("${path.module}/templates/loki-stack-values.yaml",
@@ -13,10 +18,10 @@ locals {
 
 resource "helm_release" "loki_stack" {
   name        = "loki-stack"
-  chart       = "loki-stack"
-  repository  = local.helm_repo_grafana
+  chart       = local.loki-stack.chart
+  repository  = local.loki-stack.repository
+  version     = local.loki-stack.chart_version
   namespace   = module.monitoring_namespace.name
-  version     = var.loki_stack
   wait        = false
   max_history = var.helm_release_history_size
 

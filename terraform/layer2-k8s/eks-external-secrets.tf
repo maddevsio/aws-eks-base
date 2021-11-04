@@ -1,3 +1,16 @@
+locals {
+  external-secrets = {
+    chart         = local.helm_charts[index(local.helm_charts.*.id, "external-secrets")].chart
+    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "external-secrets")], "repository", null)
+    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "external-secrets")], "version", null)
+  }
+  reloader = {
+    chart         = local.helm_charts[index(local.helm_charts.*.id, "reloader")].chart
+    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "reloader")], "repository", null)
+    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "reloader")], "version", null)
+  }
+}
+
 data "template_file" "external_secrets" {
   template = file("${path.module}/templates/external-secrets-values.yaml")
 
@@ -9,9 +22,9 @@ data "template_file" "external_secrets" {
 
 resource "helm_release" "external_secrets" {
   name        = "external-secrets"
-  chart       = "kubernetes-external-secrets"
-  repository  = local.helm_repo_external_secrets
-  version     = var.external_secrets_version
+  chart       = local.external-secrets.chart
+  repository  = local.external-secrets.repository
+  version     = local.external-secrets.chart_version
   namespace   = module.sys_namespace.name
   max_history = var.helm_release_history_size
 
@@ -22,9 +35,9 @@ resource "helm_release" "external_secrets" {
 
 resource "helm_release" "reloader" {
   name        = "reloader"
-  chart       = "reloader"
-  repository  = local.helm_repo_stakater
-  version     = var.reloader_version
+  chart       = local.reloader.chart
+  repository  = local.reloader.repository
+  version     = local.reloader.chart_version
   namespace   = module.sys_namespace.name
   wait        = false
   max_history = var.helm_release_history_size

@@ -1,8 +1,16 @@
+locals {
+  aws-node-termination-handler = {
+    chart         = local.helm_charts[index(local.helm_charts.*.id, "aws-node-termination-handler")].chart
+    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "aws-node-termination-handler")], "repository", null)
+    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "aws-node-termination-handler")], "version", null)
+  }
+}
+
 resource "helm_release" "aws_node_termination_handler" {
   name        = "aws-node-termination-handler"
-  chart       = "aws-node-termination-handler"
-  version     = var.aws_node_termination_handler_version
-  repository  = local.helm_repo_eks
+  chart       = local.aws-node-termination-handler.chart
+  repository  = local.aws-node-termination-handler.repository
+  version     = local.aws-node-termination-handler.chart_version
   namespace   = module.sys_namespace.name
   wait        = false
   max_history = var.helm_release_history_size
