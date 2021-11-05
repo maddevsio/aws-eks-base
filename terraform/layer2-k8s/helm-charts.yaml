@@ -1,6 +1,6 @@
 charts:
-  - id: aws-loadbalancer-controller
-    chart: aws-loadbalancer-controller
+  - id: aws-load-balancer-controller
+    chart: aws-load-balancer-controller
     repository: https://aws.github.io/eks-charts
     version: 1.2.6
   - id: aws-node-termination-handler
