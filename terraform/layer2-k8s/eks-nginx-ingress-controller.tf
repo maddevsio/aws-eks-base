@@ -19,16 +19,21 @@ data "template_file" "nginx_ingress" {
     hostname           = local.domain_name
     ssl_cert           = local.ssl_certificate_arn
     proxy_real_ip_cidr = local.vpc_cidr
-    namespace          = module.ing_namespace.name
+    namespace          = module.ingress_nginx_namespace.name
   }
 }
 
-resource "helm_release" "nginx_ingress" {
+module "ingress_nginx_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "ingress-nginx"
+}
+
+resource "helm_release" "ingress_nginx" {
   name        = "ingress-nginx"
   chart       = local.ingress-nginx.chart
   repository  = local.ingress-nginx.repository
   version     = local.ingress-nginx.chart_version
-  namespace   = module.ing_namespace.name
+  namespace   = module.ingress_nginx_namespace.name
   wait        = false
   max_history = var.helm_release_history_size
 

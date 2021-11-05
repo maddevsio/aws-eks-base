@@ -25,6 +25,11 @@ data "template_file" "elk" {
   }
 }
 
+module "elk_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "elk"
+}
+
 resource "helm_release" "elk" {
   name        = "elk"
   chart       = local.elk.chart

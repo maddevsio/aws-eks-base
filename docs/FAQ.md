@@ -152,3 +152,60 @@ module "test_namespace" {
 }
 ```
 
+## How to add more restrictions for Gitlab-Runner
+By default Gitlab-Runner can deploy into any namespaces. If you want to allow Gitlab-Runner to deploy only into specific namespaces, then do these:
+* Create new Service Account:
+```
+resource "kubernetes_service_account" "gitlab_runner" {
+  metadata {
+    name      = "my-gitlab-runners-sa"
+    namespace = module.gitlab_runner_namespace.name
+    annotations = {
+      "eks.amazonaws.com/role-arn" = module.aws_iam_gitlab_runner.role_arn
+    }
+  }
+  automount_service_account_token = true
+}
+```
+* Create a new Kubernetes Role and RoleBinding. For example, these role and rolebinding will allow to deploy into dev namespace only:
+```
+resource "kubernetes_role" "dev" {
+  metadata {
+    name      = "${local.name}-dev"
+    namespace = "dev"
+  }
+
+  rule {
+    api_groups = ["", "apps", "extensions", "batch", "networking.k8s.io", "kubernetes-client.io"]
+    resources  = ["*"]
+    verbs      = ["*"]
+  }
+}
+
+resource "kubernetes_role_binding" "dev" {
+  metadata {
+    name      = "${local.name}-dev"
+    namespace = "dev"
+  }
+
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "Role"
+    name      = kubernetes_role.dev.metadata.0.name
+  }
+
+  subject {
+    kind      = "ServiceAccount"
+    name      = kubernetes_service_account.gitlab_runner.metadata.0.name
+    namespace = module.gitlab_runner_namespace.name
+  }
+}
+```
+* Set the name of a new created account in layer2-k8s/templates/gitlab-runner-values.yaml
+```
+...
+runners:
+  serviceAccountName: my-gitlab-runners-sa
+  image: ubuntu:18.04
+...
+```
