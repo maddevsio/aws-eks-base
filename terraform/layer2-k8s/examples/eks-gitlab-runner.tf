@@ -4,12 +4,12 @@ locals {
     repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "gitlab-runner")], "repository", null)
     chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "gitlab-runner")], "version", null)
   }
-  gitlab_runner_template = templatefile("${path.module}/templates/gitlab-runner-values.tmpl",
+  gitlab_runner_template = templatefile("${path.module}/templates/gitlab-runner-values.yaml",
     {
       registration_token = local.gitlab_registration_token
       namespace          = module.ci_namespace.name
       role_arn           = module.aws_iam_gitlab_runner.role_arn
-      runner_sa          = module.eks_rbac_gitlab_runner.sa_name
+      runner_sa          = module.eks_rbac_gitlab_runner.service_account_name
       bucket_name        = aws_s3_bucket.gitlab_runner_cache.id
       region             = local.region
   })
