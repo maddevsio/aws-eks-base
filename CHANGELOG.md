@@ -12,6 +12,17 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+<a name="v3.0.0"></a>
+## [v3.0.0] - 2021-11-05
+ENHANCEMENTS:
+- Do not use terraform modules for deploying aws-load-balancer-controller ([#160](https://github.com/maddevsio/aws-eks-base/issues/160))
+
+REFACTORS:
+- Use dedicated file to set some helm charts options (name, repository, version) ([#156](https://github.com/maddevsio/aws-eks-base/issues/156))
+
+
+
+
 <a name="v2.0.0"></a>
 ## [v2.0.0] - 2021-11-03
 FEATURES:
@@ -41,6 +52,7 @@ DOCS:
 
 
 
-[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v3.0.0...HEAD
+[v3.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v2.0.0...v3.0.0
 [v2.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v1.1.0...v2.0.0
 [v1.1.0]: https://github.com/maddevsio/aws-eks-base/compare/v1.0.0...v1.1.0
