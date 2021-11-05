@@ -16,12 +16,17 @@ locals {
   })
 }
 
+module "loki_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "loki"
+}
+
 resource "helm_release" "loki_stack" {
   name        = "loki-stack"
   chart       = local.loki-stack.chart
   repository  = local.loki-stack.repository
   version     = local.loki-stack.chart_version
-  namespace   = module.monitoring_namespace.name
+  namespace   = module.loki_namespace.name
   wait        = false
   max_history = var.helm_release_history_size
 

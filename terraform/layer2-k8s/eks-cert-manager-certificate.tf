@@ -20,7 +20,7 @@ resource "helm_release" "certificate" {
   chart       = local.cert-mananger-certificate.chart
   repository  = local.cert-mananger-certificate.repository
   version     = local.cert-mananger-certificate.chart_version
-  namespace   = module.ing_namespace.name
+  namespace   = module.ingress_nginx_namespace.name
   wait        = false
   max_history = var.helm_release_history_size
 

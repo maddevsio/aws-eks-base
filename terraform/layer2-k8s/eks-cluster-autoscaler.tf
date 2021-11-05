@@ -17,12 +17,17 @@ data "template_file" "cluster_autoscaler" {
   }
 }
 
+module "cluster_autoscaler_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "cluster-autoscaler"
+}
+
 resource "helm_release" "cluster_autoscaler" {
   name        = "cluster-autoscaler"
   chart       = local.cluster-autoscaler.chart
   repository  = local.cluster-autoscaler.repository
   version     = local.cluster-autoscaler.chart_version
-  namespace   = module.sys_namespace.name
+  namespace   = module.cluster_autoscaler_namespace.name
   max_history = var.helm_release_history_size
 
   values = [

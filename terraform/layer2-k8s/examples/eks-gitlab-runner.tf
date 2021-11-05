@@ -11,19 +11,15 @@ locals {
       registration_token = local.gitlab_registration_token
       namespace          = module.ci_namespace.name
       role_arn           = module.aws_iam_gitlab_runner.role_arn
-      runner_sa          = module.eks_rbac_gitlab_runner.sa_name
       bucket_name        = local.gitlab_runner_cache_bucket_name
       region             = local.region
   })
 
 }
 
-module "eks_rbac_gitlab_runner" {
-  source = "../modules/eks-rbac-ci"
-
-  name      = "${local.name}-gl"
-  role_arn  = module.aws_iam_gitlab_runner.role_arn
-  namespace = module.ci_namespace.name
+module "gitlab_runner_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "gitlab-runner"
 }
 
 resource "helm_release" "gitlab_runner" {
@@ -31,7 +27,7 @@ resource "helm_release" "gitlab_runner" {
   chart       = local.gitlab-runner.chart
   repository  = local.gitlab-runner.repository
   version     = local.gitlab-runner.chart_version
-  namespace   = module.ci_namespace.name
+  namespace   = module.gitlab_runner_namespace.name
   wait        = false
   max_history = var.helm_release_history_size
 
