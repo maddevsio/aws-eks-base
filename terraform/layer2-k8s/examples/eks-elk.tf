@@ -4,16 +4,15 @@ locals {
     repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "elk")], "repository", null)
     chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "elk")], "version", null)
   }
-  kibana_domain_name        = "kibana-${local.domain_suffix}"
-  apm_domain_name           = "apm-${local.domain_suffix}"
-  elastic_stack_bucket_name = data.terraform_remote_state.layer1-aws.outputs.elastic_stack_bucket_name
+  kibana_domain_name = "kibana-${local.domain_suffix}"
+  apm_domain_name    = "apm-${local.domain_suffix}"
 }
 
 data "template_file" "elk" {
   template = file("${path.module}/templates/elk-values.yaml")
 
   vars = {
-    bucket_name             = local.elastic_stack_bucket_name
+    bucket_name             = aws_s3_bucket.elastic_stack.id
     storage_class_name      = kubernetes_storage_class.elk.id
     snapshot_retention_days = var.elk_snapshot_retention_days
     index_retention_days    = var.elk_index_retention_days
@@ -136,6 +135,36 @@ resource "random_string" "kibana_password" {
   upper   = true
 }
 
+resource "aws_s3_bucket" "elastic_stack" {
+  bucket = "${local.name}-elastic-stack"
+  acl    = "private"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "aws:kms"
+      }
+    }
+  }
+
+  tags = {
+    Name        = "${local.name}-elastic-stack"
+    Environment = local.env
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "elastic_stack_public_access_block" {
+  bucket = aws_s3_bucket.elastic_stack.id
+  # Block new public ACLs and uploading public objects
+  block_public_acls = true
+  # Retroactively remove public access granted through public ACLs
+  ignore_public_acls = true
+  # Block new public bucket policies
+  block_public_policy = true
+  # Retroactivley block public and cross-account access if bucket has public policies
+  restrict_public_buckets = true
+}
+
 module "aws_iam_elastic_stack" {
   source = "../modules/aws-iam-user-with-policy"
 
@@ -152,7 +181,7 @@ module "aws_iam_elastic_stack" {
           "s3:ListBucketVersions"
         ],
         "Resource" : [
-          "arn:aws:s3:::${local.elastic_stack_bucket_name}"
+          "arn:aws:s3:::${aws_s3_bucket.elastic_stack.id}"
         ]
       },
       {
@@ -165,7 +194,7 @@ module "aws_iam_elastic_stack" {
           "s3:ListMultipartUploadParts"
         ],
         "Resource" : [
-          "arn:aws:s3:::${local.elastic_stack_bucket_name}/*"
+          "arn:aws:s3:::${aws_s3_bucket.elastic_stack.id}/*"
         ]
       }
     ]
@@ -186,4 +215,9 @@ output "elasticsearch_elastic_password" {
   value       = random_string.elasticsearch_password.result
   sensitive   = true
   description = "Password of the superuser 'elastic'"
+}
+
+output "elastic_stack_bucket_name" {
+  value       = aws_s3_bucket.elastic_stack.id
+  description = "Name of the bucket for ELKS snapshots"
 }

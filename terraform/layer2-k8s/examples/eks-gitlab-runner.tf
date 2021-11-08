@@ -4,17 +4,14 @@ locals {
     repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "gitlab-runner")], "repository", null)
     chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "gitlab-runner")], "version", null)
   }
-  gitlab_runner_cache_bucket_name = data.terraform_remote_state.layer1-aws.outputs.gitlab_runner_cache_bucket_name
-
-  gitlab_runner_template = templatefile("${path.module}/templates/gitlab-runner-values.tmpl",
+  gitlab_runner_template = templatefile("${path.module}/templates/gitlab-runner-values.yaml",
     {
       registration_token = local.gitlab_registration_token
       namespace          = module.ci_namespace.name
       role_arn           = module.aws_iam_gitlab_runner.role_arn
-      bucket_name        = local.gitlab_runner_cache_bucket_name
+      bucket_name        = aws_s3_bucket.gitlab_runner_cache.id
       region             = local.region
   })
-
 }
 
 module "gitlab_runner_namespace" {
@@ -34,6 +31,49 @@ resource "helm_release" "gitlab_runner" {
   values = [
     local.gitlab_runner_template
   ]
+}
+
+resource "aws_s3_bucket" "gitlab_runner_cache" {
+  bucket = "${local.name}-gitlab-runner-cache"
+  acl    = "private"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "aws:kms"
+      }
+    }
+  }
+
+  lifecycle_rule {
+    id      = "gitlab-runner-cache-lifecycle-rule"
+    enabled = true
+
+    tags = {
+      "rule" = "gitlab-runner-cache-lifecycle-rule"
+    }
+
+    expiration {
+      days = 120
+    }
+  }
+
+  tags = {
+    Name        = "${local.name}-gitlab-runner-cache"
+    Environment = local.env
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "gitlab_runner_cache_public_access_block" {
+  bucket = aws_s3_bucket.gitlab_runner_cache.id
+  # Block new public ACLs and uploading public objects
+  block_public_acls = true
+  # Retroactively remove public access granted through public ACLs
+  ignore_public_acls = true
+  # Block new public bucket policies
+  block_public_policy = true
+  # Retroactivley block public and cross-account access if bucket has public policies
+  restrict_public_buckets = true
 }
 
 module "aws_iam_gitlab_runner" {
@@ -58,10 +98,15 @@ module "aws_iam_gitlab_runner" {
           "s3:*"
         ],
         "Resource" : [
-          "arn:aws:s3:::${local.gitlab_runner_cache_bucket_name}",
-          "arn:aws:s3:::${local.gitlab_runner_cache_bucket_name}/*"
+          "arn:aws:s3:::${aws_s3_bucket.gitlab_runner_cache.id}",
+          "arn:aws:s3:::${aws_s3_bucket.gitlab_runner_cache.id}/*"
         ]
       }
     ]
   })
+}
+
+output "gitlab_runner_cache_bucket_name" {
+  value       = aws_s3_bucket.gitlab_runner_cache.id
+  description = "Name of the s3 bucket for gitlab-runner cache"
 }
