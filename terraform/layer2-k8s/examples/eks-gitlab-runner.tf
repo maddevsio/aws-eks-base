@@ -20,19 +20,45 @@ locals {
 module "gitlab_runner_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "gitlab-runner"
-}
-
-resource "helm_release" "gitlab_runner" {
-  name        = "gitlab-runner"
-  chart       = local.gitlab-runner.chart
-  repository  = local.gitlab-runner.repository
-  version     = local.gitlab-runner.chart_version
-  namespace   = module.gitlab_runner_namespace.name
-  wait        = false
-  max_history = var.helm_release_history_size
-
-  values = [
-    local.gitlab_runner_template
+  network_policies = [
+    {
+      name         = "default-deny"
+      policy_types = ["Ingress", "Egress"]
+      pod_selector = {}
+    },
+    {
+      name         = "allow-this-namespace"
+      policy_types = ["Ingress"]
+      pod_selector = {}
+      ingress = {
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "gitlab-runner"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-egress"
+      policy_types = ["Egress"]
+      pod_selector = {}
+      egress = {
+        to = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+              except = [
+                "169.254.169.254/32"
+              ]
+            }
+          }
+        ]
+      }
+    }
   ]
 }
 
@@ -48,7 +74,17 @@ module "aws_iam_gitlab_runner" {
       {
         "Effect" : "Allow",
         "Action" : [
-          "ecr:*",
+          "ecr:GetAuthorizationToken",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:PutImage",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload",
+          "ecr:ListTagsForResource",
+          "ecr:DescribeImageScanFindings",
+          "ecr:DescribeImages"
         ],
         "Resource" : "*"
       },
@@ -64,4 +100,18 @@ module "aws_iam_gitlab_runner" {
       }
     ]
   })
+}
+
+resource "helm_release" "gitlab_runner" {
+  name        = "gitlab-runner"
+  chart       = local.gitlab-runner.chart
+  repository  = local.gitlab-runner.repository
+  version     = local.gitlab-runner.chart_version
+  namespace   = module.gitlab_runner_namespace.name
+  wait        = false
+  max_history = var.helm_release_history_size
+
+  values = [
+    local.gitlab_runner_template
+  ]
 }

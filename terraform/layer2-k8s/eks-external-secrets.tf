@@ -23,34 +23,74 @@ data "template_file" "external_secrets" {
 module "external_secrets_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "external-secrets"
-}
-
-resource "helm_release" "external_secrets" {
-  name        = "external-secrets"
-  chart       = local.external-secrets.chart
-  repository  = local.external-secrets.repository
-  version     = local.external-secrets.chart_version
-  namespace   = module.external_secrets_namespace.name
-  max_history = var.helm_release_history_size
-
-  values = [
-    data.template_file.external_secrets.rendered,
+  network_policies = [
+    {
+      name         = "default-deny"
+      policy_types = ["Ingress"]
+      pod_selector = {}
+    },
+    {
+      name         = "allow-this-namespace"
+      policy_types = ["Ingress"]
+      pod_selector = {}
+      ingress = {
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "external-secrets"
+              }
+            }
+          }
+        ]
+      }
+    }
   ]
 }
 
 module "reloader_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "reloader"
-}
-
-resource "helm_release" "reloader" {
-  name        = "reloader"
-  chart       = local.reloader.chart
-  repository  = local.reloader.repository
-  version     = local.reloader.chart_version
-  namespace   = module.reloader_namespace.name
-  wait        = false
-  max_history = var.helm_release_history_size
+  network_policies = [
+    {
+      name         = "default-deny"
+      policy_types = ["Ingress", "Egress"]
+      pod_selector = {}
+    },
+    {
+      name         = "allow-this-namespace"
+      policy_types = ["Ingress"]
+      pod_selector = {}
+      ingress = {
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "reloader"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-egress"
+      policy_types = ["Egress"]
+      pod_selector = {}
+      egress = {
+        to = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+              except = [
+                "169.254.169.254/32"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
 }
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
@@ -70,4 +110,27 @@ module "aws_iam_external_secrets" {
       }
     ]
   })
+}
+
+resource "helm_release" "external_secrets" {
+  name        = "external-secrets"
+  chart       = local.external-secrets.chart
+  repository  = local.external-secrets.repository
+  version     = local.external-secrets.chart_version
+  namespace   = module.external_secrets_namespace.name
+  max_history = var.helm_release_history_size
+
+  values = [
+    data.template_file.external_secrets.rendered,
+  ]
+}
+
+resource "helm_release" "reloader" {
+  name        = "reloader"
+  chart       = local.reloader.chart
+  repository  = local.reloader.repository
+  version     = local.reloader.chart_version
+  namespace   = module.reloader_namespace.name
+  wait        = false
+  max_history = var.helm_release_history_size
 }

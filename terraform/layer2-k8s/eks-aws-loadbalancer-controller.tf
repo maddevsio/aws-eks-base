@@ -14,22 +14,75 @@ locals {
 }
 
 module "aws_load_balancer_controller_namespace" {
-  source = "../modules/kubernetes-namespace"
-  name   = "aws-load-balancer-controller"
-}
-
-resource "helm_release" "aws_loadbalancer_controller" {
   count = var.aws_loadbalancer_controller_enable ? 1 : 0
 
-  name        = "aws-load-balancer-controller"
-  chart       = local.aws-load-balancer-controller.chart
-  repository  = local.aws-load-balancer-controller.repository
-  version     = local.aws-load-balancer-controller.chart_version
-  namespace   = module.aws_load_balancer_controller_namespace.name
-  max_history = var.helm_release_history_size
-
-  values = [
-    local.alb_ingress_controller
+  source = "../modules/kubernetes-namespace"
+  name   = "aws-load-balancer-controller"
+  network_policies = [
+    {
+      name         = "default-deny"
+      policy_types = ["Ingress", "Egress"]
+      pod_selector = {}
+    },
+    {
+      name         = "allow-this-namespace"
+      policy_types = ["Ingress"]
+      pod_selector = {}
+      ingress = {
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "aws-load-balancer-controller"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-control-plane"
+      policy_types = ["Ingress"]
+      pod_selector = {
+        match_expressions = {
+          key      = "app.kubernetes.io/name"
+          operator = "In"
+          values   = ["aws-load-balancer-controller"]
+        }
+      }
+      ingress = {
+        ports = [
+          {
+            port     = "9443"
+            protocol = "TCP"
+          }
+        ]
+        from = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-egress"
+      policy_types = ["Egress"]
+      pod_selector = {}
+      egress = {
+        to = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+              except = [
+                "169.254.169.254/32"
+              ]
+            }
+          }
+        ]
+      }
+    }
   ]
 }
 
@@ -248,4 +301,19 @@ module "aws_iam_aws_loadbalancer_controller" {
       }
     ]
   })
+}
+
+resource "helm_release" "aws_loadbalancer_controller" {
+  count = var.aws_loadbalancer_controller_enable ? 1 : 0
+
+  name        = "aws-load-balancer-controller"
+  chart       = local.aws-load-balancer-controller.chart
+  repository  = local.aws-load-balancer-controller.repository
+  version     = local.aws-load-balancer-controller.chart_version
+  namespace   = module.aws_load_balancer_controller_namespace[count.index].name
+  max_history = var.helm_release_history_size
+
+  values = [
+    local.alb_ingress_controller
+  ]
 }

@@ -14,23 +14,75 @@ data "template_file" "cert_manager" {
   }
 }
 
-resource "helm_release" "cert_manager" {
-  name        = "cert-manager"
-  chart       = local.cert-manager.chart
-  repository  = local.cert-manager.repository
-  version     = local.cert-manager.chart_version
-  namespace   = module.certmanager_namespace.name
-  wait        = true
-  max_history = var.helm_release_history_size
-
-  values = [
-    data.template_file.cert_manager.rendered,
-  ]
-}
-
 module "certmanager_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "certmanager"
+  network_policies = [
+    {
+      name         = "default-deny"
+      policy_types = ["Ingress", "Egress"]
+      pod_selector = {}
+    },
+    {
+      name         = "allow-this-namespace"
+      policy_types = ["Ingress"]
+      pod_selector = {}
+      ingress = {
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "certmanager"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-control-plane"
+      policy_types = ["Ingress"]
+      pod_selector = {
+        match_expressions = {
+          key      = "app.kubernetes.io/name"
+          operator = "In"
+          values   = ["webhook"]
+        }
+      }
+      ingress = {
+        ports = [
+          {
+            port     = "10250"
+            protocol = "TCP"
+          }
+        ]
+        from = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-egress"
+      policy_types = ["Egress"]
+      pod_selector = {}
+      egress = {
+        to = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+              except = [
+                "169.254.169.254/32"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
 }
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
@@ -72,4 +124,18 @@ module "aws_iam_cert_manager" {
       }
     ]
   })
+}
+
+resource "helm_release" "cert_manager" {
+  name        = "cert-manager"
+  chart       = local.cert-manager.chart
+  repository  = local.cert-manager.repository
+  version     = local.cert-manager.chart_version
+  namespace   = module.certmanager_namespace.name
+  wait        = true
+  max_history = var.helm_release_history_size
+
+  values = [
+    data.template_file.cert_manager.rendered,
+  ]
 }

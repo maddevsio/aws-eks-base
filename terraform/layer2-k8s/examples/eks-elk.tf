@@ -6,7 +6,7 @@ locals {
   }
   kibana_domain_name        = "kibana-${local.domain_suffix}"
   apm_domain_name           = "apm-${local.domain_suffix}"
-  elastic_stack_bucket_name = data.terraform_remote_state.layer1-aws.outputs.elastic_stack_bucket_name
+  elastic_stack_bucket_name = "elastic-stack-s3-bucket-snapshots" #data.terraform_remote_state.layer1-aws.outputs.elastic_stack_bucket_name
 }
 
 data "template_file" "elk" {
@@ -28,20 +28,128 @@ data "template_file" "elk" {
 module "elk_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "elk"
+  network_policies = [
+    {
+      name         = "default-deny"
+      policy_types = ["Ingress", "Egress"]
+      pod_selector = {}
+    },
+    {
+      name         = "allow-this-namespace"
+      policy_types = ["Ingress"]
+      pod_selector = {}
+      ingress = {
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "elk"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-ingress"
+      policy_types = ["Ingress"]
+      pod_selector = {}
+      ingress = {
+
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "ingress-nginx"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-apm"
+      policy_types = ["Ingress"]
+      pod_selector = {
+        match_expressions = {
+          key      = "app"
+          operator = "In"
+          values   = ["apm-server"]
+        }
+      }
+      ingress = {
+        ports = [
+          {
+            port     = "8200"
+            protocol = "TCP"
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-egress"
+      policy_types = ["Egress"]
+      pod_selector = {}
+      egress = {
+        to = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+              except = [
+                "169.254.169.254/32"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
 }
 
-resource "helm_release" "elk" {
-  name        = "elk"
-  chart       = local.elk.chart
-  repository  = local.elk.repository
-  version     = local.elk.chart_version
-  namespace   = module.elk_namespace.name
-  wait        = false
-  max_history = var.helm_release_history_size
+module "elastic_tls" {
+  source = "../modules/self-signed-certificate"
 
-  values = [
-    data.template_file.elk.rendered
-  ]
+  name                  = local.name
+  common_name           = "elasticsearch-master"
+  dns_names             = [local.domain_name, "*.${local.domain_name}", "elasticsearch-master", "elasticsearch-master.${module.elk_namespace.name}", "kibana", "kibana.${module.elk_namespace.name}", "kibana-kibana", "kibana-kibana.${module.elk_namespace.name}", "logstash", "logstash.${module.elk_namespace.name}"]
+  validity_period_hours = 8760
+  early_renewal_hours   = 336
+}
+
+module "aws_iam_elastic_stack" {
+  source = "../modules/aws-iam-user-with-policy"
+
+  name = "${local.name}-elk"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:ListBucket",
+          "s3:GetBucketLocation",
+          "s3:ListBucketMultipartUploads",
+          "s3:ListBucketVersions"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::${local.elastic_stack_bucket_name}"
+        ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:AbortMultipartUpload",
+          "s3:ListMultipartUploadParts"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::${local.elastic_stack_bucket_name}/*"
+        ]
+      }
+    ]
+  })
 }
 
 ### ADDITIONAL RESOURCES FOR ELK
@@ -58,16 +166,6 @@ resource "kubernetes_storage_class" "elk" {
     encrypted = true
     fsType    = "ext4"
   }
-}
-
-module "elastic_tls" {
-  source = "../modules/self-signed-certificate"
-
-  name                  = local.name
-  common_name           = "elasticsearch-master"
-  dns_names             = [local.domain_name, "*.${local.domain_name}", "elasticsearch-master", "elasticsearch-master.${module.elk_namespace.name}", "kibana", "kibana.${module.elk_namespace.name}", "kibana-kibana", "kibana-kibana.${module.elk_namespace.name}", "logstash", "logstash.${module.elk_namespace.name}"]
-  validity_period_hours = 8760
-  early_renewal_hours   = 336
 }
 
 resource "kubernetes_secret" "elasticsearch_credentials" {
@@ -136,40 +234,18 @@ resource "random_string" "kibana_password" {
   upper   = true
 }
 
-module "aws_iam_elastic_stack" {
-  source = "../modules/aws-iam-user-with-policy"
+resource "helm_release" "elk" {
+  name        = "elk"
+  chart       = local.elk.chart
+  repository  = local.elk.repository
+  version     = local.elk.chart_version
+  namespace   = module.elk_namespace.name
+  wait        = false
+  max_history = var.helm_release_history_size
 
-  name = "${local.name}-elk"
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Effect" : "Allow",
-        "Action" : [
-          "s3:ListBucket",
-          "s3:GetBucketLocation",
-          "s3:ListBucketMultipartUploads",
-          "s3:ListBucketVersions"
-        ],
-        "Resource" : [
-          "arn:aws:s3:::${local.elastic_stack_bucket_name}"
-        ]
-      },
-      {
-        "Effect" : "Allow",
-        "Action" : [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:DeleteObject",
-          "s3:AbortMultipartUpload",
-          "s3:ListMultipartUploadParts"
-        ],
-        "Resource" : [
-          "arn:aws:s3:::${local.elastic_stack_bucket_name}/*"
-        ]
-      }
-    ]
-  })
+  values = [
+    data.template_file.elk.rendered
+  ]
 }
 
 output "kibana_domain_name" {

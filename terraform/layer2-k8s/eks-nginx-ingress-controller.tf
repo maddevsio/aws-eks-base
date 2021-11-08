@@ -26,6 +26,130 @@ data "template_file" "nginx_ingress" {
 module "ingress_nginx_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "ingress-nginx"
+  network_policies = [
+    {
+      name         = "default-deny"
+      policy_types = ["Ingress", "Egress"]
+      pod_selector = {}
+    },
+    {
+      name         = "allow-this-namespace"
+      policy_types = ["Ingress"]
+      pod_selector = {}
+      ingress = {
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "ingress-nginx"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-ingress"
+      policy_types = ["Ingress"]
+      pod_selector = {
+        match_expressions = {
+          key      = "app.kubernetes.io/name"
+          operator = "In"
+          values   = ["ingress-nginx"]
+        }
+      }
+      ingress = {
+        ports = [
+          {
+            port     = "80"
+            protocol = "TCP"
+          },
+          {
+            port     = "443"
+            protocol = "TCP"
+          }
+        ]
+        from = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-control-plane"
+      policy_types = ["Ingress"]
+      pod_selector = {
+        match_expressions = {
+          key      = "app.kubernetes.io/name"
+          operator = "In"
+          values   = ["ingress-nginx"]
+        }
+      }
+      ingress = {
+        ports = [
+          {
+            port     = "8443"
+            protocol = "TCP"
+          }
+        ]
+        from = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-monitoring"
+      policy_types = ["Ingress"]
+      pod_selector = {
+        match_expressions = {
+          key      = "app.kubernetes.io/name"
+          operator = "In"
+          values   = ["ingress-nginx"]
+        }
+      }
+      ingress = {
+        ports = [
+          {
+            port     = "metrics"
+            protocol = "TCP"
+          }
+        ]
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "monitoring"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-egress"
+      policy_types = ["Egress"]
+      pod_selector = {}
+      egress = {
+        to = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+              except = [
+                "169.254.169.254/32"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
 }
 
 resource "helm_release" "ingress_nginx" {

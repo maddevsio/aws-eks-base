@@ -19,18 +19,45 @@ data "template_file" "external_dns" {
 module "external_dns_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "external-dns"
-}
-
-resource "helm_release" "external_dns" {
-  name        = "external-dns"
-  chart       = local.external-dns.chart
-  repository  = local.external-dns.repository
-  version     = local.external-dns.chart_version
-  namespace   = module.external_dns_namespace.name
-  max_history = var.helm_release_history_size
-
-  values = [
-    data.template_file.external_dns.rendered,
+  network_policies = [
+    {
+      name         = "default-deny"
+      policy_types = ["Ingress", "Egress"]
+      pod_selector = {}
+    },
+    {
+      name         = "allow-this-namespace"
+      policy_types = ["Ingress"]
+      pod_selector = {}
+      ingress = {
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "external-dns"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-egress"
+      policy_types = ["Egress"]
+      pod_selector = {}
+      egress = {
+        to = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+              except = [
+                "169.254.169.254/32"
+              ]
+            }
+          }
+        ]
+      }
+    }
   ]
 }
 
@@ -73,4 +100,17 @@ module "aws_iam_external_dns" {
       }
     ]
   })
+}
+
+resource "helm_release" "external_dns" {
+  name        = "external-dns"
+  chart       = local.external-dns.chart
+  repository  = local.external-dns.repository
+  version     = local.external-dns.chart_version
+  namespace   = module.external_dns_namespace.name
+  max_history = var.helm_release_history_size
+
+  values = [
+    data.template_file.external_dns.rendered,
+  ]
 }
