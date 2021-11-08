@@ -20,12 +20,17 @@ data "template_file" "external_secrets" {
   }
 }
 
+module "external_secrets_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "external-secrets"
+}
+
 resource "helm_release" "external_secrets" {
   name        = "external-secrets"
   chart       = local.external-secrets.chart
   repository  = local.external-secrets.repository
   version     = local.external-secrets.chart_version
-  namespace   = module.sys_namespace.name
+  namespace   = module.external_secrets_namespace.name
   max_history = var.helm_release_history_size
 
   values = [
@@ -33,12 +38,17 @@ resource "helm_release" "external_secrets" {
   ]
 }
 
+module "reloader_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "reloader"
+}
+
 resource "helm_release" "reloader" {
   name        = "reloader"
   chart       = local.reloader.chart
   repository  = local.reloader.repository
   version     = local.reloader.chart_version
-  namespace   = module.sys_namespace.name
+  namespace   = module.reloader_namespace.name
   wait        = false
   max_history = var.helm_release_history_size
 }

@@ -23,6 +23,11 @@ data "template_file" "teamcity_agent" {
   }
 }
 
+module "teamcity_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "teamcity"
+}
+
 data "template_file" "teamcity" {
   template = file("${path.module}/templates/teamcity-values.yaml")
 
@@ -38,7 +43,7 @@ resource "helm_release" "teamcity" {
   chart           = local.teamcity.chart
   repository      = local.teamcity.repository
   version         = local.teamcity.chart_version
-  namespace       = module.ci_namespace.name
+  namespace       = module.teamcity_namespace.name
   wait            = false
   cleanup_on_fail = true
   max_history     = var.helm_release_history_size

@@ -26,9 +26,9 @@ locals {
   })
 }
 
-resource "random_string" "grafana_password" {
-  length  = 20
-  special = true
+module "monitoring_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "monitoring"
 }
 
 resource "helm_release" "prometheus_operator" {
@@ -43,6 +43,11 @@ resource "helm_release" "prometheus_operator" {
   values = [
     local.kube_prometheus_stack_template
   ]
+}
+
+resource "random_string" "grafana_password" {
+  length  = 20
+  special = true
 }
 
 module "aws_iam_grafana" {

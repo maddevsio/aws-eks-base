@@ -13,6 +13,11 @@ locals {
   })
 }
 
+module "aws_load_balancer_controller_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "aws-load-balancer-controller"
+}
+
 resource "helm_release" "aws_loadbalancer_controller" {
   count = var.aws_loadbalancer_controller_enable ? 1 : 0
 
@@ -20,7 +25,7 @@ resource "helm_release" "aws_loadbalancer_controller" {
   chart       = local.aws-load-balancer-controller.chart
   repository  = local.aws-load-balancer-controller.repository
   version     = local.aws-load-balancer-controller.chart_version
-  namespace   = module.ing_namespace.name
+  namespace   = module.aws_load_balancer_controller_namespace.name
   max_history = var.helm_release_history_size
 
   values = [

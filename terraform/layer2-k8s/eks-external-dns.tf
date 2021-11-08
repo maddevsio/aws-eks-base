@@ -16,12 +16,17 @@ data "template_file" "external_dns" {
   }
 }
 
+module "external_dns_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "external-dns"
+}
+
 resource "helm_release" "external_dns" {
   name        = "external-dns"
   chart       = local.external-dns.chart
   repository  = local.external-dns.repository
   version     = local.external-dns.chart_version
-  namespace   = module.dns_namespace.name
+  namespace   = module.external_dns_namespace.name
   max_history = var.helm_release_history_size
 
   values = [
