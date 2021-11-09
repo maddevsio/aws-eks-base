@@ -14,6 +14,7 @@ locals {
   })
 }
 
+#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "gitlab_runner_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "gitlab-runner"
@@ -59,6 +60,7 @@ module "gitlab_runner_namespace" {
   ]
 }
 
+#tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "gitlab_runner_cache" {
   bucket = "${local.name}-gitlab-runner-cache"
   acl    = "private"

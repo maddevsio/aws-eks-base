@@ -16,6 +16,7 @@ locals {
   })
 }
 
+#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "loki_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "loki"

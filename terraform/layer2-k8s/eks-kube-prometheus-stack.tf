@@ -26,6 +26,7 @@ locals {
   })
 }
 
+#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "monitoring_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "monitoring"

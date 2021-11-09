@@ -24,6 +24,7 @@ data "template_file" "elk" {
   }
 }
 
+#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "elk_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "elk"
@@ -233,6 +234,7 @@ resource "random_string" "kibana_password" {
   upper   = true
 }
 
+#tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "elastic_stack" {
   bucket = "${local.name}-elastic-stack"
   acl    = "private"

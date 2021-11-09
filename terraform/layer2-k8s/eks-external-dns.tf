@@ -16,6 +16,7 @@ data "template_file" "external_dns" {
   }
 }
 
+#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "external_dns_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "external-dns"

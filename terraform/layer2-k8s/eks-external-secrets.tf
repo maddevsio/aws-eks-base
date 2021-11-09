@@ -20,6 +20,7 @@ data "template_file" "external_secrets" {
   }
 }
 
+#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "external_secrets_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "external-secrets"
@@ -48,6 +49,7 @@ module "external_secrets_namespace" {
   ]
 }
 
+#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "reloader_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "reloader"

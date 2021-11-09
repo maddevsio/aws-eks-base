@@ -17,6 +17,7 @@ data "template_file" "cluster_autoscaler" {
   }
 }
 
+#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "cluster_autoscaler_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "cluster-autoscaler"

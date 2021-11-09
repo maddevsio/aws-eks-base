@@ -23,6 +23,7 @@ data "template_file" "nginx_ingress" {
   }
 }
 
+#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "ingress_nginx_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "ingress-nginx"

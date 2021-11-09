@@ -13,6 +13,7 @@ locals {
   })
 }
 
+#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "aws_load_balancer_controller_namespace" {
   count = var.aws_loadbalancer_controller_enable ? 1 : 0
 

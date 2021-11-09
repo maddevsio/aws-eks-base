@@ -6,6 +6,7 @@ locals {
   }
 }
 
+#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "aws_node_termination_handler_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "aws-node-termination-handler"

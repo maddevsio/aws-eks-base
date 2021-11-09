@@ -14,6 +14,7 @@ data "template_file" "cert_manager" {
   }
 }
 
+#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "certmanager_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "certmanager"
