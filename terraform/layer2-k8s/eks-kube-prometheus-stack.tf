@@ -26,28 +26,93 @@ locals {
   })
 }
 
+#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "monitoring_namespace" {
   source = "../modules/kubernetes-namespace"
   name   = "monitoring"
-}
+  network_policies = [
+    {
+      name         = "default-deny"
+      policy_types = ["Ingress", "Egress"]
+      pod_selector = {}
+    },
+    {
+      name         = "allow-this-namespace"
+      policy_types = ["Ingress"]
+      pod_selector = {}
+      ingress = {
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "monitoring"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-ingress"
+      policy_types = ["Ingress"]
+      pod_selector = {}
+      ingress = {
 
-resource "helm_release" "prometheus_operator" {
-  name        = "kube-prometheus-stack"
-  chart       = local.kube-prometheus-stack.chart
-  repository  = local.kube-prometheus-stack.repository
-  version     = local.kube-prometheus-stack.chart_version
-  namespace   = module.monitoring_namespace.name
-  wait        = false
-  max_history = var.helm_release_history_size
-
-  values = [
-    local.kube_prometheus_stack_template
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "ingress-nginx"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-control-plane"
+      policy_types = ["Ingress"]
+      pod_selector = {
+        match_expressions = {
+          key      = "app.kubernetes.io/name"
+          operator = "In"
+          values   = ["kube-prometheus-stack-operator"]
+        }
+      }
+      ingress = {
+        ports = [
+          {
+            port     = "10250"
+            protocol = "TCP"
+          }
+        ]
+        from = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-egress"
+      policy_types = ["Egress"]
+      pod_selector = {}
+      egress = {
+        to = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+              except = [
+                "169.254.169.254/32"
+              ]
+            }
+          }
+        ]
+      }
+    }
   ]
-}
-
-resource "random_string" "grafana_password" {
-  length  = 20
-  special = true
 }
 
 module "aws_iam_grafana" {
@@ -87,6 +152,25 @@ module "aws_iam_grafana" {
       }
     ]
   })
+}
+
+resource "random_string" "grafana_password" {
+  length  = 20
+  special = true
+}
+
+resource "helm_release" "prometheus_operator" {
+  name        = "kube-prometheus-stack"
+  chart       = local.kube-prometheus-stack.chart
+  repository  = local.kube-prometheus-stack.repository
+  version     = local.kube-prometheus-stack.chart_version
+  namespace   = module.monitoring_namespace.name
+  wait        = false
+  max_history = var.helm_release_history_size
+
+  values = [
+    local.kube_prometheus_stack_template
+  ]
 }
 
 output "grafana_domain_name" {

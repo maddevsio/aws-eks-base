@@ -100,6 +100,7 @@ module "test_namespace" {
     {
       name         = "allow-this-namespace"
       policy_types = ["Ingress"]
+      pod_selector = {}
       ingress = {
         from = [
           {
@@ -115,6 +116,7 @@ module "test_namespace" {
     {
       name         = "allow-from-ingress-namespace"
       policy_types = ["Ingress"]
+      pod_selector = {}
       ingress = {
         from = [
           {
@@ -130,6 +132,7 @@ module "test_namespace" {
     {
       name        = "allow-egress-to-dev"
       policy_type = ["Egress"]
+      pod_selector = {}
       egress = {
         ports = [
           {

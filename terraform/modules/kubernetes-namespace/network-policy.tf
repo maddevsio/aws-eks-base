@@ -6,16 +6,19 @@ resource "kubernetes_network_policy" "this" {
     namespace = kubernetes_namespace.this[0].id
   }
   spec {
-    pod_selector {
-      dynamic "match_expressions" {
-        for_each = lookup(var.network_policies[count.index], "pod_selector", null) != null ? [var.network_policies[count.index].pod_selector] : []
-        content {
-          key      = lookup(pod_selector.value, "key", null)
-          operator = lookup(pod_selector.value, "operator", null)
-          values   = lookup(pod_selector.value, "values", null)
+    dynamic "pod_selector" {
+      for_each = lookup(var.network_policies[count.index], "pod_selector", null) != null ? [var.network_policies[count.index].pod_selector] : []
+      content {
+        dynamic "match_expressions" {
+          for_each = lookup(pod_selector.value, "match_expressions", null) != null ? [pod_selector.value.match_expressions] : []
+          content {
+            key      = lookup(match_expressions.value, "key", null)
+            operator = lookup(match_expressions.value, "operator", null)
+            values   = lookup(match_expressions.value, "values", null)
+          }
         }
+        match_labels = lookup(pod_selector.value, "match_labels", null)
       }
-      match_labels = lookup(var.network_policies[count.index], "pod_selector", null) != null ? lookup(var.network_policies[count.index].pod_selector, "match_labels") : null
     }
 
     dynamic "ingress" {

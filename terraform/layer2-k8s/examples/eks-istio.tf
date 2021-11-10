@@ -21,6 +21,16 @@ local {
   }
 }
 
+module "istio_system_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "istio-system"
+}
+
+module "kiali_namespace" {
+  source = "../modules/kubernetes-namespace"
+  name   = "kiali"
+}
+
 resource "helm_release" "istio_operator" {
   name        = "istio-operator"
   chart       = local.istio-operator.chart
@@ -85,14 +95,4 @@ resource "helm_release" "kiali" {
     file("${path.module}/templates/istio/istio-kiali-values.yaml")
   ]
   depends_on = [helm_release.istio_operator, helm_release.prometheus_operator]
-}
-
-module "istio_system_namespace" {
-  source = "../modules/kubernetes-namespace"
-  name   = "istio-system"
-}
-
-module "kiali_namespace" {
-  source = "../modules/kubernetes-namespace"
-  name   = "kiali"
 }
