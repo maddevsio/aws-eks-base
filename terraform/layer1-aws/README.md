@@ -2,20 +2,26 @@
 
 | Name | Version |
 |------|---------|
-| terraform | 0.15.1 |
-| aws | 3.53.0 |
-| kubernetes | 2.4.1 |
+| terraform | 1.0.10 |
+| aws | 3.64.2 |
+| kubernetes | 2.6.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | 3.53.0 |
+| aws | 3.64.2 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| addon\_coredns\_version | The version of coredns add-on | `string` | `"v1.8.3-eksbuild.1"` | no |
+| addon\_create\_coredns | Enable coredns add-on or not | `bool` | `true` | no |
+| addon\_create\_kube\_proxy | Enable kube-proxy add-on or not | `bool` | `true` | no |
+| addon\_create\_vpc\_cni | Enable vpc-cni add-on or not | `bool` | `true` | no |
+| addon\_kube\_proxy\_version | The version of kube-proxy add-on | `string` | `"v1.20.4-eksbuild.2"` | no |
+| addon\_vpc\_cni\_version | The version of vpc-cni add-on | `string` | `"v1.9.1-eksbuild.1"` | no |
 | allowed\_account\_ids | List of allowed AWS account IDs | `list` | `[]` | no |
 | allowed\_ips | IP addresses allowed to connect to private resources | `list(any)` | `[]` | no |
 | az\_count | Count of avaiablity zones, min 2 | `number` | `3` | no |
@@ -23,8 +29,6 @@
 | create\_acm\_certificate | Whether to create acm certificate or use existing | `bool` | `false` | no |
 | create\_r53\_zone | Create R53 zone for main public domain | `bool` | `false` | no |
 | domain\_name | Main public domain name | `any` | n/a | yes |
-| ecr\_repo\_retention\_count | number of images to store in ECR | `number` | `50` | no |
-| ecr\_repos | List of docker repositories | `list(any)` | <pre>[<br>  "demo"<br>]</pre> | no |
 | eks\_cluster\_enabled\_log\_types | A list of the desired control plane logging to enable. For more information, see Amazon EKS Control Plane Logging documentation (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html). Possible values: api, audit, authenticator, controllerManager, scheduler | `list(string)` | <pre>[<br>  "audit"<br>]</pre> | no |
 | eks\_cluster\_encryption\_config\_enable | Enable or not encryption for k8s secrets with aws-kms | `bool` | `false` | no |
 | eks\_cluster\_log\_retention\_in\_days | Number of days to retain log events. Default retention - 90 days. | `number` | `90` | no |

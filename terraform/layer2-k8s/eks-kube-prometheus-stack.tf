@@ -193,3 +193,8 @@ output "grafana_admin_password" {
   sensitive   = true
   description = "Grafana admin password"
 }
+
+output "get_grafana_admin_password" {
+  value       = "kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonpath='{.data.admin-password}' | base64 --decode ; echo"
+  description = "Command which gets admin password from kubernetes secret"
+}

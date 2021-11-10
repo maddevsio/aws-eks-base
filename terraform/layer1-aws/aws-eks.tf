@@ -26,7 +26,7 @@ locals {
 #tfsec:ignore:aws-vpc-no-public-egress-sgr tfsec:ignore:aws-eks-enable-control-plane-logging tfsec:ignore:aws-eks-encrypt-secrets tfsec:ignore:aws-eks-no-public-cluster-access tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "17.3.0"
+  version = "17.23.0"
 
   cluster_name    = local.name
   cluster_version = var.eks_cluster_version

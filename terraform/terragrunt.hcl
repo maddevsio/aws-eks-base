@@ -18,10 +18,9 @@ remote_state {
     region         = local.region
     bucket         = local.remote_state_bucket
     key            = "${path_relative_to_include()}/terraform.tfstate"
-    dynamodb_table = "${local.remote_state_bucket}-${path_relative_to_include()}"
+    # dynamodb_table = "${local.remote_state_bucket}-${path_relative_to_include()}"
     encrypt        = true
   }
 }
 
-terragrunt_version_constraint = "0.29.2"
-
+terragrunt_version_constraint = "0.35.8"
