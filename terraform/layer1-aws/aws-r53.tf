@@ -1,6 +1,6 @@
 module "r53_zone" {
   source  = "terraform-aws-modules/route53/aws//modules/zones"
-  version = "2.1.0"
+  version = "2.3.0"
 
   create = var.create_r53_zone
 
