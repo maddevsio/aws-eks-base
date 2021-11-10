@@ -282,7 +282,7 @@ In the root of `layer2-k8s` is the `aws-sm-secrets.tf` where several local varia
   }
   ```
 
-> Set proper secrets; you can set empty/mock values. If you won't use these secrets, delete this `.tf` file from the `layer2-k8s` root.
+> Set proper secrets; you also can set empty/mock values.
 
 #### Domain and SSL
 
@@ -460,7 +460,7 @@ Each layer has an `examples/` directory that contains working examples that expa
 This will allow you to expand your basic functionality by launching a monitoring system based on ELK or Prometheus Stack, etc.
 
 
-* If you want to deploy **`ELK stack`**, move `layer1-aws/examples/aws-s3-bucket-elastic-stack.tf` and `layer2-k8s/examples/eks-elk.tf` to the root of the layers. 
+* If you want to deploy **`ELK stack`**, move `layer1-aws/examples/aws-s3-bucket-elastic-stack.tf` and `layer2-k8s/examples/eks-elk.tf` to the root of the layers.
 * If you want to deploy **`Pritunl VPN`** server just move `layer1-aws/examples/aws-ec2-pritunl.tf` to the root of the layer.
 * If you want to deploy **`Gitlab runner`** that runs workers as k8s pods (in EKS cluster), move `layer1-aws/examples/aws-s3-bucket-gitlab-runner-cache.tf` and `layer2-k8s/examples/eks-gitlab-runner.tf` to the root of the layers.
 * If you want to deploy `Istio Operator` move `layer2-k8s/examples/eks-istio.tf` to the root of the layer.
