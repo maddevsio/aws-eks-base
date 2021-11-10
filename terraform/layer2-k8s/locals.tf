@@ -15,5 +15,5 @@ locals {
   eks_cluster_id        = data.terraform_remote_state.layer1-aws.outputs.eks_cluster_id
   eks_oidc_provider_arn = data.terraform_remote_state.layer1-aws.outputs.eks_oidc_provider_arn
 
-  helm_charts = yamldecode(file("${path.module}/helm-charts.yaml"))["charts"]
+  helm_releases = yamldecode(file("${path.module}/helm-releases.yaml"))["releases"]
 }

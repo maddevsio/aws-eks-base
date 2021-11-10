@@ -1,85 +1,127 @@
-charts:
+releases:
   - id: aws-load-balancer-controller
+    enabled: false
     chart: aws-load-balancer-controller
     repository: https://aws.github.io/eks-charts
     version: 1.2.6
+    namespace: aws-load-balancer-controller
   - id: aws-node-termination-handler
+    enabled: true
     chart: aws-node-termination-handler
     repository: https://aws.github.io/eks-charts
     version: 0.13.3
+    namespace: aws-node-termination-handler
   - id: aws-calico
+    enabled: true
     chart: aws-calico
     repository: https://aws.github.io/eks-charts
     version: 0.3.4
+    namespace: kube-system
   - id: cert-manager
+    enabled: false
     chart: cert-manager
     repository: https://charts.jetstack.io
     version: 1.1.0
+    namespace: cert-manager
   - id: cert-mananger-certificate
+    enabled: false
     chart: ../../helm-charts/certificate
     repository:
     version:
-  - id: cluster-autoscaler
-    chart: cluster-autoscaler
-    repository: https://kubernetes.github.io/autoscaler
-    version: 9.10.5
+    namespace: cert-manager
   - id: cert-manager-cluster-issuer
+    enabled: false
     chart: ../../helm-charts/cluster-issuer
     repository:
     version:
+    namespace: cert-manager
+  - id: cluster-autoscaler
+    enabled: true
+    chart: cluster-autoscaler
+    repository: https://kubernetes.github.io/autoscaler
+    version: 9.10.5
+    namespace: cluster-autoscaler
   - id: elk
+    enabled: false
     chart: ../../helm-charts/elk
     repository:
     version:
+    namespace: elk
   - id: external-dns
+    enabled: true
     chart: external-dns
     repository: https://kubernetes-sigs.github.io/external-dns
     version: 1.5.0
+    namespace: external-dns
   - id: external-secrets
+    enabled: true
     chart: kubernetes-external-secrets
     repository: https://external-secrets.github.io/kubernetes-external-secrets
     version: 6.3.0
+    namespace: external-secrets
   - id: gitlab-runner
+    enabled: false
     chart: gitlab-runner
     repository: https://charts.gitlab.io
     version: 0.26.0
+    namespace: gitlab-runner
   - id: ingress-nginx
+    enabled: true
     chart: ingress-nginx
     repository: https://kubernetes.github.io/ingress-nginx
     version: 3.23.0
+    namespace: ingress-nginx
   - id: istio-operator
+    enabled: false
     chart: ../../helm-charts/istio/istio-operator
     repository:
     version:
+    namespace: null
   - id: istio-operator-resources
+    enabled: false
     chart: ../../helm-charts/istio/istio-operator-resources
-    repository:
+    repository: 
     version:
+    namespace: istio-system
   - id: istio-resources
+    enabled: false
     chart: ../../helm-charts/istio/istio-resources
     repository:
     version: 
+    namespace: istio-system
   - id: keda
+    enabled: false
     chart: keda
     repository: https://kedacore.github.io/charts
     version: 2.4.0
-  - id: kiali-server
+    namespace: keda
+  - id: kiali
+    enabled: false
     chart: kiali-server
     repository: https://kiali.org/helm-charts
     version: 1.36
+    namespace: kiali
   - id: kube-prometheus-stack
+    enabled: true
     chart: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
     version: 13.12.0
+    namespace: monitoring
   - id: loki-stack
+    enabled: true
     chart: loki-stack
     repository: https://grafana.github.io/helm-charts
     version: 2.3.1
+    namespace: loki-stack
   - id: reloader
+    enabled: true
     chart: reloader
     repository: https://stakater.github.io/stakater-charts
     version: 0.0.81
+    namespace: reloader
   - id: teamcity
+    enabled: false
     chart: ../../helm-charts/teamcity
     repository:
     version:
+    namespace: teamcity

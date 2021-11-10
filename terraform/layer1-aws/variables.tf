@@ -245,3 +245,9 @@ variable "eks_cluster_encryption_config_enable" {
   default     = false
   description = "Enable or not encryption for k8s secrets with aws-kms"
 }
+
+variable "pritunl_vpn_server" {
+  type        = bool
+  default     = false
+  description = "Indicates whether or not the Pritunl VPN server is deployed."
+}
