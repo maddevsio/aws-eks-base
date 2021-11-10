@@ -1,15 +1,20 @@
 locals {
   keda = {
-    chart         = local.helm_charts[index(local.helm_charts.*.id, "keda")].chart
-    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "keda")], "repository", null)
-    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "keda")], "version", null)
+    name          = local.helm_releases[index(local.helm_releases.*.id, "keda")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "keda")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "keda")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "keda")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "keda")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "keda")].namespace
   }
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "keda_namespace" {
+  count = local.keda.enabled ? 1 : 0
+
   source = "../modules/kubernetes-namespace"
-  name   = "keda"
+  name   = local.keda.namespace
   network_policies = [
     {
       name         = "default-deny"
@@ -25,7 +30,7 @@ module "keda_namespace" {
           {
             namespace_selector = {
               match_labels = {
-                name = "keda"
+                name = local.keda.namespace
               }
             }
           }
@@ -53,11 +58,12 @@ module "keda_namespace" {
 }
 
 resource "helm_release" "kedacore" {
-  name        = "keda"
+  count = local.keda.enabled ? 1 : 0
+
+  name        = local.keda.name
   chart       = local.keda.chart
   repository  = local.keda.repository
   version     = local.keda.chart_version
-  namespace   = module.keda_namespace.name
-  wait        = true
+  namespace   = module.keda_namespace[count.index].name
   max_history = var.helm_release_history_size
 }

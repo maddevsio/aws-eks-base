@@ -1,5 +1,6 @@
 module "ec2_sg" {
-  source = "terraform-aws-modules/security-group/aws"
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "4.4.0"
 
   name        = var.name
   description = "${var.name} security group"
@@ -20,7 +21,8 @@ module "ec2_sg" {
 }
 
 module "efs_sg" {
-  source = "terraform-aws-modules/security-group/aws"
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "4.4.0"
 
   name        = "${var.name}-efs"
   description = "${var.name} efs security group"

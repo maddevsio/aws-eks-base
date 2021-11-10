@@ -21,6 +21,6 @@ resource "aws_efs_mount_target" "this" {
   file_system_id = aws_efs_file_system.this.id
   subnet_id      = var.public_subnets[count.index]
   security_groups = [
-    module.efs_sg.this_security_group_id
+    module.efs_sg.security_group_id
   ]
 }

@@ -12,7 +12,7 @@ resource "aws_launch_template" "this" {
   image_id               = data.aws_ami.amazon_linux_2.id
   instance_type          = var.instance_type
   ebs_optimized          = false
-  vpc_security_group_ids = [module.ec2_sg.this_security_group_id]
+  vpc_security_group_ids = [module.ec2_sg.security_group_id]
 
   iam_instance_profile {
     arn = aws_iam_instance_profile.this_instance_profile.arn

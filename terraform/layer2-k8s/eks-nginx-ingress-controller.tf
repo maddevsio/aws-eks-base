@@ -1,8 +1,11 @@
 locals {
-  ingress-nginx = {
-    chart         = local.helm_charts[index(local.helm_charts.*.id, "ingress-nginx")].chart
-    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "ingress-nginx")], "repository", null)
-    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "ingress-nginx")], "version", null)
+  ingress_nginx = {
+    name          = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].name
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].namespace
   }
   ssl_certificate_arn = var.nginx_ingress_ssl_terminator == "lb" ? data.terraform_remote_state.layer1-aws.outputs.ssl_certificate_arn : ""
 
@@ -19,14 +22,16 @@ data "template_file" "nginx_ingress" {
     hostname           = local.domain_name
     ssl_cert           = local.ssl_certificate_arn
     proxy_real_ip_cidr = local.vpc_cidr
-    namespace          = module.ingress_nginx_namespace.name
+    namespace          = local.ingress_nginx.enabled ? module.ingress_nginx_namespace[0].name : "default"
   }
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "ingress_nginx_namespace" {
+  count = local.ingress_nginx.enabled ? 1 : 0
+
   source = "../modules/kubernetes-namespace"
-  name   = "ingress-nginx"
+  name   = local.ingress_nginx.namespace
   network_policies = [
     {
       name         = "default-deny"
@@ -42,7 +47,7 @@ module "ingress_nginx_namespace" {
           {
             namespace_selector = {
               match_labels = {
-                name = "ingress-nginx"
+                name = local.ingress_nginx.namespace
               }
             }
           }
@@ -56,7 +61,7 @@ module "ingress_nginx_namespace" {
         match_expressions = {
           key      = "app.kubernetes.io/name"
           operator = "In"
-          values   = ["ingress-nginx"]
+          values   = [local.ingress_nginx.name]
         }
       }
       ingress = {
@@ -86,7 +91,7 @@ module "ingress_nginx_namespace" {
         match_expressions = {
           key      = "app.kubernetes.io/name"
           operator = "In"
-          values   = ["ingress-nginx"]
+          values   = [local.ingress_nginx.name]
         }
       }
       ingress = {
@@ -112,7 +117,7 @@ module "ingress_nginx_namespace" {
         match_expressions = {
           key      = "app.kubernetes.io/name"
           operator = "In"
-          values   = ["ingress-nginx"]
+          values   = [local.ingress_nginx.name]
         }
       }
       ingress = {
@@ -154,12 +159,13 @@ module "ingress_nginx_namespace" {
 }
 
 resource "helm_release" "ingress_nginx" {
-  name        = "ingress-nginx"
-  chart       = local.ingress-nginx.chart
-  repository  = local.ingress-nginx.repository
-  version     = local.ingress-nginx.chart_version
-  namespace   = module.ingress_nginx_namespace.name
-  wait        = false
+  count = local.ingress_nginx.enabled ? 1 : 0
+
+  name        = local.ingress_nginx.name
+  chart       = local.ingress_nginx.chart
+  repository  = local.ingress_nginx.repository
+  version     = local.ingress_nginx.chart_version
+  namespace   = module.ingress_nginx_namespace[count.index].name
   max_history = var.helm_release_history_size
 
   values = [

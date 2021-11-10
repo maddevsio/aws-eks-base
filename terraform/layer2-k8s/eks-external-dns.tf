@@ -1,8 +1,11 @@
 locals {
-  external-dns = {
-    chart         = local.helm_charts[index(local.helm_charts.*.id, "external-dns")].chart
-    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "external-dns")], "repository", null)
-    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "external-dns")], "version", null)
+  external_dns = {
+    name          = local.helm_releases[index(local.helm_releases.*.id, "external-dns")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "external-dns")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "external-dns")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "external-dns")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "external-dns")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "external-dns")].namespace
   }
 }
 
@@ -10,7 +13,7 @@ data "template_file" "external_dns" {
   template = file("${path.module}/templates/external-dns.yaml")
 
   vars = {
-    role_arn    = module.aws_iam_external_dns.role_arn
+    role_arn    = local.external_dns.enabled ? module.aws_iam_external_dns[0].role_arn : 0
     domain_name = local.domain_name
     zone_type   = "public"
   }
@@ -18,8 +21,10 @@ data "template_file" "external_dns" {
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "external_dns_namespace" {
+  count = local.external_dns.enabled ? 1 : 0
+
   source = "../modules/kubernetes-namespace"
-  name   = "external-dns"
+  name   = local.external_dns.namespace
   network_policies = [
     {
       name         = "default-deny"
@@ -35,7 +40,7 @@ module "external_dns_namespace" {
           {
             namespace_selector = {
               match_labels = {
-                name = "external-dns"
+                name = local.external_dns.namespace
               }
             }
           }
@@ -64,9 +69,10 @@ module "external_dns_namespace" {
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
 module "aws_iam_external_dns" {
-  source = "../modules/aws-iam-eks-trusted"
+  count = local.external_dns.enabled ? 1 : 0
 
-  name              = "${local.name}-external-dns"
+  source            = "../modules/aws-iam-eks-trusted"
+  name              = "${local.name}-${local.external_dns.name}"
   region            = local.region
   oidc_provider_arn = local.eks_oidc_provider_arn
   policy = jsonencode({
@@ -104,14 +110,17 @@ module "aws_iam_external_dns" {
 }
 
 resource "helm_release" "external_dns" {
-  name        = "external-dns"
-  chart       = local.external-dns.chart
-  repository  = local.external-dns.repository
-  version     = local.external-dns.chart_version
-  namespace   = module.external_dns_namespace.name
+  count = local.external_dns.enabled ? 1 : 0
+
+  name        = local.external_dns.name
+  chart       = local.external_dns.chart
+  repository  = local.external_dns.repository
+  version     = local.external_dns.chart_version
+  namespace   = module.external_dns_namespace[count.index].name
   max_history = var.helm_release_history_size
 
   values = [
     data.template_file.external_dns.rendered,
   ]
+
 }

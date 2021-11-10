@@ -320,4 +320,5 @@ resource "helm_release" "aws_loadbalancer_controller" {
   values = [
     local.alb_ingress_controller
   ]
+
 }

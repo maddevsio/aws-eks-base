@@ -1,8 +1,11 @@
 locals {
-  cert-manager-cluster-issuer = {
-    chart         = local.helm_charts[index(local.helm_charts.*.id, "cert-manager-cluster-issuer")].chart
-    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "cert-manager-cluster-issuer")], "repository", null)
-    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "cert-manager-cluster-issuer")], "version", null)
+  cert_manager_cluster_issuer = {
+    name          = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].namespace
   }
 }
 
@@ -17,12 +20,13 @@ data "template_file" "cluster_issuer" {
 }
 
 resource "helm_release" "cluster_issuer" {
-  name        = "cluster-issuer"
-  chart       = local.cert-manager-cluster-issuer.chart
-  repository  = local.cert-manager-cluster-issuer.repository
-  version     = local.cert-manager-cluster-issuer.chart_version
-  namespace   = module.certmanager_namespace.name
-  wait        = false
+  count = local.cert_manager_cluster_issuer.enabled ? 1 : 0
+
+  name        = local.cert_manager_cluster_issuer.name
+  chart       = local.cert_manager_cluster_issuer.chart
+  repository  = local.cert_manager_cluster_issuer.repository
+  version     = local.cert_manager_cluster_issuer_version
+  namespace   = local.cert_manager_cluster_issuer.namespace
   max_history = var.helm_release_history_size
 
   values = [

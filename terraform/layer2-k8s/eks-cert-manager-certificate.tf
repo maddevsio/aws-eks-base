@@ -1,8 +1,11 @@
 locals {
-  cert-mananger-certificate = {
-    chart         = local.helm_charts[index(local.helm_charts.*.id, "cert-mananger-certificate")].chart
-    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "cert-mananger-certificate")], "repository", null)
-    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "cert-mananger-certificate")], "version", null)
+  cert_mananger_certificate = {
+    name          = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].namespace
   }
 }
 
@@ -16,12 +19,13 @@ data "template_file" "certificate" {
 }
 
 resource "helm_release" "certificate" {
-  name        = "certificate"
-  chart       = local.cert-mananger-certificate.chart
-  repository  = local.cert-mananger-certificate.repository
-  version     = local.cert-mananger-certificate.chart_version
-  namespace   = module.ingress_nginx_namespace.name
-  wait        = false
+  count = local.cert_mananger_certificate.enabled ? 1 : 0
+
+  name        = local.cert_mananger_certificate.name
+  chart       = local.cert_mananger_certificate.chart
+  repository  = local.cert_mananger_certificate.repository
+  version     = local.cert_mananger_certificate_version
+  namespace   = local.cert_mananger_certificate.namespace
   max_history = var.helm_release_history_size
 
   values = [

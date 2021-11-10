@@ -1,15 +1,20 @@
 locals {
-  aws-node-termination-handler = {
-    chart         = local.helm_charts[index(local.helm_charts.*.id, "aws-node-termination-handler")].chart
-    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "aws-node-termination-handler")], "repository", null)
-    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "aws-node-termination-handler")], "version", null)
+  aws_node_termination_handler = {
+    name          = local.helm_releases[index(local.helm_releases.*.id, "aws-node-termination-handler")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "aws-node-termination-handler")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "aws-node-termination-handler")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "aws-node-termination-handler")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "aws-node-termination-handler")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "aws-node-termination-handler")].namespace
   }
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "aws_node_termination_handler_namespace" {
+  count = local.aws_node_termination_handler.enabled ? 1 : 0
+
   source = "../modules/kubernetes-namespace"
-  name   = "aws-node-termination-handler"
+  name   = local.aws_node_termination_handler.namespace
   network_policies = [
     {
       name         = "default-deny"
@@ -25,7 +30,7 @@ module "aws_node_termination_handler_namespace" {
           {
             namespace_selector = {
               match_labels = {
-                name = "aws-node-termination-handler"
+                name = local.aws_node_termination_handler.namespace
               }
             }
           }
@@ -53,12 +58,13 @@ module "aws_node_termination_handler_namespace" {
 }
 
 resource "helm_release" "aws_node_termination_handler" {
-  name        = "aws-node-termination-handler"
-  chart       = local.aws-node-termination-handler.chart
-  repository  = local.aws-node-termination-handler.repository
-  version     = local.aws-node-termination-handler.chart_version
-  namespace   = module.aws_node_termination_handler_namespace.name
-  wait        = false
+  count = local.aws_node_termination_handler.enabled ? 1 : 0
+
+  name        = local.aws_node_termination_handler.name
+  chart       = local.aws_node_termination_handler.chart
+  repository  = local.aws_node_termination_handler.repository
+  version     = local.aws_node_termination_handler_version
+  namespace   = module.aws_node_termination_handler_namespace[count.index].name
   max_history = var.helm_release_history_size
 
   values = [
