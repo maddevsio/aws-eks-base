@@ -12,6 +12,19 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+<a name="v4.0.0"></a>
+## [v4.0.0] - 2021-11-10
+FEATURES:
+- Add keda helm chart ([#170](https://github.com/maddevsio/aws-eks-base/issues/170))
+- Add default networkpolicies for all namespaces except istio-system and teamcity ([#168](https://github.com/maddevsio/aws-eks-base/issues/168))
+- Each helm release has its own namespace ([#164](https://github.com/maddevsio/aws-eks-base/issues/164))
+
+ENHANCEMENTS:
+- Move gitlab-runner and elk-stack s3 buckets from layer1-aws into layer2-k8s ([#166](https://github.com/maddevsio/aws-eks-base/issues/166))
+
+
+
+
 <a name="v3.0.0"></a>
 ## [v3.0.0] - 2021-11-05
 ENHANCEMENTS:
@@ -52,7 +65,8 @@ DOCS:
 
 
 
-[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v4.0.0...HEAD
+[v4.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v3.0.0...v4.0.0
 [v3.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v2.0.0...v3.0.0
 [v2.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v1.1.0...v2.0.0
 [v1.1.0]: https://github.com/maddevsio/aws-eks-base/compare/v1.0.0...v1.1.0
