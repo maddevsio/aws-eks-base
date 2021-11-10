@@ -383,7 +383,7 @@ terragrunt apply
 
 #### Target apply by `terragrunt`
 
-Go to layer folder `terraform/layer1-aws/` or `terraform/layer2-k8s/` and run this command:
+Go to layer folder `terraform/layer1-aws/` and run this command:
 
 ```
 terragrunt apply -target=module.eks
@@ -400,13 +400,13 @@ To destroy both layers, run this command from `terraform/` folder:
 terragrant run-all destroy
 ```
 
-To destroy `layer2-k8s`, run this command from `terraform/layare2-k8s` folder:
+> The `layer2-k8s` depends on `layer1-aws`, so `layer2-k8s` will be destroyed automatically first.
+
+If you want to destroy layers manually, then destroy `layer2-k8s` first, ie run this command from `terraform/layare2-k8s` folder:
 
 ```
 terragrunt destroy
 ```
-
-> The `layer2-k8s` has dependence from `layer1-aws` and when you destroy `layer1-aws`, `layer2-k8s` destroyed automatically.
 
 ## What to do after deployment
 
@@ -432,7 +432,7 @@ terraform/layer1-aws/main.tf
 terraform/layer2-k8s/main.tf
 ```
 
-## Updated terraform providers
+## Update terraform providers
 
 Change terraform providers version in this files
 
