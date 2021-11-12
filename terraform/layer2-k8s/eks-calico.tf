@@ -10,7 +10,7 @@ locals {
 }
 
 resource "helm_release" "calico_daemonset" {
-  count = local.aws_calico ? 1 : 0
+  count = local.aws_calico.enabled ? 1 : 0
 
   name        = local.aws_calico.name
   chart       = local.aws_calico.chart

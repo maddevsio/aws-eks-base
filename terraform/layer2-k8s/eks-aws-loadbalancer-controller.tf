@@ -95,7 +95,7 @@ module "aws_iam_aws_loadbalancer_controller" {
   count = local.aws_load_balancer_controller.enabled ? 1 : 0
 
   source            = "../modules/aws-iam-eks-trusted"
-  name              = "${local.name}-${local.aws_load_balancer_controller.name}"
+  name              = "${local.name}-aws-lb-controller"
   region            = local.region
   oidc_provider_arn = local.eks_oidc_provider_arn
   policy = jsonencode({

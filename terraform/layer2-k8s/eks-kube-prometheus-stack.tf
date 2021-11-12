@@ -20,7 +20,7 @@ locals {
       default_region             = local.region
       grafana_domain_name        = local.grafana_domain_name
       grafana_password           = local.grafana_password
-      role_arn                   = module.aws_iam_grafana.role_arn
+      role_arn                   = local.kube_prometheus_stack.enabled ? module.aws_iam_grafana[0].role_arn : ""
       gitlab_client_id           = local.grafana_gitlab_client_id
       gitlab_client_secret       = local.grafana_gitlab_client_secret
       gitlab_group               = local.grafana_gitlab_group
@@ -79,7 +79,7 @@ module "monitoring_namespace" {
       policy_types = ["Ingress"]
       pod_selector = {
         match_expressions = {
-          key      = "app.kubernetes.io/name"
+          key      = "app"
           operator = "In"
           values   = ["${local.kube_prometheus_stack.name}-operator"]
         }
@@ -124,7 +124,7 @@ module "aws_iam_grafana" {
   count = local.kube_prometheus_stack.enabled ? 1 : 0
 
   source            = "../modules/aws-iam-eks-trusted"
-  name              = "${local.name}-${local.kube_prometheus_stack.name}-grafana"
+  name              = "${local.name}-grafana"
   region            = local.region
   oidc_provider_arn = local.eks_oidc_provider_arn
   policy = jsonencode({
@@ -172,7 +172,7 @@ resource "helm_release" "prometheus_operator" {
   name        = local.kube_prometheus_stack.name
   chart       = local.kube_prometheus_stack.chart
   repository  = local.kube_prometheus_stack.repository
-  version     = local.kube_prometheus_stack_version
+  version     = local.kube_prometheus_stack.chart_version
   namespace   = module.monitoring_namespace[count.index].name
   max_history = var.helm_release_history_size
 

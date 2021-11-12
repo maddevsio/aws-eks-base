@@ -76,7 +76,7 @@ releases:
     chart: ../../helm-charts/istio/istio-operator
     repository:
     version:
-    namespace: null
+    namespace:
   - id: istio-operator-resources
     enabled: false
     chart: ../../helm-charts/istio/istio-operator-resources

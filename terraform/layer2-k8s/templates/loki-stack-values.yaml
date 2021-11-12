@@ -11,6 +11,7 @@ loki:
     accessModes:
       - ReadWriteOnce
     size: 10Gi
+    storageClassName: advanced
 
   serviceMonitor:
     enabled: true

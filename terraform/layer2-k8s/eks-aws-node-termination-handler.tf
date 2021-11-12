@@ -63,7 +63,7 @@ resource "helm_release" "aws_node_termination_handler" {
   name        = local.aws_node_termination_handler.name
   chart       = local.aws_node_termination_handler.chart
   repository  = local.aws_node_termination_handler.repository
-  version     = local.aws_node_termination_handler_version
+  version     = local.aws_node_termination_handler.chart_version
   namespace   = module.aws_node_termination_handler_namespace[count.index].name
   max_history = var.helm_release_history_size
 

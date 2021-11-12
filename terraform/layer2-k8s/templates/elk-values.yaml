@@ -1,5 +1,5 @@
 apm-server:
-  enabled: true
+  enabled: false
   ingress:
     enabled: true
     annotations:
@@ -67,7 +67,7 @@ elasticsearch:
 
   volumeClaimTemplate:
     accessModes: [ "ReadWriteOnce" ]
-    storageClassName: "${storage_class_name}"
+    storageClassName: advanced
     resources:
       requests:
         storage: 100Gi
@@ -186,7 +186,7 @@ filebeat:
       operator: Exists
 
 metricbeat:
-  enabled: true
+  enabled: false
   daemonset:
     extraEnvs:
       - name: 'ELASTICSEARCH_USERNAME'
@@ -324,12 +324,6 @@ kibana:
     annotations:
       kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-      nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
-      nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
-      nginx.ingress.kubernetes.io/configuration-snippet: |
-        proxy_set_header Authorization "Basic ${kibana_base64_creds}";
-        proxy_set_header es-security-runas-user $http_x_forwarded_user;
-        proxy_set_header x-proxy-user $http_x_forwarded_user;
     path: /
     hosts:
       - ${kibana_domain_name}
@@ -365,8 +359,6 @@ kibana:
         key: /usr/share/kibana/config/certs/tls.key
         certificate: /usr/share/kibana/config/certs/tls.crt
       xpack.security.encryptionKey: $${KIBANA_ENCRYPTION_KEY}
-      elasticsearch.requestHeadersWhitelist: [ es-security-runas-user, authorization ]
-      xpack.monitoring.elasticsearch.requestHeadersWhitelist: [ es-security-runas-user, authorization ]
       elasticsearch.ssl:
         verificationMode: none
         certificateAuthorities: /usr/share/kibana/config/certs/tls.crt

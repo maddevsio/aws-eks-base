@@ -16,7 +16,7 @@ server:
   persistence:
     type: pvc
     enabled: true
-    storageClassName: "${storage_class_name}"
+    storageClassName: advanced
     accessModes:
       - ReadWriteOnce
     size: 50Gi

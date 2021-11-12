@@ -7,6 +7,22 @@ locals {
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "cert-manager")].version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "cert-manager")].namespace
   }
+  cert_mananger_certificate = {
+    name          = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].namespace
+  }
+  cert_manager_cluster_issuer = {
+    name          = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].namespace
+  }
 }
 
 data "template_file" "cert_manager" {
@@ -14,6 +30,25 @@ data "template_file" "cert_manager" {
 
   vars = {
     role_arn = local.cert_manager.enabled ? module.aws_iam_cert_manager[0].role_arn : ""
+  }
+}
+
+data "template_file" "cluster_issuer" {
+  template = file("${path.module}/templates/cluster-issuer-values.yaml")
+
+  vars = {
+    region  = local.region
+    zone    = local.domain_name
+    zone_id = local.zone_id
+  }
+}
+
+data "template_file" "certificate" {
+  template = file("${path.module}/templates/certificate-values.yaml")
+
+  vars = {
+    domain_name = "*.${local.domain_name}"
+    common_name = local.domain_name
   }
 }
 
@@ -147,4 +182,40 @@ resource "helm_release" "cert_manager" {
     data.template_file.cert_manager.rendered,
   ]
 
+}
+
+resource "helm_release" "cluster_issuer" {
+  count = local.cert_manager_cluster_issuer.enabled ? 1 : 0
+
+  name        = local.cert_manager_cluster_issuer.name
+  chart       = local.cert_manager_cluster_issuer.chart
+  repository  = local.cert_manager_cluster_issuer.repository
+  version     = local.cert_manager_cluster_issuer.chart_version
+  namespace   = local.cert_manager_cluster_issuer.namespace
+  max_history = var.helm_release_history_size
+
+  values = [
+    data.template_file.cluster_issuer.rendered,
+  ]
+
+  # This dep needs for correct apply
+  depends_on = [helm_release.cert_manager]
+}
+
+resource "helm_release" "certificate" {
+  count = local.cert_mananger_certificate.enabled ? 1 : 0
+
+  name        = local.cert_mananger_certificate.name
+  chart       = local.cert_mananger_certificate.chart
+  repository  = local.cert_mananger_certificate.repository
+  version     = local.cert_mananger_certificate.chart_version
+  namespace   = local.cert_mananger_certificate.namespace
+  max_history = var.helm_release_history_size
+
+  values = [
+    data.template_file.certificate.rendered,
+  ]
+
+  # This dep needs for correct apply
+  depends_on = [helm_release.cert_manager, helm_release.cluster_issuer]
 }

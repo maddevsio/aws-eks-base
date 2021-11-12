@@ -1,5 +1,6 @@
+#tfsec:ignore:aws-vpc-no-public-egress-sgr tfsec:ignore:aws-vpc-no-public-ingress-sgr
 module "pritunl" {
-  count = var.pritunl_vpn_server ? 1 : 0
+  count = var.pritunl_vpn_server_enable ? 1 : 0
 
   source         = "../modules/aws-ec2-pritunl"
   environment    = local.env

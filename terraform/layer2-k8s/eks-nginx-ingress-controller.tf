@@ -1,7 +1,7 @@
 locals {
   ingress_nginx = {
     name          = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].id
-    enabled       = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].name
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].repository
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].version
@@ -15,7 +15,7 @@ locals {
   )
 }
 
-data "template_file" "nginx_ingress" {
+data "template_file" "ingress_nginx" {
   template = file("${path.module}/templates/${local.template_name}")
 
   vars = {
@@ -169,7 +169,7 @@ resource "helm_release" "ingress_nginx" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.nginx_ingress.rendered,
+    data.template_file.ingress_nginx.rendered,
   ]
 
   depends_on = [helm_release.prometheus_operator]

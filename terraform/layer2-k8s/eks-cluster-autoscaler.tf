@@ -145,7 +145,7 @@ resource "helm_release" "cluster_autoscaler" {
   name        = local.cluster_autoscaler.name
   chart       = local.cluster_autoscaler.chart
   repository  = local.cluster_autoscaler.repository
-  version     = local.cluster_autoscaler_version
+  version     = local.cluster_autoscaler.chart_version
   namespace   = module.cluster_autoscaler_namespace[count.index].name
   max_history = var.helm_release_history_size
 

@@ -1,5 +1,14 @@
 istioOperator:
   components:
+    pilot:
+      k8s:
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "2Gi"
+          limits:
+            cpu: "500m"
+            memory: "2Gi"
     ingressGateways:
     - name: istio-ingressgateway
       enabled: true

@@ -1,11 +1,11 @@
 locals {
   loki_stack = {
-    name          = local.helm_charts[index(local.helm_charts.*.id, "loki-stack")].id
-    enabled       = local.helm_charts[index(local.helm_charts.*.id, "loki-stack")].enabled
-    chart         = local.helm_charts[index(local.helm_charts.*.id, "loki-stack")].chart
-    repository    = local.helm_charts[index(local.helm_charts.*.id, "loki-stack")].repository
-    chart_version = local.helm_charts[index(local.helm_charts.*.id, "loki-stack")].version
-    namespace     = local.helm_charts[index(local.helm_charts.*.id, "loki-stack")].namespace
+    name          = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].namespace
   }
 }
 
@@ -95,7 +95,7 @@ resource "helm_release" "loki_stack" {
   name        = local.loki_stack.name
   chart       = local.loki_stack.chart
   repository  = local.loki_stack.repository
-  version     = local.loki_stack_version
+  version     = local.loki_stack.chart_version
   namespace   = module.loki_namespace[count.index].name
   max_history = var.helm_release_history_size
 
