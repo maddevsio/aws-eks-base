@@ -455,7 +455,7 @@ terragrunt init -upgrade
 
 ### Additional components
 
-This boiler instalss all basic and necessary components. However, we also provide several additional components. Both layers have such components. To enable them in:
+This boiler installs all basic and necessary components. However, we also provide several additional components. Both layers have such components. To enable them in:
 * layer1-aws: search `***_enable` variables and set them to **true**
 * layer2-k8s: check `helm-releases.yaml` file and set **enabled: true** or **enabled:false** for components that you want to **deploy** or to **unistall**
 
