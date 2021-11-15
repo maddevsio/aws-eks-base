@@ -13,8 +13,9 @@ locals {
 }
 
 data "template_file" "teamcity" {
-  template = file("${path.module}/templates/teamcity-values.yaml")
+  count = local.teamcity.enabled ? 1 : 0
 
+  template = file("${path.module}/templates/teamcity-values.yaml")
   vars = {
     domain_name          = local.teamcity_domain_name
     storage_class_name   = kubernetes_storage_class.teamcity.id
@@ -23,8 +24,9 @@ data "template_file" "teamcity" {
 }
 
 data "template_file" "teamcity_agent" {
-  template = file("${path.module}/templates/teamcity-agent-pod-template.yaml")
+  count = local.teamcity.enabled ? 1 : 0
 
+  template = file("${path.module}/templates/teamcity-agent-pod-template.yaml")
   vars = {
     service_account_name = module.eks_rbac_teamcity.service_account_name
   }
@@ -87,12 +89,12 @@ resource "helm_release" "teamcity" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.teamcity.rendered
+    data.template_file.teamcity[count.index].rendered
   ]
 }
 
 output "teamcity_domain_name" {
-  value       = local.teamcity_domain_name
+  value       = local.teamcity.enabled ? local.teamcity_domain_name : null
   description = "Teamcity server"
 }
 

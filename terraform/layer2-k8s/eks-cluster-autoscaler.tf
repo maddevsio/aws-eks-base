@@ -10,10 +10,11 @@ locals {
 }
 
 data "template_file" "cluster_autoscaler" {
-  template = file("${path.module}/templates/cluster-autoscaler-values.yaml")
+  count = local.cluster_autoscaler.enabled ? 1 : 0
 
+  template = file("${path.module}/templates/cluster-autoscaler-values.yaml")
   vars = {
-    role_arn     = local.cluster_autoscaler.enabled ? module.aws_iam_autoscaler[0].role_arn : ""
+    role_arn     = module.aws_iam_autoscaler[count.index].role_arn
     region       = local.region
     cluster_name = local.eks_cluster_id
     version      = var.cluster_autoscaler_version
@@ -150,7 +151,7 @@ resource "helm_release" "cluster_autoscaler" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.cluster_autoscaler.rendered,
+    data.template_file.cluster_autoscaler[count.index].rendered,
   ]
 
   depends_on = [helm_release.prometheus_operator]

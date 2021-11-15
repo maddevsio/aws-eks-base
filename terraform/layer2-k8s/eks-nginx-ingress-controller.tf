@@ -16,13 +16,14 @@ locals {
 }
 
 data "template_file" "ingress_nginx" {
-  template = file("${path.module}/templates/${local.template_name}")
+  count = local.ingress_nginx.enabled ? 1 : 0
 
+  template = file("${path.module}/templates/${local.template_name}")
   vars = {
     hostname           = local.domain_name
     ssl_cert           = local.ssl_certificate_arn
     proxy_real_ip_cidr = local.vpc_cidr
-    namespace          = local.ingress_nginx.enabled ? module.ingress_nginx_namespace[0].name : "default"
+    namespace          = module.ingress_nginx_namespace[count.index].name
   }
 }
 
@@ -169,7 +170,7 @@ resource "helm_release" "ingress_nginx" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.ingress_nginx.rendered,
+    data.template_file.ingress_nginx[count.index].rendered,
   ]
 
   depends_on = [helm_release.prometheus_operator]

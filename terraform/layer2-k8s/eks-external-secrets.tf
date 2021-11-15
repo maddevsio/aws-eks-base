@@ -10,10 +10,11 @@ locals {
 }
 
 data "template_file" "external_secrets" {
-  template = file("${path.module}/templates/external-secrets-values.yaml")
+  count = local.external_secrets.enabled ? 1 : 0
 
+  template = file("${path.module}/templates/external-secrets-values.yaml")
   vars = {
-    role_arn = local.external_secrets.enabled ? module.aws_iam_external_secrets[0].role_arn : ""
+    role_arn = module.aws_iam_external_secrets[count.index].role_arn
     region   = local.region
   }
 }
@@ -98,7 +99,7 @@ resource "helm_release" "external_secrets" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.external_secrets.rendered,
+    data.template_file.external_secrets[count.index].rendered,
   ]
 
 }

@@ -12,16 +12,17 @@ locals {
 }
 
 data "template_file" "elk" {
-  template = file("${path.module}/templates/elk-values.yaml")
+  count = local.elk.enabled ? 1 : 0
 
+  template = file("${path.module}/templates/elk-values.yaml")
   vars = {
-    bucket_name             = local.elk.enabled ? aws_s3_bucket.elastic_stack[0].id : "bucket_name"
+    bucket_name             = aws_s3_bucket.elastic_stack[count.index].id
     snapshot_retention_days = var.elk_snapshot_retention_days
     index_retention_days    = var.elk_index_retention_days
     apm_domain_name         = local.apm_domain_name
     kibana_domain_name      = local.kibana_domain_name
     kibana_user             = "kibana-${local.env}"
-    kibana_password         = local.elk.enabled ? random_string.kibana_password[0].result : "password"
+    kibana_password         = random_string.kibana_password[count.index].result
   }
 }
 
@@ -285,19 +286,19 @@ resource "helm_release" "elk" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.elk.rendered
+    data.template_file.elk[count.index].rendered
   ]
 
 }
 
 output "kibana_domain_name" {
-  value       = local.kibana_domain_name
+  value       = local.elk.enabled ? local.kibana_domain_name : null
   description = "Kibana dashboards address"
 }
 
 output "apm_domain_name" {
-  value       = local.apm_domain_name
-  description = ""
+  value       = local.elk.enabled ? local.apm_domain_name : null
+  description = "APM domain name"
 }
 
 output "elasticsearch_elastic_password" {

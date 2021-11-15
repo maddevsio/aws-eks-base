@@ -26,16 +26,18 @@ locals {
 }
 
 data "template_file" "cert_manager" {
-  template = file("${path.module}/templates/cert-manager-values.yaml")
+  count = local.cert_manager.enabled ? 1 : 0
 
+  template = file("${path.module}/templates/cert-manager-values.yaml")
   vars = {
-    role_arn = local.cert_manager.enabled ? module.aws_iam_cert_manager[0].role_arn : ""
+    role_arn = module.aws_iam_cert_manager[count.index].role_arn
   }
 }
 
 data "template_file" "cluster_issuer" {
-  template = file("${path.module}/templates/cluster-issuer-values.yaml")
+  count = local.cert_manager_cluster_issuer.enabled ? 1 : 0
 
+  template = file("${path.module}/templates/cluster-issuer-values.yaml")
   vars = {
     region  = local.region
     zone    = local.domain_name
@@ -44,8 +46,9 @@ data "template_file" "cluster_issuer" {
 }
 
 data "template_file" "certificate" {
-  template = file("${path.module}/templates/certificate-values.yaml")
+  count = local.cert_mananger_certificate.enabled ? 1 : 0
 
+  template = file("${path.module}/templates/certificate-values.yaml")
   vars = {
     domain_name = "*.${local.domain_name}"
     common_name = local.domain_name
@@ -179,7 +182,7 @@ resource "helm_release" "cert_manager" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.cert_manager.rendered,
+    data.template_file.cert_manager[count.index].rendered,
   ]
 
 }
@@ -195,7 +198,7 @@ resource "helm_release" "cluster_issuer" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.cluster_issuer.rendered,
+    data.template_file.cluster_issuer[count.index].rendered,
   ]
 
   # This dep needs for correct apply
@@ -213,7 +216,7 @@ resource "helm_release" "certificate" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.certificate.rendered,
+    data.template_file.certificate[count.index].rendered,
   ]
 
   # This dep needs for correct apply

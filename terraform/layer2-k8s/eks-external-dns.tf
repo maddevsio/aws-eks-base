@@ -10,10 +10,11 @@ locals {
 }
 
 data "template_file" "external_dns" {
-  template = file("${path.module}/templates/external-dns.yaml")
+  count = local.external_dns.enabled ? 1 : 0
 
+  template = file("${path.module}/templates/external-dns.yaml")
   vars = {
-    role_arn    = local.external_dns.enabled ? module.aws_iam_external_dns[0].role_arn : 0
+    role_arn    = module.aws_iam_external_dns[count.index].role_arn
     domain_name = local.domain_name
     zone_type   = "public"
   }
@@ -120,7 +121,7 @@ resource "helm_release" "external_dns" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.external_dns.rendered,
+    data.template_file.external_dns[count.index].rendered,
   ]
 
 }

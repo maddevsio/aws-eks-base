@@ -183,27 +183,27 @@ resource "helm_release" "prometheus_operator" {
 }
 
 output "grafana_domain_name" {
-  value       = local.grafana_domain_name
+  value       = local.kube_prometheus_stack.enabled ? local.grafana_domain_name : null
   description = "Grafana dashboards address"
 }
 
 output "alertmanager_domain_name" {
-  value       = local.alertmanager_domain_name
+  value       = local.kube_prometheus_stack.enabled ? local.alertmanager_domain_name : null
   description = "Alertmanager ui address"
 }
 
 output "prometheus_domain_name" {
-  value       = local.prometheus_domain_name
+  value       = local.kube_prometheus_stack.enabled ? local.prometheus_domain_name : null
   description = "Prometheus ui address"
 }
 
 output "grafana_admin_password" {
-  value       = local.grafana_password
+  value       = local.kube_prometheus_stack.enabled ? local.grafana_password : null
   sensitive   = true
   description = "Grafana admin password"
 }
 
 output "get_grafana_admin_password" {
-  value       = "kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonpath='{.data.admin-password}' | base64 --decode ; echo"
+  value       = local.kube_prometheus_stack.enabled ? "kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonpath='{.data.admin-password}' | base64 --decode ; echo" : null
   description = "Command which gets admin password from kubernetes secret"
 }
