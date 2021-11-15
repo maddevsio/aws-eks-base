@@ -12,6 +12,15 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+<a name="v5.0.0"></a>
+## [v5.0.0] - 2021-11-15
+ENHANCEMENTS:
+- Use flags to enabled/disable additional functionalities instead of using examples folder ([#176](https://github.com/maddevsio/aws-eks-base/issues/176))
+- Documentation and tf update ([#177](https://github.com/maddevsio/aws-eks-base/issues/177))
+
+
+
+
 <a name="v4.0.0"></a>
 ## [v4.0.0] - 2021-11-10
 FEATURES:
@@ -65,7 +74,8 @@ DOCS:
 
 
 
-[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v4.0.0...HEAD
+[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v5.0.0...HEAD
+[v5.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v4.0.0...v5.0.0
 [v4.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v3.0.0...v4.0.0
 [v3.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v2.0.0...v3.0.0
 [v2.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v1.1.0...v2.0.0
