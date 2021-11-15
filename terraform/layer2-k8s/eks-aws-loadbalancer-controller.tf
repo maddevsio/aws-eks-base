@@ -1,12 +1,15 @@
 locals {
-  aws-load-balancer-controller = {
-    chart         = local.helm_charts[index(local.helm_charts.*.id, "aws-load-balancer-controller")].chart
-    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "aws-load-balancer-controller")], "repository", null)
-    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "aws-load-balancer-controller")], "version", null)
+  aws_load_balancer_controller = {
+    name          = local.helm_releases[index(local.helm_releases.*.id, "aws-load-balancer-controller")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "aws-load-balancer-controller")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "aws-load-balancer-controller")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "aws-load-balancer-controller")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "aws-load-balancer-controller")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "aws-load-balancer-controller")].namespace
   }
   alb_ingress_controller = templatefile("${path.module}/templates/alb-ingress-controller-values.yaml",
     {
-      role_arn     = var.aws_loadbalancer_controller_enable ? module.aws_iam_aws_loadbalancer_controller[0].role_arn : "",
+      role_arn     = local.aws_load_balancer_controller.enabled ? module.aws_iam_aws_loadbalancer_controller[0].role_arn : "",
       region       = local.region,
       cluster_name = local.eks_cluster_id,
       vpc_id       = local.vpc_id
@@ -15,10 +18,10 @@ locals {
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "aws_load_balancer_controller_namespace" {
-  count = var.aws_loadbalancer_controller_enable ? 1 : 0
+  count = local.aws_load_balancer_controller.enabled ? 1 : 0
 
   source = "../modules/kubernetes-namespace"
-  name   = "aws-load-balancer-controller"
+  name   = local.aws_load_balancer_controller.namespace
   network_policies = [
     {
       name         = "default-deny"
@@ -34,7 +37,7 @@ module "aws_load_balancer_controller_namespace" {
           {
             namespace_selector = {
               match_labels = {
-                name = "aws-load-balancer-controller"
+                name = local.aws_load_balancer_controller.namespace
               }
             }
           }
@@ -48,7 +51,7 @@ module "aws_load_balancer_controller_namespace" {
         match_expressions = {
           key      = "app.kubernetes.io/name"
           operator = "In"
-          values   = ["aws-load-balancer-controller"]
+          values   = [local.aws_load_balancer_controller.name]
         }
       }
       ingress = {
@@ -89,10 +92,10 @@ module "aws_load_balancer_controller_namespace" {
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
 module "aws_iam_aws_loadbalancer_controller" {
-  count = var.aws_loadbalancer_controller_enable ? 1 : 0
+  count = local.aws_load_balancer_controller.enabled ? 1 : 0
 
   source            = "../modules/aws-iam-eks-trusted"
-  name              = "${local.name}-alb-ingress"
+  name              = "${local.name}-aws-lb-controller"
   region            = local.region
   oidc_provider_arn = local.eks_oidc_provider_arn
   policy = jsonencode({
@@ -305,16 +308,17 @@ module "aws_iam_aws_loadbalancer_controller" {
 }
 
 resource "helm_release" "aws_loadbalancer_controller" {
-  count = var.aws_loadbalancer_controller_enable ? 1 : 0
+  count = local.aws_load_balancer_controller.enabled ? 1 : 0
 
-  name        = "aws-load-balancer-controller"
-  chart       = local.aws-load-balancer-controller.chart
-  repository  = local.aws-load-balancer-controller.repository
-  version     = local.aws-load-balancer-controller.chart_version
+  name        = local.aws_load_balancer_controller.name
+  chart       = local.aws_load_balancer_controller.chart
+  repository  = local.aws_load_balancer_controller.repository
+  version     = local.aws_load_balancer_controller.chart_version
   namespace   = module.aws_load_balancer_controller_namespace[count.index].name
   max_history = var.helm_release_history_size
 
   values = [
     local.alb_ingress_controller
   ]
+
 }

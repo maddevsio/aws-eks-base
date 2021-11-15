@@ -1,16 +1,20 @@
 locals {
-  cluster-autoscaler = {
-    chart         = local.helm_charts[index(local.helm_charts.*.id, "cluster-autoscaler")].chart
-    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "cluster-autoscaler")], "repository", null)
-    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "cluster-autoscaler")], "version", null)
+  cluster_autoscaler = {
+    name          = local.helm_releases[index(local.helm_releases.*.id, "cluster-autoscaler")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "cluster-autoscaler")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "cluster-autoscaler")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "cluster-autoscaler")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "cluster-autoscaler")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "cluster-autoscaler")].namespace
   }
 }
 
 data "template_file" "cluster_autoscaler" {
-  template = file("${path.module}/templates/cluster-autoscaler-values.yaml")
+  count = local.cluster_autoscaler.enabled ? 1 : 0
 
+  template = file("${path.module}/templates/cluster-autoscaler-values.yaml")
   vars = {
-    role_arn     = module.aws_iam_autoscaler.role_arn
+    role_arn     = module.aws_iam_autoscaler[count.index].role_arn
     region       = local.region
     cluster_name = local.eks_cluster_id
     version      = var.cluster_autoscaler_version
@@ -19,8 +23,10 @@ data "template_file" "cluster_autoscaler" {
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "cluster_autoscaler_namespace" {
+  count = local.cluster_autoscaler.enabled ? 1 : 0
+
   source = "../modules/kubernetes-namespace"
-  name   = "cluster-autoscaler"
+  name   = local.cluster_autoscaler.namespace
   network_policies = [
     {
       name         = "default-deny"
@@ -36,7 +42,7 @@ module "cluster_autoscaler_namespace" {
           {
             namespace_selector = {
               match_labels = {
-                name = "cluster-autoscaler"
+                name = local.cluster_autoscaler.namespace
               }
             }
           }
@@ -93,8 +99,9 @@ module "cluster_autoscaler_namespace" {
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
 module "aws_iam_autoscaler" {
-  source = "../modules/aws-iam-eks-trusted"
+  count = local.cluster_autoscaler.enabled ? 1 : 0
 
+  source            = "../modules/aws-iam-eks-trusted"
   name              = "${local.name}-autoscaler"
   region            = local.region
   oidc_provider_arn = local.eks_oidc_provider_arn
@@ -134,15 +141,17 @@ module "aws_iam_autoscaler" {
 }
 
 resource "helm_release" "cluster_autoscaler" {
-  name        = "cluster-autoscaler"
-  chart       = local.cluster-autoscaler.chart
-  repository  = local.cluster-autoscaler.repository
-  version     = local.cluster-autoscaler.chart_version
-  namespace   = module.cluster_autoscaler_namespace.name
+  count = local.cluster_autoscaler.enabled ? 1 : 0
+
+  name        = local.cluster_autoscaler.name
+  chart       = local.cluster_autoscaler.chart
+  repository  = local.cluster_autoscaler.repository
+  version     = local.cluster_autoscaler.chart_version
+  namespace   = module.cluster_autoscaler_namespace[count.index].name
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.cluster_autoscaler.rendered,
+    data.template_file.cluster_autoscaler[count.index].rendered,
   ]
 
   depends_on = [helm_release.prometheus_operator]

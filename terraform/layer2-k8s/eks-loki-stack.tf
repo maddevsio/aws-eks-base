@@ -1,25 +1,20 @@
 locals {
-  loki-stack = {
-    chart         = local.helm_charts[index(local.helm_charts.*.id, "loki-stack")].chart
-    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "loki-stack")], "repository", null)
-    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "loki-stack")], "version", null)
+  loki_stack = {
+    name          = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].namespace
   }
-  grafana_loki_password = random_string.grafana_loki_password.result
-
-  loki_stack_template = templatefile("${path.module}/templates/loki-stack-values.yaml",
-    {
-      grafana_domain_name  = "grafana-${local.domain_suffix}"
-      grafana_password     = local.grafana_loki_password
-      gitlab_client_id     = local.grafana_gitlab_client_id
-      gitlab_client_secret = local.grafana_gitlab_client_secret
-      gitlab_group         = local.grafana_gitlab_group
-  })
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "loki_namespace" {
+  count = local.loki_stack.enabled ? 1 : 0
+
   source = "../modules/kubernetes-namespace"
-  name   = "loki"
+  name   = local.loki_stack.namespace
   network_policies = [
     {
       name         = "default-deny"
@@ -35,24 +30,7 @@ module "loki_namespace" {
           {
             namespace_selector = {
               match_labels = {
-                name = "loki"
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      name         = "allow-ingress"
-      policy_types = ["Ingress"]
-      pod_selector = {}
-      ingress = {
-
-        from = [
-          {
-            namespace_selector = {
-              match_labels = {
-                name = "ingress-nginx"
+                name = local.loki_stack.namespace
               }
             }
           }
@@ -66,13 +44,17 @@ module "loki_namespace" {
         match_expressions = {
           key      = "release"
           operator = "In"
-          values   = ["loki-stack"]
+          values   = [local.loki_stack.name]
         }
       }
       ingress = {
         ports = [
           {
             port     = "http-metrics"
+            protocol = "TCP"
+          },
+          {
+            port     = "3100"
             protocol = "TCP"
           }
         ]
@@ -107,22 +89,18 @@ module "loki_namespace" {
   ]
 }
 
-resource "random_string" "grafana_loki_password" {
-  length  = 20
-  special = true
-}
-
 resource "helm_release" "loki_stack" {
-  name        = "loki-stack"
-  chart       = local.loki-stack.chart
-  repository  = local.loki-stack.repository
-  version     = local.loki-stack.chart_version
-  namespace   = module.loki_namespace.name
-  wait        = false
+  count = local.loki_stack.enabled ? 1 : 0
+
+  name        = local.loki_stack.name
+  chart       = local.loki_stack.chart
+  repository  = local.loki_stack.repository
+  version     = local.loki_stack.chart_version
+  namespace   = module.loki_namespace[count.index].name
   max_history = var.helm_release_history_size
 
   values = [
-    local.loki_stack_template
+    file("${path.module}/templates/loki-stack-values.yaml")
   ]
 
   depends_on = [helm_release.prometheus_operator]

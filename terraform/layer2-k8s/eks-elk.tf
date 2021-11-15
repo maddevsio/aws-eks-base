@@ -1,33 +1,37 @@
 locals {
   elk = {
-    chart         = local.helm_charts[index(local.helm_charts.*.id, "elk")].chart
-    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "elk")], "repository", null)
-    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "elk")], "version", null)
+    name          = local.helm_releases[index(local.helm_releases.*.id, "elk")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "elk")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "elk")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "elk")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "elk")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "elk")].namespace
   }
   kibana_domain_name = "kibana-${local.domain_suffix}"
   apm_domain_name    = "apm-${local.domain_suffix}"
 }
 
 data "template_file" "elk" {
-  template = file("${path.module}/templates/elk-values.yaml")
+  count = local.elk.enabled ? 1 : 0
 
+  template = file("${path.module}/templates/elk-values.yaml")
   vars = {
-    bucket_name             = aws_s3_bucket.elastic_stack.id
-    storage_class_name      = kubernetes_storage_class.elk.id
+    bucket_name             = aws_s3_bucket.elastic_stack[count.index].id
     snapshot_retention_days = var.elk_snapshot_retention_days
     index_retention_days    = var.elk_index_retention_days
     apm_domain_name         = local.apm_domain_name
     kibana_domain_name      = local.kibana_domain_name
     kibana_user             = "kibana-${local.env}"
-    kibana_password         = random_string.kibana_password.result
-    kibana_base64_creds     = base64encode("kibana-${local.env}:${random_string.kibana_password.result}")
+    kibana_password         = random_string.kibana_password[count.index].result
   }
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "elk_namespace" {
+  count = local.elk.enabled ? 1 : 0
+
   source = "../modules/kubernetes-namespace"
-  name   = "elk"
+  name   = local.elk.namespace
   network_policies = [
     {
       name         = "default-deny"
@@ -43,7 +47,7 @@ module "elk_namespace" {
           {
             namespace_selector = {
               match_labels = {
-                name = "elk"
+                name = local.elk.namespace
               }
             }
           }
@@ -60,7 +64,7 @@ module "elk_namespace" {
           {
             namespace_selector = {
               match_labels = {
-                name = "ingress-nginx"
+                name = local.ingress_nginx.namespace
               }
             }
           }
@@ -107,19 +111,21 @@ module "elk_namespace" {
 }
 
 module "elastic_tls" {
-  source = "../modules/self-signed-certificate"
+  count = local.elk.enabled ? 1 : 0
 
+  source                = "../modules/self-signed-certificate"
   name                  = local.name
   common_name           = "elasticsearch-master"
-  dns_names             = [local.domain_name, "*.${local.domain_name}", "elasticsearch-master", "elasticsearch-master.${module.elk_namespace.name}", "kibana", "kibana.${module.elk_namespace.name}", "kibana-kibana", "kibana-kibana.${module.elk_namespace.name}", "logstash", "logstash.${module.elk_namespace.name}"]
+  dns_names             = [local.domain_name, "*.${local.domain_name}", "elasticsearch-master", "elasticsearch-master.${module.elk_namespace[count.index].name}", "kibana", "kibana.${module.elk_namespace[count.index].name}", "kibana-kibana", "kibana-kibana.${module.elk_namespace[count.index].name}", "logstash", "logstash.${module.elk_namespace[count.index].name}"]
   validity_period_hours = 8760
   early_renewal_hours   = 336
 }
 
 module "aws_iam_elastic_stack" {
-  source = "../modules/aws-iam-user-with-policy"
+  count = local.elk.enabled ? 1 : 0
 
-  name = "${local.name}-elk"
+  source = "../modules/aws-iam-user-with-policy"
+  name   = "${local.name}-${local.elk.name}"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -132,7 +138,7 @@ module "aws_iam_elastic_stack" {
           "s3:ListBucketVersions"
         ],
         "Resource" : [
-          "arn:aws:s3:::${local.elastic_stack_bucket_name}"
+          "arn:aws:s3:::${aws_s3_bucket.elastic_stack[count.index].id}"
         ]
       },
       {
@@ -145,7 +151,7 @@ module "aws_iam_elastic_stack" {
           "s3:ListMultipartUploadParts"
         ],
         "Resource" : [
-          "arn:aws:s3:::${local.elastic_stack_bucket_name}/*"
+          "arn:aws:s3:::${aws_s3_bucket.elastic_stack[count.index].id}/*"
         ]
       }
     ]
@@ -153,82 +159,81 @@ module "aws_iam_elastic_stack" {
 }
 
 ### ADDITIONAL RESOURCES FOR ELK
-
-resource "kubernetes_storage_class" "elk" {
-  metadata {
-    name = "elk"
-  }
-  storage_provisioner    = "kubernetes.io/aws-ebs"
-  reclaim_policy         = "Retain"
-  allow_volume_expansion = true
-  parameters = {
-    type      = "gp2"
-    encrypted = true
-    fsType    = "ext4"
-  }
-}
-
 resource "kubernetes_secret" "elasticsearch_credentials" {
+  count = local.elk.enabled ? 1 : 0
+
   metadata {
     name      = "elastic-credentials"
-    namespace = module.elk_namespace.name
+    namespace = module.elk_namespace[count.index].name
   }
 
   data = {
     "username" = "elastic"
-    "password" = random_string.elasticsearch_password.result
+    "password" = random_string.elasticsearch_password[count.index].result
   }
 }
 
 resource "kubernetes_secret" "elasticsearch_certificates" {
+  count = local.elk.enabled ? 1 : 0
+
   metadata {
     name      = "elastic-certificates"
-    namespace = module.elk_namespace.name
+    namespace = module.elk_namespace[count.index].name
   }
 
   data = {
-    "tls.crt" = module.elastic_tls.cert_pem
-    "tls.key" = module.elastic_tls.private_key_pem
-    "tls.p8"  = module.elastic_tls.p8
+    "tls.crt" = module.elastic_tls[count.index].cert_pem
+    "tls.key" = module.elastic_tls[count.index].private_key_pem
+    "tls.p8"  = module.elastic_tls[count.index].p8
   }
 }
 
 resource "kubernetes_secret" "elasticsearch_s3_user_creds" {
+  count = local.elk.enabled ? 1 : 0
+
   metadata {
     name      = "elasticsearch-s3-user-creds"
-    namespace = module.elk_namespace.name
+    namespace = module.elk_namespace[count.index].name
   }
 
   data = {
-    "aws_s3_user_access_key" = module.aws_iam_elastic_stack.access_key_id
-    "aws_s3_user_secret_key" = module.aws_iam_elastic_stack.access_secret_key
+    "aws_s3_user_access_key" = module.aws_iam_elastic_stack[count.index].access_key_id
+    "aws_s3_user_secret_key" = module.aws_iam_elastic_stack[count.index].access_secret_key
   }
 }
 
 resource "random_string" "elasticsearch_password" {
+  count = local.elk.enabled ? 1 : 0
+
   length  = 32
   special = false
   upper   = true
 }
 
 resource "kubernetes_secret" "kibana_enc_key" {
+  count = local.elk.enabled ? 1 : 0
+
   metadata {
     name      = "kibana-encryption-key"
-    namespace = module.elk_namespace.name
+    namespace = module.elk_namespace[count.index].name
   }
 
   data = {
-    "encryptionkey" = random_string.kibana_enc_key.result
+    "encryptionkey" = random_string.kibana_enc_key[count.index].result
   }
 }
 
 resource "random_string" "kibana_enc_key" {
+  count = local.elk.enabled ? 1 : 0
+
   length  = 32
   special = false
   upper   = true
 }
 
 resource "random_string" "kibana_password" {
+  count = local.elk.enabled ? 1 : 0
+
   length  = 32
   special = false
   upper   = true
@@ -236,9 +241,11 @@ resource "random_string" "kibana_password" {
 
 #tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "elastic_stack" {
-  bucket = "${local.name}-elastic-stack"
-  acl    = "private"
+  count = local.elk.enabled ? 1 : 0
 
+  bucket        = "${local.name}-elastic-stack"
+  acl           = "private"
+  force_destroy = true
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
@@ -254,7 +261,9 @@ resource "aws_s3_bucket" "elastic_stack" {
 }
 
 resource "aws_s3_bucket_public_access_block" "elastic_stack_public_access_block" {
-  bucket = aws_s3_bucket.elastic_stack.id
+  count = local.elk.enabled ? 1 : 0
+
+  bucket = aws_s3_bucket.elastic_stack[count.index].id
   # Block new public ACLs and uploading public objects
   block_public_acls = true
   # Retroactively remove public access granted through public ACLs
@@ -266,37 +275,39 @@ resource "aws_s3_bucket_public_access_block" "elastic_stack_public_access_block"
 }
 
 resource "helm_release" "elk" {
-  name        = "elk"
+  count = local.elk.enabled ? 1 : 0
+
+  name        = local.elk.name
   chart       = local.elk.chart
   repository  = local.elk.repository
   version     = local.elk.chart_version
-  namespace   = module.elk_namespace.name
-  wait        = false
+  namespace   = module.elk_namespace[count.index].name
+  timeout     = "900"
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.elk.rendered
+    data.template_file.elk[count.index].rendered
   ]
 
 }
 
 output "kibana_domain_name" {
-  value       = local.kibana_domain_name
+  value       = local.elk.enabled ? local.kibana_domain_name : null
   description = "Kibana dashboards address"
 }
 
 output "apm_domain_name" {
-  value       = local.apm_domain_name
-  description = ""
+  value       = local.elk.enabled ? local.apm_domain_name : null
+  description = "APM domain name"
 }
 
 output "elasticsearch_elastic_password" {
-  value       = random_string.elasticsearch_password.result
+  value       = local.elk.enabled ? random_string.elasticsearch_password[0].result : null
   sensitive   = true
   description = "Password of the superuser 'elastic'"
 }
 
 output "elastic_stack_bucket_name" {
-  value       = aws_s3_bucket.elastic_stack.id
+  value       = local.elk.enabled ? aws_s3_bucket.elastic_stack[0].id : null
   description = "Name of the bucket for ELKS snapshots"
 }

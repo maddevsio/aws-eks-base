@@ -1,21 +1,26 @@
 locals {
-  gitlab-runner = {
-    chart         = local.helm_charts[index(local.helm_charts.*.id, "gitlab-runner")].chart
-    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "gitlab-runner")], "repository", null)
-    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "gitlab-runner")], "version", null)
+  gitlab_runner = {
+    name          = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].namespace
   }
   gitlab_runner_template = templatefile("${path.module}/templates/gitlab-runner-values.yaml",
     {
       registration_token = local.gitlab_registration_token
-      namespace          = module.ci_namespace.name
-      role_arn           = module.aws_iam_gitlab_runner.role_arn
-      bucket_name        = aws_s3_bucket.gitlab_runner_cache.id
+      namespace          = local.gitlab_runner.enabled ? module.gitlab_runner_namespace[0].name : "default"
+      role_arn           = local.gitlab_runner.enabled ? module.aws_iam_gitlab_runner[0].role_arn : ""
+      bucket_name        = local.gitlab_runner.enabled ? aws_s3_bucket.gitlab_runner_cache[0].id : "bucket_name"
       region             = local.region
   })
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "gitlab_runner_namespace" {
+  count = local.gitlab_runner.enabled ? 1 : 0
+
   source = "../modules/kubernetes-namespace"
   name   = "gitlab-runner"
   network_policies = [
@@ -62,9 +67,11 @@ module "gitlab_runner_namespace" {
 
 #tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "gitlab_runner_cache" {
-  bucket = "${local.name}-gitlab-runner-cache"
-  acl    = "private"
+  count = local.gitlab_runner.enabled ? 1 : 0
 
+  bucket        = "${local.name}-gitlab-runner-cache"
+  acl           = "private"
+  force_destroy = true
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
@@ -73,27 +80,27 @@ resource "aws_s3_bucket" "gitlab_runner_cache" {
     }
   }
 
-  lifecycle_rule {
-    id      = "gitlab-runner-cache-lifecycle-rule"
-    enabled = true
-
-    tags = {
-      "rule" = "gitlab-runner-cache-lifecycle-rule"
-    }
-
-    expiration {
-      days = 120
-    }
-  }
-
   tags = {
     Name        = "${local.name}-gitlab-runner-cache"
     Environment = local.env
   }
+
+  lifecycle_rule {
+    id      = "gitlab-runner-cache-lifecycle-rule"
+    enabled = true
+    tags = {
+      "rule" = "gitlab-runner-cache-lifecycle-rule"
+    }
+    expiration {
+      days = 120
+    }
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "gitlab_runner_cache_public_access_block" {
-  bucket = aws_s3_bucket.gitlab_runner_cache.id
+  count = local.gitlab_runner.enabled ? 1 : 0
+
+  bucket = aws_s3_bucket.gitlab_runner_cache[count.index].id
   # Block new public ACLs and uploading public objects
   block_public_acls = true
   # Retroactively remove public access granted through public ACLs
@@ -105,9 +112,10 @@ resource "aws_s3_bucket_public_access_block" "gitlab_runner_cache_public_access_
 }
 
 module "aws_iam_gitlab_runner" {
-  source = "../modules/aws-iam-eks-trusted"
+  count = local.gitlab_runner.enabled ? 1 : 0
 
-  name              = "${local.name}-ci"
+  source            = "../modules/aws-iam-eks-trusted"
+  name              = "${local.name}-${local.gitlab_runner.name}"
   region            = local.region
   oidc_provider_arn = local.eks_oidc_provider_arn
   policy = jsonencode({
@@ -136,8 +144,8 @@ module "aws_iam_gitlab_runner" {
           "s3:*"
         ],
         "Resource" : [
-          "arn:aws:s3:::${aws_s3_bucket.gitlab_runner_cache.id}",
-          "arn:aws:s3:::${aws_s3_bucket.gitlab_runner_cache.id}/*"
+          "arn:aws:s3:::${aws_s3_bucket.gitlab_runner_cache[count.index].id}",
+          "arn:aws:s3:::${aws_s3_bucket.gitlab_runner_cache[count.index].id}/*"
         ]
       }
     ]
@@ -145,12 +153,13 @@ module "aws_iam_gitlab_runner" {
 }
 
 resource "helm_release" "gitlab_runner" {
-  name        = "gitlab-runner"
-  chart       = local.gitlab-runner.chart
-  repository  = local.gitlab-runner.repository
-  version     = local.gitlab-runner.chart_version
-  namespace   = module.gitlab_runner_namespace.name
-  wait        = false
+  count = local.gitlab_runner.enabled ? 1 : 0
+
+  name        = local.gitlab_runner.name
+  chart       = local.gitlab_runner.chart
+  repository  = local.gitlab_runner.repository
+  version     = local.gitlab_runner.chart_version
+  namespace   = module.gitlab_runner_namespace[count.index].name
   max_history = var.helm_release_history_size
 
   values = [
@@ -160,6 +169,6 @@ resource "helm_release" "gitlab_runner" {
 }
 
 output "gitlab_runner_cache_bucket_name" {
-  value       = aws_s3_bucket.gitlab_runner_cache.id
+  value       = local.gitlab_runner.enabled ? aws_s3_bucket.gitlab_runner_cache[0].id : null
   description = "Name of the s3 bucket for gitlab-runner cache"
 }

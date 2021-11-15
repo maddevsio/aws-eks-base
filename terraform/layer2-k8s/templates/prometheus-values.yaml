@@ -17,6 +17,7 @@ prometheus:
     storageSpec:
       volumeClaimTemplate:
         spec:
+          storageClassName: advanced
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
@@ -87,8 +88,6 @@ grafana:
 
   persistence:
     enabled: false
-    accessModes: ["ReadWriteOnce"]
-    size: 5Gi
 
   sidecar:
     datasources:
@@ -105,7 +104,7 @@ grafana:
             defaultRegion: "${default_region}"
         - name: Loki
           type: loki
-          url: http://loki-stack:3100
+          url: http://loki-stack.loki:3100
           jsonData:
             maxLines: 1000
 
@@ -179,6 +178,7 @@ alertmanager:
     storage:
       volumeClaimTemplate:
         spec:
+          storageClassName: advanced
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:

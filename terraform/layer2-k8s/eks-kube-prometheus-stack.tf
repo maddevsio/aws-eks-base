@@ -1,10 +1,13 @@
 locals {
-  kube-prometheus-stack = {
-    chart         = local.helm_charts[index(local.helm_charts.*.id, "kube-prometheus-stack")].chart
-    repository    = lookup(local.helm_charts[index(local.helm_charts.*.id, "kube-prometheus-stack")], "repository", null)
-    chart_version = lookup(local.helm_charts[index(local.helm_charts.*.id, "kube-prometheus-stack")], "version", null)
+  kube_prometheus_stack = {
+    name          = local.helm_releases[index(local.helm_releases.*.id, "kube-prometheus-stack")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "kube-prometheus-stack")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "kube-prometheus-stack")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "kube-prometheus-stack")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "kube-prometheus-stack")].version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "kube-prometheus-stack")].namespace
   }
-  grafana_password         = random_string.grafana_password.result
+  grafana_password         = local.kube_prometheus_stack.enabled ? random_string.grafana_password[0].result : "test123"
   grafana_domain_name      = "grafana-${local.domain_suffix}"
   prometheus_domain_name   = "prometheus-${local.domain_suffix}"
   alertmanager_domain_name = "alertmanager-${local.domain_suffix}"
@@ -17,7 +20,7 @@ locals {
       default_region             = local.region
       grafana_domain_name        = local.grafana_domain_name
       grafana_password           = local.grafana_password
-      role_arn                   = module.aws_iam_grafana.role_arn
+      role_arn                   = local.kube_prometheus_stack.enabled ? module.aws_iam_grafana[0].role_arn : ""
       gitlab_client_id           = local.grafana_gitlab_client_id
       gitlab_client_secret       = local.grafana_gitlab_client_secret
       gitlab_group               = local.grafana_gitlab_group
@@ -28,8 +31,10 @@ locals {
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "monitoring_namespace" {
+  count = local.kube_prometheus_stack.enabled ? 1 : 0
+
   source = "../modules/kubernetes-namespace"
-  name   = "monitoring"
+  name   = local.kube_prometheus_stack.namespace
   network_policies = [
     {
       name         = "default-deny"
@@ -45,7 +50,7 @@ module "monitoring_namespace" {
           {
             namespace_selector = {
               match_labels = {
-                name = "monitoring"
+                name = local.kube_prometheus_stack.namespace
               }
             }
           }
@@ -62,7 +67,7 @@ module "monitoring_namespace" {
           {
             namespace_selector = {
               match_labels = {
-                name = "ingress-nginx"
+                name = local.ingress_nginx.namespace
               }
             }
           }
@@ -74,9 +79,9 @@ module "monitoring_namespace" {
       policy_types = ["Ingress"]
       pod_selector = {
         match_expressions = {
-          key      = "app.kubernetes.io/name"
+          key      = "app"
           operator = "In"
-          values   = ["kube-prometheus-stack-operator"]
+          values   = ["${local.kube_prometheus_stack.name}-operator"]
         }
       }
       ingress = {
@@ -116,8 +121,9 @@ module "monitoring_namespace" {
 }
 
 module "aws_iam_grafana" {
-  source = "../modules/aws-iam-eks-trusted"
+  count = local.kube_prometheus_stack.enabled ? 1 : 0
 
+  source            = "../modules/aws-iam-eks-trusted"
   name              = "${local.name}-grafana"
   region            = local.region
   oidc_provider_arn = local.eks_oidc_provider_arn
@@ -155,46 +161,49 @@ module "aws_iam_grafana" {
 }
 
 resource "random_string" "grafana_password" {
+  count   = local.kube_prometheus_stack.enabled ? 1 : 0
   length  = 20
   special = true
 }
 
 resource "helm_release" "prometheus_operator" {
-  name        = "kube-prometheus-stack"
-  chart       = local.kube-prometheus-stack.chart
-  repository  = local.kube-prometheus-stack.repository
-  version     = local.kube-prometheus-stack.chart_version
-  namespace   = module.monitoring_namespace.name
-  wait        = false
+  count = local.kube_prometheus_stack.enabled ? 1 : 0
+
+  name        = local.kube_prometheus_stack.name
+  chart       = local.kube_prometheus_stack.chart
+  repository  = local.kube_prometheus_stack.repository
+  version     = local.kube_prometheus_stack.chart_version
+  namespace   = module.monitoring_namespace[count.index].name
   max_history = var.helm_release_history_size
 
   values = [
     local.kube_prometheus_stack_template
   ]
+
 }
 
 output "grafana_domain_name" {
-  value       = local.grafana_domain_name
+  value       = local.kube_prometheus_stack.enabled ? local.grafana_domain_name : null
   description = "Grafana dashboards address"
 }
 
 output "alertmanager_domain_name" {
-  value       = local.alertmanager_domain_name
+  value       = local.kube_prometheus_stack.enabled ? local.alertmanager_domain_name : null
   description = "Alertmanager ui address"
 }
 
 output "prometheus_domain_name" {
-  value       = local.prometheus_domain_name
+  value       = local.kube_prometheus_stack.enabled ? local.prometheus_domain_name : null
   description = "Prometheus ui address"
 }
 
 output "grafana_admin_password" {
-  value       = local.grafana_password
+  value       = local.kube_prometheus_stack.enabled ? local.grafana_password : null
   sensitive   = true
   description = "Grafana admin password"
 }
 
 output "get_grafana_admin_password" {
-  value       = "kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonpath='{.data.admin-password}' | base64 --decode ; echo"
+  value       = local.kube_prometheus_stack.enabled ? "kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonpath='{.data.admin-password}' | base64 --decode ; echo" : null
   description = "Command which gets admin password from kubernetes secret"
 }

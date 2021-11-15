@@ -11,6 +11,7 @@ loki:
     accessModes:
       - ReadWriteOnce
     size: 10Gi
+    storageClassName: advanced
 
   serviceMonitor:
     enabled: true
@@ -37,85 +38,3 @@ fluent-bit:
 
 grafana:
   enabled: false
-  sidecar:
-    datasources:
-      enabled: true
-  image:
-    tag: 7.2.1
-
-  ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: nginx
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    path: /
-    hosts:
-      - ${grafana_domain_name}
-    tls:
-    - hosts:
-      - ${grafana_domain_name}
-
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: eks.amazonaws.com/capacityType
-            operator: In
-            values:
-              - SPOT
-
-  persistence:
-    type: pvc
-    enabled: true
-    # storageClassName: default
-    accessModes:
-      - ReadWriteOnce
-    size: 10Gi
-
-  adminUser: admin
-  adminPassword: "${grafana_password}"
-
-  env:
-    # all values must be quoted
-    GF_SERVER_ROOT_URL: "https://${grafana_domain_name}"
-    GF_USERS_ALLOW_SIGN_UP: "false"
-    GF_AUTH_GITLAB_ENABLED: "true"
-    GF_AUTH_GITLAB_ALLOW_SIGN_UP: "true"
-    GF_AUTH_GITLAB_CLIENT_ID: "${gitlab_client_id}"
-    GF_AUTH_GITLAB_CLIENT_SECRET: "${gitlab_client_secret}"
-    GF_AUTH_GITLAB_SCOPES: "api"
-    GF_AUTH_GITLAB_AUTH_URL: "https://gitlab.com/oauth/authorize"
-    GF_AUTH_GITLAB_TOKEN_URL: "https://gitlab.com/oauth/token"
-    GF_AUTH_GITLAB_API_URL: "https://gitlab.com/api/v4"
-    GF_AUTH_GITLAB_ALLOWED_GROUPS: "${gitlab_group}"
-
-  datasources:
-    datasources.yaml:
-      apiVersion: 1
-      datasources:
-      - name: Loki
-        type: loki
-        url: http://loki-stack:3100
-        jsonData:
-          maxLines: 1000
-
-  dashboardProviders:
-    dashboardproviders.yaml:
-      apiVersion: 1
-      providers:
-      - name: 'logs'
-        orgId: 1
-        folder: 'logs'
-        type: file
-        disableDeletion: true
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/logs
-
-  dashboards:
-    logs:
-      logs:
-        ## Dashboard for quick search application logs for loki with two datasources loki and prometheus - https://grafana.com/grafana/dashboards/12019
-        url: https://s3.amazonaws.com/grafana-dashboards.maddevs.org/common/aws-eks-base/loki-dashboard-quick-search.json
-

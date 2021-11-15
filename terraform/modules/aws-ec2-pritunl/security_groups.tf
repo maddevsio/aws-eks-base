@@ -1,5 +1,6 @@
 module "ec2_sg" {
-  source = "terraform-aws-modules/security-group/aws"
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "4.4.0"
 
   name        = var.name
   description = "${var.name} security group"
@@ -20,7 +21,8 @@ module "ec2_sg" {
 }
 
 module "efs_sg" {
-  source = "terraform-aws-modules/security-group/aws"
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "4.4.0"
 
   name        = "${var.name}-efs"
   description = "${var.name} efs security group"
@@ -31,7 +33,7 @@ module "efs_sg" {
       protocol                 = "6"
       from_port                = 2049
       to_port                  = 2049
-      source_security_group_id = module.ec2_sg.this_security_group_id
+      source_security_group_id = module.ec2_sg.security_group_id
     }
   ]
 }
