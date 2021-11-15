@@ -7,13 +7,26 @@ locals {
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "aws-load-balancer-controller")].version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "aws-load-balancer-controller")].namespace
   }
-  alb_ingress_controller = templatefile("${path.module}/templates/alb-ingress-controller-values.yaml",
-    {
-      role_arn     = local.aws_load_balancer_controller.enabled ? module.aws_iam_aws_loadbalancer_controller[0].role_arn : "",
-      region       = local.region,
-      cluster_name = local.eks_cluster_id,
-      vpc_id       = local.vpc_id
-  })
+  aws_load_balancer_controller_values = <<VALUES
+clusterName: ${local.eks_cluster_id}
+region: ${local.region}
+vpcId: ${local.eks_cluster_id}
+
+serviceAccount:
+  create: true
+  annotations:
+     "eks.amazonaws.com/role-arn": ${local.aws_load_balancer_controller.enabled ? module.aws_iam_aws_loadbalancer_controller[0].role_arn : ""}
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: eks.amazonaws.com/capacityType
+          operator: In
+          values:
+            - ON_DEMAND
+VALUES
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
@@ -318,7 +331,7 @@ resource "helm_release" "aws_loadbalancer_controller" {
   max_history = var.helm_release_history_size
 
   values = [
-    local.alb_ingress_controller
+    local.aws_load_balancer_controller_values
   ]
 
 }
