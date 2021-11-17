@@ -4,9 +4,16 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "aws-calico")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "aws-calico")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "aws-calico")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "aws-calico")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "aws-calico")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "aws-calico")].namespace
   }
+  aws_calico_values = <<VALUES
+calico:
+  typha:
+    logseverity: Warning #Debug, Info, Warning, Error, Fatal
+  node:
+    logseverity: Warning #Debug, Info, Warning, Error, Fatal
+VALUES
 }
 
 resource "helm_release" "calico_daemonset" {
@@ -20,7 +27,7 @@ resource "helm_release" "calico_daemonset" {
   max_history = var.helm_release_history_size
 
   values = [
-    file("${path.module}/templates/calico-values.yaml")
+    local.aws_calico_values
   ]
 
 }
