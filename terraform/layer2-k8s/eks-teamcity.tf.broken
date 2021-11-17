@@ -6,21 +6,67 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "teamcity")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "teamcity")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "teamcity")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "teamcity")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "teamcity")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "teamcity")].namespace
   }
-  teamcity_domain_name = "teamcity-${local.domain_suffix}"
-}
+  teamcity_domain_name    = "teamcity-${local.domain_suffix}"
+  teamcity_values         = <<VALUES
+serviceAccountName: ${module.eks_rbac_teamcity.service_account_name}
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: 2000m
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  path: /
+  hosts:
+    - ${local.teamcity_domain_name}
 
-data "template_file" "teamcity" {
-  count = local.teamcity.enabled ? 1 : 0
-
-  template = file("${path.module}/templates/teamcity-values.yaml")
-  vars = {
-    domain_name          = local.teamcity_domain_name
-    storage_class_name   = kubernetes_storage_class.teamcity.id
-    service_account_name = module.eks_rbac_teamcity.service_account_name
-  }
+server:
+  replicaCount: 1
+  persistence:
+    type: pvc
+    enabled: true
+    storageClassName: advanced
+    accessModes:
+      - ReadWriteOnce
+    size: 50Gi
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: eks.amazonaws.com/capacityType
+            operator: In
+            values:
+              - ON_DEMAND
+VALUES
+  teamcity_agent_template = <<VALUES
+apiVersion: v1
+kind: Pod
+metadata:
+  name: teamcity-agent
+  namespace: teamcity-agent
+spec:
+  containers:
+  - name: teamcity-agent
+    image: halfb00t/teamcity-agent:2020.1.2
+    imagePullPolicy: IfNotPresent
+    env:
+    - name: DOCKER_IN_DOCKER
+      value: "start"
+    resources: {}
+  serviceAccountName: ${module.eks_rbac_teamcity.service_account_name}
+  nodeSelector:
+    nodegroup: spot
+  tolerations:
+  - key: "nodegroup"
+    operator: "Equal"
+    value: "ci"
+    effect: "NoSchedule"
+  securityContext:
+    privileged: true
+VALUES
 }
 
 data "template_file" "teamcity_agent" {
@@ -89,7 +135,7 @@ resource "helm_release" "teamcity" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.teamcity[count.index].rendered
+    local.teamcity_values
   ]
 }
 
@@ -103,5 +149,5 @@ output "teamcity_service_account_name" {
 }
 
 output "teamcity_agent_pod_template" {
-  value = local.teamcity.enabled ? data.template_file.teamcity_agent.rendered : null
+  value = local.teamcity.enabled ? local.teamcity_agent_template : null
 }
