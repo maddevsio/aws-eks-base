@@ -7,8 +7,8 @@ locals {
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].namespace
   }
-  ssl_certificate_arn          = var.nginx_ingress_ssl_terminator == "lb" ? data.terraform_remote_state.layer1-aws.outputs.ssl_certificate_arn : "ssl-certificate"
-  ingress_nginx_general_values = <<VALUES
+  ssl_certificate_arn                         = var.nginx_ingress_ssl_terminator == "lb" ? data.terraform_remote_state.layer1-aws.outputs.ssl_certificate_arn : "ssl-certificate"
+  ingress_nginx_general_values                = <<VALUES
 rbac:
   create: true
 controller:
@@ -31,7 +31,7 @@ controller:
             values:
               - ON_DEMAND
 VALUES
-  ingress_nginx_l7_values      = <<VALUES
+  ingress_loadbalancer_ssl_termination_values = <<VALUES
 controller:
   service:
     targetPorts:
@@ -51,7 +51,7 @@ controller:
     use-forwarded-headers: "true"
     set-real-ip-from: "${local.vpc_cidr}"
 VALUES
-  ingress_nginx_l4_values      = <<VALUES
+  ingress_pod_ssl_termination_values          = <<VALUES
 controller:
   extraArgs:
     default-ssl-certificate: "${local.ingress_nginx.enabled ? module.ingress_nginx_namespace[0].name : "default"}/nginx-tls"
@@ -224,7 +224,7 @@ resource "helm_release" "ingress_nginx" {
 
   values = [
     local.ingress_nginx_general_values,
-    var.nginx_ingress_ssl_terminator == "lb" ? local.ingress_nginx_l7_values : local.ingress_nginx_l4_values
+    var.nginx_ingress_ssl_terminator == "lb" ? local.ingress_loadbalancer_ssl_termination_values : local.ingress_pod_ssl_termination_values
   ]
 
   depends_on = [helm_release.prometheus_operator]
