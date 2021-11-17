@@ -343,7 +343,8 @@ kibana:
               name: elastic-credentials
               key: password
 VALUES
-  elk_filebeat_values         = <<VALUES
+  #tfsec:ignore:general-secrets-sensitive-in-attribute-value
+  elk_filebeat_values = <<VALUES
 filebeat:
   enabled: true
   filebeatConfig:
@@ -401,7 +402,8 @@ filebeat:
     - effect: NoSchedule
       operator: Exists
 VALUES
-  elk_apm_values              = <<VALUES
+  #tfsec:ignore:general-secrets-sensitive-in-attribute-value
+  elk_apm_values = <<VALUES
 apm-server:
   enabled: false
   ingress:
@@ -455,7 +457,8 @@ apm-server:
             values:
               - ON_DEMAND
 VALUES
-  elk_metricbeat_values       = <<VALUES
+  #tfsec:ignore:general-secrets-sensitive-in-attribute-value
+  elk_metricbeat_values = <<VALUES
 metricbeat:
   enabled: false
   daemonset:
