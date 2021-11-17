@@ -8,7 +8,7 @@ locals {
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].namespace
   }
   ssl_certificate_arn          = var.nginx_ingress_ssl_terminator == "lb" ? data.terraform_remote_state.layer1-aws.outputs.ssl_certificate_arn : "ssl-certificate"
-  ingress_ngxin_general_values = <<VALUES
+  ingress_nginx_general_values = <<VALUES
 rbac:
   create: true
 controller:
@@ -223,7 +223,7 @@ resource "helm_release" "ingress_nginx" {
   max_history = var.helm_release_history_size
 
   values = compact([
-    local.ingress_ngxin_general_values,
+    local.ingress_nginx_general_values,
     var.nginx_ingress_ssl_terminator == "lb" ? local.ingress_nginx_l7_values : local.ingress_nginx_l4_values
   ])
 
