@@ -123,5 +123,5 @@ releases:
     enabled: false
     chart: ../../helm-charts/teamcity
     repository:
-    version:
+    chart_version:
     namespace: teamcity
