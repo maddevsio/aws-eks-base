@@ -4,19 +4,28 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "external-secrets")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "external-secrets")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "external-secrets")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "external-secrets")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "external-secrets")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "external-secrets")].namespace
   }
-}
+  external_secrets_values = <<VALUES
+# Environment variables to set on deployment pod
+env:
+  AWS_REGION: ${local.region}
+  AWS_DEFAULT_REGION: ${local.region}
+  POLLER_INTERVAL_MILLISECONDS: 30000
+  # trace, debug, info, warn, error, fatal
+  LOG_LEVEL: warn
+  LOG_MESSAGE_KEY: 'msg'
+  METRICS_PORT: 3001
 
-data "template_file" "external_secrets" {
-  count = local.external_secrets.enabled ? 1 : 0
+serviceAccount:
+  annotations:
+    "eks.amazonaws.com/role-arn": ${local.external_secrets.enabled ? module.aws_iam_external_secrets[0].role_arn : ""}
 
-  template = file("${path.module}/templates/external-secrets-values.yaml")
-  vars = {
-    role_arn = module.aws_iam_external_secrets[count.index].role_arn
-    region   = local.region
-  }
+securityContext:
+  # Required for use of IRSA, see https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-technical-overview.html
+  fsGroup: 1000
+VALUES
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
@@ -99,7 +108,7 @@ resource "helm_release" "external_secrets" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.external_secrets[count.index].rendered,
+    local.external_secrets_values
   ]
 
 }

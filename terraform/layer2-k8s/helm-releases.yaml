@@ -57,7 +57,7 @@ releases:
     enabled: true
     chart: kubernetes-external-secrets
     repository: https://external-secrets.github.io/kubernetes-external-secrets
-    version: 6.3.0
+    chart_version: 6.3.0
     namespace: external-secrets
   - id: gitlab-runner
     enabled: false
