@@ -3,7 +3,7 @@ releases:
     enabled: false
     chart: aws-load-balancer-controller
     repository: https://aws.github.io/eks-charts
-    version: 1.2.6
+    chart_version: 1.2.6
     namespace: aws-load-balancer-controller
   - id: aws-node-termination-handler
     enabled: true
