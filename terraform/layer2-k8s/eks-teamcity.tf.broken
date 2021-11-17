@@ -69,15 +69,6 @@ spec:
 VALUES
 }
 
-data "template_file" "teamcity_agent" {
-  count = local.teamcity.enabled ? 1 : 0
-
-  template = file("${path.module}/templates/teamcity-agent-pod-template.yaml")
-  vars = {
-    service_account_name = module.eks_rbac_teamcity.service_account_name
-  }
-}
-
 module "eks_rbac_teamcity" {
   count = local.teamcity.enabled ? 1 : 0
 
