@@ -4,20 +4,33 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "external-dns")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "external-dns")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "external-dns")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "external-dns")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "external-dns")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "external-dns")].namespace
   }
-}
+  external_dns_values = <<VALUES
+rbac:
+  create: true
 
-data "template_file" "external_dns" {
-  count = local.external_dns.enabled ? 1 : 0
+serviceAccount:
+  create: true
+  name: "external-dns"
+  annotations:
+    "eks.amazonaws.com/role-arn": ${local.external_dns.enabled ? module.aws_iam_external_dns[0].role_arn : ""}
 
-  template = file("${path.module}/templates/external-dns.yaml")
-  vars = {
-    role_arn    = module.aws_iam_external_dns[count.index].role_arn
-    domain_name = local.domain_name
-    zone_type   = "public"
-  }
+provider: aws
+domainFilters: [${local.domain_name}]
+extraArgs:
+  - --aws-zone-type=public
+  - --aws-batch-change-size=1000
+
+serviceMonitor:
+  enabled: false
+
+sources:
+  - service
+  - ingress
+#  - istio-virtualservice
+VALUES
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
@@ -121,7 +134,7 @@ resource "helm_release" "external_dns" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.external_dns[count.index].rendered,
+    local.external_dns_values
   ]
 
 }
