@@ -51,14 +51,3 @@ variable "cluster_autoscaler_version" {
   description = "Version of cluster autoscaler"
   default     = "v1.21.0"
 }
-
-# ELK
-variable "elk_snapshot_retention_days" {
-  description = "Days to capture index in snapshot"
-  default     = 90
-}
-
-variable "elk_index_retention_days" {
-  description = "Days before remove index from system elasticsearch"
-  default     = 14
-}

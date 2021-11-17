@@ -45,7 +45,7 @@ releases:
     enabled: false
     chart: ../../helm-charts/elk
     repository:
-    version:
+    chart_version:
     namespace: elk
   - id: external-dns
     enabled: true
