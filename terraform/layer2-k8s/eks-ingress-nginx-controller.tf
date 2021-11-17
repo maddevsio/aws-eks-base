@@ -4,27 +4,80 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].namespace
   }
-  ssl_certificate_arn = var.nginx_ingress_ssl_terminator == "lb" ? data.terraform_remote_state.layer1-aws.outputs.ssl_certificate_arn : ""
+  ssl_certificate_arn                         = var.nginx_ingress_ssl_terminator == "lb" ? data.terraform_remote_state.layer1-aws.outputs.ssl_certificate_arn : "ssl-certificate"
+  ingress_nginx_general_values                = <<VALUES
+rbac:
+  create: true
+controller:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  podAnnotations:
+    co.elastic.logs/module: nginx
+    co.elastic.logs/fileset.stdout: ingress_controller
+    co.elastic.logs/fileset.stderr: error
 
-  template_name = (
-    var.nginx_ingress_ssl_terminator == "lb" ? "nginx-ingress-values.yaml" : (
-    var.nginx_ingress_ssl_terminator == "nginx" ? "nginx-ingress-certmanager-ssl-termination-values.yaml" : "")
-  )
-}
-
-data "template_file" "ingress_nginx" {
-  count = local.ingress_nginx.enabled ? 1 : 0
-
-  template = file("${path.module}/templates/${local.template_name}")
-  vars = {
-    hostname           = local.domain_name
-    ssl_cert           = local.ssl_certificate_arn
-    proxy_real_ip_cidr = local.vpc_cidr
-    namespace          = module.ingress_nginx_namespace[count.index].name
-  }
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: eks.amazonaws.com/capacityType
+            operator: In
+            values:
+              - ON_DEMAND
+VALUES
+  ingress_loadbalancer_ssl_termination_values = <<VALUES
+controller:
+  service:
+    targetPorts:
+      http: http
+      https: http
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+      service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '60'
+      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
+      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: ${local.ssl_certificate_arn}
+      service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: ELBSecurityPolicy-TLS-1-2-2017-01
+      external-dns.alpha.kubernetes.io/hostname: ${local.domain_name}.
+  publishService:
+    enabled: true
+  config:
+    server-tokens: "false"
+    use-forwarded-headers: "true"
+    set-real-ip-from: "${local.vpc_cidr}"
+VALUES
+  ingress_pod_ssl_termination_values          = <<VALUES
+controller:
+  extraArgs:
+    default-ssl-certificate: "${local.ingress_nginx.enabled ? module.ingress_nginx_namespace[0].name : "default"}/nginx-tls"
+  containerPort:
+    http: 80
+    https: 443
+  service:
+    targetPorts:
+      http: http
+      https: https
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+      service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+      service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '60'
+      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
+      # service.beta.kubernetes.io/aws-load-balancer-type: nlb
+      external-dns.alpha.kubernetes.io/hostname: ${local.domain_name}.
+  publishService:
+    enabled: true
+  config:
+    server-tokens: "false"
+    use-forwarded-headers: "true"
+    use-proxy-protocol: "true"
+    set-real-ip-from: "${local.vpc_cidr}"
+    real-ip-header: "proxy_protocol"
+VALUES
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
@@ -170,7 +223,8 @@ resource "helm_release" "ingress_nginx" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.ingress_nginx[count.index].rendered,
+    local.ingress_nginx_general_values,
+    var.nginx_ingress_ssl_terminator == "lb" ? local.ingress_loadbalancer_ssl_termination_values : local.ingress_pod_ssl_termination_values
   ]
 
   depends_on = [helm_release.prometheus_operator]

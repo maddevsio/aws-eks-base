@@ -69,7 +69,7 @@ releases:
     enabled: true
     chart: ingress-nginx
     repository: https://kubernetes.github.io/ingress-nginx
-    version: 3.23.0
+    chart_version: 3.23.0
     namespace: ingress-nginx
   - id: istio-operator
     enabled: false
@@ -123,5 +123,5 @@ releases:
     enabled: false
     chart: ../../helm-charts/teamcity
     repository:
-    version:
+    chart_version:
     namespace: teamcity
