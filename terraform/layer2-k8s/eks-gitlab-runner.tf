@@ -4,17 +4,59 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].namespace
   }
-  gitlab_runner_template = templatefile("${path.module}/templates/gitlab-runner-values.yaml",
-    {
-      registration_token = local.gitlab_registration_token
-      namespace          = local.gitlab_runner.enabled ? module.gitlab_runner_namespace[0].name : "default"
-      role_arn           = local.gitlab_runner.enabled ? module.aws_iam_gitlab_runner[0].role_arn : ""
-      bucket_name        = local.gitlab_runner.enabled ? aws_s3_bucket.gitlab_runner_cache[0].id : "bucket_name"
-      region             = local.region
-  })
+  gitlab_runner_values = <<VALUES
+gitlabUrl: "https://gitlab.com/"
+runnerRegistrationToken: "${local.gitlab_registration_token}"
+concurrent: 4
+checkInterval: 30
+
+rbac:
+  create: true
+  clusterWideAccess: true
+  serviceAccountAnnotations:
+    eks.amazonaws.com/role-arn: ${local.gitlab_runner.enabled ? module.aws_iam_gitlab_runner[0].role_arn : ""}
+
+runners:
+  image: ubuntu:18.04
+  privileged: true
+  namespace: ${local.gitlab_runner.enabled ? module.gitlab_runner_namespace[0].name : "default"}
+  tags: "eks-k8s"
+  runUntagged: false
+  nodeTolerations:
+  - key: "nodegroup"
+    operator: "Equal"
+    value: "ci"
+    effect: "NoSchedule"
+  nodeSelector:
+    nodegroup: ci
+  cache:
+    cacheType: s3
+    cachePath: "gitlab_runner"
+    cacheShared: false
+    s3ServerAddress: s3.amazonaws.com
+    s3BucketName: ${local.gitlab_runner.enabled ? aws_s3_bucket.gitlab_runner_cache[0].id : "bucket_name"}
+    s3BucketLocation: ${local.region}
+    s3CacheInsecure: false
+
+  builds:
+    cpuLimit: 950m
+    memoryLimit: 2500Mi
+    cpuRequests: 250m
+    memoryRequests: 512Mi
+  services:
+    cpuLimit: 950m
+    memoryLimit: 2500Mi
+    cpuRequests: 250m
+    memoryRequests: 128Mi
+  helpers:
+    cpuLimit: 950m
+    memoryLimit: 2500Mi
+    cpuRequests: 250m
+    memoryRequests: 512Mi
+VALUES
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
@@ -163,7 +205,7 @@ resource "helm_release" "gitlab_runner" {
   max_history = var.helm_release_history_size
 
   values = [
-    local.gitlab_runner_template
+    local.gitlab_runner_values
   ]
 
 }
