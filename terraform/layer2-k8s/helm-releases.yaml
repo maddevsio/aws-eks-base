@@ -63,7 +63,7 @@ releases:
     enabled: false
     chart: gitlab-runner
     repository: https://charts.gitlab.io
-    version: 0.26.0
+    chart_version: 0.26.0
     namespace: gitlab-runner
   - id: ingress-nginx
     enabled: true
