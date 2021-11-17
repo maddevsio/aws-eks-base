@@ -9,7 +9,7 @@ releases:
     enabled: true
     chart: aws-node-termination-handler
     repository: https://aws.github.io/eks-charts
-    version: 0.13.3
+    chart_version: 0.13.3
     namespace: aws-node-termination-handler
   - id: aws-calico
     enabled: true
