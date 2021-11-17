@@ -39,13 +39,6 @@ variable "nginx_ingress_ssl_terminator" {
   # nginx - terminate ssl on nginx side
 }
 
-# ALB Ingress
-variable "aws_loadbalancer_controller_enable" {
-  description = "Disable or Enable aws-loadbalancer-controller. You need to enable it if you want to use Fargate"
-  type        = bool
-  default     = false
-}
-
 # Cluster autoscaler
 variable "cluster_autoscaler_version" {
   description = "Version of cluster autoscaler"
