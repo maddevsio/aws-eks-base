@@ -4,9 +4,49 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "loki-stack")].namespace
   }
+  loki_stack_values = <<VALUES
+loki:
+  enabled: true
+  config:
+    limits_config:
+      enforce_metric_name: false
+      reject_old_samples: true
+      reject_old_samples_max_age: 168h
+  persistence:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+    storageClassName: advanced
+  serviceMonitor:
+    enabled: true
+    scrapeTimeout: 10s
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: eks.amazonaws.com/capacityType
+            operator: In
+            values:
+              - ON_DEMAND
+
+promtail:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+  tolerations:
+    - effect: NoSchedule
+      operator: Exists
+
+fluent-bit:
+  enabled: false
+grafana:
+  enabled: false
+VALUES
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
@@ -100,7 +140,7 @@ resource "helm_release" "loki_stack" {
   max_history = var.helm_release_history_size
 
   values = [
-    file("${path.module}/templates/loki-stack-values.yaml")
+    local.loki_stack_values
   ]
 
   depends_on = [helm_release.prometheus_operator]
