@@ -39,7 +39,7 @@ releases:
     enabled: true
     chart: cluster-autoscaler
     repository: https://kubernetes.github.io/autoscaler
-    version: 9.10.5
+    chart_version: 9.10.5
     namespace: cluster-autoscaler
   - id: elk
     enabled: false
