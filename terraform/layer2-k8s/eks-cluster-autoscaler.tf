@@ -4,21 +4,51 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "cluster-autoscaler")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "cluster-autoscaler")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "cluster-autoscaler")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "cluster-autoscaler")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "cluster-autoscaler")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "cluster-autoscaler")].namespace
   }
-}
+  cluster_autoscaler_values = <<VALUES
+image:
+  tag: ${var.cluster_autoscaler_version}
+awsRegion: ${local.region}
+rbac:
+  create: true
+  serviceAccount:
+    annotations:
+      eks.amazonaws.com/role-arn: ${local.cluster_autoscaler.enabled ? module.aws_iam_autoscaler[0].role_arn : ""}
+autoDiscovery:
+  clusterName: ${local.eks_cluster_id}
+extraArgs:
+  expander: priority
+expanderPriorities: |
+  10:
+    - eks-${local.eks_cluster_id}-ondemand.*
+  50:
+    - eks-${local.eks_cluster_id}-spot.*
 
-data "template_file" "cluster_autoscaler" {
-  count = local.cluster_autoscaler.enabled ? 1 : 0
+serviceMonitor:
+  enabled: true
+  interval: 10s
+  namespace: monitoring
+  path: /metrics
 
-  template = file("${path.module}/templates/cluster-autoscaler-values.yaml")
-  vars = {
-    role_arn     = module.aws_iam_autoscaler[count.index].role_arn
-    region       = local.region
-    cluster_name = local.eks_cluster_id
-    version      = var.cluster_autoscaler_version
-  }
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: eks.amazonaws.com/capacityType
+          operator: In
+          values:
+            - ON_DEMAND
+resources:
+  limits:
+    cpu: 100m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 320Mi
+VALUES
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
@@ -151,7 +181,7 @@ resource "helm_release" "cluster_autoscaler" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.cluster_autoscaler[count.index].rendered,
+    local.cluster_autoscaler_values
   ]
 
   depends_on = [helm_release.prometheus_operator]
