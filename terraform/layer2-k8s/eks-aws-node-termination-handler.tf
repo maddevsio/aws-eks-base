@@ -4,9 +4,25 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "aws-node-termination-handler")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "aws-node-termination-handler")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "aws-node-termination-handler")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "aws-node-termination-handler")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "aws-node-termination-handler")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "aws-node-termination-handler")].namespace
   }
+  aws_node_termination_handler_values = <<VALUES
+enableSpotInterruptionDraining: true
+enableRebalanceMonitoring: true
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: eks.amazonaws.com/capacityType
+          operator: In
+          values:
+          - SPOT
+        - key: eks.amazonaws.com/nodegroup
+          operator: DoesNotExist
+VALUES
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
@@ -68,7 +84,7 @@ resource "helm_release" "aws_node_termination_handler" {
   max_history = var.helm_release_history_size
 
   values = [
-    file("${path.module}/templates/aws-node-termination-handler-values.yaml")
+    local.aws_node_termination_handler_values
   ]
 
 }
