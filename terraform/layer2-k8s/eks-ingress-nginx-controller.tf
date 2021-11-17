@@ -222,10 +222,10 @@ resource "helm_release" "ingress_nginx" {
   namespace   = module.ingress_nginx_namespace[count.index].name
   max_history = var.helm_release_history_size
 
-  values = compact([
+  values = [
     local.ingress_nginx_general_values,
     var.nginx_ingress_ssl_terminator == "lb" ? local.ingress_nginx_l7_values : local.ingress_nginx_l4_values
-  ])
+  ]
 
   depends_on = [helm_release.prometheus_operator]
 }
