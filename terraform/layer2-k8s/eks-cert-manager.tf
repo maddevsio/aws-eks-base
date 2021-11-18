@@ -4,7 +4,7 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "cert-manager")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "cert-manager")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "cert-manager")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "cert-manager")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "cert-manager")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "cert-manager")].namespace
   }
   cert_mananger_certificate = {
@@ -12,7 +12,7 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "cert-mananger-certificate")].namespace
   }
   cert_manager_cluster_issuer = {
@@ -20,39 +20,41 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "cert-manager-cluster-issuer")].namespace
   }
-}
-
-data "template_file" "cert_manager" {
-  count = local.cert_manager.enabled ? 1 : 0
-
-  template = file("${path.module}/templates/cert-manager-values.yaml")
-  vars = {
-    role_arn = module.aws_iam_cert_manager[count.index].role_arn
-  }
-}
-
-data "template_file" "cluster_issuer" {
-  count = local.cert_manager_cluster_issuer.enabled ? 1 : 0
-
-  template = file("${path.module}/templates/cluster-issuer-values.yaml")
-  vars = {
-    region  = local.region
-    zone    = local.domain_name
-    zone_id = local.zone_id
-  }
-}
-
-data "template_file" "certificate" {
-  count = local.cert_mananger_certificate.enabled ? 1 : 0
-
-  template = file("${path.module}/templates/certificate-values.yaml")
-  vars = {
-    domain_name = "*.${local.domain_name}"
-    common_name = local.domain_name
-  }
+  cert_manager_values                = <<VALUES
+installCRDs: true
+serviceAccount:
+  annotations:
+    "eks.amazonaws.com/role-arn": ${local.cert_manager.enabled ? module.aws_iam_cert_manager[0].role_arn : ""}
+securityContext:
+  fsGroup: 1001
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: eks.amazonaws.com/capacityType
+          operator: In
+          values:
+            - ON_DEMAND
+cainjector:
+  enabled: true
+  replicaCount: 1
+  extraArgs:
+    - --leader-elect=false
+VALUES
+  cert_manager_cluster_issuer_values = <<VALUES
+dnsZone: ${local.domain_name}
+dnsZoneId: ${local.zone_id}
+region: ${local.region}
+email: webmaster@${local.domain_name}
+VALUES
+  cert_mananger_certificate_values   = <<VALUES
+domainName: "*.${local.domain_name}"
+commonName: "${local.domain_name}"
+VALUES
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
@@ -182,7 +184,7 @@ resource "helm_release" "cert_manager" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.cert_manager[count.index].rendered,
+    local.cert_manager_values
   ]
 
 }
@@ -198,7 +200,7 @@ resource "helm_release" "cluster_issuer" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.cluster_issuer[count.index].rendered,
+    local.cert_manager_cluster_issuer_values
   ]
 
   # This dep needs for correct apply
@@ -216,7 +218,7 @@ resource "helm_release" "certificate" {
   max_history = var.helm_release_history_size
 
   values = [
-    data.template_file.certificate[count.index].rendered,
+    local.cert_mananger_certificate_values
   ]
 
   # This dep needs for correct apply
