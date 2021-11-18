@@ -52,8 +52,8 @@ region: ${local.region}
 email: webmaster@${local.domain_name}
 VALUES
   cert_mananger_certificate_values   = <<VALUES
-domainName: "${local.domain_name}"
-commonName: "${local.common_name}"
+domainName: "*.${local.domain_name}"
+commonName: "${local.domain_name}"
 VALUES
 }
 
