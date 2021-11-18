@@ -21,19 +21,19 @@ releases:
     enabled: false
     chart: cert-manager
     repository: https://charts.jetstack.io
-    version: 1.1.0
+    chart_version: 1.1.0
     namespace: certmanager
   - id: cert-mananger-certificate
     enabled: false
     chart: ../../helm-charts/certificate
     repository:
-    version:
+    chart_version:
     namespace: ingress-nginx
   - id: cert-manager-cluster-issuer
     enabled: false
     chart: ../../helm-charts/cluster-issuer
     repository:
-    version:
+    chart_version:
     namespace: certmanager
   - id: cluster-autoscaler
     enabled: true
