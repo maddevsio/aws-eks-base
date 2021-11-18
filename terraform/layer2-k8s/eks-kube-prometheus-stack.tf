@@ -7,11 +7,19 @@ locals {
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "kube-prometheus-stack")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "kube-prometheus-stack")].namespace
   }
-  grafana_password             = local.kube_prometheus_stack.enabled ? random_string.grafana_password[0].result : "test123"
-  grafana_domain_name          = "grafana-${local.domain_suffix}"
-  prometheus_domain_name       = "prometheus-${local.domain_suffix}"
-  alertmanager_domain_name     = "alertmanager-${local.domain_suffix}"
-  kube_prometheus_stack_values = <<VALUES
+  grafana_oauth_type                   = "" # we support three options: without ouath (empty value), github or gitlab. Default is empty
+  grafana_password                     = local.kube_prometheus_stack.enabled ? random_string.grafana_password[0].result : "test123"
+  grafana_gitlab_client_id             = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_gitlab_client_id", "")
+  grafana_gitlab_client_secret         = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_gitlab_client_secret", "")
+  grafana_gitlab_group                 = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_gitlab_group", "")
+  grafana_github_client_id             = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_client_id", "")
+  grafana_github_client_secret         = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_client_secret", "")
+  grafana_github_team_ids              = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_team_ids", "")
+  grafana_github_allowed_organizations = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_allowed_organizations", "")
+  grafana_domain_name                  = "grafana-${local.domain_suffix}"
+  prometheus_domain_name               = "prometheus-${local.domain_suffix}"
+  alertmanager_domain_name             = "alertmanager-${local.domain_suffix}"
+  kube_prometheus_stack_values         = <<VALUES
 # Prometheus Server parameters
 prometheus:
   ingress:
@@ -65,7 +73,7 @@ prometheusOperator:
               - ON_DEMAND
 VALUES
 
-  kube_prometheus_stack_grafana_values = <<VALUES
+  kube_prometheus_stack_grafana_values              = <<VALUES
 # Grafana settings
 grafana:
   enabled: true
@@ -89,22 +97,11 @@ grafana:
     - hosts:
       - ${local.grafana_domain_name}
   env:
-    # all values must be quoted
-    GF_SERVER_ROOT_URL: "https://${local.grafana_domain_name}"
-    GF_USERS_ALLOW_SIGN_UP: "false"
-    GF_AUTH_GITLAB_ENABLED: "true"
-    GF_AUTH_GITLAB_ALLOW_SIGN_UP: "true"
-    GF_AUTH_GITLAB_CLIENT_ID: "${local.grafana_gitlab_client_id}"
-    GF_AUTH_GITLAB_CLIENT_SECRET: "${local.grafana_gitlab_client_secret}"
-    GF_AUTH_GITLAB_SCOPES: "read_api"
-    GF_AUTH_GITLAB_AUTH_URL: "https://gitlab.com/oauth/authorize"
-    GF_AUTH_GITLAB_TOKEN_URL: "https://gitlab.com/oauth/token"
-    GF_AUTH_GITLAB_API_URL: "https://gitlab.com/api/v4"
-    GF_AUTH_GITLAB_ALLOWED_GROUPS: "${local.grafana_gitlab_group}"
+    GF_SERVER_ROOT_URL: https://${local.grafana_domain_name}
+    GF_USERS_ALLOW_SIGN_UP: false
 
   persistence:
     enabled: false
-
   sidecar:
     datasources:
       enabled: true
@@ -150,7 +147,6 @@ grafana:
       logs:
         ## Dashboard for quick search application logs for loki with two datasources loki and prometheus - https://grafana.com/grafana/dashboards/12019
         url: https://grafana-dashboards.maddevs.org/common/aws-eks-base/loki-dashboard-quick-search.json
-
     k8s:
       nginx-ingress:
       ## Dashboard for nginx-ingress metrics - https://grafana.com/grafana/dashboards/9614
@@ -175,8 +171,32 @@ grafana:
             values:
               - SPOT
 VALUES
-
-  kube_prometheus_stack_alertmanager_values = <<VALUES
+  kube_prometheus_stack_grafana_gitlab_oauth_values = <<VALUES
+grafana:
+  env:
+    GF_AUTH_GITLAB_ENABLED: true
+    GF_AUTH_GITLAB_ALLOW_SIGN_UP: true
+    GF_AUTH_GITLAB_CLIENT_ID: ${local.grafana_gitlab_client_id}
+    GF_AUTH_GITLAB_CLIENT_SECRET: ${local.grafana_gitlab_client_secret}
+    GF_AUTH_GITLAB_SCOPES: read_api
+    GF_AUTH_GITLAB_AUTH_URL: https://gitlab.com/oauth/authorize
+    GF_AUTH_GITLAB_TOKEN_URL: https://gitlab.com/oauth/token
+    GF_AUTH_GITLAB_API_URL: https://gitlab.com/api/v4
+    GF_AUTH_GITLAB_ALLOWED_GROUPS: ${local.grafana_gitlab_group}
+VALUES
+  kube_prometheus_stack_grafana_github_oauth_values = <<VALUES
+    GF_AUTH_GITHUB_ENABLED: true
+    GF_AUTH_GITHUB_ALLOW_SIGN_UP: true
+    GF_AUTH_GITHUB_CLIENT_ID: ${local.grafana_github_client_id}
+    GF_AUTH_GITHUB_CLIENT_SECRET: ${local.grafana_github_client_secret}
+    GF_AUTH_GITHUB_SCOPES: user:email,read:org
+    GF_AUTH_GITHUB_AUTH_URL: https://github.com/login/oauth/authorize
+    GF_AUTH_GITHUB_TOKEN_URL: https://github.com/login/oauth/access_token
+    GF_AUTH_GITHUB_API_URL: https://api.github.com/user
+    GF_AUTH_GITHUB_TEAM_IDS: ${local.grafana_github_team_ids}
+    GF_AUTH_GITHUB_ALOWED_ORGANISATIONS: ${local.grafana_github_allowed_organizations}
+VALUES
+  kube_prometheus_stack_alertmanager_values         = <<VALUES
 # Alertmanager parameters
 alertmanager:
   enabled: false
@@ -397,11 +417,13 @@ resource "helm_release" "prometheus_operator" {
   namespace   = module.monitoring_namespace[count.index].name
   max_history = var.helm_release_history_size
 
-  values = [
+  values = compact([
     local.kube_prometheus_stack_values,
     local.kube_prometheus_stack_grafana_values,
+    local.grafana_oauth_type == "gitlab" ? local.kube_prometheus_stack_grafana_gitlab_oauth_values : null,
+    local.grafana_oauth_type == "github" ? local.kube_prometheus_stack_grafana_github_oauth_values : null,
     local.kube_prometheus_stack_alertmanager_values
-  ]
+  ])
 
 }
 

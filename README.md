@@ -265,24 +265,9 @@ $ cp terraform/layer1-aws/demo.tfvars.example terraform/layer1-aws/terraform.tfv
 > You can find all possible variables in each layer's Readme.
 
 #### Secrets
+Some local variables expect [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`. 
 
-In the root of `layer2-k8s` is the `aws-sm-secrets.tf` where several local variables expect [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`. These secrets are used for authentication with Kibana and Grafana using GitLab and register gitlab runner.
-
-  ```json
-  {
-    "kibana_gitlab_client_id": "access key token",
-    "kibana_gitlab_client_secret": "secret key token",
-    "kibana_gitlab_group": "gitlab group",
-    "grafana_gitlab_client_id": "access key token",
-    "grafana_gitlab_client_secret": "secret key token",
-    "gitlab_registration_token": "gitlab-runner token",
-    "grafana_gitlab_group": "gitlab group",
-    "alertmanager_slack_url": "slack url",
-    "alertmanager_slack_channel": "slack channel"
-  }
-  ```
-
-> Set proper secrets; you also can set empty/mock values.
+> The secret `/${local.name_wo_region}/infra/layer2-k8s` must be pre-created before running `terraform apply`
 
 #### Domain and SSL
 
