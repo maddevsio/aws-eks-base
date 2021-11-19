@@ -79,7 +79,7 @@ You can find more about this project in Anton Babenko stream:
 
 ## FAQ: Frequently Asked Questions
 
-[FAQ](docs/FAQ.md): Frequently Asked Questions
+[FAQ](docs/FAQ.md): Frequently Asked Questions and **HOW TO**
 
 ## Architecture diagram
 
@@ -443,6 +443,9 @@ terragrunt init -upgrade
 This boiler installs all basic and necessary components. However, we also provide several additional components. Both layers have such components. To enable them in:
 * layer1-aws: search `***_enable` variables and set them to **true**
 * layer2-k8s: check `helm-releases.yaml` file and set **enabled: true** or **enabled:false** for components that you want to **deploy** or to **unistall**
+
+Notes:
+* [Gitlab-runner](docs/FAQ.md#gitlab-runner)
 
 ## TFSEC
 
