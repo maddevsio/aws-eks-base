@@ -21,19 +21,19 @@ releases:
     enabled: false
     chart: cert-manager
     repository: https://charts.jetstack.io
-    version: 1.1.0
+    chart_version: 1.1.0
     namespace: certmanager
   - id: cert-mananger-certificate
     enabled: false
     chart: ../../helm-charts/certificate
     repository:
-    version:
+    chart_version:
     namespace: ingress-nginx
   - id: cert-manager-cluster-issuer
     enabled: false
     chart: ../../helm-charts/cluster-issuer
     repository:
-    version:
+    chart_version:
     namespace: certmanager
   - id: cluster-autoscaler
     enabled: true
@@ -75,19 +75,19 @@ releases:
     enabled: false
     chart: ../../helm-charts/istio/istio-operator
     repository:
-    version:
+    chart_version:
     namespace:
   - id: istio-operator-resources
     enabled: false
     chart: ../../helm-charts/istio/istio-operator-resources
     repository: 
-    version:
+    chart_version:
     namespace: istio-system
   - id: istio-resources
     enabled: false
     chart: ../../helm-charts/istio/istio-resources
     repository:
-    version: 
+    chart_version: 
     namespace: istio-system
   - id: keda
     enabled: false
@@ -99,7 +99,7 @@ releases:
     enabled: false
     chart: kiali-server
     repository: https://kiali.org/helm-charts
-    version: 1.36
+    chart_version: 1.36
     namespace: kiali
   - id: kube-prometheus-stack
     enabled: true

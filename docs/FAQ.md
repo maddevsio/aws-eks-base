@@ -212,3 +212,13 @@ runners:
   image: ubuntu:18.04
 ...
 ```
+
+## Grafana: How to add GitHub/Gitlab OAuth2 Authentication:
+By default we install Grafana without integrating it with GitHub or Gitlab and use basic authentication (login/password). If you want to integrate it to use OAuth2, then do next:
+1. Set `grafana_oauth_type` variable in the `terraform/layer2-k8s/eks-kube-prometheus-stack.tf` to the desired value (github or gitlab). 
+2. **Gitlab**:
+   * See [this instruction](https://grafana.com/docs/grafana/latest/auth/gitlab/#gitlab-oauth2-authentication) and generate necessary tokens.
+   * Set `grafana_gitlab_client_id`, `grafana_gitlab_client_secret`, `grafana_gitlab_group` variables in [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`.
+3. **GitHub**:
+   * See [this instruction](https://grafana.com/docs/grafana/latest/auth/github/#github-oauth2-authentication)
+   * Set `grafana_github_client_id`, `grafana_github_client_secret`, `grafana_github_team_ids`, `grafana_github_allowed_organizations` variables in [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`.
