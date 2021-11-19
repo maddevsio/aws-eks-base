@@ -7,9 +7,10 @@ locals {
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "gitlab-runner")].namespace
   }
-  gitlab_runner_values = <<VALUES
+  gitlab_runner_registration_token = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "gitlab_runner_registration_token", "")
+  gitlab_runner_values             = <<VALUES
 gitlabUrl: "https://gitlab.com/"
-runnerRegistrationToken: "${local.gitlab_registration_token}"
+runnerRegistrationToken: "${local.gitlab_runner_registration_token}"
 concurrent: 4
 checkInterval: 30
 

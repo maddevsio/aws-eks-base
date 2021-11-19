@@ -62,7 +62,6 @@
 | <a name="provider_helm"></a> [helm](#provider\_helm)                   | 2.4.1   |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.6.1   |
 | <a name="provider_random"></a> [random](#provider\_random)             | 3.1.0   |
-| <a name="provider_template"></a> [template](#provider\_template)       | 2.2.0   |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform)    | n/a     |
 | <a name="provider_time"></a> [time](#provider\_time)                   | 0.7.2   |
 
@@ -139,38 +138,27 @@
 | [aws_eks_cluster_auth.main](https://registry.terraform.io/providers/aws/3.64.2/docs/data-sources/eks_cluster_auth)                                                           | data source |
 | [aws_secretsmanager_secret.infra](https://registry.terraform.io/providers/aws/3.64.2/docs/data-sources/secretsmanager_secret)                                                | data source |
 | [aws_secretsmanager_secret_version.infra](https://registry.terraform.io/providers/aws/3.64.2/docs/data-sources/secretsmanager_secret_version)                                | data source |
-| [template_file.cert_manager](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file)                                                       | data source |
-| [template_file.certificate](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file)                                                        | data source |
-| [template_file.cluster_autoscaler](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file)                                                 | data source |
-| [template_file.cluster_issuer](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file)                                                     | data source |
-| [template_file.elk](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file)                                                                | data source |
-| [template_file.external_dns](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file)                                                       | data source |
-| [template_file.external_secrets](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file)                                                   | data source |
-| [template_file.ingress_nginx](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file)                                                      | data source |
 | [terraform_remote_state.layer1-aws](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state)                                       | data source |
 
 ## Inputs
 
-| Name                                                                                                                                           | Description                                                                                     | Type        | Default        | Required |
-| ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------- | -------------- | :------: |
-| <a name="input_additional_allowed_ips"></a> [additional\_allowed\_ips](#input\_additional\_allowed\_ips)                                       | IP addresses allowed to connect to private resources                                            | `list(any)` | `[]`           |    no    |
-| <a name="input_allowed_account_ids"></a> [allowed\_account\_ids](#input\_allowed\_account\_ids)                                                | List of allowed AWS account IDs                                                                 | `list`      | `[]`           |    no    |
-| <a name="input_aws_loadbalancer_controller_enable"></a> [aws\_loadbalancer\_controller\_enable](#input\_aws\_loadbalancer\_controller\_enable) | Disable or Enable aws-loadbalancer-controller. You need to enable it if you want to use Fargate | `bool`      | `false`        |    no    |
-| <a name="input_cluster_autoscaler_version"></a> [cluster\_autoscaler\_version](#input\_cluster\_autoscaler\_version)                           | Version of cluster autoscaler                                                                   | `string`    | `"v1.21.0"`    |    no    |
-| <a name="input_elk_index_retention_days"></a> [elk\_index\_retention\_days](#input\_elk\_index\_retention\_days)                               | Days before remove index from system elasticsearch                                              | `number`    | `14`           |    no    |
-| <a name="input_elk_snapshot_retention_days"></a> [elk\_snapshot\_retention\_days](#input\_elk\_snapshot\_retention\_days)                      | Days to capture index in snapshot                                                               | `number`    | `90`           |    no    |
-| <a name="input_helm_release_history_size"></a> [helm\_release\_history\_size](#input\_helm\_release\_history\_size)                            | How much helm releases to store                                                                 | `number`    | `5`            |    no    |
-| <a name="input_nginx_ingress_ssl_terminator"></a> [nginx\_ingress\_ssl\_terminator](#input\_nginx\_ingress\_ssl\_terminator)                   | Select SSL termination type                                                                     | `string`    | `"lb"`         |    no    |
-| <a name="input_region"></a> [region](#input\_region)                                                                                           | Default infrastructure region                                                                   | `string`    | `"us-east-1"`  |    no    |
-| <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket)                                                | Name of the bucket for terraform state                                                          | `string`    | n/a            |   yes    |
-| <a name="input_remote_state_key"></a> [remote\_state\_key](#input\_remote\_state\_key)                                                         | Key of the remote state for terraform\_remote\_state                                            | `string`    | `"layer1-aws"` |    no    |
+| Name                                                                                                                         | Description                                          | Type        | Default        | Required |
+| ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ----------- | -------------- | :------: |
+| <a name="input_additional_allowed_ips"></a> [additional\_allowed\_ips](#input\_additional\_allowed\_ips)                     | IP addresses allowed to connect to private resources | `list(any)` | `[]`           |    no    |
+| <a name="input_allowed_account_ids"></a> [allowed\_account\_ids](#input\_allowed\_account\_ids)                              | List of allowed AWS account IDs                      | `list`      | `[]`           |    no    |
+| <a name="input_cluster_autoscaler_version"></a> [cluster\_autoscaler\_version](#input\_cluster\_autoscaler\_version)         | Version of cluster autoscaler                        | `string`    | `"v1.21.0"`    |    no    |
+| <a name="input_helm_release_history_size"></a> [helm\_release\_history\_size](#input\_helm\_release\_history\_size)          | How much helm releases to store                      | `number`    | `5`            |    no    |
+| <a name="input_nginx_ingress_ssl_terminator"></a> [nginx\_ingress\_ssl\_terminator](#input\_nginx\_ingress\_ssl\_terminator) | Select SSL termination type                          | `string`    | `"lb"`         |    no    |
+| <a name="input_region"></a> [region](#input\_region)                                                                         | Default infrastructure region                        | `string`    | `"us-east-1"`  |    no    |
+| <a name="input_remote_state_bucket"></a> [remote\_state\_bucket](#input\_remote\_state\_bucket)                              | Name of the bucket for terraform state               | `string`    | n/a            |   yes    |
+| <a name="input_remote_state_key"></a> [remote\_state\_key](#input\_remote\_state\_key)                                       | Key of the remote state for terraform\_remote\_state | `string`    | `"layer1-aws"` |    no    |
 
 ## Outputs
 
 | Name                                                                                                                                      | Description                                              |
 | ----------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
 | <a name="output_alertmanager_domain_name"></a> [alertmanager\_domain\_name](#output\_alertmanager\_domain\_name)                          | Alertmanager ui address                                  |
-| <a name="output_apm_domain_name"></a> [apm\_domain\_name](#output\_apm\_domain\_name)                                                     | n/a                                                      |
+| <a name="output_apm_domain_name"></a> [apm\_domain\_name](#output\_apm\_domain\_name)                                                     | APM domain name                                          |
 | <a name="output_elastic_stack_bucket_name"></a> [elastic\_stack\_bucket\_name](#output\_elastic\_stack\_bucket\_name)                     | Name of the bucket for ELKS snapshots                    |
 | <a name="output_elasticsearch_elastic_password"></a> [elasticsearch\_elastic\_password](#output\_elasticsearch\_elastic\_password)        | Password of the superuser 'elastic'                      |
 | <a name="output_get_grafana_admin_password"></a> [get\_grafana\_admin\_password](#output\_get\_grafana\_admin\_password)                  | Command which gets admin password from kubernetes secret |
