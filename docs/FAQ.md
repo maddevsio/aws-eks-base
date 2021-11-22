@@ -155,7 +155,12 @@ module "test_namespace" {
 }
 ```
 
-## How to add more restrictions for Gitlab-Runner
+## Gitlab-runner
+Gitlab-runner installation requieres `registration token`. 
+* How to generate token see [here](https://docs.gitlab.com/runner/register/#requirements). 
+* Set `gitlab_runner_registration_token` variable in [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`.
+
+### How to add more restrictions for Gitlab-Runner
 By default Gitlab-Runner can deploy into any namespaces. If you want to allow Gitlab-Runner to deploy only into specific namespaces, then do these:
 * Create new Service Account:
 ```
@@ -220,5 +225,33 @@ By default we install Grafana without integrating it with GitHub or Gitlab and u
    * See [this instruction](https://grafana.com/docs/grafana/latest/auth/gitlab/#gitlab-oauth2-authentication) and generate necessary tokens.
    * Set `grafana_gitlab_client_id`, `grafana_gitlab_client_secret`, `grafana_gitlab_group` variables in [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`.
 3. **GitHub**:
-   * See [this instruction](https://grafana.com/docs/grafana/latest/auth/github/#github-oauth2-authentication)
+   * See [this instruction](https://grafana.com/docs/grafana/latest/auth/github/#github-oauth2-authentication) and generate necessary tokens.
    * Set `grafana_github_client_id`, `grafana_github_client_secret`, `grafana_github_team_ids`, `grafana_github_allowed_organizations` variables in [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`.
+
+## Alertmanager
+Alertmanager is disabled in default installation. If you want to enable it, then do next:
+1. Open file layer2-k8s/eks-kube-prometheus-stack.tf and change :
+```yaml
+locals {
+....
+  kube_prometheus_stack_alertmanager_values         = <<VALUES
+# Alertmanager parameters
+alertmanager:
+  enabled: false
+....
+}
+
+to
+
+locals {
+....
+  kube_prometheus_stack_alertmanager_values         = <<VALUES
+# Alertmanager parameters
+alertmanager:
+  enabled: true
+....
+}
+```
+### If you want to receive alerts **via Slack**, then do next:
+* See [this instruction](https://slack.com/help/articles/115005265063-Incoming-webhooks-for-Slack) and generate Slack Incoming Webhook 
+* Set `alertmanager_slack_webhook`, `alertmanager_slack_channel` variables in [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`.

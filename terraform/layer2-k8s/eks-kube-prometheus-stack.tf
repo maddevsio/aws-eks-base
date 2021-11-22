@@ -16,6 +16,8 @@ locals {
   grafana_github_client_secret         = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_client_secret", "")
   grafana_github_team_ids              = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_team_ids", "")
   grafana_github_allowed_organizations = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_allowed_organizations", "")
+  alertmanager_slack_webhook           = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "alertmanager_slack_webhook", "")
+  alertmanager_slack_channel           = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "alertmanager_slack_channel", "")
   grafana_domain_name                  = "grafana-${local.domain_suffix}"
   prometheus_domain_name               = "prometheus-${local.domain_suffix}"
   alertmanager_domain_name             = "alertmanager-${local.domain_suffix}"
@@ -221,16 +223,46 @@ alertmanager:
           resources:
             requests:
               storage: 10Gi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
   config:
     global:
       resolve_timeout: 5m
-      slack_api_url: ${local.alertmanager_slack_url}
     route:
       group_by: ['job']
       group_wait: 30s
       group_interval: 5m
       repeat_interval: 12h
       receiver: 'null'
+      routes:
+        - match:
+            alertname: Watchdog
+          receiver: 'null'
+    receivers:
+    - name: 'null'
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: eks.amazonaws.com/capacityType
+                operator: In
+                values:
+                  - ON_DEMAND
+VALUES
+  kube_prometheus_stack_alertmanager_slack_values   = <<VALUES
+# Alertmanager parameters
+alertmanager:
+  config:
+    global:
+      slack_api_url: ${local.alertmanager_slack_webhook}
+    route:
       routes:
         - match:
             alertname: Watchdog
@@ -257,16 +289,6 @@ alertmanager:
             {{ end }}
             {{ end }}
           icon_emoji: '{{ template "slack.default.iconemoji" . }}'
-
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-          - matchExpressions:
-              - key: eks.amazonaws.com/capacityType
-                operator: In
-                values:
-                  - ON_DEMAND
 VALUES
 }
 
@@ -422,7 +444,8 @@ resource "helm_release" "prometheus_operator" {
     local.kube_prometheus_stack_grafana_values,
     local.grafana_oauth_type == "gitlab" ? local.kube_prometheus_stack_grafana_gitlab_oauth_values : null,
     local.grafana_oauth_type == "github" ? local.kube_prometheus_stack_grafana_github_oauth_values : null,
-    local.kube_prometheus_stack_alertmanager_values
+    local.kube_prometheus_stack_alertmanager_values,
+    local.alertmanager_slack_webhook != "" ? local.kube_prometheus_stack_alertmanager_slack_values : null
   ])
 
 }
