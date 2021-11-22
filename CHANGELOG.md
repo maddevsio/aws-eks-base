@@ -12,6 +12,34 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+<a name="v5.1.0"></a>
+## [v5.1.0] - 2021-11-22
+ENHANCEMENTS:
+- Use basic auth for Grafana by default and feature flag to switch between basic auth, github oauth and gitlab oauth ([#215](https://github.com/maddevsio/aws-eks-base/issues/215))
+
+REFACTORS:
+- Do not use templates/istio/istio-operator-values.yaml and set necessary values in the eks-istio.tf file ([#214](https://github.com/maddevsio/aws-eks-base/issues/214))
+- Do not use templates/calico-values.yaml and set necessary values in the eks-calico.tf file ([#210](https://github.com/maddevsio/aws-eks-base/issues/210))
+- Do not use templates/teamcity-values.yaml and set necessary values in the eks-teamcity.tf file ([#208](https://github.com/maddevsio/aws-eks-base/issues/208))
+- Do not use templates/nginx-ingress-values.yaml and set necessary values in the eks-ingress-nginx-controller.tf file ([#206](https://github.com/maddevsio/aws-eks-base/issues/206))
+- Do not use templates/calico-values.yaml and set necessary values in the eks-calico.tf file
+- Do not use templates/elk-values.yaml and set necessary values in the eks-elk.tf file ([#204](https://github.com/maddevsio/aws-eks-base/issues/204))
+- Do not use templates/gitlab-runner-values.yaml and set necessary values in the eks-gitlab-runner.tf file ([#202](https://github.com/maddevsio/aws-eks-base/issues/202))
+- Do not use templates/cluster-autoscaler-values.yaml and set necessary values in the eks-cluster-autoscaler.tf file ([#200](https://github.com/maddevsio/aws-eks-base/issues/200))
+- Do not use templates/loki-stack-values.yaml and set necessary values in the eks-loki-stack.tf file ([#198](https://github.com/maddevsio/aws-eks-base/issues/198))
+- Do not use templates/prometheus-values.yaml and set necessary values in the eks-kube-prometheus-stack.tf file ([#196](https://github.com/maddevsio/aws-eks-base/issues/196))
+- Do not use templates/external-secrets-values.yaml and set necessary values in the eks-external-secrets.tf file ([#194](https://github.com/maddevsio/aws-eks-base/issues/194))
+- Do not use templates/external-dns-values.yaml and set necessary values in the eks-external-dns.tf file ([#192](https://github.com/maddevsio/aws-eks-base/issues/192))
+- Do not use templates/aws-node-termination-handler-values.yaml and set necessary values in the eks-aws-node-termination-handler.tf file ([#190](https://github.com/maddevsio/aws-eks-base/issues/190))
+- Do not use templates/alb-ingress-controller-values.yaml and set necessary values in the eks-aws-loadbalancer-controller.tf ([#188](https://github.com/maddevsio/aws-eks-base/issues/188))
+
+DOCS:
+- Update documentation related to secrets ([#217](https://github.com/maddevsio/aws-eks-base/issues/217))
+- Move TFSEC notes from README.md into separate file ([#185](https://github.com/maddevsio/aws-eks-base/issues/185))
+
+
+
+
 <a name="v5.0.0"></a>
 ## [v5.0.0] - 2021-11-15
 ENHANCEMENTS:
@@ -74,7 +102,8 @@ DOCS:
 
 
 
-[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v5.0.0...HEAD
+[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v5.1.0...HEAD
+[v5.1.0]: https://github.com/maddevsio/aws-eks-base/compare/v5.0.0...v5.1.0
 [v5.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v4.0.0...v5.0.0
 [v4.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v3.0.0...v4.0.0
 [v3.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v2.0.0...v3.0.0
