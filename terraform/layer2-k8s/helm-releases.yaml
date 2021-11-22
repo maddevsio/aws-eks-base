@@ -119,9 +119,3 @@ releases:
     repository: https://stakater.github.io/stakater-charts
     version: 0.0.81
     namespace: reloader
-  - id: teamcity
-    enabled: false
-    chart: ../../helm-charts/teamcity
-    repository:
-    chart_version:
-    namespace: teamcity
