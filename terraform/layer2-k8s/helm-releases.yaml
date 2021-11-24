@@ -119,15 +119,10 @@ releases:
     repository: https://stakater.github.io/stakater-charts
     chart_version: 0.0.81
     namespace: reloader
-  - id: teamcity
-    enabled: false
-    chart: ../../helm-charts/teamcity
-    repository:
-    chart_version:
-    namespace: teamcity
   - id: victoria-metrics-k8s-stack
     enabled: true
     chart: victoria-metrics-k8s-stack
     repository: https://victoriametrics.github.io/helm-charts
     chart_version: 0.5.9
     namespace: monitoring
+
