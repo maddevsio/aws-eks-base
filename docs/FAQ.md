@@ -223,12 +223,12 @@ This boilerplate provides two solutions for monitoring:
 1. VictoriaMetrics based on [victoria-metrics-k8s-stack](https://github.com/VictoriaMetrics/helm-charts/tree/master/charts/victoria-metrics-k8s-stack)
 2. Prometheus based on [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)  
 
-VictoriaMetrics is installed by default. However, you can easily switch to Prometheus just **enabling** it and **disabling** VictoriaMetrics in `terraform/layer2-k8s/helm-releases.yaml`. You need to do it before first applying the layer2-k8s.  
+VictoriaMetrics is installed by default. However, you can easily switch to Prometheus just **enabling** it and **disabling** VictoriaMetrics in `terraform/layer2-k8s/helm-releases.yaml`. You need to do it before the first apply of the layer2-k8s.  
 VictoriaMetrics Operator supports several [Prometheus objects](https://github.com/VictoriaMetrics/operator#overview). For example, Servicemonitor, PrometheusRule. However, we need to somehow install necessary Prometheus CRDs in a k8s cluster. So, it's done in the `eks-prometheus-operator-crds.tf` file, where we install Prometheus' CRDs separately from kube-prometheus-stack. 
 
 ## Grafana: How to add GitHub/Gitlab OAuth2 Authentication:
 By default we install Grafana without integrating it with GitHub or Gitlab and use basic authentication (login/password). If you want to integrate it to use OAuth2, then do next:
-1. Set `grafana_oauth_type` variable in the `terraform/layer2-k8s/eks-victoria-metrics-k8s-stack.tf`/`terraform/layer2-k8s/eks-kube-prometheus-stack.tf` to the desired value (github or gitlab). 
+1. Set `grafana_oauth_type` variable in the `terraform/layer2-k8s/eks-victoria-metrics-k8s-stack.tf` or `terraform/layer2-k8s/eks-kube-prometheus-stack.tf` to the desired value (github or gitlab). 
 2. **Gitlab**:
    * See [this instruction](https://grafana.com/docs/grafana/latest/auth/gitlab/#gitlab-oauth2-authentication) and generate necessary tokens.
    * Set `grafana_gitlab_client_id`, `grafana_gitlab_client_secret`, `grafana_gitlab_group` variables in [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`.
