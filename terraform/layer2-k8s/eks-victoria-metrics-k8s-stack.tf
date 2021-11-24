@@ -7,7 +7,7 @@ locals {
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "victoria-metrics-k8s-stack")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "victoria-metrics-k8s-stack")].namespace
   }
-  victoria_metrics_k8s_stack_grafana_oauth_type                   = "gitlab" # we support three options: without ouath (empty value), github or gitlab. Default is empty
+  victoria_metrics_k8s_stack_grafana_oauth_type                   = "" # we support three options: without ouath (empty value), github or gitlab. Default is empty
   victoria_metrics_k8s_stack_grafana_password                     = local.victoria_metrics_k8s_stack.enabled ? random_string.victoria_metrics_k8s_stack_grafana_password[0].result : ""
   victoria_metrics_k8s_stack_grafana_gitlab_client_id             = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_gitlab_client_id", "")
   victoria_metrics_k8s_stack_grafana_gitlab_client_secret         = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_gitlab_client_secret", "")
