@@ -4,7 +4,7 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "reloader")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "reloader")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "reloader")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "reloader")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "reloader")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "reloader")].namespace
   }
 }
