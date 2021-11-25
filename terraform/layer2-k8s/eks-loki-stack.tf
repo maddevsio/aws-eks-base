@@ -143,5 +143,5 @@ resource "helm_release" "loki_stack" {
     local.loki_stack_values
   ]
 
-  depends_on = [helm_release.prometheus_operator]
+  depends_on = [kubectl_manifest.kube_prometheus_stack_operator_crds]
 }

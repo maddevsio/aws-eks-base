@@ -446,6 +446,7 @@ This boiler installs all basic and necessary components. However, we also provid
 
 Notes:
 * [Gitlab-runner](docs/FAQ.md#gitlab-runner)
+* [Monitoring](docs/FAQ.md#monitoring)
 
 ## TFSEC
 

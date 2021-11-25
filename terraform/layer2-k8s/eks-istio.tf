@@ -163,7 +163,7 @@ resource "helm_release" "istio_operator_resources" {
     local.istio_operator_default_profile_values
   ]
 
-  depends_on = [helm_release.istio_operator, helm_release.prometheus_operator]
+  depends_on = [helm_release.istio_operator, kubectl_manifest.kube_prometheus_stack_operator_crds]
 }
 
 resource "time_sleep" "wait_10_seconds" {
@@ -205,5 +205,5 @@ resource "helm_release" "kiali" {
     local.kiali_server_values
   ]
 
-  depends_on = [helm_release.istio_operator, helm_release.prometheus_operator]
+  depends_on = [helm_release.istio_operator, kubectl_manifest.kube_prometheus_stack_operator_crds]
 }

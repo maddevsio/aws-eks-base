@@ -227,5 +227,5 @@ resource "helm_release" "ingress_nginx" {
     var.nginx_ingress_ssl_terminator == "lb" ? local.ingress_loadbalancer_ssl_termination_values : local.ingress_pod_ssl_termination_values
   ]
 
-  depends_on = [helm_release.prometheus_operator]
+  depends_on = [kubectl_manifest.kube_prometheus_stack_operator_crds]
 }

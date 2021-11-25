@@ -184,5 +184,5 @@ resource "helm_release" "cluster_autoscaler" {
     local.cluster_autoscaler_values
   ]
 
-  depends_on = [helm_release.prometheus_operator]
+  depends_on = [kubectl_manifest.kube_prometheus_stack_operator_crds]
 }

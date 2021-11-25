@@ -4,7 +4,7 @@ locals {
     enabled       = local.helm_releases[index(local.helm_releases.*.id, "keda")].enabled
     chart         = local.helm_releases[index(local.helm_releases.*.id, "keda")].chart
     repository    = local.helm_releases[index(local.helm_releases.*.id, "keda")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "keda")].version
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "keda")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "keda")].namespace
   }
 }

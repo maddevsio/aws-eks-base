@@ -7,21 +7,21 @@ locals {
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "kube-prometheus-stack")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "kube-prometheus-stack")].namespace
   }
-  grafana_oauth_type                   = "" # we support three options: without ouath (empty value), github or gitlab. Default is empty
-  grafana_password                     = local.kube_prometheus_stack.enabled ? random_string.grafana_password[0].result : "test123"
-  grafana_gitlab_client_id             = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_gitlab_client_id", "")
-  grafana_gitlab_client_secret         = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_gitlab_client_secret", "")
-  grafana_gitlab_group                 = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_gitlab_group", "")
-  grafana_github_client_id             = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_client_id", "")
-  grafana_github_client_secret         = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_client_secret", "")
-  grafana_github_team_ids              = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_team_ids", "")
-  grafana_github_allowed_organizations = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_allowed_organizations", "")
-  alertmanager_slack_webhook           = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "alertmanager_slack_webhook", "")
-  alertmanager_slack_channel           = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "alertmanager_slack_channel", "")
-  grafana_domain_name                  = "grafana-${local.domain_suffix}"
-  prometheus_domain_name               = "prometheus-${local.domain_suffix}"
-  alertmanager_domain_name             = "alertmanager-${local.domain_suffix}"
-  kube_prometheus_stack_values         = <<VALUES
+  kube_prometheus_stack_grafana_oauth_type                   = "" # we support three options: without ouath (empty value), github or gitlab. Default is empty
+  kube_prometheus_stack_grafana_password                     = local.kube_prometheus_stack.enabled ? random_string.kube_prometheus_stack_grafana_password[0].result : ""
+  kube_prometheus_stack_grafana_gitlab_client_id             = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_gitlab_client_id", "")
+  kube_prometheus_stack_grafana_gitlab_client_secret         = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_gitlab_client_secret", "")
+  kube_prometheus_stack_grafana_gitlab_group                 = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_gitlab_group", "")
+  kube_prometheus_stack_grafana_github_client_id             = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_client_id", "")
+  kube_prometheus_stack_grafana_github_client_secret         = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_client_secret", "")
+  kube_prometheus_stack_grafana_github_team_ids              = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_team_ids", "")
+  kube_prometheus_stack_grafana_github_allowed_organizations = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "grafana_github_allowed_organizations", "")
+  kube_prometheus_stack_alertmanager_slack_webhook           = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "alertmanager_slack_webhook", "")
+  kube_prometheus_stack_alertmanager_slack_channel           = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "alertmanager_slack_channel", "")
+  kube_prometheus_stack_grafana_domain_name                  = "grafana-${local.domain_suffix}"
+  kube_prometheus_stack_alertmanager_domain_name             = "alertmanager-${local.domain_suffix}"
+  kube_prometheus_stack_prometheus_domain_name               = "prometheus-${local.domain_suffix}"
+  kube_prometheus_stack_values                               = <<VALUES
 # Prometheus Server parameters
 prometheus:
   ingress:
@@ -32,10 +32,10 @@ prometheus:
       nginx.ingress.kubernetes.io/whitelist-source-range: ${local.ip_whitelist}
     path: /
     hosts:
-      - ${local.prometheus_domain_name}
+      - ${local.kube_prometheus_stack_prometheus_domain_name}
     tls:
     - hosts:
-      - ${local.prometheus_domain_name}
+      - ${local.kube_prometheus_stack_prometheus_domain_name}
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
     storageSpec:
@@ -74,19 +74,14 @@ prometheusOperator:
             values:
               - ON_DEMAND
 VALUES
-
-  kube_prometheus_stack_grafana_values              = <<VALUES
+  kube_prometheus_stack_grafana_values                       = <<VALUES
 # Grafana settings
 grafana:
   enabled: true
-  image:
-    tag: 7.2.0
-  deploymentStrategy:
-    type: Recreate
-  adminPassword: "${local.grafana_password}"
+  adminPassword: "${local.kube_prometheus_stack_grafana_password}"
   serviceAccount:
     annotations:
-      "eks.amazonaws.com/role-arn": ${local.kube_prometheus_stack.enabled ? module.aws_iam_grafana[0].role_arn : ""}
+      "eks.amazonaws.com/role-arn": ${local.kube_prometheus_stack.enabled ? module.aws_iam_kube_prometheus_stack_grafana[0].role_arn : ""}
   ingress:
     enabled: true
     annotations:
@@ -94,12 +89,12 @@ grafana:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     path: /
     hosts:
-      - ${local.grafana_domain_name}
+      - ${local.kube_prometheus_stack_grafana_domain_name}
     tls:
     - hosts:
-      - ${local.grafana_domain_name}
+      - ${local.kube_prometheus_stack_grafana_domain_name}
   env:
-    GF_SERVER_ROOT_URL: https://${local.grafana_domain_name}
+    GF_SERVER_ROOT_URL: https://${local.kube_prometheus_stack_grafana_domain_name}
     GF_USERS_ALLOW_SIGN_UP: false
 
   persistence:
@@ -173,32 +168,34 @@ grafana:
             values:
               - SPOT
 VALUES
-  kube_prometheus_stack_grafana_gitlab_oauth_values = <<VALUES
+  kube_prometheus_stack_grafana_gitlab_oauth_values          = <<VALUES
 grafana:
   env:
     GF_AUTH_GITLAB_ENABLED: true
     GF_AUTH_GITLAB_ALLOW_SIGN_UP: true
-    GF_AUTH_GITLAB_CLIENT_ID: ${local.grafana_gitlab_client_id}
-    GF_AUTH_GITLAB_CLIENT_SECRET: ${local.grafana_gitlab_client_secret}
+    GF_AUTH_GITLAB_CLIENT_ID: ${local.kube_prometheus_stack_grafana_gitlab_client_id}
+    GF_AUTH_GITLAB_CLIENT_SECRET: ${local.kube_prometheus_stack_grafana_gitlab_client_secret}
     GF_AUTH_GITLAB_SCOPES: read_api
     GF_AUTH_GITLAB_AUTH_URL: https://gitlab.com/oauth/authorize
     GF_AUTH_GITLAB_TOKEN_URL: https://gitlab.com/oauth/token
     GF_AUTH_GITLAB_API_URL: https://gitlab.com/api/v4
-    GF_AUTH_GITLAB_ALLOWED_GROUPS: ${local.grafana_gitlab_group}
+    GF_AUTH_GITLAB_ALLOWED_GROUPS: ${local.kube_prometheus_stack_grafana_gitlab_group}
 VALUES
-  kube_prometheus_stack_grafana_github_oauth_values = <<VALUES
+  kube_prometheus_stack_grafana_github_oauth_values          = <<VALUES
+grafana:
+  env:
     GF_AUTH_GITHUB_ENABLED: true
     GF_AUTH_GITHUB_ALLOW_SIGN_UP: true
-    GF_AUTH_GITHUB_CLIENT_ID: ${local.grafana_github_client_id}
-    GF_AUTH_GITHUB_CLIENT_SECRET: ${local.grafana_github_client_secret}
+    GF_AUTH_GITHUB_CLIENT_ID: ${local.kube_prometheus_stack_grafana_github_client_id}
+    GF_AUTH_GITHUB_CLIENT_SECRET: ${local.kube_prometheus_stack_grafana_github_client_secret}
     GF_AUTH_GITHUB_SCOPES: user:email,read:org
     GF_AUTH_GITHUB_AUTH_URL: https://github.com/login/oauth/authorize
     GF_AUTH_GITHUB_TOKEN_URL: https://github.com/login/oauth/access_token
     GF_AUTH_GITHUB_API_URL: https://api.github.com/user
-    GF_AUTH_GITHUB_TEAM_IDS: ${local.grafana_github_team_ids}
-    GF_AUTH_GITHUB_ALOWED_ORGANISATIONS: ${local.grafana_github_allowed_organizations}
+    GF_AUTH_GITHUB_TEAM_IDS: ${local.kube_prometheus_stack_grafana_github_team_ids}
+    GF_AUTH_GITHUB_ALOWED_ORGANISATIONS: ${local.kube_prometheus_stack_grafana_github_allowed_organizations}
 VALUES
-  kube_prometheus_stack_alertmanager_values         = <<VALUES
+  kube_prometheus_stack_alertmanager_values                  = <<VALUES
 # Alertmanager parameters
 alertmanager:
   enabled: false
@@ -210,10 +207,10 @@ alertmanager:
       nginx.ingress.kubernetes.io/whitelist-source-range: ${local.ip_whitelist}
     path: /
     hosts:
-      - ${local.alertmanager_domain_name}
+      - ${local.kube_prometheus_stack_alertmanager_domain_name}
     tls:
     - hosts:
-      - ${local.alertmanager_domain_name}
+      - ${local.kube_prometheus_stack_alertmanager_domain_name}
   alertmanagerSpec:
     storage:
       volumeClaimTemplate:
@@ -256,12 +253,12 @@ alertmanager:
                 values:
                   - ON_DEMAND
 VALUES
-  kube_prometheus_stack_alertmanager_slack_values   = <<VALUES
+  kube_prometheus_stack_alertmanager_slack_values            = <<VALUES
 # Alertmanager parameters
 alertmanager:
   config:
     global:
-      slack_api_url: ${local.alertmanager_slack_webhook}
+      slack_api_url: ${local.kube_prometheus_stack_alertmanager_slack_webhook}
     route:
       routes:
         - match:
@@ -274,7 +271,7 @@ alertmanager:
     - name: 'null'
     - name: 'slack-notifications'
       slack_configs:
-        - channel: ${local.alertmanager_slack_channel}
+        - channel: ${local.kube_prometheus_stack_alertmanager_slack_channel}
           send_resolved: true
           icon_url: https://avatars3.githubusercontent.com/u/3380462
           username: 'AlertManager'
@@ -293,7 +290,7 @@ VALUES
 }
 
 #tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
-module "monitoring_namespace" {
+module "kube_prometheus_stack_namespace" {
   count = local.kube_prometheus_stack.enabled ? 1 : 0
 
   source = "../modules/kubernetes-namespace"
@@ -383,7 +380,7 @@ module "monitoring_namespace" {
   ]
 }
 
-module "aws_iam_grafana" {
+module "aws_iam_kube_prometheus_stack_grafana" {
   count = local.kube_prometheus_stack.enabled ? 1 : 0
 
   source            = "../modules/aws-iam-eks-trusted"
@@ -423,7 +420,7 @@ module "aws_iam_grafana" {
   })
 }
 
-resource "random_string" "grafana_password" {
+resource "random_string" "kube_prometheus_stack_grafana_password" {
   count   = local.kube_prometheus_stack.enabled ? 1 : 0
   length  = 20
   special = true
@@ -436,42 +433,47 @@ resource "helm_release" "prometheus_operator" {
   chart       = local.kube_prometheus_stack.chart
   repository  = local.kube_prometheus_stack.repository
   version     = local.kube_prometheus_stack.chart_version
-  namespace   = module.monitoring_namespace[count.index].name
+  namespace   = module.kube_prometheus_stack_namespace[count.index].name
+  skip_crds   = true
   max_history = var.helm_release_history_size
 
   values = compact([
     local.kube_prometheus_stack_values,
     local.kube_prometheus_stack_grafana_values,
-    local.grafana_oauth_type == "gitlab" ? local.kube_prometheus_stack_grafana_gitlab_oauth_values : null,
-    local.grafana_oauth_type == "github" ? local.kube_prometheus_stack_grafana_github_oauth_values : null,
+    local.kube_prometheus_stack_grafana_oauth_type == "gitlab" ? local.kube_prometheus_stack_grafana_gitlab_oauth_values : null,
+    local.kube_prometheus_stack_grafana_oauth_type == "github" ? local.kube_prometheus_stack_grafana_github_oauth_values : null,
     local.kube_prometheus_stack_alertmanager_values,
-    local.alertmanager_slack_webhook != "" ? local.kube_prometheus_stack_alertmanager_slack_values : null
+    local.kube_prometheus_stack_alertmanager_slack_webhook != "" ? local.kube_prometheus_stack_alertmanager_slack_values : null
   ])
+
+  depends_on = [
+    kubectl_manifest.kube_prometheus_stack_operator_crds
+  ]
 
 }
 
-output "grafana_domain_name" {
-  value       = local.kube_prometheus_stack.enabled ? local.grafana_domain_name : null
+output "kube_prometheus_stack_grafana_domain_name" {
+  value       = local.kube_prometheus_stack.enabled ? local.kube_prometheus_stack_grafana_domain_name : null
   description = "Grafana dashboards address"
 }
 
-output "alertmanager_domain_name" {
-  value       = local.kube_prometheus_stack.enabled ? local.alertmanager_domain_name : null
+output "kube_prometheus_stack_alertmanager_domain_name" {
+  value       = local.kube_prometheus_stack.enabled ? local.kube_prometheus_stack_alertmanager_domain_name : null
   description = "Alertmanager ui address"
 }
 
-output "prometheus_domain_name" {
-  value       = local.kube_prometheus_stack.enabled ? local.prometheus_domain_name : null
+output "kube_prometheus_stack_prometheus_domain_name" {
+  value       = local.kube_prometheus_stack.enabled ? local.kube_prometheus_stack_prometheus_domain_name : null
   description = "Prometheus ui address"
 }
 
-output "grafana_admin_password" {
-  value       = local.kube_prometheus_stack.enabled ? local.grafana_password : null
+output "kube_prometheus_stack_grafana_admin_password" {
+  value       = local.kube_prometheus_stack.enabled ? local.kube_prometheus_stack_grafana_password : null
   sensitive   = true
   description = "Grafana admin password"
 }
 
-output "get_grafana_admin_password" {
-  value       = local.kube_prometheus_stack.enabled ? "kubectl get secret --namespace monitoring kube-prometheus-stack-grafana -o jsonpath='{.data.admin-password}' | base64 --decode ; echo" : null
+output "kube_prometheus_stack_get_grafana_admin_password" {
+  value       = local.kube_prometheus_stack.enabled ? "kubectl get secret --namespace ${local.kube_prometheus_stack.namespace} kube-prometheus-stack-grafana -o jsonpath='{.data.admin-password}' | base64 --decode ; echo" : null
   description = "Command which gets admin password from kubernetes secret"
 }

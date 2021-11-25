@@ -93,7 +93,7 @@ releases:
     enabled: false
     chart: keda
     repository: https://kedacore.github.io/charts
-    version: 2.4.0
+    chart_version: 2.4.0
     namespace: keda
   - id: kiali
     enabled: false
@@ -102,10 +102,10 @@ releases:
     chart_version: 1.36
     namespace: kiali
   - id: kube-prometheus-stack
-    enabled: true
+    enabled: false
     chart: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
-    chart_version: 13.12.0
+    chart_version: 19.3.0 #https://github.com/prometheus-community/helm-charts/issues/1500
     namespace: monitoring
   - id: loki-stack
     enabled: true
@@ -117,5 +117,12 @@ releases:
     enabled: true
     chart: reloader
     repository: https://stakater.github.io/stakater-charts
-    version: 0.0.81
+    chart_version: 0.0.81
     namespace: reloader
+  - id: victoria-metrics-k8s-stack
+    enabled: true
+    chart: victoria-metrics-k8s-stack
+    repository: https://victoriametrics.github.io/helm-charts
+    chart_version: 0.5.9
+    namespace: monitoring
+
