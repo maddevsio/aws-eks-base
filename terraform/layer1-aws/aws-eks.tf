@@ -125,41 +125,34 @@ module "eks" {
           value  = "ci"
           effect = "NO_SCHEDULE"
       }]
+    },
+    bottlerocket = {
+      desired_capacity = var.node_group_br.desired_capacity
+      max_capacity     = var.node_group_br.max_capacity
+      min_capacity     = var.node_group_br.min_capacity
+      instance_types   = var.node_group_br.instance_types
+      capacity_type    = var.node_group_br.capacity_type
+      subnets          = module.vpc.private_subnets
+
+      ami_type = "BOTTLEROCKET_x86_64"
+
+      force_update_version = var.node_group_br.force_update_version
+
+      k8s_labels = {
+        Environment = local.env
+        nodegroup   = "bottlerocket"
+      }
+      additional_tags = {
+        Name = "${local.name}-bottlerocket"
+      }
+      taints = [
+        {
+          key    = "nodegroup"
+          value  = "bottlerocket"
+          effect = "NO_SCHEDULE"
+      }]
     }
   }
-
-  worker_groups_launch_template = [
-    {
-      name                    = "bottlerocket-spot"
-      ami_id                  = data.aws_ami.bottlerocket_ami.id
-      override_instance_types = var.worker_group_bottlerocket.instance_types
-      spot_instance_pools     = var.worker_group_bottlerocket.spot_instance_pools
-      asg_max_size            = var.worker_group_bottlerocket.max_capacity
-      asg_min_size            = var.worker_group_bottlerocket.min_capacity
-      asg_desired_capacity    = var.worker_group_bottlerocket.desired_capacity
-      subnets                 = module.vpc.private_subnets
-      public_ip               = false
-      userdata_template_file  = "${path.module}/templates/userdata-bottlerocket.tpl"
-      userdata_template_extra_args = {
-        enable_admin_container   = false
-        enable_control_container = true
-      }
-      additional_userdata = <<EOT
-[settings.kubernetes.node-labels]
-"eks.amazonaws.com/capacityType" = "SPOT"
-"nodegroup" = "bottlerocket"
-
-[settings.kubernetes.node-taints]
-"nodegroup" = "bottlerocket:NoSchedule"
-EOT
-
-      tags = concat(local.worker_tags, [{
-        "key"                 = "k8s.io/cluster-autoscaler/node-template/label/nodegroup"
-        "propagate_at_launch" = "true"
-        "value"               = "bottlerocket"
-      }])
-    }
-  ]
 
   fargate_profiles = {
     default = {
