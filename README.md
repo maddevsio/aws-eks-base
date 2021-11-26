@@ -1,7 +1,8 @@
 # Boilerplate for a basic AWS infrastructure with EKS cluster
 
 [![Developed by Mad Devs](https://maddevs.io/badge-dark.svg)](https://maddevs.io?utm_source=github&utm_medium=madboiler)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/github/license/maddevsio/aws-eks-base)](https://github.com/maddevsio/aws-eks-base/blob/main/LICENSE.md)
+[![CI Status](https://github.com/maddevsio/aws-eks-base/workflows/Terraform-ci/badge.svg)](https://github.com/maddevsio/aws-eks-base/actions)
 
 ## Advantages of this boilerplate
 
@@ -265,7 +266,7 @@ $ cp terraform/layer1-aws/demo.tfvars.example terraform/layer1-aws/terraform.tfv
 > You can find all possible variables in each layer's Readme.
 
 #### Secrets
-Some local variables expect [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`. 
+Some local variables expect [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`.
 
 > The secret `/${local.name_wo_region}/infra/layer2-k8s` must be pre-created before running `terraform apply`
 
