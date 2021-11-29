@@ -12,6 +12,24 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+<a name="v6.0.0"></a>
+## [v6.0.0] - 2021-11-29
+FEATURES:
+- Moved bottlerocket to managed node groups ([#228](https://github.com/maddevsio/aws-eks-base/issues/228))
+- Introduce possibility to install VictoriaMetrics or Prometheus ([#222](https://github.com/maddevsio/aws-eks-base/issues/222))
+
+REFACTORS:
+- Delete Teamcity helm release ([#220](https://github.com/maddevsio/aws-eks-base/issues/220))
+
+BUG FIXES:
+- Removed this prefix from r53 and acm modules outputs [#223](https://github.com/maddevsio/aws-eks-base/issues/223) ([#224](https://github.com/maddevsio/aws-eks-base/issues/224))
+
+DOCS:
+- Changed License banner, added CI Status badge [#225](https://github.com/maddevsio/aws-eks-base/issues/225) ([#226](https://github.com/maddevsio/aws-eks-base/issues/226))
+
+
+
+
 <a name="v5.1.0"></a>
 ## [v5.1.0] - 2021-11-22
 ENHANCEMENTS:
@@ -22,7 +40,6 @@ REFACTORS:
 - Do not use templates/calico-values.yaml and set necessary values in the eks-calico.tf file ([#210](https://github.com/maddevsio/aws-eks-base/issues/210))
 - Do not use templates/teamcity-values.yaml and set necessary values in the eks-teamcity.tf file ([#208](https://github.com/maddevsio/aws-eks-base/issues/208))
 - Do not use templates/nginx-ingress-values.yaml and set necessary values in the eks-ingress-nginx-controller.tf file ([#206](https://github.com/maddevsio/aws-eks-base/issues/206))
-- Do not use templates/calico-values.yaml and set necessary values in the eks-calico.tf file
 - Do not use templates/elk-values.yaml and set necessary values in the eks-elk.tf file ([#204](https://github.com/maddevsio/aws-eks-base/issues/204))
 - Do not use templates/gitlab-runner-values.yaml and set necessary values in the eks-gitlab-runner.tf file ([#202](https://github.com/maddevsio/aws-eks-base/issues/202))
 - Do not use templates/cluster-autoscaler-values.yaml and set necessary values in the eks-cluster-autoscaler.tf file ([#200](https://github.com/maddevsio/aws-eks-base/issues/200))
@@ -102,7 +119,8 @@ DOCS:
 
 
 
-[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v5.1.0...HEAD
+[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v6.0.0...HEAD
+[v6.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v5.1.0...v6.0.0
 [v5.1.0]: https://github.com/maddevsio/aws-eks-base/compare/v5.0.0...v5.1.0
 [v5.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v4.0.0...v5.0.0
 [v4.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v3.0.0...v4.0.0
