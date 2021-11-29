@@ -146,7 +146,7 @@ variable "node_group_spot" {
     desired_capacity     = 1
     force_update_version = true
   }
-  description = "Node group configuration"
+  description = "Spot node group configuration"
 }
 
 variable "node_group_ci" {
@@ -167,7 +167,7 @@ variable "node_group_ci" {
     desired_capacity     = 0
     force_update_version = true
   }
-  description = "Node group configuration"
+  description = "CI node group configuration"
 }
 
 variable "node_group_ondemand" {
@@ -188,28 +188,28 @@ variable "node_group_ondemand" {
     desired_capacity     = 1
     force_update_version = true
   }
-  description = "Node group configuration"
+  description = "Default ondemand node group configuration"
 }
 
-variable "worker_group_bottlerocket" {
+variable "node_group_br" {
   type = object({
-    instance_types      = list(string)
-    capacity_type       = string
-    max_capacity        = number
-    min_capacity        = number
-    desired_capacity    = number
-    spot_instance_pools = number
+    instance_types       = list(string)
+    capacity_type        = string
+    max_capacity         = number
+    min_capacity         = number
+    desired_capacity     = number
+    force_update_version = bool
   })
 
   default = {
-    instance_types      = ["t3a.medium", "t3.medium"]
-    capacity_type       = "SPOT"
-    max_capacity        = 5
-    min_capacity        = 0
-    desired_capacity    = 0
-    spot_instance_pools = 2
+    instance_types       = ["t3a.medium", "t3.medium"]
+    capacity_type        = "SPOT"
+    max_capacity         = 5
+    min_capacity         = 0
+    desired_capacity     = 0
+    force_update_version = true
   }
-  description = "Bottlerocket worker group configuration"
+  description = "Bottlerocket node group configuration"
 }
 
 variable "eks_map_roles" {
