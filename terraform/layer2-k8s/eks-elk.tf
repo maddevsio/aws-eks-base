@@ -18,7 +18,7 @@ locals {
   elk_elasticsearch_values    = <<VALUES
 elasticsearch:
   enabled: true
-  image: "public.ecr.aws/o7m5y2d9/elasticsearch"
+  image: "public.ecr.aws/o7m5y2d9/elasticsearch" # Used this dockerfile https://github.com/maddevsio/aws-eks-base/blob/main/docker/elasticsearch/Dockerfile
   imageTag: 7.8.0
   esMajorVersion: 7
   replicas: 1
