@@ -18,7 +18,7 @@ locals {
   elk_elasticsearch_values    = <<VALUES
 elasticsearch:
   enabled: true
-  image: "halfb00t/elasticsearch"
+  image: "public.ecr.aws/o7m5y2d9/elasticsearch"
   imageTag: 7.8.0
   esMajorVersion: 7
   replicas: 1
