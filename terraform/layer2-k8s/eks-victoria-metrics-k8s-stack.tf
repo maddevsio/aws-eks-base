@@ -37,7 +37,7 @@ vmsingle:
   # spec for VMSingle crd
   # https://github.com/VictoriaMetrics/operator/blob/master/docs/api.MD#vmsinglespec
   spec:
-    retentionPeriod: "14"
+    retentionPeriod: "14d"
     replicaCount: 1
     storage:
       storageClassName: advanced

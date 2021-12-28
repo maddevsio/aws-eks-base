@@ -457,5 +457,5 @@ Notes:
 
 If you're interested in contributing to the project:
 
-- Start by reading the [Contributing](https://github.com/maddevsio/aws-eks-base/.github/CONTRIBUTING.md) guide
+- Start by reading the [Contributing](https://github.com/maddevsio/aws-eks-base/blob/main/.github/CONTRIBUTING.md) guide
 - Explore [current issues](https://github.com/maddevsio/aws-eks-base/issues?q=is%3Aopen+is%3Aissue).
