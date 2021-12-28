@@ -1,25 +1,25 @@
 dependencies:
 - name: elasticsearch
   repository: https://helm.elastic.co
-  version: 7.8.0
+  version: 7.16.2
   condition: elasticsearch.enabled
 - name: filebeat
   repository: https://helm.elastic.co
-  version: 7.8.0
+  version: 7.16.2
   condition: filebeat.enabled
 - name: kibana
   repository: https://helm.elastic.co
-  version: 7.8.0
+  version: 7.16.2
   condition: kibana.enabled
 - name: logstash
   repository: https://helm.elastic.co
-  version: 7.8.0
+  version: 7.16.2
   condition: logstash.enabled
 - name: metricbeat
   repository: https://helm.elastic.co
-  version: 7.8.0
+  version: 7.16.2
   condition: metricbeat.enabled
 - name: apm-server
   repository: https://helm.elastic.co
-  version: 7.8.0
+  version: 7.16.2
   condition: apm-server.enabled

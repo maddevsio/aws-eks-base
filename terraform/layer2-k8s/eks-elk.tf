@@ -18,8 +18,8 @@ locals {
   elk_elasticsearch_values    = <<VALUES
 elasticsearch:
   enabled: true
-  image: "public.ecr.aws/o7m5y2d9/elasticsearch" # Used this dockerfile https://github.com/maddevsio/aws-eks-base/blob/main/docker/elasticsearch/Dockerfile
-  imageTag: 7.8.0
+  image: "public.ecr.aws/o7m5y2d9/elasticsearch" # Uses this dockerfile https://github.com/maddevsio/aws-eks-base/blob/main/docker/elasticsearch/Dockerfile
+  imageTag: 7.16.2
   esMajorVersion: 7
   replicas: 1
   clusterHealthCheckParams: "wait_for_status=yellow&timeout=1s"
@@ -101,8 +101,8 @@ kibana:
 
   ingress:
     enabled: true
+    className: nginx
     annotations:
-      kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     path: /
     hosts:
