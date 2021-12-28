@@ -80,14 +80,14 @@ releases:
   - id: istio-operator-resources
     enabled: false
     chart: ../../helm-charts/istio/istio-operator-resources
-    repository: 
+    repository:
     chart_version:
     namespace: istio-system
   - id: istio-resources
     enabled: false
     chart: ../../helm-charts/istio/istio-resources
     repository:
-    chart_version: 
+    chart_version:
     namespace: istio-system
   - id: keda
     enabled: false
