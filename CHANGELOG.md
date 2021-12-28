@@ -12,6 +12,25 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+<a name="v6.1.0"></a>
+## [v6.1.0] - 2021-12-28
+ENHANCEMENTS:
+- ELK upgrade ([#239](https://github.com/maddevsio/aws-eks-base/issues/239))
+
+DOCS:
+- Fixed contributing.md url ([#238](https://github.com/maddevsio/aws-eks-base/issues/238))
+
+
+
+
+<a name="v6.0.1"></a>
+## [v6.0.1] - 2021-12-23
+ENHANCEMENTS:
+- Moved elasticsearch image to public ECR ([#233](https://github.com/maddevsio/aws-eks-base/issues/233))
+
+
+
+
 <a name="v6.0.0"></a>
 ## [v6.0.0] - 2021-11-29
 FEATURES:
@@ -119,7 +138,9 @@ DOCS:
 
 
 
-[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v6.0.0...HEAD
+[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v6.1.0...HEAD
+[v6.1.0]: https://github.com/maddevsio/aws-eks-base/compare/v6.0.1...v6.1.0
+[v6.0.1]: https://github.com/maddevsio/aws-eks-base/compare/v6.0.0...v6.0.1
 [v6.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v5.1.0...v6.0.0
 [v5.1.0]: https://github.com/maddevsio/aws-eks-base/compare/v5.0.0...v5.1.0
 [v5.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v4.0.0...v5.0.0
