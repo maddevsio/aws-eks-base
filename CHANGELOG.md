@@ -12,6 +12,14 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+<a name="v6.1.1"></a>
+## [v6.1.1] - 2022-01-06
+
+- Allow external secrets to get secrets from AWS Secrets Manager ([#241](https://github.com/maddevsio/aws-eks-base/issues/241))
+
+
+
+
 <a name="v6.1.0"></a>
 ## [v6.1.0] - 2021-12-28
 ENHANCEMENTS:
@@ -138,7 +146,8 @@ DOCS:
 
 
 
-[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v6.1.0...HEAD
+[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v6.1.1...HEAD
+[v6.1.1]: https://github.com/maddevsio/aws-eks-base/compare/v6.1.0...v6.1.1
 [v6.1.0]: https://github.com/maddevsio/aws-eks-base/compare/v6.0.1...v6.1.0
 [v6.0.1]: https://github.com/maddevsio/aws-eks-base/compare/v6.0.0...v6.0.1
 [v6.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v5.1.0...v6.0.0
