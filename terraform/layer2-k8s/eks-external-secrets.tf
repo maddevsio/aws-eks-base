@@ -90,7 +90,13 @@ module "aws_iam_external_secrets" {
     "Statement" : [
       {
         "Effect" : "Allow",
-        "Action" : "ssm:GetParameter",
+        "Action" : [
+          "ssm:GetParameter",
+          "secretsmanager:GetResourcePolicy",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:ListSecretVersionIds"
+        ],
         "Resource" : "*"
       }
     ]
