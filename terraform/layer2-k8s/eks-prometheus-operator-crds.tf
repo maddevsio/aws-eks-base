@@ -16,6 +16,7 @@ data "http" "kube_prometheus_stack_operator_crds" {
 }
 
 resource "kubectl_manifest" "kube_prometheus_stack_operator_crds" {
-  for_each  = (local.victoria_metrics_k8s_stack.enabled || local.kube_prometheus_stack.enabled) ? { for k, v in data.http.kube_prometheus_stack_operator_crds : yamldecode(v.body).metadata.name => v.body } : {}
-  yaml_body = each.value
+  for_each          = (local.victoria_metrics_k8s_stack.enabled || local.kube_prometheus_stack.enabled) ? { for k, v in data.http.kube_prometheus_stack_operator_crds : yamldecode(v.body).metadata.name => v.body } : {}
+  yaml_body         = each.value
+  server_side_apply = true
 }
