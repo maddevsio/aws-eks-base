@@ -23,6 +23,24 @@ locals {
   kube_prometheus_stack_prometheus_domain_name               = "prometheus-${local.domain_suffix}"
   kube_prometheus_stack_values                               = <<VALUES
 # Prometheus Server parameters
+##############################
+### EKS specific configuration
+##############################
+kubeControllerManager:
+  enabled: false
+## Component scraping kube scheduler
+##
+kubeScheduler:
+  enabled: false
+## Component scraping kube proxy
+##
+kubeProxy:
+  enabled: false
+############
+defaultRules:
+  disabled:
+    KubeProxyDown: true
+
 prometheus:
   ingress:
     enabled: true
