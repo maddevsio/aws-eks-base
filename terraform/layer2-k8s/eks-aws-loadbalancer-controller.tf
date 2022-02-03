@@ -10,7 +10,7 @@ locals {
   aws_load_balancer_controller_values = <<VALUES
 clusterName: ${local.eks_cluster_id}
 region: ${local.region}
-vpcId: ${local.eks_cluster_id}
+vpcId: ${local.vpc_id}
 
 serviceAccount:
   create: true
