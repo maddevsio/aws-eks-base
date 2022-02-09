@@ -264,6 +264,12 @@ variable "pritunl_vpn_server_enable" {
   description = "Indicates whether or not the Pritunl VPN server is deployed."
 }
 
+variable "eks_cluster_endpoint_only_pritunl" {
+  type        = bool
+  default     = false
+  description = "Only Pritunl VPN server will have access to eks endpoint."
+}
+
 variable "pritunl_vpn_access_cidr_blocks" {
   type        = string
   default     = "127.0.0.1/32"

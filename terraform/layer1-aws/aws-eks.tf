@@ -52,7 +52,7 @@ module "eks" {
 
   cluster_endpoint_public_access = var.eks_cluster_endpoint_public_access
   cluster_endpoint_private_access = var.eks_cluster_endpoint_private_access
-  cluster_endpoint_public_access_cidrs = var.pritunl_vpn_server_enable ? ["${module.pritunl[0].pritunl_endpoint}/32"] : ["0.0.0.0/0"]
+  cluster_endpoint_public_access_cidrs = var.eks_cluster_endpoint_only_pritunl ? ["${module.pritunl[0].pritunl_endpoint}/32"] : ["0.0.0.0/0"]
 
   map_roles        = local.eks_map_roles
   write_kubeconfig = var.eks_write_kubeconfig
