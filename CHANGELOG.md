@@ -12,9 +12,18 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+<a name="v7.0.0"></a>
+## [v7.0.0] - 2022-02-14
+ENHANCEMENTS:
+- Switch from local istio-operator helm chart to official public helm chart ([#249](https://github.com/maddevsio/aws-eks-base/issues/249))
+
+
+
+
 <a name="v6.1.1"></a>
 ## [v6.1.1] - 2022-01-06
 
+- Update CHANGELOG ([#242](https://github.com/maddevsio/aws-eks-base/issues/242))
 - Allow external secrets to get secrets from AWS Secrets Manager ([#241](https://github.com/maddevsio/aws-eks-base/issues/241))
 
 
@@ -146,7 +155,8 @@ DOCS:
 
 
 
-[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v6.1.1...HEAD
+[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v7.0.0...HEAD
+[v7.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v6.1.1...v7.0.0
 [v6.1.1]: https://github.com/maddevsio/aws-eks-base/compare/v6.1.0...v6.1.1
 [v6.1.0]: https://github.com/maddevsio/aws-eks-base/compare/v6.0.1...v6.1.0
 [v6.0.1]: https://github.com/maddevsio/aws-eks-base/compare/v6.0.0...v6.0.1
