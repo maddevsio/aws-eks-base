@@ -67,7 +67,6 @@
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.6.1   |
 | <a name="provider_random"></a> [random](#provider\_random)             | 3.1.0   |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform)    | n/a     |
-| <a name="provider_time"></a> [time](#provider\_time)                   | 0.7.2   |
 
 ## Modules
 
@@ -121,15 +120,16 @@
 | [helm_release.external_secrets](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                                   | resource    |
 | [helm_release.gitlab_runner](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                                      | resource    |
 | [helm_release.ingress_nginx](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                                      | resource    |
-| [helm_release.istio_operator](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                                     | resource    |
-| [helm_release.istio_operator_resources](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                           | resource    |
-| [helm_release.istio_resources](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                                    | resource    |
+| [helm_release.istio_base](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                                         | resource    |
+| [helm_release.istiod](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                                             | resource    |
 | [helm_release.kedacore](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                                           | resource    |
 | [helm_release.kiali](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                                              | resource    |
 | [helm_release.loki_stack](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                                         | resource    |
 | [helm_release.prometheus_operator](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                                | resource    |
 | [helm_release.reloader](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                                           | resource    |
 | [helm_release.victoria_metrics_k8s_stack](https://registry.terraform.io/providers/helm/2.4.1/docs/resources/release)                                                         | resource    |
+| [kubectl_manifest.istio_prometheus_service_monitor_cp](https://registry.terraform.io/providers/gavinbunney/kubectl/1.13.1/docs/resources/manifest)                           | resource    |
+| [kubectl_manifest.istio_prometheus_service_monitor_dp](https://registry.terraform.io/providers/gavinbunney/kubectl/1.13.1/docs/resources/manifest)                           | resource    |
 | [kubectl_manifest.kube_prometheus_stack_operator_crds](https://registry.terraform.io/providers/gavinbunney/kubectl/1.13.1/docs/resources/manifest)                           | resource    |
 | [kubernetes_secret.elasticsearch_certificates](https://registry.terraform.io/providers/kubernetes/2.6.1/docs/resources/secret)                                               | resource    |
 | [kubernetes_secret.elasticsearch_credentials](https://registry.terraform.io/providers/kubernetes/2.6.1/docs/resources/secret)                                                | resource    |
@@ -141,7 +141,6 @@
 | [random_string.kibana_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string)                                                       | resource    |
 | [random_string.kube_prometheus_stack_grafana_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string)                                | resource    |
 | [random_string.victoria_metrics_k8s_stack_grafana_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string)                           | resource    |
-| [time_sleep.wait_10_seconds](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep)                                                             | resource    |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/aws/3.64.2/docs/data-sources/caller_identity)                                                          | data source |
 | [aws_eks_cluster.main](https://registry.terraform.io/providers/aws/3.64.2/docs/data-sources/eks_cluster)                                                                     | data source |
 | [aws_eks_cluster_auth.main](https://registry.terraform.io/providers/aws/3.64.2/docs/data-sources/eks_cluster_auth)                                                           | data source |
