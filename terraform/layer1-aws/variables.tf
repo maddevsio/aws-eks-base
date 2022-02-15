@@ -234,7 +234,7 @@ variable "eks_cluster_enabled_log_types" {
   description = "A list of the desired control plane logging to enable. For more information, see Amazon EKS Control Plane Logging documentation (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html). Possible values: api, audit, authenticator, controllerManager, scheduler"
 }
 
-variable "eks_cluster_log_retention_in_days" {
+variable "eks_cloudwatch_log_group_retention_in_days" {
   type        = number
   default     = 90
   description = "Number of days to retain log events. Default retention - 90 days."
