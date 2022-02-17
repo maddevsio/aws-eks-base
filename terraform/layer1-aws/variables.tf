@@ -246,8 +246,32 @@ variable "eks_cluster_encryption_config_enable" {
   description = "Enable or not encryption for k8s secrets with aws-kms"
 }
 
+variable "eks_cluster_endpoint_public_access" {
+  type        = bool
+  default     = true
+  description = "Enable or not public access to cluster endpoint"
+}
+
+variable "eks_cluster_endpoint_private_access" {
+  type        = bool
+  default     = false
+  description = "Enable or not private access to cluster endpoint"
+}
+
 variable "pritunl_vpn_server_enable" {
   type        = bool
   default     = false
   description = "Indicates whether or not the Pritunl VPN server is deployed."
+}
+
+variable "eks_cluster_endpoint_only_pritunl" {
+  type        = bool
+  default     = false
+  description = "Only Pritunl VPN server will have access to eks endpoint."
+}
+
+variable "pritunl_vpn_access_cidr_blocks" {
+  type        = string
+  default     = "127.0.0.1/32"
+  description = "IP address that will have access to the web console"
 }

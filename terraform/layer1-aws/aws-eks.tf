@@ -50,9 +50,12 @@ module "eks" {
     }
   ] : []
 
+  cluster_endpoint_public_access       = var.eks_cluster_endpoint_public_access
+  cluster_endpoint_private_access      = var.eks_cluster_endpoint_private_access
+  cluster_endpoint_public_access_cidrs = var.eks_cluster_endpoint_only_pritunl ? ["${module.pritunl[0].pritunl_endpoint}/32"] : ["0.0.0.0/0"]
+
   map_roles        = local.eks_map_roles
   write_kubeconfig = var.eks_write_kubeconfig
-
   # Create security group rules to allow communication between pods on workers and pods in managed node groups.
   # Set this to true if you have AWS-Managed node groups and Self-Managed worker groups.
   # See https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1089

@@ -11,7 +11,7 @@ module "pritunl" {
       protocol    = "6"
       from_port   = 443
       to_port     = 443
-      cidr_blocks = "127.0.0.1/32" # IP address that will have access to the web console
+      cidr_blocks = var.pritunl_vpn_access_cidr_blocks
     },
     {
       protocol    = "17"
@@ -23,7 +23,7 @@ module "pritunl" {
       protocol    = "6"
       from_port   = 80
       to_port     = 80
-      cidr_blocks = "127.0.0.1/32" # IP address that will have access to the web console
+      cidr_blocks = var.pritunl_vpn_access_cidr_blocks
     },
   ]
 }
