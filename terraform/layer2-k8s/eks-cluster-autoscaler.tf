@@ -19,6 +19,8 @@ rbac:
 autoDiscovery:
   clusterName: ${local.eks_cluster_id}
 extraArgs:
+  skip-nodes-with-local-storage: false
+  scale-down-utilization-threshold: 0.7
   expander: priority
 expanderPriorities: |
   10:
