@@ -26,9 +26,6 @@ pilot:
       memory: "2Gi"
   nodeSelector:
     eks.amazonaws.com/capacityType: ON_DEMAND
-sidecarInjectorWebhook:
-  injectedAnnotations:
-    cluster-autoscaler.kubernetes.io/safe-to-evict: true # https://github.com/kubeflow/pipelines/issues/4530
 global:
   imagePullPolicy: IfNotPresent
   proxy:
