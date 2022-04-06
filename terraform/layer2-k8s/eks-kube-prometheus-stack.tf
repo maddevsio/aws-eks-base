@@ -156,7 +156,14 @@ grafana:
         editable: true
         options:
           path: /var/lib/grafana/dashboards/k8s
-
+      - name: 'istio'
+        orgId: 1
+        folder: 'istio'
+        type: file
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/istio
   dashboards:
     logs:
       logs:
@@ -185,6 +192,31 @@ grafana:
             operator: In
             values:
               - SPOT
+VALUES
+  kube_prometheus_stack_grafana_istio_values                 = <<VALUES
+grafana:
+  dashboards:
+    istio:
+      Istio-control-plane:
+        gnetId: 7645
+        revision: 101
+        datasource: Prometheus
+      Istio-galley:
+        gnetId: 7648
+        revision: 3
+        datasource: Prometheus
+      Istio-mesh:
+        gnetId: 7639
+        revision: 101
+        datasource: Prometheus
+      Istio-service:
+        gnetId: 7636
+        revision: 101
+        datasource: Prometheus
+      Istio-workload:
+        gnetId: 7630
+        revision: 101
+        datasource: Prometheus
 VALUES
   kube_prometheus_stack_grafana_gitlab_oauth_values          = <<VALUES
 grafana:
@@ -313,7 +345,7 @@ module "kube_prometheus_stack_namespace" {
 
   source = "../modules/kubernetes-namespace"
   name   = local.kube_prometheus_stack.namespace
-  network_policies = [
+  network_policies = concat([
     {
       name         = "default-deny"
       policy_types = ["Ingress", "Egress"]
@@ -395,7 +427,38 @@ module "kube_prometheus_stack_namespace" {
         ]
       }
     }
-  ]
+    ], local.kiali_server.enabled ? [{
+      name         = "allow-kiali-namespace"
+      policy_types = ["Ingress"]
+      pod_selector = {
+        match_expressions = {
+          key      = "app.kubernetes.io/name"
+          operator = "In"
+          values   = ["prometheus", "grafana"]
+        }
+      }
+      ingress = {
+        ports = [
+          {
+            port     = "9090"
+            protocol = "TCP"
+          },
+          {
+            port     = "3000"
+            protocol = "TCP"
+          }
+        ]
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = local.kiali_server.namespace
+              }
+            }
+          }
+        ]
+      }
+  }] : [])
 }
 
 module "aws_iam_kube_prometheus_stack_grafana" {
@@ -458,6 +521,7 @@ resource "helm_release" "prometheus_operator" {
   values = compact([
     local.kube_prometheus_stack_values,
     local.kube_prometheus_stack_grafana_values,
+    local.istio.enabled ? local.kube_prometheus_stack_grafana_istio_values : null,
     local.kube_prometheus_stack_grafana_oauth_type == "gitlab" ? local.kube_prometheus_stack_grafana_gitlab_oauth_values : null,
     local.kube_prometheus_stack_grafana_oauth_type == "github" ? local.kube_prometheus_stack_grafana_github_oauth_values : null,
     local.kube_prometheus_stack_alertmanager_values,
