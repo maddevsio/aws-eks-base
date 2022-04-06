@@ -1,27 +1,7 @@
-locals {
-  cluster_addons = merge(
-    var.addon_create_vpc_cni ? {
-      vpc-cni = {
-        addon_version     = var.addon_vpc_cni_version
-        resolve_conflicts = "OVERWRITE"
-    } } : {},
-    var.addon_create_coredns ? {
-      coredns = {
-        addon_version     = var.addon_coredns_version
-        resolve_conflicts = "OVERWRITE"
-    } } : {},
-    var.addon_create_kube_proxy ? {
-      kube-proxy = {
-        addon_version     = var.addon_kube_proxy_version
-        resolve_conflicts = "OVERWRITE"
-    } } : {},
-  )
-}
-
 #tfsec:ignore:aws-vpc-no-public-egress-sgr tfsec:ignore:aws-eks-enable-control-plane-logging tfsec:ignore:aws-eks-encrypt-secrets tfsec:ignore:aws-eks-no-public-cluster-access tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "18.3.0"
+  version = "18.9.0"
 
   cluster_name    = local.name
   cluster_version = var.eks_cluster_version
@@ -38,7 +18,7 @@ module "eks" {
 
   vpc_id = module.vpc.vpc_id
 
-  cluster_addons = local.cluster_addons
+  cluster_addons = var.eks_addons
 
   cluster_encryption_config = var.eks_cluster_encryption_config_enable ? [
     {
@@ -72,8 +52,8 @@ module "eks" {
     ingress_cluster_all = {
       description                   = "Cluster to nodes all ports/protocols"
       protocol                      = "-1"
-      from_port                     = 0
-      to_port                       = 0
+      from_port                     = 1025
+      to_port                       = 65535
       type                          = "ingress"
       source_cluster_security_group = true
     }
@@ -96,6 +76,8 @@ module "eks" {
 
   eks_managed_node_groups = {
     spot = {
+      name           = "${local.name}-spot"
+      iam_role_name  = "${local.name}-spot"
       desired_size   = var.node_group_spot.desired_capacity
       max_size       = var.node_group_spot.max_capacity
       min_size       = var.node_group_spot.min_capacity
@@ -114,6 +96,8 @@ module "eks" {
       }
     },
     ondemand = {
+      name           = "${local.name}-ondemand"
+      iam_role_name  = "${local.name}-ondemand"
       desired_size   = var.node_group_ondemand.desired_capacity
       max_size       = var.node_group_ondemand.max_capacity
       min_size       = var.node_group_ondemand.min_capacity
@@ -132,6 +116,8 @@ module "eks" {
       }
     },
     ci = {
+      name           = "${local.name}-ci"
+      iam_role_name  = "${local.name}-ci"
       desired_size   = var.node_group_ci.desired_capacity
       max_size       = var.node_group_ci.max_capacity
       min_size       = var.node_group_ci.min_capacity
@@ -157,6 +143,8 @@ module "eks" {
       ]
     },
     bottlerocket = {
+      name           = "${local.name}-bottlerocket"
+      iam_role_name  = "${local.name}-bottlerocket"
       desired_size   = var.node_group_br.desired_capacity
       max_size       = var.node_group_br.max_capacity
       min_size       = var.node_group_br.min_capacity
