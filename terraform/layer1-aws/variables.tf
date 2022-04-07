@@ -96,35 +96,27 @@ variable "eks_cluster_version" {
   description = "Version of the EKS K8S cluster"
 }
 
-variable "addon_create_vpc_cni" {
-  default     = true
-  description = "Enable vpc-cni add-on or not"
-}
-variable "addon_vpc_cni_version" {
-  default     = "v1.9.1-eksbuild.1"
-  description = "The version of vpc-cni add-on"
-}
-variable "addon_create_kube_proxy" {
-  default     = true
-  description = "Enable kube-proxy add-on or not"
-}
-variable "addon_kube_proxy_version" {
-  default     = "v1.20.4-eksbuild.2"
-  description = "The version of kube-proxy add-on"
-}
-variable "addon_create_coredns" {
-  default     = true
-  description = "Enable coredns add-on or not"
-}
-variable "addon_coredns_version" {
-  default     = "v1.8.3-eksbuild.1"
-  description = "The version of coredns add-on"
+variable "eks_addons" {
+  default = {
+    coredns = {
+      resolve_conflicts = "OVERWRITE"
+      addon_version     = "v1.8.4-eksbuild.1"
+    }
+    kube-proxy = {
+      resolve_conflicts = "OVERWRITE"
+      addon_version     = "v1.21.2-eksbuild.2"
+    }
+    vpc-cni = {
+      resolve_conflicts = "OVERWRITE"
+      addon_version     = "v1.10.2-eksbuild.1"
+    }
+  }
+  description = "A list of installed EKS add-ons"
 }
 
 variable "eks_workers_additional_policies" {
-  type = list(any)
-  default = [
-  "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
+  type        = list(any)
+  default     = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
   description = "Additional IAM policy attached to EKS worker nodes"
 }
 
@@ -234,7 +226,7 @@ variable "eks_cluster_enabled_log_types" {
   description = "A list of the desired control plane logging to enable. For more information, see Amazon EKS Control Plane Logging documentation (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html). Possible values: api, audit, authenticator, controllerManager, scheduler"
 }
 
-variable "eks_cluster_log_retention_in_days" {
+variable "eks_cloudwatch_log_group_retention_in_days" {
   type        = number
   default     = 90
   description = "Number of days to retain log events. Default retention - 90 days."
