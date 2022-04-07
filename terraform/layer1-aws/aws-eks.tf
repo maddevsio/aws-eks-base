@@ -1,40 +1,15 @@
-locals {
-  eks_map_roles = concat(var.eks_map_roles,
-    [
-      {
-        rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/administrator"
-        username = "administrator"
-        groups = [
-        "system:masters"]
-    }]
-  )
-
-  worker_tags = [
-    {
-      "key"                 = "k8s.io/cluster-autoscaler/enabled"
-      "propagate_at_launch" = "false"
-      "value"               = "true"
-    },
-    {
-      "key"                 = "k8s.io/cluster-autoscaler/${local.name}"
-      "propagate_at_launch" = "false"
-      "value"               = "owned"
-    }
-  ]
-}
-
 #tfsec:ignore:aws-vpc-no-public-egress-sgr tfsec:ignore:aws-eks-enable-control-plane-logging tfsec:ignore:aws-eks-encrypt-secrets tfsec:ignore:aws-eks-no-public-cluster-access tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "17.23.0"
+  version = "18.9.0"
 
   cluster_name    = local.name
   cluster_version = var.eks_cluster_version
-  subnets         = module.vpc.intra_subnets
+  subnet_ids      = module.vpc.intra_subnets
   enable_irsa     = true
 
-  cluster_enabled_log_types     = var.eks_cluster_enabled_log_types
-  cluster_log_retention_in_days = var.eks_cluster_log_retention_in_days
+  cluster_enabled_log_types              = var.eks_cluster_enabled_log_types
+  cloudwatch_log_group_retention_in_days = var.eks_cloudwatch_log_group_retention_in_days
 
   tags = {
     ClusterName = local.name
@@ -42,6 +17,8 @@ module "eks" {
   }
 
   vpc_id = module.vpc.vpc_id
+
+  cluster_addons = var.eks_addons
 
   cluster_encryption_config = var.eks_cluster_encryption_config_enable ? [
     {
@@ -54,72 +31,111 @@ module "eks" {
   cluster_endpoint_private_access      = var.eks_cluster_endpoint_private_access
   cluster_endpoint_public_access_cidrs = var.eks_cluster_endpoint_only_pritunl ? ["${module.pritunl[0].pritunl_endpoint}/32"] : ["0.0.0.0/0"]
 
-  map_roles        = local.eks_map_roles
-  write_kubeconfig = var.eks_write_kubeconfig
-  # Create security group rules to allow communication between pods on workers and pods in managed node groups.
-  # Set this to true if you have AWS-Managed node groups and Self-Managed worker groups.
-  # See https://github.com/terraform-aws-modules/terraform-aws-eks/issues/1089
-  worker_create_cluster_primary_security_group_rules = true
-
-  workers_additional_policies = var.eks_workers_additional_policies
-
-  node_groups_defaults = {
-    ami_type  = "AL2_x86_64"
-    disk_size = 100
+  # Extend cluster security group rules
+  cluster_security_group_additional_rules = {
+    egress_nodes_ephemeral_ports_tcp = {
+      description                = "To node 1025-65535"
+      protocol                   = "tcp"
+      from_port                  = 1025
+      to_port                    = 65535
+      type                       = "egress"
+      source_node_security_group = true
+    }
   }
 
-  node_groups = {
+  # Extend node-to-node security group rules
+  node_security_group_additional_rules = {
+    ingress_self_all = {
+      description = "Node to node all ports/protocols"
+      protocol    = "-1"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      self        = true
+    }
+    ingress_cluster_all = {
+      description                   = "Cluster to nodes all ports/protocols"
+      protocol                      = "-1"
+      from_port                     = 1025
+      to_port                       = 65535
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+    egress_all = {
+      description      = "Node all egress"
+      protocol         = "-1"
+      from_port        = 0
+      to_port          = 0
+      type             = "egress"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+  }
+
+  eks_managed_node_group_defaults = {
+    ami_type                     = "AL2_x86_64"
+    disk_size                    = 100
+    iam_role_additional_policies = var.eks_workers_additional_policies
+  }
+
+  eks_managed_node_groups = {
     spot = {
-      desired_capacity = var.node_group_spot.desired_capacity
-      max_capacity     = var.node_group_spot.max_capacity
-      min_capacity     = var.node_group_spot.min_capacity
-      instance_types   = var.node_group_spot.instance_types
-      capacity_type    = var.node_group_spot.capacity_type
-      subnets          = module.vpc.private_subnets
+      name           = "${local.name}-spot"
+      iam_role_name  = "${local.name}-spot"
+      desired_size   = var.node_group_spot.desired_capacity
+      max_size       = var.node_group_spot.max_capacity
+      min_size       = var.node_group_spot.min_capacity
+      instance_types = var.node_group_spot.instance_types
+      capacity_type  = var.node_group_spot.capacity_type
+      subnet_ids     = module.vpc.private_subnets
 
       force_update_version = var.node_group_spot.force_update_version
 
-      k8s_labels = {
+      labels = {
         Environment = local.env
         nodegroup   = "spot"
       }
-      additional_tags = {
+      tags = {
         Name = "${local.name}-spot"
       }
     },
     ondemand = {
-      desired_capacity = var.node_group_ondemand.desired_capacity
-      max_capacity     = var.node_group_ondemand.max_capacity
-      min_capacity     = var.node_group_ondemand.min_capacity
-      instance_types   = var.node_group_ondemand.instance_types
-      capacity_type    = var.node_group_ondemand.capacity_type
-      subnets          = module.vpc.private_subnets
+      name           = "${local.name}-ondemand"
+      iam_role_name  = "${local.name}-ondemand"
+      desired_size   = var.node_group_ondemand.desired_capacity
+      max_size       = var.node_group_ondemand.max_capacity
+      min_size       = var.node_group_ondemand.min_capacity
+      instance_types = var.node_group_ondemand.instance_types
+      capacity_type  = var.node_group_ondemand.capacity_type
+      subnet_ids     = module.vpc.private_subnets
 
       force_update_version = var.node_group_ondemand.force_update_version
 
-      k8s_labels = {
+      labels = {
         Environment = local.env
         nodegroup   = "ondemand"
       }
-      additional_tags = {
+      tags = {
         Name = "${local.name}-ondemand"
       }
     },
     ci = {
-      desired_capacity = var.node_group_ci.desired_capacity
-      max_capacity     = var.node_group_ci.max_capacity
-      min_capacity     = var.node_group_ci.min_capacity
-      instance_types   = var.node_group_ci.instance_types
-      capacity_type    = var.node_group_ci.capacity_type
-      subnets          = module.vpc.private_subnets
+      name           = "${local.name}-ci"
+      iam_role_name  = "${local.name}-ci"
+      desired_size   = var.node_group_ci.desired_capacity
+      max_size       = var.node_group_ci.max_capacity
+      min_size       = var.node_group_ci.min_capacity
+      instance_types = var.node_group_ci.instance_types
+      capacity_type  = var.node_group_ci.capacity_type
+      subnet_ids     = module.vpc.private_subnets
 
       force_update_version = var.node_group_ci.force_update_version
 
-      k8s_labels = {
+      labels = {
         Environment = local.env
         nodegroup   = "ci"
       }
-      additional_tags = {
+      tags = {
         Name = "${local.name}-ci"
       }
       taints = [
@@ -127,33 +143,37 @@ module "eks" {
           key    = "nodegroup"
           value  = "ci"
           effect = "NO_SCHEDULE"
-      }]
+        }
+      ]
     },
     bottlerocket = {
-      desired_capacity = var.node_group_br.desired_capacity
-      max_capacity     = var.node_group_br.max_capacity
-      min_capacity     = var.node_group_br.min_capacity
-      instance_types   = var.node_group_br.instance_types
-      capacity_type    = var.node_group_br.capacity_type
-      subnets          = module.vpc.private_subnets
+      name           = "${local.name}-bottlerocket"
+      iam_role_name  = "${local.name}-bottlerocket"
+      desired_size   = var.node_group_br.desired_capacity
+      max_size       = var.node_group_br.max_capacity
+      min_size       = var.node_group_br.min_capacity
+      instance_types = var.node_group_br.instance_types
+      capacity_type  = var.node_group_br.capacity_type
+      subnet_ids     = module.vpc.private_subnets
 
       ami_type = "BOTTLEROCKET_x86_64"
 
       force_update_version = var.node_group_br.force_update_version
 
-      k8s_labels = {
+      labels = {
         Environment = local.env
         nodegroup   = "bottlerocket"
-      }
-      additional_tags = {
-        Name = "${local.name}-bottlerocket"
       }
       taints = [
         {
           key    = "nodegroup"
           value  = "bottlerocket"
           effect = "NO_SCHEDULE"
-      }]
+        }
+      ]
+      tags = {
+        Name = "${local.name}-bottlerocket"
+      }
     }
   }
 
@@ -174,51 +194,4 @@ module "eks" {
       })
     }
   }
-
-  depends_on = [module.vpc]
-}
-
-resource "aws_eks_addon" "vpc_cni" {
-  count = var.addon_create_vpc_cni ? 1 : 0
-
-  cluster_name      = module.eks.cluster_id
-  addon_name        = "vpc-cni"
-  resolve_conflicts = "OVERWRITE"
-  addon_version     = var.addon_vpc_cni_version
-
-  tags = {
-    Environment = local.env
-  }
-
-  depends_on = [module.eks]
-}
-
-resource "aws_eks_addon" "kube_proxy" {
-  count = var.addon_create_kube_proxy ? 1 : 0
-
-  cluster_name      = module.eks.cluster_id
-  addon_name        = "kube-proxy"
-  resolve_conflicts = "OVERWRITE"
-  addon_version     = var.addon_kube_proxy_version
-
-  tags = {
-    Environment = local.env
-  }
-
-  depends_on = [module.eks]
-}
-
-resource "aws_eks_addon" "coredns" {
-  count = var.addon_create_coredns ? 1 : 0
-
-  cluster_name      = module.eks.cluster_id
-  addon_name        = "coredns"
-  resolve_conflicts = "OVERWRITE"
-  addon_version     = var.addon_coredns_version
-
-  tags = {
-    Environment = local.env
-  }
-
-  depends_on = [module.eks]
 }
