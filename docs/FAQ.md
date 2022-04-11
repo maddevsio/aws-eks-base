@@ -166,7 +166,7 @@ By default Gitlab-Runner can deploy into any namespaces. If you want to allow Gi
 ```
 resource "kubernetes_service_account" "gitlab_runner" {
   metadata {
-    name      = "my-gitlab-runners-sa"
+    name      = "my-gitlab-runner-executor-sa"
     namespace = module.gitlab_runner_namespace.name
     annotations = {
       "eks.amazonaws.com/role-arn" = module.aws_iam_gitlab_runner.role_arn
@@ -213,8 +213,12 @@ resource "kubernetes_role_binding" "dev" {
 ```
 ...
 runners:
-  serviceAccountName: my-gitlab-runners-sa
-  image: ubuntu:18.04
+...
+      [runners.kubernetes]
+        ...
+        image = "public.ecr.aws/ubuntu/ubuntu:20.04"
+        service_account = "my-gitlab-runner-executor-sa"
+        ...
 ...
 ```
 
