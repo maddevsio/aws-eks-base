@@ -9,54 +9,59 @@ locals {
   }
   gitlab_runner_registration_token = lookup(jsondecode(data.aws_secretsmanager_secret_version.infra.secret_string), "gitlab_runner_registration_token", "")
   gitlab_runner_values             = <<VALUES
-gitlabUrl: "https://gitlab.com/"
-runnerRegistrationToken: "${local.gitlab_runner_registration_token}"
-concurrent: 4
-checkInterval: 30
-
 rbac:
   create: true
   clusterWideAccess: true
   serviceAccountAnnotations:
     eks.amazonaws.com/role-arn: ${local.gitlab_runner.enabled ? module.aws_iam_gitlab_runner[0].role_arn : ""}
 
+runnerRegistrationToken: "${local.gitlab_runner_registration_token}"
+gitlabUrl: "https://gitlab.com/"
+concurrent: 4
+checkInterval: 30
+
 runners:
-  image: ubuntu:18.04
-  privileged: true
-  namespace: ${local.gitlab_runner.enabled ? module.gitlab_runner_namespace[0].name : "default"}
   tags: "eks-k8s"
   runUntagged: false
-  nodeTolerations:
-  - key: "nodegroup"
-    operator: "Equal"
-    value: "ci"
-    effect: "NoSchedule"
-  nodeSelector:
-    nodegroup: ci
-  cache:
-    cacheType: s3
-    cachePath: "gitlab_runner"
-    cacheShared: false
-    s3ServerAddress: s3.amazonaws.com
-    s3BucketName: ${local.gitlab_runner.enabled ? aws_s3_bucket.gitlab_runner_cache[0].id : "bucket_name"}
-    s3BucketLocation: ${local.region}
-    s3CacheInsecure: false
 
-  builds:
-    cpuLimit: 950m
-    memoryLimit: 2500Mi
-    cpuRequests: 250m
-    memoryRequests: 512Mi
-  services:
-    cpuLimit: 950m
-    memoryLimit: 2500Mi
-    cpuRequests: 250m
-    memoryRequests: 128Mi
-  helpers:
-    cpuLimit: 950m
-    memoryLimit: 2500Mi
-    cpuRequests: 250m
-    memoryRequests: 512Mi
+  config: |
+    [[runners]]
+      executor = "kubernetes"
+      request_concurrency = 1
+      [runners.kubernetes]
+        namespace = "{{.Release.Namespace}}"
+        image = "public.ecr.aws/ubuntu/ubuntu:20.04"
+        privileged = true
+        cpu_request = "250m"
+        cpu_limit = "950m"
+        memory_request = "512Mi"
+        memory_limit = "2500Mi"
+        helper_cpu_request = "250m"
+        helper_cpu_limit = "950m"
+        helper_memory_request = "256Mi"
+        helper_memory_limit = "512Mi"
+        service_cpu_request = "250m"
+        service_cpu_limit = "950m"
+        service_memory_request = "256Mi"
+        service_memory_limit = "512Mi"
+        [runners.kubernetes.node_selector]
+          nodegroup = "ci"
+        [runners.kubernetes.node_tolerations]
+          "nodegroup=ci" = "NoSchedule"
+        [runners.kubernetes.volumes]
+          [[runners.kubernetes.volumes.empty_dir]]
+            name = "docker-certs"
+            mount_path = "/certs/client"
+            medium = "Memory"
+      [runners.cache]
+        Type = "s3"
+        Path = "gitlab_runner"
+        Shared = false
+        [runners.cache.s3]
+          ServerAddress = "s3.amazonaws.com"
+          BucketName = "${local.gitlab_runner.enabled ? aws_s3_bucket.gitlab_runner_cache[0].id : "bucket_name"}"
+          BucketLocation = "${local.region}"
+          Insecure = false
 VALUES
 }
 
