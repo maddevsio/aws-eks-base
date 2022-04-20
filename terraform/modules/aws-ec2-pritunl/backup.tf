@@ -15,7 +15,7 @@ resource "aws_backup_plan" "this" {
 }
 
 resource "aws_backup_selection" "efs" {
-  iam_role_arn = module.backup_role.this_iam_role_arn
+  iam_role_arn = module.backup_role.iam_role_arn
   name         = "${var.name}_backup_selection_efs"
   plan_id      = aws_backup_plan.this.id
 

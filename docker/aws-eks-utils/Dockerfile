@@ -1,10 +1,10 @@
-FROM alpine:3.13.5
+FROM public.ecr.aws/docker/library/alpine:3.15.4
 
-ARG TERRAFORM_VERSION="0.15.1"
-ARG TERRAGRUNT_VERSION="0.29.2"
-ARG HELM_VERSION="3.5.4"
-ARG HELMFILE_VERSION="0.138.7"
-ARG KUBECTL_VERSION="1.21.0"
+ARG TERRAFORM_VERSION="1.1.8"
+ARG TERRAGRUNT_VERSION="0.36.7"
+ARG HELM_VERSION="3.8.2"
+ARG HELMFILE_VERSION="0.144.0"
+ARG KUBECTL_VERSION="1.22.0"
 ENV BASE_URL="https://get.helm.sh"
 ENV TAR_FILE="helm-v${HELM_VERSION}-linux-amd64.tar.gz"
 
@@ -46,10 +46,6 @@ RUN pip install awscli --upgrade
 #Install kubectl
 RUN wget https://storage.googleapis.com/kubernetes-release/release/v"$KUBECTL_VERSION"/bin/linux/amd64/kubectl \
   && chmod +x kubectl && mv kubectl /bin/kubectl
-
-#Install AWS IAM authentificator
-RUN curl -L https://amazon-eks.s3-us-west-2.amazonaws.com/1.13.7/2019-06-11/bin/linux/amd64/aws-iam-authenticator -o /usr/local/bin/aws-iam-authenticator \
-    && chmod +x /usr/local/bin/aws-iam-authenticator
 
 #Install docker
 RUN apk add --no-cache --update docker
