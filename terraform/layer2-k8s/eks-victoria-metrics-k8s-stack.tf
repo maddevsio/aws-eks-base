@@ -532,7 +532,8 @@ resource "helm_release" "victoria_metrics_k8s_stack" {
 
   depends_on = [
     kubectl_manifest.kube_prometheus_stack_operator_crds,
-    helm_release.calico_daemonset
+    helm_release.calico_daemonset,
+    helm_release.ingress_nginx
   ]
 
 }
