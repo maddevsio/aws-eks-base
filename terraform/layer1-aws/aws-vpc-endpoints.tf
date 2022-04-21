@@ -7,7 +7,7 @@ data "aws_security_group" "default" {
 
 module "vpc_gateway_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "3.11.0"
+  version = "3.12.0"
 
   vpc_id = module.vpc.vpc_id
 

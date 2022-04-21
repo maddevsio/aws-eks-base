@@ -111,43 +111,43 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.0.10 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 3.72.0 |
-| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | 1.13.1 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.6.1 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.1.8 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 4.10.0 |
+| <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | 1.14.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.10.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.72.0 |
-| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | 1.13.1 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.10.0 |
+| <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | 1.14.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_acm"></a> [acm](#module\_acm) | terraform-aws-modules/acm/aws | 3.2.0 |
+| <a name="module_acm"></a> [acm](#module\_acm) | terraform-aws-modules/acm/aws | 3.3.0 |
 | <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | 18.9.0 |
 | <a name="module_pritunl"></a> [pritunl](#module\_pritunl) | ../modules/aws-ec2-pritunl | n/a |
-| <a name="module_r53_zone"></a> [r53\_zone](#module\_r53\_zone) | terraform-aws-modules/route53/aws//modules/zones | 2.3.0 |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | 3.11.0 |
-| <a name="module_vpc_gateway_endpoints"></a> [vpc\_gateway\_endpoints](#module\_vpc\_gateway\_endpoints) | terraform-aws-modules/vpc/aws//modules/vpc-endpoints | 3.11.0 |
+| <a name="module_r53_zone"></a> [r53\_zone](#module\_r53\_zone) | terraform-aws-modules/route53/aws//modules/zones | 2.5.0 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | 3.12.0 |
+| <a name="module_vpc_gateway_endpoints"></a> [vpc\_gateway\_endpoints](#module\_vpc\_gateway\_endpoints) | terraform-aws-modules/vpc/aws//modules/vpc-endpoints | 3.12.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [aws_ebs_encryption_by_default.this](https://registry.terraform.io/providers/aws/3.72.0/docs/resources/ebs_encryption_by_default) | resource |
-| [aws_kms_key.eks](https://registry.terraform.io/providers/aws/3.72.0/docs/resources/kms_key) | resource |
-| [kubectl_manifest.this](https://registry.terraform.io/providers/gavinbunney/kubectl/1.13.1/docs/resources/manifest) | resource |
-| [aws_acm_certificate.main](https://registry.terraform.io/providers/aws/3.72.0/docs/data-sources/acm_certificate) | data source |
-| [aws_availability_zones.available](https://registry.terraform.io/providers/aws/3.72.0/docs/data-sources/availability_zones) | data source |
-| [aws_caller_identity.current](https://registry.terraform.io/providers/aws/3.72.0/docs/data-sources/caller_identity) | data source |
-| [aws_eks_cluster.main](https://registry.terraform.io/providers/aws/3.72.0/docs/data-sources/eks_cluster) | data source |
-| [aws_eks_cluster_auth.main](https://registry.terraform.io/providers/aws/3.72.0/docs/data-sources/eks_cluster_auth) | data source |
-| [aws_route53_zone.main](https://registry.terraform.io/providers/aws/3.72.0/docs/data-sources/route53_zone) | data source |
-| [aws_security_group.default](https://registry.terraform.io/providers/aws/3.72.0/docs/data-sources/security_group) | data source |
+| [aws_ebs_encryption_by_default.this](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/ebs_encryption_by_default) | resource |
+| [aws_kms_key.eks](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/kms_key) | resource |
+| [kubectl_manifest.this](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
+| [aws_acm_certificate.main](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/acm_certificate) | data source |
+| [aws_availability_zones.available](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/availability_zones) | data source |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/caller_identity) | data source |
+| [aws_eks_cluster.main](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/eks_cluster) | data source |
+| [aws_eks_cluster_auth.main](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/eks_cluster_auth) | data source |
+| [aws_route53_zone.main](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/route53_zone) | data source |
+| [aws_security_group.default](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/security_group) | data source |
 
 ## Inputs
 
