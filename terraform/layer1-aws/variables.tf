@@ -92,7 +92,7 @@ variable "single_nat_gateway" {
 
 # EKS
 variable "eks_cluster_version" {
-  default     = "1.21"
+  default     = "1.22"
   description = "Version of the EKS K8S cluster"
 }
 
@@ -100,15 +100,15 @@ variable "eks_addons" {
   default = {
     coredns = {
       resolve_conflicts = "OVERWRITE"
-      addon_version     = "v1.8.4-eksbuild.1"
+      addon_version     = "v1.8.7-eksbuild.1"
     }
     kube-proxy = {
       resolve_conflicts = "OVERWRITE"
-      addon_version     = "v1.21.2-eksbuild.2"
+      addon_version     = "v1.22.6-eksbuild.1"
     }
     vpc-cni = {
       resolve_conflicts = "OVERWRITE"
-      addon_version     = "v1.10.2-eksbuild.1"
+      addon_version     = "v1.11.0-eksbuild.1"
     }
   }
   description = "A list of installed EKS add-ons"
