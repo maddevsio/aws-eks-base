@@ -55,9 +55,9 @@ releases:
     namespace: external-dns
   - id: external-secrets
     enabled: true
-    chart: kubernetes-external-secrets
-    repository: https://external-secrets.github.io/kubernetes-external-secrets
-    chart_version: 8.5.5
+    chart: external-secrets
+    repository: https://charts.external-secrets.io
+    chart_version: 0.5.1
     namespace: external-secrets
   - id: gitlab-runner
     enabled: false
