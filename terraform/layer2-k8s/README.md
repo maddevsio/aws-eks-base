@@ -31,7 +31,6 @@
 | <a name="module_aws_iam_cert_manager"></a> [aws\_iam\_cert\_manager](#module\_aws\_iam\_cert\_manager) | ../modules/aws-iam-eks-trusted | n/a |
 | <a name="module_aws_iam_elastic_stack"></a> [aws\_iam\_elastic\_stack](#module\_aws\_iam\_elastic\_stack) | ../modules/aws-iam-user-with-policy | n/a |
 | <a name="module_aws_iam_external_dns"></a> [aws\_iam\_external\_dns](#module\_aws\_iam\_external\_dns) | ../modules/aws-iam-eks-trusted | n/a |
-| <a name="module_aws_iam_external_secrets"></a> [aws\_iam\_external\_secrets](#module\_aws\_iam\_external\_secrets) | ../modules/aws-iam-eks-trusted | n/a |
 | <a name="module_aws_iam_gitlab_runner"></a> [aws\_iam\_gitlab\_runner](#module\_aws\_iam\_gitlab\_runner) | ../modules/aws-iam-eks-trusted | n/a |
 | <a name="module_aws_iam_kube_prometheus_stack_grafana"></a> [aws\_iam\_kube\_prometheus\_stack\_grafana](#module\_aws\_iam\_kube\_prometheus\_stack\_grafana) | ../modules/aws-iam-eks-trusted | n/a |
 | <a name="module_aws_iam_victoria_metrics_k8s_stack_grafana"></a> [aws\_iam\_victoria\_metrics\_k8s\_stack\_grafana](#module\_aws\_iam\_victoria\_metrics\_k8s\_stack\_grafana) | ../modules/aws-iam-eks-trusted | n/a |
