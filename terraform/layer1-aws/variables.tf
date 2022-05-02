@@ -122,84 +122,122 @@ variable "eks_workers_additional_policies" {
 
 variable "node_group_spot" {
   type = object({
-    instance_types       = list(string)
-    capacity_type        = string
-    max_capacity         = number
-    min_capacity         = number
-    desired_capacity     = number
-    force_update_version = bool
+    instance_type              = string
+    max_capacity               = number
+    min_capacity               = number
+    desired_capacity           = number
+    capacity_rebalance         = bool
+    use_mixed_instances_policy = bool
+    mixed_instances_policy     = any
   })
 
   default = {
-    instance_types       = ["t3a.medium", "t3.medium"]
-    capacity_type        = "SPOT"
-    max_capacity         = 5
-    min_capacity         = 0
-    desired_capacity     = 1
-    force_update_version = true
+    instance_type              = "t3.medium" # will be overridden
+    max_capacity               = 5
+    min_capacity               = 0
+    desired_capacity           = 1
+    capacity_rebalance         = true
+    use_mixed_instances_policy = true
+    mixed_instances_policy = {
+      instances_distribution = {
+        on_demand_base_capacity                  = 0
+        on_demand_percentage_above_base_capacity = 0
+      }
+
+      override = [
+        { instance_type = "t3.medium" },
+        { instance_type = "t3a.medium" }
+      ]
+    }
   }
   description = "Spot node group configuration"
 }
 
 variable "node_group_ci" {
   type = object({
-    instance_types       = list(string)
-    capacity_type        = string
-    max_capacity         = number
-    min_capacity         = number
-    desired_capacity     = number
-    force_update_version = bool
+    instance_type              = string
+    max_capacity               = number
+    min_capacity               = number
+    desired_capacity           = number
+    capacity_rebalance         = bool
+    use_mixed_instances_policy = bool
+    mixed_instances_policy     = any
   })
 
   default = {
-    instance_types       = ["t3a.medium", "t3.medium"]
-    capacity_type        = "SPOT"
-    max_capacity         = 5
-    min_capacity         = 0
-    desired_capacity     = 0
-    force_update_version = true
+    instance_type              = "t3.medium" # will be overridden
+    max_capacity               = 5
+    min_capacity               = 0
+    desired_capacity           = 0
+    capacity_rebalance         = false
+    use_mixed_instances_policy = true
+    mixed_instances_policy = {
+      instances_distribution = {
+        on_demand_base_capacity                  = 0
+        on_demand_percentage_above_base_capacity = 0
+      }
+
+      override = [
+        { instance_type = "t3.medium" },
+        { instance_type = "t3a.medium" }
+      ]
+    }
   }
   description = "CI node group configuration"
 }
 
 variable "node_group_ondemand" {
   type = object({
-    instance_types       = list(string)
-    capacity_type        = string
-    max_capacity         = number
-    min_capacity         = number
-    desired_capacity     = number
-    force_update_version = bool
+    instance_type              = string
+    max_capacity               = number
+    min_capacity               = number
+    desired_capacity           = number
+    capacity_rebalance         = bool
+    use_mixed_instances_policy = bool
+    mixed_instances_policy     = any
   })
 
   default = {
-    instance_types       = ["t3a.medium"]
-    capacity_type        = "ON_DEMAND"
-    max_capacity         = 5
-    min_capacity         = 1
-    desired_capacity     = 1
-    force_update_version = true
+    instance_type              = "t3a.medium"
+    max_capacity               = 5
+    min_capacity               = 1
+    desired_capacity           = 1
+    capacity_rebalance         = false
+    use_mixed_instances_policy = false
+    mixed_instances_policy     = null
   }
   description = "Default ondemand node group configuration"
 }
 
 variable "node_group_br" {
   type = object({
-    instance_types       = list(string)
-    capacity_type        = string
-    max_capacity         = number
-    min_capacity         = number
-    desired_capacity     = number
-    force_update_version = bool
+    instance_type              = string
+    max_capacity               = number
+    min_capacity               = number
+    desired_capacity           = number
+    capacity_rebalance         = bool
+    use_mixed_instances_policy = bool
+    mixed_instances_policy     = any
   })
 
   default = {
-    instance_types       = ["t3a.medium", "t3.medium"]
-    capacity_type        = "SPOT"
-    max_capacity         = 5
-    min_capacity         = 0
-    desired_capacity     = 0
-    force_update_version = true
+    instance_type              = "t3.medium" # will be overridden
+    max_capacity               = 5
+    min_capacity               = 0
+    desired_capacity           = 0
+    capacity_rebalance         = true
+    use_mixed_instances_policy = true
+    mixed_instances_policy = {
+      instances_distribution = {
+        on_demand_base_capacity                  = 0
+        on_demand_percentage_above_base_capacity = 0
+      }
+
+      override = [
+        { instance_type = "t3.medium" },
+        { instance_type = "t3a.medium" }
+      ]
+    }
   }
   description = "Bottlerocket node group configuration"
 }
