@@ -3,6 +3,8 @@ locals {
     "k8s.io/cluster-autoscaler/enabled"       = "true"
     "k8s.io/cluster-autoscaler/${local.name}" = "owned"
   }
+  eks_addon_vpc_cni = merge(var.eks_addons.vpc-cni, { service_account_role_arn = module.vpc_cni_irsa.iam_role_arn })
+  eks_addons        = merge(var.eks_addons, { vpc-cni = local.eks_addon_vpc_cni })
 }
 
 data "aws_ami" "eks_default_bottlerocket" {
@@ -35,7 +37,7 @@ module "eks" {
 
   vpc_id = module.vpc.vpc_id
 
-  cluster_addons = var.eks_addons
+  cluster_addons = local.eks_addons
 
   cluster_encryption_config = var.eks_cluster_encryption_config_enable ? [
     {
@@ -109,6 +111,7 @@ module "eks" {
       http_put_response_hop_limit = 1
       instance_metadata_tags      = "disabled"
     }
+    iam_role_attach_cni_policy = false
   }
 
   self_managed_node_groups = {
