@@ -12,6 +12,29 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+<a name="v8.0.0"></a>
+## [v8.0.0] - 2022-05-02
+FEATURES:
+- Configure cluster endpoint ([#251](https://github.com/maddevsio/aws-eks-base/issues/251))
+
+ENHANCEMENTS:
+- Update k8s cluster to the latest version ([#274](https://github.com/maddevsio/aws-eks-base/issues/274))
+- Update used helm-charts to the latest versions ([#271](https://github.com/maddevsio/aws-eks-base/issues/271))
+- Update terraform modules, providers ([#270](https://github.com/maddevsio/aws-eks-base/issues/270))
+- Update terraform eks module ([#261](https://github.com/maddevsio/aws-eks-base/issues/261))
+- Change cluster-autoscaler configuration to improve cluster utilization ([#255](https://github.com/maddevsio/aws-eks-base/issues/255))
+
+REFACTORS:
+- Switch from aws-managed nodegroups to self-managed ([#277](https://github.com/maddevsio/aws-eks-base/issues/277))
+- Switch from kubernetes-external-secrets to External Secrets Operator ([#276](https://github.com/maddevsio/aws-eks-base/issues/276))
+- Fix layer*/README.md files content ([#273](https://github.com/maddevsio/aws-eks-base/issues/273))
+
+BUG FIXES:
+- Delete unnecessary istio-sidecar configuration ([#257](https://github.com/maddevsio/aws-eks-base/issues/257))
+
+
+
+
 <a name="v7.0.0"></a>
 ## [v7.0.0] - 2022-02-14
 ENHANCEMENTS:
@@ -155,7 +178,8 @@ DOCS:
 
 
 
-[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v7.0.0...HEAD
+[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v8.0.0...HEAD
+[v8.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v7.0.0...v8.0.0
 [v7.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v6.1.1...v7.0.0
 [v6.1.1]: https://github.com/maddevsio/aws-eks-base/compare/v6.1.0...v6.1.1
 [v6.1.0]: https://github.com/maddevsio/aws-eks-base/compare/v6.0.1...v6.1.0
