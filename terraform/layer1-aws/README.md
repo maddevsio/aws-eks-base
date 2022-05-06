@@ -21,6 +21,7 @@
 |------|--------|---------|
 | <a name="module_acm"></a> [acm](#module\_acm) | terraform-aws-modules/acm/aws | 3.3.0 |
 | <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | 18.9.0 |
+| <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | terraform-aws-modules/eventbridge/aws | 1.14.0 |
 | <a name="module_pritunl"></a> [pritunl](#module\_pritunl) | ../modules/aws-ec2-pritunl | n/a |
 | <a name="module_r53_zone"></a> [r53\_zone](#module\_r53\_zone) | terraform-aws-modules/route53/aws//modules/zones | 2.5.0 |
 | <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | 3.12.0 |
@@ -33,6 +34,9 @@
 |------|------|
 | [aws_ebs_encryption_by_default.this](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/ebs_encryption_by_default) | resource |
 | [aws_kms_key.eks](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/kms_key) | resource |
+| [aws_sns_topic.security_alerts](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/sns_topic) | resource |
+| [aws_sns_topic_policy.security_alerts](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/sns_topic_policy) | resource |
+| [aws_sns_topic_subscription.security_alerts](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/sns_topic_subscription) | resource |
 | [kubectl_manifest.aws_auth_configmap](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [aws_acm_certificate.main](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/acm_certificate) | data source |
 | [aws_ami.eks_default_bottlerocket](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/ami) | data source |
@@ -49,6 +53,7 @@
 |------|-------------|------|---------|:--------:|
 | <a name="input_allowed_account_ids"></a> [allowed\_account\_ids](#input\_allowed\_account\_ids) | List of allowed AWS account IDs | `list` | `[]` | no |
 | <a name="input_allowed_ips"></a> [allowed\_ips](#input\_allowed\_ips) | IP addresses allowed to connect to private resources | `list(any)` | `[]` | no |
+| <a name="input_aws_cis_benchmark_alerts"></a> [aws\_cis\_benchmark\_alerts](#input\_aws\_cis\_benchmark\_alerts) | AWS CIS Benchmark alerts configuration | `any` | <pre>{<br>  "email": "demo@example.com",<br>  "enabled": "false",<br>  "rules": {<br>    "aws_config_changes_enabled": true,<br>    "cloudtrail_configuration_changes_enabled": true,<br>    "console_login_failed_enabled": true,<br>    "consolelogin_without_mfa_enabled": true,<br>    "iam_policy_changes_enabled": true,<br>    "kms_cmk_delete_or_disable_enabled": true,<br>    "nacl_changes_enabled": true,<br>    "network_gateway_changes_enabled": true,<br>    "organization_changes_enabled": true,<br>    "parameter_store_actions_enabled": true,<br>    "route_table_changes_enabled": true,<br>    "s3_bucket_policy_changes_enabled": true,<br>    "secrets_manager_actions_enabled": true,<br>    "security_group_changes_enabled": true,<br>    "unauthorized_api_calls_enabled": true,<br>    "usage_of_root_account_enabled": true,<br>    "vpc_changes_enabled": true<br>  }<br>}</pre> | no |
 | <a name="input_az_count"></a> [az\_count](#input\_az\_count) | Count of avaiablity zones, min 2 | `number` | `3` | no |
 | <a name="input_cidr"></a> [cidr](#input\_cidr) | Default CIDR block for VPC | `string` | `"10.0.0.0/16"` | no |
 | <a name="input_create_acm_certificate"></a> [create\_acm\_certificate](#input\_create\_acm\_certificate) | Whether to create acm certificate or use existing | `bool` | `false` | no |
