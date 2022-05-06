@@ -333,3 +333,9 @@ variable "aws_cis_benchmark_alerts" {
   }
   description = "AWS CIS Benchmark alerts configuration"
 }
+
+variable "cloudtrail_logs_s3_expiration_days" {
+  type        = string
+  default     = 180
+  description = "How many days keep cloudtrail logs on S3"
+}

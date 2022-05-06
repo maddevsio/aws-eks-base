@@ -3,6 +3,8 @@ resource "aws_sns_topic" "security_alerts" {
   count = var.aws_cis_benchmark_alerts.enabled ? 1 : 0
 
   name = "${local.name}-security-alerts"
+
+  tags = local.tags
 }
 
 resource "aws_sns_topic_subscription" "security_alerts" {

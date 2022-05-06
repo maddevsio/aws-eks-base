@@ -452,5 +452,7 @@ module "eventbridge" {
       }
     ]
   }
+
+  tags = local.tags
 }
 
