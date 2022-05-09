@@ -34,6 +34,7 @@
 |------|------|
 | [aws_cloudtrail.main](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/cloudtrail) | resource |
 | [aws_ebs_encryption_by_default.this](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/ebs_encryption_by_default) | resource |
+| [aws_iam_account_password_policy.default](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/iam_account_password_policy) | resource |
 | [aws_kms_key.eks](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/kms_key) | resource |
 | [aws_s3_bucket.cloudtrail](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket_acl.cloudtrail](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_acl) | resource |
@@ -59,6 +60,7 @@
 |------|-------------|------|---------|:--------:|
 | <a name="input_allowed_account_ids"></a> [allowed\_account\_ids](#input\_allowed\_account\_ids) | List of allowed AWS account IDs | `list` | `[]` | no |
 | <a name="input_allowed_ips"></a> [allowed\_ips](#input\_allowed\_ips) | IP addresses allowed to connect to private resources | `list(any)` | `[]` | no |
+| <a name="input_aws_account_password_policy"></a> [aws\_account\_password\_policy](#input\_aws\_account\_password\_policy) | n/a | `any` | <pre>{<br>  "allow_users_to_change_password": true,<br>  "create": true,<br>  "hard_expiry": true,<br>  "max_password_age": "90",<br>  "minimum_password_length": "14",<br>  "password_reuse_prevention": "10",<br>  "require_lowercase_characters": true,<br>  "require_numbers": true,<br>  "require_symbols": true,<br>  "require_uppercase_characters": true<br>}</pre> | no |
 | <a name="input_aws_cis_benchmark_alerts"></a> [aws\_cis\_benchmark\_alerts](#input\_aws\_cis\_benchmark\_alerts) | AWS CIS Benchmark alerts configuration | `any` | <pre>{<br>  "email": "demo@example.com",<br>  "enabled": "false",<br>  "rules": {<br>    "aws_config_changes_enabled": true,<br>    "cloudtrail_configuration_changes_enabled": true,<br>    "console_login_failed_enabled": true,<br>    "consolelogin_without_mfa_enabled": true,<br>    "iam_policy_changes_enabled": true,<br>    "kms_cmk_delete_or_disable_enabled": true,<br>    "nacl_changes_enabled": true,<br>    "network_gateway_changes_enabled": true,<br>    "organization_changes_enabled": true,<br>    "parameter_store_actions_enabled": true,<br>    "route_table_changes_enabled": true,<br>    "s3_bucket_policy_changes_enabled": true,<br>    "secrets_manager_actions_enabled": true,<br>    "security_group_changes_enabled": true,<br>    "unauthorized_api_calls_enabled": true,<br>    "usage_of_root_account_enabled": true,<br>    "vpc_changes_enabled": true<br>  }<br>}</pre> | no |
 | <a name="input_az_count"></a> [az\_count](#input\_az\_count) | Count of avaiablity zones, min 2 | `number` | `3` | no |
 | <a name="input_cidr"></a> [cidr](#input\_cidr) | Default CIDR block for VPC | `string` | `"10.0.0.0/16"` | no |
