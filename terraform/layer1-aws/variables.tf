@@ -305,3 +305,37 @@ variable "pritunl_vpn_access_cidr_blocks" {
   default     = "127.0.0.1/32"
   description = "IP address that will have access to the web console"
 }
+
+variable "aws_cis_benchmark_alerts" {
+  type = any
+  default = {
+    "enabled" = "false"
+    "email"   = "demo@example.com" # where to send alerts
+    "rules" = {
+      "secrets_manager_actions_enabled"          = true
+      "parameter_store_actions_enabled"          = true
+      "console_login_failed_enabled"             = true
+      "kms_cmk_delete_or_disable_enabled"        = true
+      "consolelogin_without_mfa_enabled"         = true
+      "unauthorized_api_calls_enabled"           = true
+      "usage_of_root_account_enabled"            = true
+      "iam_policy_changes_enabled"               = true
+      "cloudtrail_configuration_changes_enabled" = true
+      "s3_bucket_policy_changes_enabled"         = true
+      "aws_config_changes_enabled"               = true
+      "security_group_changes_enabled"           = true
+      "nacl_changes_enabled"                     = true
+      "network_gateway_changes_enabled"          = true
+      "route_table_changes_enabled"              = true
+      "vpc_changes_enabled"                      = true
+      "organization_changes_enabled"             = true
+    }
+  }
+  description = "AWS CIS Benchmark alerts configuration"
+}
+
+variable "cloudtrail_logs_s3_expiration_days" {
+  type        = string
+  default     = 180
+  description = "How many days keep cloudtrail logs on S3"
+}
