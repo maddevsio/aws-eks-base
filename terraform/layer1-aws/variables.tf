@@ -17,7 +17,7 @@ variable "aws_account_password_policy" {
     require_symbols                = true  # If true, password must contain at least 1 special symbol
     allow_users_to_change_password = true  # Whether to allow users to change their own password
     max_password_age               = "90"  # How many days user's password is valid
-    hard_expiry                    = false # Whether users are prevented from setting a new password after their password has expired 
+    hard_expiry                    = false # Don't allow users to set a new password after their password has expired 
   }
 }
 
