@@ -3,9 +3,9 @@ resource "aws_backup_vault" "this" {
 }
 
 resource "aws_backup_plan" "this" {
-  name = "${var.name}_backup_plan"
+  name = var.name
   rule {
-    rule_name         = "${var.name}_backup_plan_efs"
+    rule_name         = var.name
     target_vault_name = aws_backup_vault.this.name
     schedule          = "cron(0 1 * * ? *)"
     lifecycle {
@@ -16,7 +16,7 @@ resource "aws_backup_plan" "this" {
 
 resource "aws_backup_selection" "efs" {
   iam_role_arn = module.backup_role.iam_role_arn
-  name         = "${var.name}_backup_selection_efs"
+  name         = "${var.name}-efs"
   plan_id      = aws_backup_plan.this.id
 
   resources = [
