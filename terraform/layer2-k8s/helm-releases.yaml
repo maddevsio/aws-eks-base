@@ -11,12 +11,6 @@ releases:
     repository: https://aws.github.io/eks-charts
     chart_version: 0.13.3
     namespace: aws-node-termination-handler
-  - id: aws-calico
-    enabled: false
-    chart: aws-calico
-    repository: https://aws.github.io/eks-charts
-    chart_version: 0.3.4
-    namespace: kube-system
   - id: cert-manager
     enabled: false
     chart: cert-manager
@@ -111,7 +105,7 @@ releases:
     enabled: true
     chart: tigera-operator
     repository: https://projectcalico.docs.tigera.io/charts
-    chart_version: v3.22.1
+    chart_version: v3.23.0
     namespace: tigera-operator
   - id: victoria-metrics-k8s-stack
     enabled: false

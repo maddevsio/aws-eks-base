@@ -62,6 +62,30 @@ module "tigera_operator_namespace" {
   ]
 }
 
+resource "kubectl_manifest" "calico_felix" {
+  count = local.tigera_operator.enabled ? 1 : 0
+
+  yaml_body = <<YAML
+apiVersion: crd.projectcalico.org/v1
+kind: FelixConfiguration
+metadata:
+  name: default
+spec:
+  logSeverityScreen: Warning
+  usageReportingEnabled: false
+YAML
+
+  depends_on = [
+    time_sleep.wait_10_seconds_tigera_operator
+  ]
+}
+
+resource "time_sleep" "wait_10_seconds_tigera_operator" {
+  depends_on = [helm_release.tigera_operator]
+
+  create_duration = "20s"
+}
+
 resource "helm_release" "tigera_operator" {
   count = local.tigera_operator.enabled ? 1 : 0
 
@@ -69,11 +93,10 @@ resource "helm_release" "tigera_operator" {
   chart       = local.tigera_operator.chart
   repository  = local.tigera_operator.repository
   version     = local.tigera_operator.chart_version
-  namespace   = local.tigera_operator.namespace
+  namespace   = module.tigera_operator_namespace[count.index].name
   max_history = var.helm_release_history_size
 
   values = [
     local.tigera_operator_values
   ]
-
 }
