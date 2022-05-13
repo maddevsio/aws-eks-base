@@ -19,7 +19,7 @@
 | <a name="provider_http"></a> [http](#provider\_http) | 2.1.0 |
 | <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | 1.14.0 |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.10.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | 3.1.2 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.1.3 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
@@ -51,6 +51,7 @@
 | <a name="module_kube_prometheus_stack_namespace"></a> [kube\_prometheus\_stack\_namespace](#module\_kube\_prometheus\_stack\_namespace) | ../modules/kubernetes-namespace | n/a |
 | <a name="module_loki_namespace"></a> [loki\_namespace](#module\_loki\_namespace) | ../modules/kubernetes-namespace | n/a |
 | <a name="module_reloader_namespace"></a> [reloader\_namespace](#module\_reloader\_namespace) | ../modules/kubernetes-namespace | n/a |
+| <a name="module_tigera_operator_namespace"></a> [tigera\_operator\_namespace](#module\_tigera\_operator\_namespace) | ../modules/kubernetes-namespace | n/a |
 | <a name="module_victoria_metrics_k8s_stack_namespace"></a> [victoria\_metrics\_k8s\_stack\_namespace](#module\_victoria\_metrics\_k8s\_stack\_namespace) | ../modules/kubernetes-namespace | n/a |
 
 ## Resources
@@ -63,7 +64,6 @@
 | [aws_s3_bucket_public_access_block.gitlab_runner_cache_public_access_block](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_public_access_block) | resource |
 | [helm_release.aws_loadbalancer_controller](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.aws_node_termination_handler](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.calico_daemonset](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.cert_manager](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.certificate](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.cluster_autoscaler](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
@@ -80,7 +80,9 @@
 | [helm_release.loki_stack](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.prometheus_operator](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.reloader](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
+| [helm_release.tigera_operator](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.victoria_metrics_k8s_stack](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
+| [kubectl_manifest.calico_felix](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.istio_prometheus_service_monitor_cp](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.istio_prometheus_service_monitor_dp](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.kube_prometheus_stack_operator_crds](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |

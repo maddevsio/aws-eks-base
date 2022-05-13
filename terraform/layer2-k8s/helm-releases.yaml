@@ -11,12 +11,6 @@ releases:
     repository: https://aws.github.io/eks-charts
     chart_version: 0.18.1
     namespace: aws-node-termination-handler
-  - id: aws-calico
-    enabled: true
-    chart: aws-calico
-    repository: https://aws.github.io/eks-charts
-    chart_version: 0.3.11
-    namespace: kube-system
   - id: cert-manager
     enabled: false
     chart: cert-manager
@@ -90,7 +84,7 @@ releases:
     chart_version: 1.49.0
     namespace: kiali
   - id: kube-prometheus-stack
-    enabled: false
+    enabled: true
     chart: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
     chart_version: 34.10.0
@@ -107,8 +101,14 @@ releases:
     repository: https://stakater.github.io/stakater-charts
     chart_version: 0.0.110
     namespace: reloader
-  - id: victoria-metrics-k8s-stack
+  - id: tigera-operator
     enabled: true
+    chart: tigera-operator
+    repository: https://projectcalico.docs.tigera.io/charts
+    chart_version: v3.23.0
+    namespace: tigera-operator
+  - id: victoria-metrics-k8s-stack
+    enabled: false
     chart: victoria-metrics-k8s-stack
     repository: https://victoriametrics.github.io/helm-charts
     chart_version: 0.8.1
