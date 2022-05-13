@@ -1,4 +1,4 @@
-FROM postgres:12-alpine
+FROM public.ecr.aws/docker/library/postgres:12-alpine
 
 #Install python and pip
 RUN echo "**** install Python ****" && \

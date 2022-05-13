@@ -8,23 +8,62 @@ locals {
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "external-secrets")].namespace
   }
   external_secrets_values = <<VALUES
-# Environment variables to set on deployment pod
-env:
-  AWS_REGION: ${local.region}
-  AWS_DEFAULT_REGION: ${local.region}
-  POLLER_INTERVAL_MILLISECONDS: 30000
-  # trace, debug, info, warn, error, fatal
-  LOG_LEVEL: warn
-  LOG_MESSAGE_KEY: 'msg'
-  METRICS_PORT: 3001
+crds:
+  createClusterExternalSecret: false
+  createClusterSecretStore: true # without setting it to true, certcontroller couldn't start: {"level":"debug","ts":1651041439.6815717,"logger":"controller-runtime.healthz","msg":"healthz check failed","checker":"crd-inject","error":"resource not ready: clustersecretstores.external-secrets.io"}
 
-serviceAccount:
-  annotations:
-    "eks.amazonaws.com/role-arn": ${local.external_secrets.enabled ? module.aws_iam_external_secrets[0].role_arn : ""}
+processClusterExternalSecret: false
+processClusterStore: false
 
 securityContext:
-  # Required for use of IRSA, see https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-technical-overview.html
-  fsGroup: 1000
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+webhook:
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 64Mi
+
+certController:
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 64Mi
 VALUES
 }
 
@@ -57,6 +96,32 @@ module "external_secrets_namespace" {
       }
     },
     {
+      name         = "allow-webhooks"
+      policy_types = ["Ingress"]
+      pod_selector = {
+        match_expressions = {
+          key      = "app.kubernetes.io/name"
+          operator = "In"
+          values   = ["${local.external_secrets.name}-webhook"]
+        }
+      }
+      ingress = {
+        ports = [
+          {
+            port     = "9443"
+            protocol = "TCP"
+          }
+        ]
+        from = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+            }
+          }
+        ]
+      }
+    },
+    {
       name         = "allow-egress"
       policy_types = ["Egress"]
       pod_selector = {}
@@ -74,33 +139,6 @@ module "external_secrets_namespace" {
       }
     }
   ]
-}
-
-
-#tfsec:ignore:aws-iam-no-policy-wildcards
-module "aws_iam_external_secrets" {
-  count = local.external_secrets.enabled ? 1 : 0
-
-  source            = "../modules/aws-iam-eks-trusted"
-  name              = "${local.name}-${local.external_secrets.name}"
-  region            = local.region
-  oidc_provider_arn = local.eks_oidc_provider_arn
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Effect" : "Allow",
-        "Action" : [
-          "ssm:GetParameter",
-          "secretsmanager:GetResourcePolicy",
-          "secretsmanager:GetSecretValue",
-          "secretsmanager:DescribeSecret",
-          "secretsmanager:ListSecretVersionIds"
-        ],
-        "Resource" : "*"
-      }
-    ]
-  })
 }
 
 resource "helm_release" "external_secrets" {

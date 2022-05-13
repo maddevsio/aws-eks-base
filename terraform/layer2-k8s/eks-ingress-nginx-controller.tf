@@ -16,10 +16,6 @@ controller:
     enabled: true
     serviceMonitor:
       enabled: true
-  podAnnotations:
-    co.elastic.logs/module: nginx
-    co.elastic.logs/fileset.stdout: ingress_controller
-    co.elastic.logs/fileset.stderr: error
 
   affinity:
     nodeAffinity:

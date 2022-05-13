@@ -16,6 +16,6 @@ locals {
     CONTENT
 }
 
-resource "kubectl_manifest" "this" {
+resource "kubectl_manifest" "aws_auth_configmap" {
   yaml_body = local.aws_auth_configmap_yaml
 }

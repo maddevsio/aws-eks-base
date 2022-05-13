@@ -5,6 +5,22 @@ variable "allowed_account_ids" {
   default     = []
 }
 
+variable "aws_account_password_policy" {
+  type = any
+  default = {
+    create                         = true
+    minimum_password_length        = "14"  # Minimum length to require for user passwords
+    password_reuse_prevention      = "10"  # The number of previous passwords that users are prevented from reusing
+    require_lowercase_characters   = true  # If true, password must contain at least 1 lowercase symbol
+    require_numbers                = true  # If true, password must contain at least 1 number symbol
+    require_uppercase_characters   = true  # If true, password must contain at least 1 uppercase symbol
+    require_symbols                = true  # If true, password must contain at least 1 special symbol
+    allow_users_to_change_password = true  # Whether to allow users to change their own password
+    max_password_age               = "90"  # How many days user's password is valid
+    hard_expiry                    = false # Don't allow users to set a new password after their password has expired 
+  }
+}
+
 variable "name" {
   description = "Project name, required to create unique resource names"
 }
@@ -92,7 +108,7 @@ variable "single_nat_gateway" {
 
 # EKS
 variable "eks_cluster_version" {
-  default     = "1.21"
+  default     = "1.22"
   description = "Version of the EKS K8S cluster"
 }
 
@@ -100,15 +116,15 @@ variable "eks_addons" {
   default = {
     coredns = {
       resolve_conflicts = "OVERWRITE"
-      addon_version     = "v1.8.4-eksbuild.1"
+      addon_version     = "v1.8.7-eksbuild.1"
     }
     kube-proxy = {
       resolve_conflicts = "OVERWRITE"
-      addon_version     = "v1.21.2-eksbuild.2"
+      addon_version     = "v1.22.6-eksbuild.1"
     }
     vpc-cni = {
       resolve_conflicts = "OVERWRITE"
-      addon_version     = "v1.10.2-eksbuild.1"
+      addon_version     = "v1.11.0-eksbuild.1"
     }
   }
   description = "A list of installed EKS add-ons"
@@ -122,84 +138,122 @@ variable "eks_workers_additional_policies" {
 
 variable "node_group_spot" {
   type = object({
-    instance_types       = list(string)
-    capacity_type        = string
-    max_capacity         = number
-    min_capacity         = number
-    desired_capacity     = number
-    force_update_version = bool
+    instance_type              = string
+    max_capacity               = number
+    min_capacity               = number
+    desired_capacity           = number
+    capacity_rebalance         = bool
+    use_mixed_instances_policy = bool
+    mixed_instances_policy     = any
   })
 
   default = {
-    instance_types       = ["t3a.medium", "t3.medium"]
-    capacity_type        = "SPOT"
-    max_capacity         = 5
-    min_capacity         = 0
-    desired_capacity     = 1
-    force_update_version = true
+    instance_type              = "t3.medium" # will be overridden
+    max_capacity               = 5
+    min_capacity               = 0
+    desired_capacity           = 1
+    capacity_rebalance         = true
+    use_mixed_instances_policy = true
+    mixed_instances_policy = {
+      instances_distribution = {
+        on_demand_base_capacity                  = 0
+        on_demand_percentage_above_base_capacity = 0
+      }
+
+      override = [
+        { instance_type = "t3.medium" },
+        { instance_type = "t3a.medium" }
+      ]
+    }
   }
   description = "Spot node group configuration"
 }
 
 variable "node_group_ci" {
   type = object({
-    instance_types       = list(string)
-    capacity_type        = string
-    max_capacity         = number
-    min_capacity         = number
-    desired_capacity     = number
-    force_update_version = bool
+    instance_type              = string
+    max_capacity               = number
+    min_capacity               = number
+    desired_capacity           = number
+    capacity_rebalance         = bool
+    use_mixed_instances_policy = bool
+    mixed_instances_policy     = any
   })
 
   default = {
-    instance_types       = ["t3a.medium", "t3.medium"]
-    capacity_type        = "SPOT"
-    max_capacity         = 5
-    min_capacity         = 0
-    desired_capacity     = 0
-    force_update_version = true
+    instance_type              = "t3.medium" # will be overridden
+    max_capacity               = 5
+    min_capacity               = 0
+    desired_capacity           = 0
+    capacity_rebalance         = false
+    use_mixed_instances_policy = true
+    mixed_instances_policy = {
+      instances_distribution = {
+        on_demand_base_capacity                  = 0
+        on_demand_percentage_above_base_capacity = 0
+      }
+
+      override = [
+        { instance_type = "t3.medium" },
+        { instance_type = "t3a.medium" }
+      ]
+    }
   }
   description = "CI node group configuration"
 }
 
 variable "node_group_ondemand" {
   type = object({
-    instance_types       = list(string)
-    capacity_type        = string
-    max_capacity         = number
-    min_capacity         = number
-    desired_capacity     = number
-    force_update_version = bool
+    instance_type              = string
+    max_capacity               = number
+    min_capacity               = number
+    desired_capacity           = number
+    capacity_rebalance         = bool
+    use_mixed_instances_policy = bool
+    mixed_instances_policy     = any
   })
 
   default = {
-    instance_types       = ["t3a.medium"]
-    capacity_type        = "ON_DEMAND"
-    max_capacity         = 5
-    min_capacity         = 1
-    desired_capacity     = 1
-    force_update_version = true
+    instance_type              = "t3a.medium"
+    max_capacity               = 5
+    min_capacity               = 1
+    desired_capacity           = 1
+    capacity_rebalance         = false
+    use_mixed_instances_policy = false
+    mixed_instances_policy     = null
   }
   description = "Default ondemand node group configuration"
 }
 
 variable "node_group_br" {
   type = object({
-    instance_types       = list(string)
-    capacity_type        = string
-    max_capacity         = number
-    min_capacity         = number
-    desired_capacity     = number
-    force_update_version = bool
+    instance_type              = string
+    max_capacity               = number
+    min_capacity               = number
+    desired_capacity           = number
+    capacity_rebalance         = bool
+    use_mixed_instances_policy = bool
+    mixed_instances_policy     = any
   })
 
   default = {
-    instance_types       = ["t3a.medium", "t3.medium"]
-    capacity_type        = "SPOT"
-    max_capacity         = 5
-    min_capacity         = 0
-    desired_capacity     = 0
-    force_update_version = true
+    instance_type              = "t3.medium" # will be overridden
+    max_capacity               = 5
+    min_capacity               = 0
+    desired_capacity           = 0
+    capacity_rebalance         = true
+    use_mixed_instances_policy = true
+    mixed_instances_policy = {
+      instances_distribution = {
+        on_demand_base_capacity                  = 0
+        on_demand_percentage_above_base_capacity = 0
+      }
+
+      override = [
+        { instance_type = "t3.medium" },
+        { instance_type = "t3a.medium" }
+      ]
+    }
   }
   description = "Bottlerocket node group configuration"
 }
@@ -266,4 +320,38 @@ variable "pritunl_vpn_access_cidr_blocks" {
   type        = string
   default     = "127.0.0.1/32"
   description = "IP address that will have access to the web console"
+}
+
+variable "aws_cis_benchmark_alerts" {
+  type = any
+  default = {
+    "enabled" = "false"
+    "email"   = "demo@example.com" # where to send alerts
+    "rules" = {
+      "secrets_manager_actions_enabled"          = true
+      "parameter_store_actions_enabled"          = true
+      "console_login_failed_enabled"             = true
+      "kms_cmk_delete_or_disable_enabled"        = true
+      "consolelogin_without_mfa_enabled"         = true
+      "unauthorized_api_calls_enabled"           = true
+      "usage_of_root_account_enabled"            = true
+      "iam_policy_changes_enabled"               = true
+      "cloudtrail_configuration_changes_enabled" = true
+      "s3_bucket_policy_changes_enabled"         = true
+      "aws_config_changes_enabled"               = true
+      "security_group_changes_enabled"           = true
+      "nacl_changes_enabled"                     = true
+      "network_gateway_changes_enabled"          = true
+      "route_table_changes_enabled"              = true
+      "vpc_changes_enabled"                      = true
+      "organization_changes_enabled"             = true
+    }
+  }
+  description = "AWS CIS Benchmark alerts configuration"
+}
+
+variable "cloudtrail_logs_s3_expiration_days" {
+  type        = string
+  default     = 180
+  description = "How many days keep cloudtrail logs on S3"
 }

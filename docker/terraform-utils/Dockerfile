@@ -1,5 +1,5 @@
-FROM alpine:3.13.5
-ARG TERRAFORM_VERSION="0.15.1"
+FROM public.ecr.aws/docker/library/alpine:3.15.4
+ARG TERRAFORM_VERSION="1.1.8"
 
 WORKDIR /tmp
 
