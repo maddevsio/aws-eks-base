@@ -76,14 +76,8 @@ spec:
 YAML
 
   depends_on = [
-    time_sleep.wait_10_seconds_tigera_operator
+    helm_release.tigera_operator
   ]
-}
-
-resource "time_sleep" "wait_10_seconds_tigera_operator" {
-  depends_on = [helm_release.tigera_operator]
-
-  create_duration = "20s"
 }
 
 resource "helm_release" "tigera_operator" {

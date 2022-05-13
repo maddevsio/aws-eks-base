@@ -19,9 +19,8 @@
 | <a name="provider_http"></a> [http](#provider\_http) | 2.1.0 |
 | <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | 1.14.0 |
 | <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.10.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | 3.1.2 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.1.3 |
 | <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
-| <a name="provider_time"></a> [time](#provider\_time) | n/a |
 
 ## Modules
 
@@ -97,7 +96,6 @@
 | [random_string.kibana_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [random_string.kube_prometheus_stack_grafana_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [random_string.victoria_metrics_k8s_stack_grafana_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
-| [time_sleep.wait_10_seconds_tigera_operator](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/caller_identity) | data source |
 | [aws_eks_cluster.main](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/eks_cluster) | data source |
 | [aws_eks_cluster_auth.main](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/eks_cluster_auth) | data source |

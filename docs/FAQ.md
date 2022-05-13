@@ -291,3 +291,16 @@ alertmanager:
 ### If you want to receive alerts **via Slack**, then do next:
 * See [this instruction](https://slack.com/help/articles/115005265063-Incoming-webhooks-for-Slack) and generate Slack Incoming Webhook 
 * Set `alertmanager_slack_webhook`, `alertmanager_slack_channel` variables in [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`.
+
+## Deleting Tigera-operator
+1. Run
+```bash
+kubectl delete installations.operator.tigera.io default
+```
+2. Set `enabled: false` for `id: tigera-operator` in the file **helm-releases.yaml** 
+3. Run `terraform apply` in the layer2-k8s folder
+4. Run
+```bash
+kubectl delete ns calico-apiserver calico-system
+```
+5. Restart all nodes
