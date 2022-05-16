@@ -24,9 +24,9 @@ extraArgs:
   expander: priority
 expanderPriorities: |
   10:
-    - eks-${local.eks_cluster_id}-ondemand.*
+    - ${local.eks_cluster_id}-ondemand.*
   50:
-    - eks-${local.eks_cluster_id}-spot.*
+    - ${local.eks_cluster_id}-spot.*
 
 serviceMonitor:
   enabled: true
