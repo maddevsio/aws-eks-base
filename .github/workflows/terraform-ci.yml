@@ -1,4 +1,4 @@
-name: 'Terraform-ci'
+name: "Terraform-ci"
 
 on: [push, pull_request]
 
@@ -9,118 +9,87 @@ defaults:
 jobs:
   # Terraform validate configuration
   terraform-validate:
-    name: 'Terraform-validate'
+    name: "Terraform-validate"
     runs-on: ubuntu-latest
     container:
       image: maddevsio/terraform-utils:latest
       env:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Terraform Init l1
-      working-directory: ./terraform/layer1-aws
-      run: terraform init -backend=false
-    - name: Terraform Init l2
-      working-directory: ./terraform/layer2-k8s
-      run: terraform init -backend=false
-    - name: Terraform Validate l1
-      working-directory: ./terraform/layer1-aws
-      run: terraform validate -no-color .
-    - name: Terraform Validate l2
-      working-directory: ./terraform/layer2-k8s
-      run: terraform validate -no-color .
-    - name: Upload files for l1
-      uses: actions/upload-artifact@v2
-      with:
-        name: l1
-        path: ./terraform/layer1-aws/.terraform
-        retention-days: 1
-    - name: Upload files for l2
-      uses: actions/upload-artifact@v2
-      with:
-        name: l2
-        path: ./terraform/layer2-k8s/.terraform
-        retention-days: 1
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Terraform Init l1
+        working-directory: ./terraform/layer1-aws
+        run: terraform init -backend=false
+      - name: Terraform Init l2
+        working-directory: ./terraform/layer2-k8s
+        run: terraform init -backend=false
+      - name: Terraform Validate l1
+        working-directory: ./terraform/layer1-aws
+        run: terraform validate -no-color .
+      - name: Terraform Validate l2
+        working-directory: ./terraform/layer2-k8s
+        run: terraform validate -no-color .
+      - name: Upload files for l1
+        uses: actions/upload-artifact@v2
+        with:
+          name: l1
+          path: ./terraform/layer1-aws/.terraform
+          retention-days: 1
 
   # Checks that all Terraform configuration files format
   terraform-format:
-    name: 'Terraform-format'
+    name: "Terraform-format"
     runs-on: ubuntu-latest
     container:
       image: maddevsio/terraform-utils:latest
       env:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Terraform Format
-      run: terraform fmt -recursive -write=false -check .
-      working-directory: ./terraform
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Terraform Format
+        run: terraform fmt -recursive -write=false -check .
+        working-directory: ./terraform
 
   # Checks that all Terraform configuration files tflint
   terraform-tflint:
-    name: 'Terraform-tflint'
+    name: "Terraform-tflint"
     runs-on: ubuntu-latest
     container:
       image: maddevsio/terraform-utils:latest
       env:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Terraform tflint l1
-      working-directory: ./terraform/layer1-aws
-      run: tflint --no-color
-    - name: Terraform tflint l2
-      working-directory: ./terraform/layer2-k8s
-      run: tflint --no-color
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Terraform tflint l1
+        working-directory: ./terraform/layer1-aws
+        run: tflint --no-color
+      - name: Terraform tflint l2
+        working-directory: ./terraform/layer2-k8s
+        run: tflint --no-color
 
   terraform-tfsec-l1:
-    name: 'Terraform-tfsec-l1'
+    name: "Terraform-tfsec-l1"
     needs: terraform-validate
     runs-on: ubuntu-latest
     container:
       image: tfsec/tfsec
       options: --user root
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Download init for l1
-      uses: actions/download-artifact@v2
-      with:
-        name: l1
-        path: ./terraform/layer1-aws/.terraform
-    - name: tfsec l1
-      working-directory: ./terraform
-      run: tfsec layer1-aws
-    - uses: geekyeggo/delete-artifact@v1
-      with:
-        name: l1
-        failOnError: false
-      if: ${{ always() }}
-
-  terraform-tfsec-l2:
-    name: 'Terraform-tfsec-l2'
-    needs: terraform-validate
-    runs-on: ubuntu-latest
-    container:
-      image: tfsec/tfsec
-      options: --user root
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Download init for l2
-      uses: actions/download-artifact@v2
-      with:
-        name: l2
-        path: ./terraform/layer2-k8s/.terraform
-    - name: Terraform tfsec l2
-      working-directory: ./terraform
-      run: tfsec layer2-k8s
-    - uses: geekyeggo/delete-artifact@v1
-      with:
-        name: l2
-        failOnError: false
-      if: ${{ always() }}
-
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Download init for l1
+        uses: actions/download-artifact@v2
+        with:
+          name: l1
+          path: ./terraform/layer1-aws/.terraform
+      - name: tfsec l1
+        working-directory: ./terraform
+        run: tfsec layer1-aws
+      - uses: geekyeggo/delete-artifact@v1
+        with:
+          name: l1
+          failOnError: false
+        if: ${{ always() }}
