@@ -33,11 +33,10 @@ sources:
 VALUES
 }
 
-#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "external_dns_namespace" {
   count = local.external_dns.enabled ? 1 : 0
 
-  source = "../modules/kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.external_dns.namespace
   network_policies = [
     {
@@ -81,7 +80,6 @@ module "external_dns_namespace" {
   ]
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
 module "aws_iam_external_dns" {
   count = local.external_dns.enabled ? 1 : 0
 

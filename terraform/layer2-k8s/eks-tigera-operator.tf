@@ -14,11 +14,10 @@ installation:
 VALUES
 }
 
-#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "tigera_operator_namespace" {
   count = local.tigera_operator.enabled ? 1 : 0
 
-  source = "../modules/kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.tigera_operator.name
   network_policies = [
     {

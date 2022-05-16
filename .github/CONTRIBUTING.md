@@ -22,6 +22,7 @@ Please note we have a code of conduct, please follow it in all your interactions
       - [Resource names](#resource-names)
       - [Variable names](#variable-names)
       - [Output names](#output-names)
+      - [Resources order in a .tf files](#resources-order-in-a-tf-files)
     - [Names of terraform files, directories, and modules](#names-of-terraform-files-directories-and-modules)
       - [General configuration files](#general-configuration-files)
       - [Specific configuration files](#specific-configuration-files)
@@ -292,13 +293,21 @@ resource "aws_route_table_association" "intra" {
 - If the return value is a list, it must have a plural name
 - Use description for outputs
 
+#### Resources order in a .tf files
+
+Resources in `.tf` files should be described in the following order:
+1. locals
+2. data
+3. resources
+4. modules
+
 ### Names of terraform files, directories, and modules
 
 #### General configuration files
 
 Each terraform module and configuration contains a set of general files ending in `.tf`:
 
-- `main.tf` - contains terraform settings if it is the top layer; or the main working code if it is a module
+- `main.tf` - contains terraform settings and resources that can't be somehow grouped if it is the top layer; or the main working code if it is a module
 - `variables.tf` - module input values
 - `outputs.tf` - module output values
 
@@ -308,27 +317,27 @@ Besides these, there may be:
 - `providers.tf` - contains settings from terraform providers, e.g. `aws`, `kubernetes`, etc
 - `iam.tf` - IAM configurations of policies, roles, etc
 
-This is not a full list; each configuration, module, or layer may need additional files and manifests. The objective is to name them as succinctly and closer in meaning to the content as possible. Do not use prefixes.
+This is not a full list; each configuration, module, or layer may need additional files and manifests. The objective is to name them as succinctly and closer in meaning to the content as possible. Do not use prefixes (for files inside modules).
 
 > Terraform itself doesn't care how many files you create. It collects all layer and module manifests into one object, builds dependencies, and executes.
 
 #### Specific configuration files
 
-These configuration files and manifests include the following: `data "template_file"` or `templatefile ()` template resources, a logical resource group placed in a separate `.tf` file, one or more deployments to k8s using `resource "helm_release"`, module initialization, aws resources that do not require a separate module, etc.
+These configuration files and manifests include a logical resource group placed in a separate `.tf` file.
 
 > It should be noted that since some kind of a logical group of resources is being, why not move it all into a separate module. But it turned out that it is easier to manage helm releases, templates for them, and additional resources in separate `.tf` files at the root of a layer. And for many such configurations, when moving to modules, the amount of code can double + what we move to modules is usually what we are going to reuse.
 
-Each specific `.tf` file must begin with a prefix indicating the service or provider to which the main resource or group being created belongs, e.g. `aws`. Optionally, the type of service is indicated next, e.g. `iam`. Next comes the name of the main service or resource or resource group declared inside, and after that, an explanatory suffix can optionally be added if there are several such files. All the parts of the name are separated by hyphens`
+Each specific `.tf` file must begin with a prefix indicating the service or provider to which the main resource or group being created belongs, e.g. `aws`. Next comes the name of the main service or resource or resource group declared inside, and after that, an explanatory suffix can optionally be added if there are several such files. All the parts of the name are separated by hyphens`
 
-So the formula looks like this: `provider|servicename`-[`optional resource/service type`]-`main resourcename|group-name`-[`optional suffix`].tf
+So the formula looks like this: `provider|servicename`-`main resourcename|group-name`-[`optional suffix`].tf
 
 Examples:
 
-- `aws-vpc.tf` - terraform manifest describing the creation of a single vpc
+- `aws-vpc.tf` - terraform manifest describing the creation of a group resources for vpc (vpc + vpc endpoints)
 - `aws-vpc-stage.tf` - terraform manifest describing the creation of one of several vpc, for staging
-- `eks-namespaces.tf` - group of namespaces created in the EKS cluster
 - `eks-external-dns.tf` - contains the description of external-dns service deployment to the EKS cluster
-- `aws-ec2-pritunl.tf` - contains the initialization of the module that creates an EC2 instance in AWS with pritunl configured
+
+If a resource isn't related to any others (for example: `resource "aws_iam_account_password_policy" "default"`), it can be stored in the `main.tf` file. 
 
 #### Modules
 
@@ -338,24 +347,24 @@ Examples:
 
 - `eks-rbac-ci` - module for creating rbac for CI inside the EKS cluster
 - `aws-iam-autoscaler` - module for creating IAM policies for autoscaler
-- `aws-ec2-pritunl` - module for creating pritunl ec2 instance
+- `aws-pritunl` - module for creating pritunl ec2 instance
 
 ### Project structure
 ---
 
-| FILE / DIRECTORY| DESCRIPTION   |
-| --------------- |:-------------:|
-| docker/      | custom dockerfiles for examples |
-| examples/    | example k8s deployments |
-| helm-charts/ | directory contains custom helm charts |
-| helm-charts/certificate | helm chart which creates ssl certificate for nginx ingress |
+| FILE / DIRECTORY           |                           DESCRIPTION                           |
+| -------------------------- | :-------------------------------------------------------------: |
+| docker/                    |                 custom dockerfiles for examples                 |
+| examples/                  |                     example k8s deployments                     |
+| helm-charts/               |              directory contains custom helm charts              |
+| helm-charts/certificate    |   helm chart which creates ssl certificate for nginx ingress    |
 | helm-charts/cluster-issuer | helm chart which creates cluster-issuer using cert manager cdrs |
-| helm-charts/elk | umbrella chart to deploy elk stack |
-| helm-charts/teamcity | helm chart which deploys teamcity agent and/or server |
-|terraform/| directory contains terraform configuration files |
-|terraform/layer1-aws| directory contains aws resources |
-|terraform/layer2-k8s| directory contains resources deployed to k8s-EKS |
-|terraform/modules| directory contains terraform modules |
-|.editorconfig| |
-|.gitlab-ci.yml||
-|.pre-commit-config.yaml||
+| helm-charts/elk            |               umbrella chart to deploy elk stack                |
+| helm-charts/teamcity       |      helm chart which deploys teamcity agent and/or server      |
+| terraform/                 |        directory contains terraform configuration files         |
+| terraform/layer1-aws       |                directory contains aws resources                 |
+| terraform/layer2-k8s       |        directory contains resources deployed to k8s-EKS         |
+| terraform/modules          |              directory contains terraform modules               |
+| .editorconfig              |                                                                 |
+| .gitlab-ci.yml             |                                                                 |
+| .pre-commit-config.yaml    |                                                                 |

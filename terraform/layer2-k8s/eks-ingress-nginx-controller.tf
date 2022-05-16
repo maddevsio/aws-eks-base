@@ -76,11 +76,10 @@ controller:
 VALUES
 }
 
-#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "ingress_nginx_namespace" {
   count = local.ingress_nginx.enabled ? 1 : 0
 
-  source = "../modules/kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.ingress_nginx.namespace
   network_policies = [
     {

@@ -57,11 +57,10 @@ commonName: "${local.domain_name}"
 VALUES
 }
 
-#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "certmanager_namespace" {
   count = local.cert_manager.enabled ? 1 : 0
 
-  source = "../modules/kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.cert_manager.namespace
   network_policies = [
     {
@@ -131,7 +130,6 @@ module "certmanager_namespace" {
   ]
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
 module "aws_iam_cert_manager" {
   count = local.cert_manager.enabled ? 1 : 0
 

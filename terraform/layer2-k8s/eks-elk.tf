@@ -343,8 +343,7 @@ kibana:
               name: elastic-credentials
               key: password
 VALUES
-  #tfsec:ignore:general-secrets-sensitive-in-attribute-value
-  elk_filebeat_values = <<VALUES
+  elk_filebeat_values         = <<VALUES
 filebeat:
   enabled: true
   filebeatConfig:
@@ -402,8 +401,7 @@ filebeat:
     - effect: NoSchedule
       operator: Exists
 VALUES
-  #tfsec:ignore:general-secrets-sensitive-in-attribute-value
-  elk_apm_values = <<VALUES
+  elk_apm_values              = <<VALUES
 apm-server:
   enabled: false
   ingress:
@@ -457,8 +455,7 @@ apm-server:
             values:
               - ON_DEMAND
 VALUES
-  #tfsec:ignore:general-secrets-sensitive-in-attribute-value
-  elk_metricbeat_values = <<VALUES
+  elk_metricbeat_values       = <<VALUES
 metricbeat:
   enabled: false
   daemonset:
@@ -585,11 +582,10 @@ metricbeat:
 VALUES
 }
 
-#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "elk_namespace" {
   count = local.elk.enabled ? 1 : 0
 
-  source = "../modules/kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.elk.namespace
   network_policies = [
     {
@@ -798,7 +794,6 @@ resource "random_string" "kibana_password" {
   upper   = true
 }
 
-#tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "elastic_stack" {
   count = local.elk.enabled ? 1 : 0
 
