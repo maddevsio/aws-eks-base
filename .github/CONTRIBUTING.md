@@ -22,7 +22,7 @@ Please note we have a code of conduct, please follow it in all your interactions
       - [Resource names](#resource-names)
       - [Variable names](#variable-names)
       - [Output names](#output-names)
-      - [Resources order in a .tf files](#resources-order-in-a-tf-files)
+      - [Resources order in .tf files](#resources-order-in-tf-files)
     - [Names of terraform files, directories, and modules](#names-of-terraform-files-directories-and-modules)
       - [General configuration files](#general-configuration-files)
       - [Specific configuration files](#specific-configuration-files)
@@ -293,7 +293,7 @@ resource "aws_route_table_association" "intra" {
 - If the return value is a list, it must have a plural name
 - Use description for outputs
 
-#### Resources order in a .tf files
+#### Resources order in .tf files
 
 Resources in `.tf` files should be described in the following order:
 1. locals
