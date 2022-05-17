@@ -298,8 +298,8 @@ resource "aws_route_table_association" "intra" {
 Resources in `.tf` files should be described in the following order:
 1. locals
 2. data
-3. resources
-4. modules
+3. modules
+4. resources
 
 ### Names of terraform files, directories, and modules
 

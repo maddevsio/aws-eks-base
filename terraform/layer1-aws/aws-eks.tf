@@ -33,15 +33,6 @@ data "aws_ami" "eks_default_bottlerocket" {
   }
 }
 
-resource "aws_kms_key" "eks" {
-  count       = var.eks_cluster_encryption_config_enable ? 1 : 0
-  description = "EKS Secret Encryption Key"
-}
-
-resource "kubectl_manifest" "aws_auth_configmap" {
-  yaml_body = local.aws_auth_configmap_yaml
-}
-
 #tfsec:ignore:aws-vpc-no-public-egress-sgr tfsec:ignore:aws-eks-enable-control-plane-logging tfsec:ignore:aws-eks-encrypt-secrets tfsec:ignore:aws-eks-no-public-cluster-access tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -254,4 +245,13 @@ module "vpc_cni_irsa" {
   }
 
   tags = local.tags
+}
+
+resource "aws_kms_key" "eks" {
+  count       = var.eks_cluster_encryption_config_enable ? 1 : 0
+  description = "EKS Secret Encryption Key"
+}
+
+resource "kubectl_manifest" "aws_auth_configmap" {
+  yaml_body = local.aws_auth_configmap_yaml
 }
