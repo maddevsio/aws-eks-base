@@ -7,7 +7,10 @@ locals {
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "aws-load-balancer-controller")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "aws-load-balancer-controller")].namespace
   }
-  aws_load_balancer_controller_values = <<VALUES
+  ssl_certificate_arn                               = data.terraform_remote_state.layer1-aws.outputs.ssl_certificate_arn
+  aws_load_balancer_controller_webhook_service_name = "${local.aws_load_balancer_controller.name}-webhook-service"
+  aws_load_balancer_controller_values               = <<VALUES
+nameOverride: ${local.aws_load_balancer_controller.name}
 clusterName: ${local.eks_cluster_id}
 region: ${local.region}
 vpcId: ${local.vpc_id}
@@ -117,12 +120,24 @@ module "aws_iam_aws_loadbalancer_controller" {
       {
         "Effect" : "Allow",
         "Action" : [
-          "iam:CreateServiceLinkedRole",
+          "iam:CreateServiceLinkedRole"
+        ],
+        "Resource" : "*",
+        "Condition" : {
+          "StringEquals" : {
+            "iam:AWSServiceName" : "elasticloadbalancing.amazonaws.com"
+          }
+        }
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
           "ec2:DescribeAccountAttributes",
           "ec2:DescribeAddresses",
           "ec2:DescribeAvailabilityZones",
           "ec2:DescribeInternetGateways",
           "ec2:DescribeVpcs",
+          "ec2:DescribeVpcPeeringConnections",
           "ec2:DescribeSubnets",
           "ec2:DescribeSecurityGroups",
           "ec2:DescribeInstances",
@@ -320,6 +335,62 @@ module "aws_iam_aws_loadbalancer_controller" {
   })
 }
 
+resource "tls_private_key" "aws_loadbalancer_controller_webhook_ca" {
+  count = local.aws_load_balancer_controller.enabled ? 1 : 0
+
+  algorithm = "RSA"
+}
+
+resource "tls_self_signed_cert" "aws_loadbalancer_controller_webhook_ca" {
+  count = local.aws_load_balancer_controller.enabled ? 1 : 0
+
+  private_key_pem       = tls_private_key.aws_loadbalancer_controller_webhook_ca[count.index].private_key_pem
+  validity_period_hours = 87600 # 10 years
+  early_renewal_hours   = 8760  # 1 year
+  is_ca_certificate     = true
+  allowed_uses = [
+    "cert_signing",
+    "key_encipherment",
+    "digital_signature"
+  ]
+  subject {
+    common_name  = local.aws_load_balancer_controller_webhook_service_name
+    organization = local.name
+  }
+}
+
+resource "tls_private_key" "aws_loadbalancer_controller_webhook" {
+  count = local.aws_load_balancer_controller.enabled ? 1 : 0
+
+  algorithm = "RSA"
+}
+
+resource "tls_cert_request" "aws_loadbalancer_controller_webhook" {
+  count = local.aws_load_balancer_controller.enabled ? 1 : 0
+
+  private_key_pem = tls_private_key.aws_loadbalancer_controller_webhook[count.index].private_key_pem
+  dns_names       = ["${local.aws_load_balancer_controller_webhook_service_name}.${module.aws_load_balancer_controller_namespace[count.index].name}", "${local.aws_load_balancer_controller_webhook_service_name}.${module.aws_load_balancer_controller_namespace[count.index].name}.svc", "${local.aws_load_balancer_controller_webhook_service_name}.${module.aws_load_balancer_controller_namespace[count.index].name}.svc.cluster.local"]
+  subject {
+    common_name  = local.aws_load_balancer_controller_webhook_service_name
+    organization = local.name
+  }
+}
+
+resource "tls_locally_signed_cert" "aws_loadbalancer_controller_webhook" {
+  count = local.aws_load_balancer_controller.enabled ? 1 : 0
+
+  cert_request_pem   = tls_cert_request.aws_loadbalancer_controller_webhook[count.index].cert_request_pem
+  ca_private_key_pem = tls_private_key.aws_loadbalancer_controller_webhook_ca[count.index].private_key_pem
+  ca_cert_pem        = tls_self_signed_cert.aws_loadbalancer_controller_webhook_ca[count.index].cert_pem
+
+  validity_period_hours = 87600 # 10 years
+  early_renewal_hours   = 8760  # 1 year
+  allowed_uses = [
+    "key_encipherment",
+    "digital_signature"
+  ]
+}
+
 resource "helm_release" "aws_loadbalancer_controller" {
   count = local.aws_load_balancer_controller.enabled ? 1 : 0
 
@@ -333,5 +404,55 @@ resource "helm_release" "aws_loadbalancer_controller" {
   values = [
     local.aws_load_balancer_controller_values
   ]
+  set {
+    name  = "webhookTLS.caCert"
+    value = tls_self_signed_cert.aws_loadbalancer_controller_webhook_ca[0].cert_pem
+  }
+  set {
+    name  = "webhookTLS.cert"
+    value = tls_locally_signed_cert.aws_loadbalancer_controller_webhook[0].cert_pem
+  }
+  set {
+    name  = "webhookTLS.key"
+    value = tls_private_key.aws_loadbalancer_controller_webhook[0].private_key_pem
+  }
+}
 
+resource "kubernetes_ingress_v1" "default" {
+  count = local.aws_load_balancer_controller.enabled && local.ingress_nginx.enabled ? 1 : 0
+
+  metadata {
+    name = "${local.ingress_nginx.name}-controller"
+    annotations = {
+      "kubernetes.io/ingress.class"                        = "alb"
+      "alb.ingress.kubernetes.io/scheme"                   = "internet-facing"
+      "alb.ingress.kubernetes.io/tags"                     = "Environment=${local.env},Name=${local.name},Cluster=${local.eks_cluster_id}"
+      "alb.ingress.kubernetes.io/certificate-arn"          = "${local.ssl_certificate_arn}"
+      "alb.ingress.kubernetes.io/ssl-policy"               = "ELBSecurityPolicy-FS-1-2-Res-2019-08"
+      "alb.ingress.kubernetes.io/listen-ports"             = "[{\"HTTP\": 80}, {\"HTTPS\": 443}]"
+      "alb.ingress.kubernetes.io/target-type"              = "ip"
+      "alb.ingress.kubernetes.io/load-balancer-attributes" = "routing.http2.enabled=true"
+      "alb.ingress.kubernetes.io/actions.ssl-redirect"     = "{\"Type\": \"redirect\", \"RedirectConfig\": { \"Protocol\": \"HTTPS\", \"Port\": \"443\", \"StatusCode\": \"HTTP_302\"}}"
+    }
+    namespace = module.ingress_nginx_namespace[count.index].name
+  }
+  spec {
+    rule {
+      http {
+        path {
+          path = "/*"
+          backend {
+            service {
+              name = "${local.ingress_nginx.name}-controller"
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  depends_on = [helm_release.aws_loadbalancer_controller, helm_release.ingress_nginx, module.aws_iam_aws_loadbalancer_controller, tls_locally_signed_cert.aws_loadbalancer_controller_webhook]
 }

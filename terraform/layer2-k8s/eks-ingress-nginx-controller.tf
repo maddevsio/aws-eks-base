@@ -7,8 +7,7 @@ locals {
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "ingress-nginx")].namespace
   }
-  ssl_certificate_arn                         = var.nginx_ingress_ssl_terminator == "lb" ? data.terraform_remote_state.layer1-aws.outputs.ssl_certificate_arn : "ssl-certificate"
-  ingress_nginx_general_values                = <<VALUES
+  ingress_nginx_general_values                   = <<VALUES
 rbac:
   create: true
 controller:
@@ -27,27 +26,20 @@ controller:
             values:
               - ON_DEMAND
 VALUES
-  ingress_loadbalancer_ssl_termination_values = <<VALUES
+  ingress_nginx_and_aws_load_balancer_controller = <<VALUES
 controller:
   service:
+    type: ClusterIP
     targetPorts:
       http: http
       https: http
-    annotations:
-      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-      service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '60'
-      service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
-      service.beta.kubernetes.io/aws-load-balancer-ssl-cert: ${local.ssl_certificate_arn}
-      service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: ELBSecurityPolicy-TLS-1-2-2017-01
-      external-dns.alpha.kubernetes.io/hostname: ${local.domain_name}.
   publishService:
     enabled: true
   config:
     server-tokens: "false"
     use-forwarded-headers: "true"
-    set-real-ip-from: "${local.vpc_cidr}"
 VALUES
-  ingress_pod_ssl_termination_values          = <<VALUES
+  ingress_pod_ssl_termination_values             = <<VALUES
 controller:
   extraArgs:
     default-ssl-certificate: "${local.ingress_nginx.enabled ? module.ingress_nginx_namespace[0].name : "default"}/nginx-tls"
@@ -220,7 +212,7 @@ resource "helm_release" "ingress_nginx" {
 
   values = [
     local.ingress_nginx_general_values,
-    var.nginx_ingress_ssl_terminator == "lb" ? local.ingress_loadbalancer_ssl_termination_values : local.ingress_pod_ssl_termination_values
+    var.nginx_ingress_ssl_terminator == "lb" ? local.ingress_nginx_and_aws_load_balancer_controller : local.ingress_pod_ssl_termination_values
   ]
 
   depends_on = [kubectl_manifest.kube_prometheus_stack_operator_crds]
