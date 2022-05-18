@@ -432,7 +432,7 @@ resource "kubernetes_ingress_v1" "default" {
       "alb.ingress.kubernetes.io/listen-ports"             = "[{\"HTTP\": 80}, {\"HTTPS\": 443}]"
       "alb.ingress.kubernetes.io/target-type"              = "ip"
       "alb.ingress.kubernetes.io/load-balancer-attributes" = "routing.http2.enabled=true"
-      "alb.ingress.kubernetes.io/actions.ssl-redirect"     = "{\"Type\": \"redirect\", \"RedirectConfig\": { \"Protocol\": \"HTTPS\", \"Port\": \"443\", \"StatusCode\": \"HTTP_302\"}}"
+      "alb.ingress.kubernetes.io/ssl-redirect"             = "443"
     }
     namespace = module.ingress_nginx_namespace[count.index].name
   }
