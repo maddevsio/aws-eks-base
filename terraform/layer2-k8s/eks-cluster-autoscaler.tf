@@ -53,11 +53,10 @@ resources:
 VALUES
 }
 
-#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "cluster_autoscaler_namespace" {
   count = local.cluster_autoscaler.enabled ? 1 : 0
 
-  source = "../modules/kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.cluster_autoscaler.namespace
   network_policies = [
     {
@@ -129,7 +128,6 @@ module "cluster_autoscaler_namespace" {
   ]
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
 module "aws_iam_autoscaler" {
   count = local.cluster_autoscaler.enabled ? 1 : 0
 

@@ -9,11 +9,10 @@ locals {
   }
 }
 
-#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "keda_namespace" {
   count = local.keda.enabled ? 1 : 0
 
-  source = "../modules/kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.keda.namespace
   network_policies = [
     {

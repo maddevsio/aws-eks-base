@@ -1,3 +1,13 @@
+data "aws_acm_certificate" "main" {
+  count = var.create_acm_certificate ? 0 : 1
+
+  domain = var.domain_name
+  statuses = [
+    "ISSUED",
+  "PENDING_VALIDATION"]
+  most_recent = true
+}
+
 module "acm" {
   source  = "terraform-aws-modules/acm/aws"
   version = "3.3.0"
@@ -10,14 +20,4 @@ module "acm" {
   "*.${local.domain_name}"]
 
   tags = local.tags
-}
-
-data "aws_acm_certificate" "main" {
-  count = var.create_acm_certificate ? 0 : 1
-
-  domain = var.domain_name
-  statuses = [
-    "ISSUED",
-  "PENDING_VALIDATION"]
-  most_recent = true
 }

@@ -5,6 +5,22 @@ locals {
   }
   eks_addon_vpc_cni = merge(var.eks_addons.vpc-cni, { service_account_role_arn = module.vpc_cni_irsa.iam_role_arn })
   eks_addons        = merge(var.eks_addons, { vpc-cni = local.eks_addon_vpc_cni })
+
+  eks_map_roles = [
+    {
+      rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/administrator"
+      username = "administrator"
+      groups   = ["system:masters"]
+    }
+  ]
+  eks_map_users = []
+
+  aws_auth_configmap_yaml = <<-CONTENT
+    ${chomp(module.eks.aws_auth_configmap_yaml)}
+        ${indent(4, yamlencode(local.eks_map_roles))}
+      mapUsers: |
+        ${indent(4, yamlencode(local.eks_map_users))}
+    CONTENT
 }
 
 data "aws_ami" "eks_default_bottlerocket" {
@@ -211,4 +227,31 @@ module "eks" {
     }
   }
 
+}
+
+module "vpc_cni_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "4.14.0"
+
+  role_name             = "${local.name}-vpc-cni"
+  attach_vpc_cni_policy = true
+  vpc_cni_enable_ipv4   = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:aws-node"]
+    }
+  }
+
+  tags = local.tags
+}
+
+resource "aws_kms_key" "eks" {
+  count       = var.eks_cluster_encryption_config_enable ? 1 : 0
+  description = "EKS Secret Encryption Key"
+}
+
+resource "kubectl_manifest" "aws_auth_configmap" {
+  yaml_body = local.aws_auth_configmap_yaml
 }

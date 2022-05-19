@@ -34,25 +34,25 @@
 | <a name="module_aws_iam_gitlab_runner"></a> [aws\_iam\_gitlab\_runner](#module\_aws\_iam\_gitlab\_runner) | ../modules/aws-iam-eks-trusted | n/a |
 | <a name="module_aws_iam_kube_prometheus_stack_grafana"></a> [aws\_iam\_kube\_prometheus\_stack\_grafana](#module\_aws\_iam\_kube\_prometheus\_stack\_grafana) | ../modules/aws-iam-eks-trusted | n/a |
 | <a name="module_aws_iam_victoria_metrics_k8s_stack_grafana"></a> [aws\_iam\_victoria\_metrics\_k8s\_stack\_grafana](#module\_aws\_iam\_victoria\_metrics\_k8s\_stack\_grafana) | ../modules/aws-iam-eks-trusted | n/a |
-| <a name="module_aws_load_balancer_controller_namespace"></a> [aws\_load\_balancer\_controller\_namespace](#module\_aws\_load\_balancer\_controller\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_aws_node_termination_handler_namespace"></a> [aws\_node\_termination\_handler\_namespace](#module\_aws\_node\_termination\_handler\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_certmanager_namespace"></a> [certmanager\_namespace](#module\_certmanager\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_cluster_autoscaler_namespace"></a> [cluster\_autoscaler\_namespace](#module\_cluster\_autoscaler\_namespace) | ../modules/kubernetes-namespace | n/a |
+| <a name="module_aws_load_balancer_controller_namespace"></a> [aws\_load\_balancer\_controller\_namespace](#module\_aws\_load\_balancer\_controller\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_aws_node_termination_handler_namespace"></a> [aws\_node\_termination\_handler\_namespace](#module\_aws\_node\_termination\_handler\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_certmanager_namespace"></a> [certmanager\_namespace](#module\_certmanager\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_cluster_autoscaler_namespace"></a> [cluster\_autoscaler\_namespace](#module\_cluster\_autoscaler\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
 | <a name="module_elastic_tls"></a> [elastic\_tls](#module\_elastic\_tls) | ../modules/self-signed-certificate | n/a |
-| <a name="module_elk_namespace"></a> [elk\_namespace](#module\_elk\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_external_dns_namespace"></a> [external\_dns\_namespace](#module\_external\_dns\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_external_secrets_namespace"></a> [external\_secrets\_namespace](#module\_external\_secrets\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_fargate_namespace"></a> [fargate\_namespace](#module\_fargate\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_gitlab_runner_namespace"></a> [gitlab\_runner\_namespace](#module\_gitlab\_runner\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_ingress_nginx_namespace"></a> [ingress\_nginx\_namespace](#module\_ingress\_nginx\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_istio_system_namespace"></a> [istio\_system\_namespace](#module\_istio\_system\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_keda_namespace"></a> [keda\_namespace](#module\_keda\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_kiali_namespace"></a> [kiali\_namespace](#module\_kiali\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_kube_prometheus_stack_namespace"></a> [kube\_prometheus\_stack\_namespace](#module\_kube\_prometheus\_stack\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_loki_namespace"></a> [loki\_namespace](#module\_loki\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_reloader_namespace"></a> [reloader\_namespace](#module\_reloader\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_tigera_operator_namespace"></a> [tigera\_operator\_namespace](#module\_tigera\_operator\_namespace) | ../modules/kubernetes-namespace | n/a |
-| <a name="module_victoria_metrics_k8s_stack_namespace"></a> [victoria\_metrics\_k8s\_stack\_namespace](#module\_victoria\_metrics\_k8s\_stack\_namespace) | ../modules/kubernetes-namespace | n/a |
+| <a name="module_elk_namespace"></a> [elk\_namespace](#module\_elk\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_external_dns_namespace"></a> [external\_dns\_namespace](#module\_external\_dns\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_external_secrets_namespace"></a> [external\_secrets\_namespace](#module\_external\_secrets\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_fargate_namespace"></a> [fargate\_namespace](#module\_fargate\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_gitlab_runner_namespace"></a> [gitlab\_runner\_namespace](#module\_gitlab\_runner\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_ingress_nginx_namespace"></a> [ingress\_nginx\_namespace](#module\_ingress\_nginx\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_istio_system_namespace"></a> [istio\_system\_namespace](#module\_istio\_system\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_keda_namespace"></a> [keda\_namespace](#module\_keda\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_kiali_namespace"></a> [kiali\_namespace](#module\_kiali\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_kube_prometheus_stack_namespace"></a> [kube\_prometheus\_stack\_namespace](#module\_kube\_prometheus\_stack\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_loki_namespace"></a> [loki\_namespace](#module\_loki\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_reloader_namespace"></a> [reloader\_namespace](#module\_reloader\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_tigera_operator_namespace"></a> [tigera\_operator\_namespace](#module\_tigera\_operator\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_victoria_metrics_k8s_stack_namespace"></a> [victoria\_metrics\_k8s\_stack\_namespace](#module\_victoria\_metrics\_k8s\_stack\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
 
 ## Resources
 

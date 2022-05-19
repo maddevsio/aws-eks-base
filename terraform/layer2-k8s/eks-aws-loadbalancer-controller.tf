@@ -29,11 +29,10 @@ affinity:
 VALUES
 }
 
-#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "aws_load_balancer_controller_namespace" {
   count = local.aws_load_balancer_controller.enabled ? 1 : 0
 
-  source = "../modules/kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.aws_load_balancer_controller.namespace
   network_policies = [
     {
@@ -103,7 +102,6 @@ module "aws_load_balancer_controller_namespace" {
   ]
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
 module "aws_iam_aws_loadbalancer_controller" {
   count = local.aws_load_balancer_controller.enabled ? 1 : 0
 

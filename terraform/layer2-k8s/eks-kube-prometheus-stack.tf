@@ -339,11 +339,10 @@ alertmanager:
 VALUES
 }
 
-#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "kube_prometheus_stack_namespace" {
   count = local.kube_prometheus_stack.enabled ? 1 : 0
 
-  source = "../modules/kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.kube_prometheus_stack.namespace
   network_policies = concat([
     {

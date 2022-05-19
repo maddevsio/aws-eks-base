@@ -65,11 +65,10 @@ runners:
 VALUES
 }
 
-#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "gitlab_runner_namespace" {
   count = local.gitlab_runner.enabled ? 1 : 0
 
-  source = "../modules/kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = "gitlab-runner"
   network_policies = [
     {
@@ -113,7 +112,6 @@ module "gitlab_runner_namespace" {
   ]
 }
 
-#tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "gitlab_runner_cache" {
   count = local.gitlab_runner.enabled ? 1 : 0
 

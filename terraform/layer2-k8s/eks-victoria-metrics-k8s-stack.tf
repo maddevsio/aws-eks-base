@@ -342,11 +342,10 @@ alertmanager:
 VALUES
 }
 
-#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "victoria_metrics_k8s_stack_namespace" {
   count = local.victoria_metrics_k8s_stack.enabled ? 1 : 0
 
-  source = "../modules/kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.victoria_metrics_k8s_stack.namespace
   network_policies = concat([
     {

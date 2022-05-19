@@ -25,11 +25,10 @@ affinity:
 VALUES
 }
 
-#tfsec:ignore:kubernetes-network-no-public-egress tfsec:ignore:kubernetes-network-no-public-ingress
 module "aws_node_termination_handler_namespace" {
   count = local.aws_node_termination_handler.enabled ? 1 : 0
 
-  source = "../modules/kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.aws_node_termination_handler.namespace
   network_policies = [
     {
