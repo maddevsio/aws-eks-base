@@ -396,7 +396,7 @@ terragrunt destroy
 
 ## What to do after deployment
 
-* After applying this configuration, you will get the infrastructure described and outlined at the beginning of the document. In AWS and within the EKS cluster, the basic resources and services necessary for the operation of the EKS k8s cluster will be created (except configuration for Route53).
+* After applying this configuration, you will get the infrastructure described and outlined at the beginning of the document. In AWS and within the EKS cluster, the basic resources and services necessary for the operation of the EKS k8s cluster will be created.
 
 * You can get access to the cluster using this command:
 
