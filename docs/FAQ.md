@@ -304,3 +304,10 @@ kubectl delete installations.operator.tigera.io default
 kubectl delete ns calico-apiserver calico-system
 ```
 5. Restart all nodes
+
+## What if you don't want to use an aws-load-balancer controller in front of an ingress-nginx and want to use a cert-manager and terminate SSL on ingres-nginx side
+
+1. Set `nginx ` for a `nginx_ingress_ssl_terminator` variable in the layer2-k8s folder
+2. Set `enabled: false` for `id: aws-load-balancer-controller` in the **layer2-k8s/helm-releases.yaml** file
+3. Set `enabled: true` for `id: external-dns`, `id: cert-manager`, `id: cert-mananger-certificate`, `id:cert-manager-cluster-issuer` in the **layer2-k8s/helm-releases.yaml** file
+4. Run `terraform apply` in the layer2-k8s folder

@@ -419,7 +419,7 @@ resource "helm_release" "aws_loadbalancer_controller" {
 }
 
 resource "kubernetes_ingress_v1" "default" {
-  count = local.aws_load_balancer_controller.enabled && local.ingress_nginx.enabled ? 1 : 0
+  count = local.aws_load_balancer_controller.enabled && local.ingress_nginx.enabled && var.nginx_ingress_ssl_terminator == "lb" ? 1 : 0
 
   metadata {
     name = "${local.ingress_nginx.name}-controller"
@@ -453,6 +453,22 @@ resource "kubernetes_ingress_v1" "default" {
       }
     }
   }
+  wait_for_load_balancer = true
 
   depends_on = [helm_release.aws_loadbalancer_controller, helm_release.ingress_nginx, module.aws_iam_aws_loadbalancer_controller, tls_locally_signed_cert.aws_loadbalancer_controller_webhook]
+}
+
+resource "aws_route53_record" "default_ingress" {
+  count = local.aws_load_balancer_controller.enabled && local.ingress_nginx.enabled && var.nginx_ingress_ssl_terminator == "lb" ? 1 : 0
+
+  zone_id = local.zone_id
+  name    = "*.${local.domain_name}"
+  type    = "CNAME"
+  ttl     = 360
+
+  records = [kubernetes_ingress_v1.default[count.index].status.0.load_balancer.0.ingress.0.hostname]
+
+  depends_on = [
+    kubernetes_ingress_v1.default
+  ]
 }

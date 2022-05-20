@@ -396,13 +396,16 @@ terragrunt destroy
 
 ## What to do after deployment
 
-After applying this configuration, you will get the infrastructure described and outlined at the beginning of the document. In AWS and within the EKS cluster, the basic resources and services necessary for the operation of the EKS k8s cluster will be created.
+* After applying this configuration, you will get the infrastructure described and outlined at the beginning of the document. In AWS and within the EKS cluster, the basic resources and services necessary for the operation of the EKS k8s cluster will be created (except configuration for Route53).
 
-You can get access to the cluster using this command:
+* You can get access to the cluster using this command:
 
   ```bash
   aws eks update-kubeconfig --name maddevs-demo-use1 --region us-east-1
   ```
+
+* If you used default configuration and want to serve traffic for a main domain (example.com) by an application deployed into a k8s cluster, youn need to manually create DNS record in Route53 with type A + Alias
+* DNS record `*.example.com` created automatically and points to Load Balancer in front of k8s cluster. 
 
 ## Update terraform version
 

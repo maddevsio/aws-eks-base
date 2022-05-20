@@ -59,6 +59,7 @@
 
 | Name | Type |
 |------|------|
+| [aws_route53_record.default_ingress](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/route53_record) | resource |
 | [aws_s3_bucket.elastic_stack](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket.gitlab_runner_cache](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket_public_access_block.elastic_stack_public_access_block](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_public_access_block) | resource |
