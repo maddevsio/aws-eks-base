@@ -1,6 +1,6 @@
 releases:
   - id: aws-load-balancer-controller
-    enabled: false
+    enabled: true
     chart: aws-load-balancer-controller
     repository: https://aws.github.io/eks-charts
     chart_version: 1.4.1
@@ -42,7 +42,7 @@ releases:
     chart_version:
     namespace: elk
   - id: external-dns
-    enabled: true
+    enabled: false
     chart: external-dns
     repository: https://kubernetes-sigs.github.io/external-dns
     chart_version: 1.9.0
