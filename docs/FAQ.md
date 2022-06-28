@@ -221,6 +221,13 @@ runners:
         ...
 ...
 ```
+* Disable cluster-wide access for the default Service Account:
+```
+...
+rbac:
+  clusterWideAccess: false
+...
+```
 
 ## Monitoring
 This boilerplate provides two solutions for monitoring: 
