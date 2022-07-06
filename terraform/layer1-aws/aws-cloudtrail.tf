@@ -1,3 +1,4 @@
+#tfsec:ignore:aws-cloudtrail-enable-at-rest-encryption
 resource "aws_cloudtrail" "main" {
   name                          = local.name
   s3_bucket_name                = aws_s3_bucket.cloudtrail.id
@@ -8,7 +9,7 @@ resource "aws_cloudtrail" "main" {
 
   tags = local.tags
 }
-
+#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "cloudtrail" {
   bucket = "${local.name}-aws-cloudtrail-logs"
 
