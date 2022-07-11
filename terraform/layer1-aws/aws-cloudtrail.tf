@@ -9,7 +9,7 @@ resource "aws_cloudtrail" "main" {
 
   tags = local.tags
 }
-#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-encryption-customer-key
+#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
 resource "aws_s3_bucket" "cloudtrail" {
   bucket = "${local.name}-aws-cloudtrail-logs"
 
@@ -33,6 +33,17 @@ resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail" {
     }
     expiration {
       days = var.cloudtrail_logs_s3_expiration_days
+    }
+  }
+}
+
+#tfsec:ignore:aws-s3-encryption-customer-key
+resource "aws_s3_bucket_server_side_encryption_configuration" "cloudtrail" {
+  bucket = aws_s3_bucket.cloudtrail.bucket
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
 }
