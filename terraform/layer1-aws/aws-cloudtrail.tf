@@ -9,17 +9,10 @@ resource "aws_cloudtrail" "main" {
 
   tags = local.tags
 }
-#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-s3-encryption-customer-key
+
+#tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
 resource "aws_s3_bucket" "cloudtrail" {
   bucket = "${local.name}-aws-cloudtrail-logs"
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
 
   tags = local.tags
 }
@@ -45,15 +38,16 @@ resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail" {
   }
 }
 
-#resource "aws_s3_bucket_server_side_encryption_configuration" "cloudtrail" {
-#  bucket = aws_s3_bucket.cloudtrail.bucket
-#
-#  rule {
-#    apply_server_side_encryption_by_default {
-#      sse_algorithm = "AES256"
-#    }
-#  }
-#}
+#tfsec:ignore:aws-s3-encryption-customer-key
+resource "aws_s3_bucket_server_side_encryption_configuration" "cloudtrail" {
+  bucket = aws_s3_bucket.cloudtrail.bucket
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
 
 resource "aws_s3_bucket_public_access_block" "cloudtrail" {
   bucket                  = aws_s3_bucket.cloudtrail.id
