@@ -75,7 +75,7 @@ jobs:
     needs: terraform-validate
     runs-on: ubuntu-latest
     container:
-      image: tfsec/tfsec
+      image: aquasec/tfsec
       options: --user root
     steps:
       - name: Checkout
