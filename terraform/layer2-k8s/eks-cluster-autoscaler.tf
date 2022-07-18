@@ -56,7 +56,7 @@ VALUES
 module "cluster_autoscaler_namespace" {
   count = local.cluster_autoscaler.enabled ? 1 : 0
 
-  source = "modules/eks-kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.cluster_autoscaler.namespace
   network_policies = [
     {
@@ -131,7 +131,7 @@ module "cluster_autoscaler_namespace" {
 module "aws_iam_autoscaler" {
   count = local.cluster_autoscaler.enabled ? 1 : 0
 
-  source            = "modules/aws-iam-eks-trusted"
+  source            = "../modules/aws-iam-eks-trusted"
   name              = "${local.name}-autoscaler"
   region            = local.region
   oidc_provider_arn = local.eks_oidc_provider_arn

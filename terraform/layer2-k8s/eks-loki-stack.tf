@@ -52,7 +52,7 @@ VALUES
 module "loki_namespace" {
   count = local.loki_stack.enabled ? 1 : 0
 
-  source = "modules/eks-kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.loki_stack.namespace
   network_policies = [
     {

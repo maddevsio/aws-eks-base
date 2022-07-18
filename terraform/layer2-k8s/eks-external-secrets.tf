@@ -70,7 +70,7 @@ VALUES
 module "external_secrets_namespace" {
   count = local.external_secrets.enabled ? 1 : 0
 
-  source = "modules/eks-kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.external_secrets.namespace
   network_policies = [
     {

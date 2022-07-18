@@ -17,7 +17,7 @@ VALUES
 module "tigera_operator_namespace" {
   count = local.tigera_operator.enabled ? 1 : 0
 
-  source = "modules/eks-kubernetes-namespace"
+  source = "../modules/eks-kubernetes-namespace"
   name   = local.tigera_operator.name
   network_policies = [
     {
