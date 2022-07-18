@@ -47,6 +47,10 @@ Temporary Items
 .apdisk
 
 ### Terraform ###
+**/.terragrunt-cache/*
+.terraform.lock.hcl
+
+### Terraform ###
 # Local .terraform directories
 **/.terraform/*
 
