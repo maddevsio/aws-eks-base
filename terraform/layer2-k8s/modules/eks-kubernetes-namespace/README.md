@@ -45,4 +45,4 @@ No modules.
 
 
 
-# More details about using this module can be found [here](../../../docs/FAQ.md#k8s-namespace-features)
+# More details about using this module can be found [here](../../../../docs/FAQ.md#k8s-namespace-features)

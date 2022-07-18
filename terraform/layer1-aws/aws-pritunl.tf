@@ -2,7 +2,7 @@
 module "pritunl" {
   count = var.pritunl_vpn_server_enable ? 1 : 0
 
-  source          = "../modules/aws-pritunl"
+  source          = "modules/aws-pritunl"
   environment     = local.env
   vpc_id          = module.vpc.vpc_id
   public_subnets  = module.vpc.public_subnets

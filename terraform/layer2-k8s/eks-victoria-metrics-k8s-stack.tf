@@ -345,7 +345,7 @@ VALUES
 module "victoria_metrics_k8s_stack_namespace" {
   count = local.victoria_metrics_k8s_stack.enabled ? 1 : 0
 
-  source = "../modules/eks-kubernetes-namespace"
+  source = "modules/eks-kubernetes-namespace"
   name   = local.victoria_metrics_k8s_stack.namespace
   network_policies = concat([
     {
@@ -466,7 +466,7 @@ module "victoria_metrics_k8s_stack_namespace" {
 module "aws_iam_victoria_metrics_k8s_stack_grafana" {
   count = local.victoria_metrics_k8s_stack.enabled ? 1 : 0
 
-  source            = "../modules/aws-iam-eks-trusted"
+  source            = "modules/aws-iam-eks-trusted"
   name              = "${local.name}-grafana"
   region            = local.region
   oidc_provider_arn = local.eks_oidc_provider_arn

@@ -61,7 +61,7 @@ No requirements.
 
 ## Architecture diagram
 
-![pritunl-server-architecture-diagram](../../../docs/aws-ec2-pritunl-diagram.svg)
+![pritunl-server-architecture-diagram](../../../../docs/aws-ec2-pritunl-diagram.svg)
 
 ## Description
 * AWS ASG is used to automatically run "broken" instance again

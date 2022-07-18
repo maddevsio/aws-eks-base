@@ -28,7 +28,7 @@ VALUES
 module "aws_node_termination_handler_namespace" {
   count = local.aws_node_termination_handler.enabled ? 1 : 0
 
-  source = "../modules/eks-kubernetes-namespace"
+  source = "modules/eks-kubernetes-namespace"
   name   = local.aws_node_termination_handler.namespace
   network_policies = [
     {

@@ -585,7 +585,7 @@ VALUES
 module "elk_namespace" {
   count = local.elk.enabled ? 1 : 0
 
-  source = "../modules/eks-kubernetes-namespace"
+  source = "modules/eks-kubernetes-namespace"
   name   = local.elk.namespace
   network_policies = [
     {
@@ -668,7 +668,7 @@ module "elk_namespace" {
 module "elastic_tls" {
   count = local.elk.enabled ? 1 : 0
 
-  source                = "../modules/self-signed-certificate"
+  source                = "modules/self-signed-certificate"
   name                  = local.name
   common_name           = "elasticsearch-master"
   dns_names             = [local.domain_name, "*.${local.domain_name}", "elasticsearch-master", "elasticsearch-master.${module.elk_namespace[count.index].name}", "kibana", "kibana.${module.elk_namespace[count.index].name}", "kibana-kibana", "kibana-kibana.${module.elk_namespace[count.index].name}", "logstash", "logstash.${module.elk_namespace[count.index].name}"]
@@ -679,7 +679,7 @@ module "elastic_tls" {
 module "aws_iam_elastic_stack" {
   count = local.elk.enabled ? 1 : 0
 
-  source = "../modules/aws-iam-user-with-policy"
+  source = "modules/aws-iam-user-with-policy"
   name   = "${local.name}-${local.elk.name}"
   policy = jsonencode({
     "Version" : "2012-10-17",

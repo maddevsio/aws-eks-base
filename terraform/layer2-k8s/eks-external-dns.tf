@@ -36,7 +36,7 @@ VALUES
 module "external_dns_namespace" {
   count = local.external_dns.enabled ? 1 : 0
 
-  source = "../modules/eks-kubernetes-namespace"
+  source = "modules/eks-kubernetes-namespace"
   name   = local.external_dns.namespace
   network_policies = [
     {
@@ -83,7 +83,7 @@ module "external_dns_namespace" {
 module "aws_iam_external_dns" {
   count = local.external_dns.enabled ? 1 : 0
 
-  source            = "../modules/aws-iam-eks-trusted"
+  source            = "modules/aws-iam-eks-trusted"
   name              = "${local.name}-${local.external_dns.name}"
   region            = local.region
   oidc_provider_arn = local.eks_oidc_provider_arn
