@@ -62,8 +62,13 @@
 | [aws_route53_record.default_ingress](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/route53_record) | resource |
 | [aws_s3_bucket.elastic_stack](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket.gitlab_runner_cache](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_acl.elastic_stack_acl](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_acl) | resource |
+| [aws_s3_bucket_acl.gitlab_runner_acl](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_acl) | resource |
+| [aws_s3_bucket_lifecycle_configuration.gitlab_runner_lifecycle](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_lifecycle_configuration) | resource |
 | [aws_s3_bucket_public_access_block.elastic_stack_public_access_block](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_public_access_block) | resource |
 | [aws_s3_bucket_public_access_block.gitlab_runner_cache_public_access_block](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_server_side_encryption_configuration.elastic_stack_encryption](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
+| [aws_s3_bucket_server_side_encryption_configuration.gitlab_runner_encryption](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
 | [helm_release.aws_loadbalancer_controller](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.aws_node_termination_handler](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.cert_manager](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
