@@ -3,7 +3,6 @@ resource "tls_private_key" "this" {
 }
 
 resource "tls_self_signed_cert" "this" {
-  key_algorithm         = tls_private_key.this.algorithm
   private_key_pem       = tls_private_key.this.private_key_pem
   validity_period_hours = var.validity_period_hours
   early_renewal_hours   = var.early_renewal_hours
