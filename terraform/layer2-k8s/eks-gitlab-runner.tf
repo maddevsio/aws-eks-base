@@ -144,6 +144,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "gitlab_runner_enc
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "gitlab_runner_lifecycle" {
+  count = local.gitlab_runner.enabled ? 1 : 0
+
   bucket = aws_s3_bucket.gitlab_runner_cache[0].id
 
   rule {
