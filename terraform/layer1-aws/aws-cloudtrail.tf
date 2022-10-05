@@ -13,9 +13,6 @@ resource "aws_cloudtrail" "main" {
 #tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-cloudtrail-require-bucket-access-logging
 resource "aws_s3_bucket" "cloudtrail" {
   bucket = "${local.name}-aws-cloudtrail-logs"
-  logging {
-        target_bucket = "${local.name}-aws-cloudtrail-logs"
-    }
 
   tags = local.tags
 }
