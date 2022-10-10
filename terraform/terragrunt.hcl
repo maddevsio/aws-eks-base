@@ -23,4 +23,4 @@ remote_state {
   }
 }
 
-terragrunt_version_constraint = "0.36.7"
+terragrunt_version_constraint = "0.39.1"
