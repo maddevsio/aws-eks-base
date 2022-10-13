@@ -798,19 +798,29 @@ resource "aws_s3_bucket" "elastic_stack" {
   count = local.elk.enabled ? 1 : 0
 
   bucket        = "${local.name}-elastic-stack"
-  acl           = "private"
   force_destroy = true
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "aws:kms"
-      }
-    }
-  }
-
   tags = {
     Name        = "${local.name}-elastic-stack"
     Environment = local.env
+  }
+}
+
+resource "aws_s3_bucket_acl" "elastic_stack_acl" {
+  count = local.elk.enabled ? 1 : 0
+
+  bucket = aws_s3_bucket.elastic_stack[0].id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "elastic_stack_encryption" {
+  count = local.elk.enabled ? 1 : 0
+
+  bucket = aws_s3_bucket.elastic_stack[0].bucket
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "aws:kms"
+    }
   }
 }
 

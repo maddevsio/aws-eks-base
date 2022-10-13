@@ -116,30 +116,52 @@ resource "aws_s3_bucket" "gitlab_runner_cache" {
   count = local.gitlab_runner.enabled ? 1 : 0
 
   bucket        = "${local.name}-gitlab-runner-cache"
-  acl           = "private"
   force_destroy = true
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "aws:kms"
-      }
-    }
-  }
-
   tags = {
     Name        = "${local.name}-gitlab-runner-cache"
     Environment = local.env
   }
 
-  lifecycle_rule {
-    id      = "gitlab-runner-cache-lifecycle-rule"
-    enabled = true
-    tags = {
-      "rule" = "gitlab-runner-cache-lifecycle-rule"
+}
+
+resource "aws_s3_bucket_acl" "gitlab_runner_acl" {
+  count = local.gitlab_runner.enabled ? 1 : 0
+
+  bucket = aws_s3_bucket.gitlab_runner_cache[0].id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "gitlab_runner_encryption" {
+  count = local.gitlab_runner.enabled ? 1 : 0
+
+  bucket = aws_s3_bucket.gitlab_runner_cache[0].bucket
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "aws:kms"
     }
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "gitlab_runner_lifecycle" {
+  count = local.gitlab_runner.enabled ? 1 : 0
+
+  bucket = aws_s3_bucket.gitlab_runner_cache[0].id
+
+  rule {
+    id = "gitlab-runner-cache-lifecycle-rule"
     expiration {
       days = 120
     }
+
+    filter {
+      and {
+        tags = {
+          rule = "gitlab-runner-cache-lifecycle-rule"
+        }
+      }
+    }
+    status = "Enabled"
   }
 }
 

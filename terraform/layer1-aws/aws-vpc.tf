@@ -13,6 +13,7 @@ data "aws_security_group" "default" {
   vpc_id = module.vpc.vpc_id
 }
 
+#tfsec:ignore:aws-ec2-no-public-ip-subnet
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "3.12.0"
