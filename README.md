@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/github/license/maddevsio/aws-eks-base)](https://github.com/maddevsio/aws-eks-base/blob/main/LICENSE.md)
 [![CI Status](https://github.com/maddevsio/aws-eks-base/workflows/Terraform-ci/badge.svg)](https://github.com/maddevsio/aws-eks-base/actions)
 
-## Advantages of this boilerplate
+## Advantages of this boilerplate and IaC
 
 - **Infrastructure as Code (IaC)**: using Terraform, you get an infrastructure that’s smooth and efficient
 - **State management**: Terraform saves the current infrastructure state, so you can review further changes without applying them. Also, state can be stored remotely, so you can work on the infrastructure in a team
@@ -23,7 +23,8 @@
 
 ## Description
 
-This repository contains [terraform](https://www.terraform.io/) modules and configuration of the Mad Devs team for the rapid deployment of a Kubernetes cluster, supporting services, and the underlying infrastructure in the AWS.
+This repository contains [terraform](https://www.terraform.io/) modules and configuration of the Mad Devs team for
+the rapid deployment of a Kubernetes cluster, supporting services, and the underlying AWS infrastructure.
 
 In our company’s work, we have tried many infrastructure solutions and services and traveled the path from on-premise hardware to serverless. As of today, Kubernetes has become our standard platform for deploying applications, and AWS has become the main cloud.
 
@@ -31,7 +32,10 @@ It is worth noting here that although 90% of our and our clients’ projects are
 
 And then, when choosing Kubernetes, it makes almost no difference to applications how the cluster itself is created—manually, through kops or using managed services from cloud providers—in essence, the Kubernetes platform is the same everywhere. So the choice of a particular provider is then made based on additional requirements, expertise, etc.
 
-We know that the current implementation is far from being perfect. For example, we deploy services to the cluster using `terraform`: it is rather clumsy and against the Kuber approaches, but it is convenient for bootstrap because, by using state and interpolation, we convey proper `IDs`, `ARNs`, and other attributes to resources and names or secrets to templates and generate values ​​from them for the required charts all within terraform.
+We know that the current implementation is far from being perfect. For example, we deploy services to the cluster
+using `terraform`: it is rather clumsy and against the k8s approache, but it is convenient for bootstrapping because,
+by using state and interpolation, we convey proper `IDs`, `ARNs`, and other attributes to resources and names or
+secrets to templates and generated values from them for the required charts all within terraform.
 
 There are more specific drawbacks: the `data "template_file"` resources that we used for most templates are extremely inconvenient for development and debugging, especially if there are 500+ line rolls like `terraform/layer2-k8s/templates/elk-values.yaml`. Also, despite `helm3` got rid of the `tiller`, a large number of helm releases still at some point leads to plan hanging. Partially, but not always, it can be solved by `terraform apply -target`, but for the consistency of the state, it is desirable to execute `plan` and `apply` on the entire configuration. If you are going to use this boilerplate, it is advisable to split the `terraform/layer2-k8s` layer into several ones, taking out large and complex releases into separate modules.
 
@@ -43,40 +47,34 @@ You can find more about this project in Anton Babenko stream:
 
 ## Table of contents
 
-- [Boilerplate for a basic AWS infrastructure with EKS cluster](#boilerplate-for-a-basic-aws-infrastructure-with-eks-cluster)
-  - [Advantages of this boilerplate](#advantages-of-this-boilerplate)
-  - [Why you should use this boilerplate](#why-you-should-use-this-boilerplate)
-  - [Description](#description)
-  - [Table of contents](#table-of-contents)
-  - [FAQ: Frequently Asked Questions](#faq-frequently-asked-questions)
-  - [Architecture diagram](#architecture-diagram)
-  - [Current infrastructure cost](#current-infrastructure-cost)
-  - [Namespace structure in the K8S cluster](#namespace-structure-in-the-k8s-cluster)
-  - [Useful tools](#useful-tools)
-  - [Useful VSCode extensions](#useful-vscode-extensions)
-  - [AWS account](#aws-account)
-    - [IAM settings](#iam-settings)
-    - [Setting up awscli](#setting-up-awscli)
-  - [How to use this repo](#how-to-use-this-repo)
-    - [Getting ready](#getting-ready)
-      - [S3 state backend](#s3-state-backend)
-      - [Inputs](#inputs)
-      - [Secrets](#secrets)
-      - [Domain and SSL](#domain-and-ssl)
-    - [Working with terraform](#working-with-terraform)
-      - [init](#init)
-      - [plan](#plan)
-      - [apply](#apply)
-    - [terragrunt](#terragrunt)
-      - [Apply infrastructure by layers with `terragrunt`](#apply-infrastructure-by-layers-with-terragrunt)
-      - [Target apply by `terragrunt`](#target-apply-by-terragrunt)
-      - [Destroy infrastructure by `terragrunt`](#destroy-infrastructure-by-terragrunt)
-  - [What to do after deployment](#what-to-do-after-deployment)
-  - [Update terraform version](#update-terraform-version)
-  - [Update terraform providers](#update-terraform-providers)
-    - [Additional components](#additional-components)
-  - [TFSEC](#tfsec)
-  - [Contributing](#contributing)
+<!-- TOC -->
+* [Boilerplate for a basic AWS infrastructure with EKS cluster](#boilerplate-for-a-basic-aws-infrastructure-with-eks-cluster)
+  * [Advantages of this boilerplate and IaC](#advantages-of-this-boilerplate-and-iac)
+  * [Why you should use this boilerplate](#why-you-should-use-this-boilerplate)
+  * [Description](#description)
+  * [Table of contents](#table-of-contents)
+  * [FAQ: Frequently Asked Questions](#faq--frequently-asked-questions)
+  * [Architecture diagram](#architecture-diagram)
+  * [Current infrastructure cost](#current-infrastructure-cost)
+  * [Namespace structure in the K8S cluster](#namespace-structure-in-the-k8s-cluster)
+  * [Useful tools](#useful-tools)
+  * [Useful VSCode extensions](#useful-vscode-extensions)
+  * [AWS account](#aws-account)
+    * [IAM settings](#iam-settings)
+    * [Setting up awscli](#setting-up-awscli)
+  * [How to use this repo](#how-to-use-this-repo)
+    * [Getting ready](#getting-ready)
+      * [Secrets](#secrets)
+      * [Domain and SSL](#domain-and-ssl)
+    * [terragrunt](#terragrunt)
+      * [Apply infrastructure by modules with `terragrunt`](#apply-infrastructure-by-modules-with-terragrunt)
+      * [Target apply by `terragrunt`](#target-apply-by-terragrunt)
+      * [Destroy infrastructure by `terragrunt`](#destroy-infrastructure-by-terragrunt)
+  * [What to do after deployment](#what-to-do-after-deployment)
+    * [Additional components](#additional-components)
+  * [TFSEC](#tfsec)
+  * [Contributing](#contributing)
+<!-- TOC -->
 
 ## FAQ: Frequently Asked Questions
 
@@ -193,13 +191,16 @@ We will not go deep into security settings since everyone has different requirem
 
 > It is highly recommended not to use a root account to work with AWS. Make an extra effort of creating users with required/limited rights.
 
+<details>
+  <summary> Click to expand IAM and awscli configuration</summary>
+
 ### IAM settings
 
 So, you have created an account, passed confirmation, perhaps even created Access Keys for the console. In any case, go to your [account](https://console.aws.amazon.com/iam/home#/security_credentials) security settings and be sure to follow these steps:
 
 - Set a strong password
 - Activate MFA for the root account
-- Delete and do not create access keys of the root account
+- Delete and do not create access keys for the root account
 
 Further in the [IAM](https://console.aws.amazon.com/iam/home#/home) console:
 
@@ -241,135 +242,56 @@ Further in the [IAM](https://console.aws.amazon.com/iam/home#/home) console:
 
 - Go [here](https://docs.aws.amazon.com/neptune/latest/userguide/iam-auth-temporary-credentials.html) to learn how to get temporary session tokens and assume role
 - Alternatively, to use your `awscli`, `terraform` and other CLI utils with [MFA](https://aws.amazon.com/premiumsupport/knowledge-center/authenticate-mfa-cli/) and roles, you can use `aws-mfa`, `aws-vault` and `awsudo`
+</details>
 
 ## How to use this repo
 
 ### Getting ready
 
-#### S3 state backend
-
-S3 is used as a backend for storing terraform state and for exchanging data between layers. You can manually create s3 bucket and then put backend setting into `backend.tf` file in each layer. Alternatively you can run from `terraform/` directory:
-
-  ```bash
-  $ export TF_REMOTE_STATE_BUCKET=my-new-state-bucket
-  $ terragrunt run-all init
-  ```
-
-#### Inputs
-
-File `terraform/layer1-aws/demo.tfvars.example` contains example values. Copy this file to `terraform/layer1-aws/terraform.tfvars` and set you values:
-
-```bash
-$ cp terraform/layer1-aws/demo.tfvars.example terraform/layer1-aws/terraform.tfvars
-```
-
-> You can find all possible variables in each layer's Readme.
+To start using this project you need to make several small preparation steps.
 
 #### Secrets
+
 Some local variables expect [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`.
 
-> The secret `/${local.name_wo_region}/infra/layer2-k8s` must be pre-created before running `terraform apply`
+> The secret `/${local.name_wo_region}/infra/layer2-k8` must be created before running `terraform apply`. Which
+> parameters should be placed in the SM secret for services is discussed in the [FAQ](docs/FAQ.md).
 
 #### Domain and SSL
 
-You will need to purchase or use an already purchased domain in Route53. The domain name and zone ID will need to be set in the `domain_name` and `zone_id` variables in layer1.
+You will need to purchase or use an already purchased domain in Route53. After that set `domain_name` and `zone_id`
+variables in `variables.tf`, tfvars files of env.yaml if you use terragrunt.
 
 By default, the variable `create_acm_certificate` is set to `false`. Which instructs terraform to search ARN of an existing ACM certificate. Set to `true` if you want terraform to create a new ACM SSL certificate.
 
-### Working with terraform
-
-#### init
-
-The `terraform init` command is used to initialize the state and its backend, downloads providers, plugins, and modules. This is the first command to be executed in `layer1` and `layer2`:
-
-  ```bash
-  $ terraform init
-  ```
-
-  Correct output:
-
-  ```
-  * provider.aws: version = "~> 2.10"
-  * provider.local: version = "~> 1.2"
-  * provider.null: version = "~> 2.1"
-  * provider.random: version = "~> 2.1"
-  * provider.template: version = "~> 2.1"
-
-  Terraform has been successfully initialized!
-  ```
-
-#### plan
-
-The `terraform plan` command reads terraform state and configuration files and displays a list of changes and actions that need to be performed to bring the state in line with the configuration. It's a convenient way to test changes before applying them. When used with the `-out` parameter, it saves a batch of changes to a specified file that can later be used with `terraform apply`. Call example:
-
-  ```bash
-  $ terraform plan
-  # ~600 rows skipped
-  Plan: 82 to add, 0 to change, 0 to destroy.
-
-  ------------------------------------------------------------------------
-
-  Note: You didn't specify an "-out" parameter to save this plan, so Terraform
-  can't guarantee that exactly these actions will be performed if
-  "terraform apply" is subsequently run.
-  ```
-
-#### apply
-
-The `terraform apply` command scans `.tf` in the current directory and brings the state to the configuration described in them by making changes in the infrastructure. By default, `plan` with a continuation dialog is performed before applying. Optionally, you can specify a saved plan file as input:
-
-  ```bash
-  $ terraform apply
-  # ~600 rows skipped
-  Plan: 82 to add, 0 to change, 0 to destroy.
-
-  Do you want to perform these actions?
-    Terraform will perform the actions described above.
-    Only 'yes' will be accepted to approve.
-
-    Enter a value: yes
-
-  Apply complete! Resources: 82 added, 0 changed, 0 destroyed.
-  ```
-
-We do not always need to re-read and compare the entire state if small changes have been added that do not affect the entire infrastructure. For this, you can use targeted `apply`; for example:
-
-  ```bash
-  $ terraform apply -target helm_release.kibana
-  ```
-
-Details can be found [here](https://www.terraform.io/docs/cli/run/index.html)
-
-> The first time, the `apply` command must be executed in the layers in order: first layer1, then layer2. Infrastructure `destroy` should be done in the reverse order.
-
 ### terragrunt
 
-* Terragrunt version: `0.29.2`
-> Terragrunt version pinned in `terragrunt.hcl` file.
-
-We've also used `terragrunt` to simplify s3 bucket creation and terraform backend configuration. All you need to do is to set s3 bucket name in the `TF_REMOTE_STATE_BUCKET` env variable and run terragrunt command in the `terraform/` directory:
+We've also used `terragrunt` to simplify s3 bucket creation and terraform backend configuration. All you need to do is to set s3 bucket name in the `TF_REMOTE_STATE_BUCKET` env variable and run terragrunt command in the `terragrunt/demo/us-east-1` directory:
 
  ```bash
  $ export TF_REMOTE_STATE_BUCKET=my-new-state-bucket
+ $ cd terragrunt/demo/us-east-1
  $ terragrunt run-all init
  $ terragrunt run-all apply
  ```
 
 By running this `terragrunt` will create s3 bucket, configure terraform backend and then will run `terraform init` and `terraform apply` in layer-1 and layer-2 sequentially.
 
-#### Apply infrastructure by layers with `terragrunt`
+> Terragrunt version pinned in `terragrunt.hcl` file.
 
-Go to layer folder `terraform/layer1-aws/` or `terraform/layer2-k8s/` and run this command:
+#### Apply infrastructure by modules with `terragrunt`
+
+Go to layer folder `terragrunt/demo/us-east-1/aws-base` or `terragrunt/demo/us-east-1/k8s-addons` and run this command:
 
 ```
 terragrunt apply
 ```
 
-> The `layer2-k8s` has a dependence on `layer1-aws`.
+> The `aws-base` has a dependence on `k8s-addons`.
 
 #### Target apply by `terragrunt`
 
-Go to layer folder `terraform/layer1-aws/` and run this command:
+Go to layer folder `terragrunt/demo/us-east-1/aws-base` and run this command:
 
 ```
 terragrunt apply -target=module.eks
@@ -380,19 +302,22 @@ terragrunt apply -target=module.eks
 
 #### Destroy infrastructure by `terragrunt`
 
-To destroy both layers, run this command from `terraform/` folder:
+To destroy everything at once, run this command from `terragrunt/demo/us-east-1/` folder:
 
 ```
 terragrant run-all destroy
 ```
 
-> The `layer2-k8s` depends on `layer1-aws`, so `layer2-k8s` will be destroyed automatically first.
+> The `k8s-addons` depends on `aws-base`, so `k8s-addons` will be destroyed automatically first.
 
-If you want to destroy layers manually, then destroy `layer2-k8s` first, ie run this command from `terraform/layare2-k8s` folder:
+If you want to destroy modules manually, then destroy `k8s-addons` first, ie run this command from
+`terragrunt/demo/us-east-1/k8s-addons` folder:
 
 ```
 terragrunt destroy
 ```
+
+> Clear all buckets before destroying.
 
 ## What to do after deployment
 
@@ -404,49 +329,15 @@ terragrunt destroy
   aws eks update-kubeconfig --name maddevs-demo-use1 --region us-east-1
   ```
 
-* If you used default configuration and want to serve traffic for a main domain (example.com) by an application deployed into a k8s cluster, youn need to manually create DNS record in Route53 with type A + Alias
-* DNS record `*.example.com` created automatically and points to Load Balancer in front of k8s cluster. 
-
-## Update terraform version
-
-Change terraform version in this files
-
-`terraform/.terraform-version` - the main terraform version for tfenv tool
-
-`.github/workflows/terraform-ci.yml` - the terraform version for github actions need for `terraform-validate` and `terraform-format`.
-
-Terraform version in each layer.
-```
-terraform/layer1-aws/main.tf
-terraform/layer2-k8s/main.tf
-```
-
-## Update terraform providers
-
-Change terraform providers version in this files
-
-```
-terraform/layer1-aws/main.tf
-terraform/layer2-k8s/main.tf
-```
-
-When we changed terraform provider versions, we need to update terraform state. For update terraform state in layers we need to run this command:
-
-```
-terragrunt run-all init -upgrade
-```
-
-Or in each layer run command:
-
-```
-terragrunt init -upgrade
-```
+* If you use default configuration and want to serve traffic for a main domain (example.com) by an application deployed into a k8s cluster, youn need to manually create DNS record in Route53 with type A + Alias
+* DNS record `*.example.com` created automatically and points to Load Balancer in front of k8s cluster.
 
 ### Additional components
 
 This boiler installs all basic and necessary components. However, we also provide several additional components. Both layers have such components. To enable them in:
-* layer1-aws: search `***_enable` variables and set them to **true**
-* layer2-k8s: check `helm-releases.yaml` file and set **enabled: true** or **enabled:false** for components that you want to **deploy** or to **unistall**
+* `terraform/layer1-aws`: search `***_enable` variables and set them to **true**
+* `terraform/layer2-k8s`: check `helm-releases.yaml` file and set **enabled: true** or **enabled:false** for components
+  that you want to **deploy** or to **unistall**
 
 Notes:
 * [Gitlab-runner](docs/FAQ.md#gitlab-runner)
