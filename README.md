@@ -279,7 +279,7 @@ By running this `terragrunt` will create s3 bucket, configure terraform backend 
 
 > Terragrunt version pinned in `terragrunt.hcl` file.
 
-#### Apply infrastructure by modules with `terragrunt`
+#### Modules apply with `terragrunt`
 
 Go to layer folder `terragrunt/demo/us-east-1/aws-base` or `terragrunt/demo/us-east-1/k8s-addons` and run this command:
 
@@ -287,7 +287,7 @@ Go to layer folder `terragrunt/demo/us-east-1/aws-base` or `terragrunt/demo/us-e
 terragrunt apply
 ```
 
-> The `aws-base` has a dependence on `k8s-addons`.
+> Module `k8s-addons` depends on `aws-base`.
 
 #### Target apply by `terragrunt`
 
