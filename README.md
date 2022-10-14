@@ -323,11 +323,11 @@ terragrunt destroy
 
 * After applying this configuration, you will get the infrastructure described and outlined at the beginning of the document. In AWS and within the EKS cluster, the basic resources and services necessary for the operation of the EKS k8s cluster will be created.
 
-* You can get access to the cluster using this command:
+  * You can get access to the cluster using this command:
 
-  ```bash
-  aws eks update-kubeconfig --name maddevs-demo-use1 --region us-east-1
-  ```
+    ```bash
+    aws eks update-kubeconfig --name maddevs-demo-use1 --region us-east-1
+    ```
 
 * If you use default configuration and want to serve traffic for a main domain (example.com) by an application deployed into a k8s cluster, youn need to manually create DNS record in Route53 with type A + Alias
 * DNS record `*.example.com` created automatically and points to Load Balancer in front of k8s cluster.
@@ -340,6 +340,7 @@ This boiler installs all basic and necessary components. However, we also provid
   that you want to **deploy** or to **unistall**
 
 Notes:
+* [To use pure terraform](docs/FAQ.md#apply-using-terraform)
 * [Gitlab-runner](docs/FAQ.md#gitlab-runner)
 * [Monitoring](docs/FAQ.md#monitoring)
 
