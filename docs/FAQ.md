@@ -451,33 +451,28 @@ Details can be found [here](https://www.terraform.io/docs/cli/run/index.html)
 
 Change terraform version in this files
 
-`terraform/.terraform-version` - the main terraform version for tfenv tool
-
-`.github/workflows/terraform-ci.yml` - the terraform version for github actions need for `terraform-validate` and `terraform-format`.
-
-Terraform version in each layer.
-```
-terraform/layer1-aws/main.tf
-terraform/layer2-k8s/main.tf
-```
+* `terraform/.terraform-version` - the main terraform version for tfenv tool
+* `.github/workflows/terraform-ci.yml` - the terraform version for github actions need for `terraform-validate` and
+`terraform-format`.
+* `terraform/layer1-aws/main.tf`
+* `terraform/layer2-k8s/main.tf`
 
 ## Update terraform providers
 
 Change terraform providers version in this files
 
-```
-terraform/layer1-aws/main.tf
-terraform/layer2-k8s/main.tf
-```
+* `terraform/layer1-aws/main.tf`
+* `terraform/layer2-k8s/main.tf`
 
 When we changed terraform provider versions, we need to update terraform state. For update terraform state in layers we need to run this command:
 
 ```
-terragrunt run-all init -upgrade
+terraform init -upgrade
 ```
 
-Or in each module run command:
+## Update terragrunt version
 
-```
-terragrunt init -upgrade
-```
+Set version in two files:
+
+* `terragrunt/.terragrunt-version` - version for `tgenv`
+* `terragrnt/terragrunt.hcl`
