@@ -274,66 +274,73 @@ By default we install Grafana without integrating it with GitHub or Gitlab and u
 ## Alertmanager
 Alertmanager is disabled in default installation. If you want to enable it, then do next:
 1. VictoriaMetrics:
-   Open file layer2-k8s/eks-victoria-metrics-k8s-stack.tf and change :
-```yaml
-locals {
-....
-  victoria_metrics_k8s_stack_alertmanager_values         = <<VALUES
-# Alertmanager parameters
-alertmanager:
-  enabled: false
-....
-}
+   Open file layer2-k8s/eks-victoria-metrics-k8s-stack.tf and change:
 
-to
+    ```yaml
+    locals {
+    ....
+      victoria_metrics_k8s_stack_alertmanager_values         = <<VALUES
+    # Alertmanager parameters
+    alertmanager:
+      enabled: false
+    ....
+    }
 
-locals {
-....
-  victoria_metrics_k8s_stack_alertmanager_values         = <<VALUES
-# Alertmanager parameters
-alertmanager:
-  enabled: true
-....
-}
-```
+    to
+
+    locals {
+    ....
+      victoria_metrics_k8s_stack_alertmanager_values         = <<VALUES
+    # Alertmanager parameters
+    alertmanager:
+      enabled: true
+    ....
+    }
+    ```
+
 2. Prometheus:
-   Open file layer2-k8s/eks-kube-prometheus-stack.tf and change :
-```yaml
-locals {
-....
-  kube_prometheus_stack_alertmanager_values         = <<VALUES
-# Alertmanager parameters
-alertmanager:
-  enabled: false
-....
-}
+   Open file layer2-k8s/eks-kube-prometheus-stack.tf and change:
 
-to
+    ```yaml
+    locals {
+    ....
+      kube_prometheus_stack_alertmanager_values         = <<VALUES
+    # Alertmanager parameters
+    alertmanager:
+      enabled: false
+    ....
+    }
 
-locals {
-....
-  kube_prometheus_stack_alertmanager_values         = <<VALUES
-# Alertmanager parameters
-alertmanager:
-  enabled: true
-....
-}
-```
+    to
+
+    locals {
+    ....
+      kube_prometheus_stack_alertmanager_values         = <<VALUES
+    # Alertmanager parameters
+    alertmanager:
+      enabled: true
+    ....
+    }
+    ```
+
 ### If you want to receive alerts **via Slack**, then do next:
 * See [this instruction](https://slack.com/help/articles/115005265063-Incoming-webhooks-for-Slack) and generate Slack Incoming Webhook
 * Set `alertmanager_slack_webhook`, `alertmanager_slack_channel` variables in [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`.
 
 ## Deleting Tigera-operator
-1. Run
-```bash
-kubectl delete installations.operator.tigera.io default
-```
+1. Run:
+
+    ```bash
+    $ kubectl delete installations.operator.tigera.io default
+    ```
+
 2. Set `enabled: false` for `id: tigera-operator` in the file **helm-releases.yaml**
 3. Run `terraform apply` in the layer2-k8s folder
-4. Run
-```bash
-kubectl delete ns calico-apiserver calico-system
-```
+4. Run:
+
+    ```bash
+    $ kubectl delete ns calico-apiserver calico-system
+    ```
 5. Restart all nodes
 
 ## What if you don't want to use an aws-load-balancer controller in front of an ingress-nginx and want to use a cert-manager and terminate SSL on ingres-nginx side
@@ -359,6 +366,15 @@ By default, you can use local state for this project, but we suggest you to use 
     --bucket $STATE_BUCKET_NAME \
     --region $STATE_BUCKET_REGION \
     --create-bucket-configuration LocationConstraint=$STATE_BUCKET_REGION
+  ```
+
+And add versioning:
+
+  ```bash
+  $ aws s3api put-bucket-versioning \
+    --bucket $STATE_BUCKET_NAME \
+    --region $STATE_BUCKET_REGION \
+    --versioning-configuration Status=Enabled
   ```
 
   Create backend configuration for each layer:
