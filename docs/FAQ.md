@@ -1,3 +1,27 @@
+# Table of content
+
+<!-- TOC -->
+  * [EKS Upgrading](#eks-upgrading)
+  * [K8S namespace features:](#k8s-namespace-features-)
+  * [Gitlab-runner](#gitlab-runner)
+    * [How to add more restrictions for Gitlab-Runner](#how-to-add-more-restrictions-for-gitlab-runner)
+  * [Monitoring](#monitoring)
+  * [Grafana: How to add GitHub/Gitlab OAuth2 Authentication:](#grafana--how-to-add-githubgitlab-oauth2-authentication-)
+  * [Alertmanager](#alertmanager)
+    * [If you want to receive alerts **via Slack**, then do next:](#if-you-want-to-receive-alerts-via-slack--then-do-next-)
+  * [Deleting Tigera-operator](#deleting-tigera-operator)
+  * [What if you don't want to use an aws-load-balancer controller in front of an ingress-nginx and want to use a cert-manager and terminate SSL on ingres-nginx side](#what-if-you-dont-want-to-use-an-aws-load-balancer-controller-in-front-of-an-ingress-nginx-and-want-to-use-a-cert-manager-and-terminate-ssl-on-ingres-nginx-side)
+  * [Apply using terraform](#apply-using-terraform)
+    * [S3 state backend](#s3-state-backend)
+      * [Inputs](#inputs)
+      * [init](#init)
+      * [plan](#plan)
+      * [apply](#apply)
+  * [Update terraform version](#update-terraform-version)
+  * [Update terraform providers](#update-terraform-providers)
+  * [Update terragrunt version](#update-terragrunt-version)
+<!-- TOC -->
+
 ## EKS Upgrading
 To upgrade k8s cluster to a new version, please use [official guide](https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html) and check changelog/breaking changes.
 Starting from v1.18 EKS supports K8S add-ons. We use them to update things like vpc-cni, kube-proxy, coredns. To get the latest add-ons versions, run:
