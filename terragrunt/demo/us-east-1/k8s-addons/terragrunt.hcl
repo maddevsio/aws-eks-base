@@ -23,7 +23,7 @@ dependency "aws-base" {
     vpc_cidr              = "10.0.0.0/16"
     eks_cluster_id        = "maddevs-demo-use1"
     eks_oidc_provider_arn = "arn:aws:iam::730808884724:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/D55EEBDFE5510B81EEE2381B88888888"
-    ssl_certificate_arn    = "arn:aws:acm:us-east-1:730808884724:certificate/fa029132-86ab-7777-8888-8e1fd5c56c29"
+    ssl_certificate_arn   = "arn:aws:acm:us-east-1:730808884724:certificate/fa029132-86ab-7777-8888-8e1fd5c56c29"
   }
 }
 
@@ -33,5 +33,5 @@ inputs = {
   vpc_cidr              = dependency.aws-base.outputs.vpc_cidr
   eks_cluster_id        = dependency.aws-base.outputs.eks_cluster_id
   eks_oidc_provider_arn = dependency.aws-base.outputs.eks_oidc_provider_arn
-  ssl_certificate_arn    = dependency.aws-base.outputs.ssl_certificate_arn
+  ssl_certificate_arn   = dependency.aws-base.outputs.ssl_certificate_arn
 }
