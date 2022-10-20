@@ -3,19 +3,19 @@ releases:
     enabled: true
     chart: aws-load-balancer-controller
     repository: https://aws.github.io/eks-charts
-    chart_version: 1.4.1
+    chart_version: 1.4.5
     namespace: aws-load-balancer-controller
   - id: aws-node-termination-handler
     enabled: true
     chart: aws-node-termination-handler
     repository: https://aws.github.io/eks-charts
-    chart_version: 0.18.1
+    chart_version: 0.19.3
     namespace: aws-node-termination-handler
   - id: cert-manager
     enabled: false
     chart: cert-manager
     repository: https://charts.jetstack.io
-    chart_version: 1.8.0
+    chart_version: 1.9.1
     namespace: certmanager
   - id: cert-mananger-certificate
     enabled: false
@@ -51,61 +51,61 @@ releases:
     enabled: true
     chart: external-secrets
     repository: https://charts.external-secrets.io
-    chart_version: 0.5.1
+    chart_version: 0.6.0
     namespace: external-secrets
   - id: gitlab-runner
     enabled: false
     chart: gitlab-runner
     repository: https://charts.gitlab.io
-    chart_version: 0.40.0
+    chart_version: 0.45.0
     namespace: gitlab-runner
   - id: ingress-nginx
     enabled: true
     chart: ingress-nginx
     repository: https://kubernetes.github.io/ingress-nginx
-    chart_version: 4.0.19
+    chart_version: 4.3.0
     namespace: ingress-nginx
   - id: istio
     enabled: false
     chart:
     repository: https://istio-release.storage.googleapis.com/charts
-    chart_version: 1.13.3
+    chart_version: 1.15.2
     namespace: istio-system
   - id: keda
     enabled: false
     chart: keda
     repository: https://kedacore.github.io/charts
-    chart_version: 2.6.2
+    chart_version: 2.8.2
     namespace: keda
   - id: kiali
     enabled: false
     chart: kiali-server
     repository: https://kiali.org/helm-charts
-    chart_version: 1.49.0
+    chart_version: 1.57.1
     namespace: kiali
   - id: kube-prometheus-stack
     enabled: true
     chart: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
-    chart_version: 34.10.0
+    chart_version: 41.3.2
     namespace: monitoring
   - id: loki-stack
     enabled: true
     chart: loki-stack
     repository: https://grafana.github.io/helm-charts
-    chart_version: 2.6.4
+    chart_version: 2.8.3
     namespace: loki
   - id: reloader
     enabled: true
     chart: reloader
     repository: https://stakater.github.io/stakater-charts
-    chart_version: 0.0.110
+    chart_version: 0.0.124
     namespace: reloader
   - id: tigera-operator
     enabled: true
     chart: tigera-operator
     repository: https://projectcalico.docs.tigera.io/charts
-    chart_version: v3.23.0
+    chart_version: v3.24.1
     namespace: tigera-operator
   - id: victoria-metrics-k8s-stack
     enabled: false

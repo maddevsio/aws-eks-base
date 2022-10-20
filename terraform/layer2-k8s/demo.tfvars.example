@@ -1,0 +1,23 @@
+##########
+# Common
+##########
+name        = "example"
+environment = "demo"
+domain_name = "example.org"
+zone_id     =
+
+ssl_certificate_arn =
+
+##########
+# Network
+##########
+region   = "us-east-1"
+vpc_id   =
+vpc_cidr =
+
+allowed_ips = [
+  "0.0.0.0/0"
+]
+
+eks_cluster_id        =
+eks_oidc_provider_arn =

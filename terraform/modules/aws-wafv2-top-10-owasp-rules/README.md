@@ -1,9 +1,9 @@
-There are 2 implementations of AWS WAF: AWS WAF Classic and AWS WAFv2. AWS recommends using AWS WAFv2 for new installations.  
-This terraform module creates AWS WAFv2 rule-group with rules that cover *OWASP TOP 10 security issues* (https://d0.awsstatic.com/whitepapers/Security/aws-waf-owasp.pdf).  
+There are 2 implementations of AWS WAF: AWS WAF Classic and AWS WAFv2. AWS recommends using AWS WAFv2 for new installations.
+This terraform module creates AWS WAFv2 rule-group with rules that cover *OWASP TOP 10 security issues* (https://d0.awsstatic.com/whitepapers/Security/aws-waf-owasp.pdf).
 
-For a CloudFront distribution, AWS WAF is available globally, but you must use the Region US East (N. Virginia) for all of your work. You must create your web ACL using the Region US East (N. Virginia). You must also use this Region to create any other resources that you use in your web ACL, like rule groups, IP sets, and regex pattern sets.  
+For a CloudFront distribution, AWS WAF is available globally, but you must use the Region US East (N. Virginia) for all of your work. You must create your web ACL using the Region US East (N. Virginia). You must also use this Region to create any other resources that you use in your web ACL, like rule groups, IP sets, and regex pattern sets.
 
-Example of using this module: 
+Example of using this module:
 ```bash
 module "wafv2_owasp_top_10_rules" {
   source = "../modules/aws-wafv2-top-10-owasp-rules"
