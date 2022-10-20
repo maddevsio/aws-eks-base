@@ -7,9 +7,9 @@ locals {
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "aws-load-balancer-controller")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "aws-load-balancer-controller")].namespace
   }
-  ssl_certificate_arn                               = data.terraform_remote_state.layer1-aws.outputs.ssl_certificate_arn
   aws_load_balancer_controller_webhook_service_name = "${local.aws_load_balancer_controller.name}-webhook-service"
-  aws_load_balancer_controller_values               = <<VALUES
+
+  aws_load_balancer_controller_values = <<VALUES
 nameOverride: ${local.aws_load_balancer_controller.name}
 clusterName: ${local.eks_cluster_id}
 region: ${local.region}
