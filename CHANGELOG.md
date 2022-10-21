@@ -12,6 +12,32 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+<a name="v9.0.0"></a>
+## [v9.0.0] - 2022-10-20
+FEATURES:
+- Decoupled layers by using terragrunt v2 ([#313](https://github.com/maddevsio/aws-eks-base/issues/313))
+- CIS benchmark alerts using Eventbridge ([#283](https://github.com/maddevsio/aws-eks-base/issues/283))
+
+ENHANCEMENTS:
+- Use aws-load-balancer-controller in front of ingress-nginx ([#293](https://github.com/maddevsio/aws-eks-base/issues/293))
+- Switch from aws-calico helm chart to tigera operator helm chart ([#288](https://github.com/maddevsio/aws-eks-base/issues/288))
+- Configure AWS account password policy ([#287](https://github.com/maddevsio/aws-eks-base/issues/287))
+- Use k8s serviceaccount + irsa for vpc-cni add-on ([#280](https://github.com/maddevsio/aws-eks-base/issues/280))
+
+REFACTORS:
+- Change code structure; update code conventions ([#290](https://github.com/maddevsio/aws-eks-base/issues/290))
+
+BUG FIXES:
+- Issue [#304](https://github.com/maddevsio/aws-eks-base/issues/304) layer2-aws terraform plan error ([#305](https://github.com/maddevsio/aws-eks-base/issues/305))
+- Update tfsec for layer 1 ([#299](https://github.com/maddevsio/aws-eks-base/issues/299))
+
+DOCS:
+- Disable gitlab clusterwide default access in case of use additional sa for runners
+- Update documentation for used terraform modules ([#285](https://github.com/maddevsio/aws-eks-base/issues/285))
+
+
+
+
 <a name="v8.0.0"></a>
 ## [v8.0.0] - 2022-05-02
 FEATURES:
@@ -178,7 +204,8 @@ DOCS:
 
 
 
-[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v8.0.0...HEAD
+[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v9.0.0...HEAD
+[v9.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v8.0.0...v9.0.0
 [v8.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v7.0.0...v8.0.0
 [v7.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v6.1.1...v7.0.0
 [v6.1.1]: https://github.com/maddevsio/aws-eks-base/compare/v6.1.0...v6.1.1
