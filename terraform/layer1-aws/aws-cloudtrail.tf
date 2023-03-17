@@ -8,6 +8,8 @@ resource "aws_cloudtrail" "main" {
   is_multi_region_trail         = true
 
   tags = local.tags
+
+  depends_on = [aws_s3_bucket_policy.cloudtrail]
 }
 
 #tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-cloudtrail-require-bucket-access-logging
