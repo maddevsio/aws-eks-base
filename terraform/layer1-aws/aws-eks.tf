@@ -3,8 +3,28 @@ locals {
     "k8s.io/cluster-autoscaler/enabled"       = "true"
     "k8s.io/cluster-autoscaler/${local.name}" = "owned"
   }
-  eks_addon_vpc_cni = merge(var.eks_addons.vpc-cni, { service_account_role_arn = module.vpc_cni_irsa.iam_role_arn })
-  eks_addons        = merge(var.eks_addons, { vpc-cni = local.eks_addon_vpc_cni })
+
+  eks_addons = merge({
+    vpc-cni = {
+      resolve_conflicts        = "OVERWRITE"
+      addon_version            = data.aws_eks_addon_version.vpc_cni.version
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
+    },
+    coredns = {
+      resolve_conflicts = "OVERWRITE"
+      addon_version     = data.aws_eks_addon_version.coredns.version
+    },
+    kube-proxy = {
+      resolve_conflicts = "OVERWRITE"
+      addon_version     = data.aws_eks_addon_version.kube_proxy.version
+    },
+    aws-ebs-csi-driver = {
+      resolve_conflicts        = "OVERWRITE"
+      addon_version            = data.aws_eks_addon_version.aws_ebs_csi_driver.version
+      service_account_role_arn = module.aws_ebs_csi_driver.iam_role_arn
+    }
+  })
+
 
   eks_map_roles = [
     {
@@ -247,6 +267,23 @@ module "vpc_cni_irsa" {
   tags = local.tags
 }
 
+module "aws_ebs_csi_driver" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "4.14.0"
+
+  role_name             = "${local.name}-aws-ebs-csi-driver"
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = local.tags
+}
+
 resource "aws_kms_key" "eks" {
   count       = var.eks_cluster_encryption_config_enable ? 1 : 0
   description = "EKS Secret Encryption Key"
@@ -254,4 +291,24 @@ resource "aws_kms_key" "eks" {
 
 resource "kubectl_manifest" "aws_auth_configmap" {
   yaml_body = local.aws_auth_configmap_yaml
+}
+
+data "aws_eks_addon_version" "aws_ebs_csi_driver" {
+  addon_name         = "aws-ebs-csi-driver"
+  kubernetes_version = var.eks_cluster_version
+}
+
+data "aws_eks_addon_version" "coredns" {
+  addon_name         = "coredns"
+  kubernetes_version = var.eks_cluster_version
+}
+
+data "aws_eks_addon_version" "kube_proxy" {
+  addon_name         = "kube-proxy"
+  kubernetes_version = var.eks_cluster_version
+}
+
+data "aws_eks_addon_version" "vpc_cni" {
+  addon_name         = "vpc-cni"
+  kubernetes_version = var.eks_cluster_version
 }

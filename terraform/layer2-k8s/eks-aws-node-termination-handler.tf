@@ -8,6 +8,10 @@ locals {
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "aws-node-termination-handler")].namespace
   }
   aws_node_termination_handler_values = <<VALUES
+rbac:
+  create: true
+  pspEnabled: false # Due to psp removed in k8s 1.25 and latest aws-node-termination handler chart doesn't maintain new PSP version
+
 enableSpotInterruptionDraining: true
 enableRebalanceMonitoring: true
 
