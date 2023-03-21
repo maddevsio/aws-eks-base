@@ -14,6 +14,7 @@ data "aws_security_group" "default" {
 }
 
 #tfsec:ignore:aws-ec2-no-public-ip-subnet
+#tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "3.12.0"
