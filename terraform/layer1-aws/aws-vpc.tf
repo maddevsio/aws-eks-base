@@ -48,6 +48,7 @@ module "vpc" {
     Name                              = "${local.name}-private"
     destination                       = "private"
     "kubernetes.io/role/internal-elb" = "1"
+    "karpenter.sh/discovery"          = "private"
   }
 
   private_route_table_tags = {
@@ -59,6 +60,7 @@ module "vpc" {
     Name                     = "${local.name}-public"
     destination              = "public"
     "kubernetes.io/role/elb" = "1"
+    "karpenter.sh/discovery" = "public"
   }
 
   public_route_table_tags = {

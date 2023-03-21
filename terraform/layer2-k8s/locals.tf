@@ -15,6 +15,7 @@ locals {
   eks_certificate_authority_data = data.aws_eks_cluster.main.certificate_authority.0.data
   eks_cluster_endpoint           = data.aws_eks_cluster.main.endpoint
   eks_cluster_arn                = data.aws_eks_cluster.main.arn
+  eks_cluster_version            = data.aws_eks_cluster.main.version
   eks_oidc_provider_arn          = var.eks_oidc_provider_arn
   ssl_certificate_arn            = var.ssl_certificate_arn
 

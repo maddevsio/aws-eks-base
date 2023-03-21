@@ -30,6 +30,16 @@ sources:
   - service
   - ingress
 #  - istio-virtualservice
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
+          operator: In
+          values:
+            - spot
 VALUES
 }
 

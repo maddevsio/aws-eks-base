@@ -20,6 +20,16 @@ gitlabUrl: "https://gitlab.com/"
 concurrent: 4
 checkInterval: 30
 
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
+          operator: In
+          values:
+            - spot
+
 runners:
   tags: "eks-k8s"
   runUntagged: false

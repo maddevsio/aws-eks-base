@@ -21,10 +21,10 @@ controller:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: eks.amazonaws.com/capacityType
+          - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType" }
             operator: In
             values:
-              - ON_DEMAND
+              - on-demand
 VALUES
   ingress_nginx_and_aws_load_balancer_controller = <<VALUES
 controller:

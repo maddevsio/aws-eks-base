@@ -76,10 +76,10 @@ prometheus:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
           - matchExpressions:
-            - key: eks.amazonaws.com/capacityType
+            - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType" }
               operator: In
               values:
-                - ON_DEMAND
+                - on-demand
 
 prometheusOperator:
   affinity:
@@ -87,10 +87,10 @@ prometheusOperator:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: eks.amazonaws.com/capacityType
+          - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType" }
             operator: In
             values:
-              - ON_DEMAND
+              - on-demand
 VALUES
   kube_prometheus_stack_grafana_values                       = <<VALUES
 # Grafana settings
@@ -188,10 +188,10 @@ grafana:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: eks.amazonaws.com/capacityType
+          - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType" }
             operator: In
             values:
-              - SPOT
+              - spot
 VALUES
   kube_prometheus_stack_grafana_istio_values                 = <<VALUES
 grafana:
@@ -298,10 +298,10 @@ alertmanager:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
           - matchExpressions:
-              - key: eks.amazonaws.com/capacityType
+              - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType" }
                 operator: In
                 values:
-                  - ON_DEMAND
+                  - on-demand
 VALUES
   kube_prometheus_stack_alertmanager_slack_values            = <<VALUES
 # Alertmanager parameters

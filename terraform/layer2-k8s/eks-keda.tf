@@ -7,6 +7,17 @@ locals {
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "keda")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "keda")].namespace
   }
+  keda_values = <<VALUES
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
+          operator: In
+          values:
+            - spot
+VALUES
 }
 
 module "keda_namespace" {
@@ -65,4 +76,8 @@ resource "helm_release" "kedacore" {
   version     = local.keda.chart_version
   namespace   = module.keda_namespace[count.index].name
   max_history = var.helm_release_history_size
+
+  values = [
+    local.keda_values
+  ]
 }

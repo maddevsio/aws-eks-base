@@ -105,3 +105,14 @@ variable "cluster_autoscaler_version" {
   description = "Version of cluster autoscaler"
   default     = "v1.25.0"
 }
+
+# Karpenter
+variable "node_group_addons_iam_role_arn" {
+  description = "Role ARN for node group addons"
+  default     = ""
+}
+
+variable "node_group_addons_iam_instance_profile_id" {
+  description = "Instance profile for node group addons"
+  default     = ""
+}

@@ -114,7 +114,7 @@ variable "eks_cluster_version" {
 
 variable "eks_workers_additional_policies" {
   type        = list(any)
-  default     = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
+  default     = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore", "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"]
   description = "Additional IAM policy attached to EKS worker nodes"
 }
 
@@ -240,6 +240,29 @@ variable "node_group_br" {
   description = "Bottlerocket node group configuration"
 }
 
+variable "node_group_addons" {
+  type = object({
+    instance_type              = string
+    max_capacity               = number
+    min_capacity               = number
+    desired_capacity           = number
+    capacity_rebalance         = bool
+    use_mixed_instances_policy = bool
+    mixed_instances_policy     = any
+  })
+
+  default = {
+    instance_type              = "t3a.medium"
+    max_capacity               = 2
+    min_capacity               = 1
+    desired_capacity           = 1
+    capacity_rebalance         = false
+    use_mixed_instances_policy = false
+    mixed_instances_policy     = null
+  }
+  description = "Default addons node group configuration"
+}
+
 variable "eks_map_roles" {
   description = "Additional IAM roles to add to the aws-auth configmap."
   type = list(object({
@@ -337,3 +360,11 @@ variable "cloudtrail_logs_s3_expiration_days" {
   default     = 180
   description = "How many days keep cloudtrail logs on S3"
 }
+
+variable "karpenter_enabled" {
+  type        = bool
+  default     = true
+  description = "Enable or disable karpenter"
+}
+
+

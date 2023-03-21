@@ -108,3 +108,11 @@ output "ssl_certificate_arn" {
   description = "ARN of SSL certificate"
   value       = local.ssl_certificate_arn
 }
+
+output "node_group_addons_iam_instance_profile_id" {
+  value = module.eks.self_managed_node_groups["addons"].iam_instance_profile_id
+}
+
+output "node_group_addons_iam_role_arn" {
+  value = module.eks.self_managed_node_groups["addons"].iam_role_arn
+}

@@ -7,6 +7,18 @@ locals {
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "reloader")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "reloader")].namespace
   }
+  reloader_values = <<VALUES
+reloader:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
+            operator: In
+            values:
+              - spot
+VALUES
 }
 
 module "reloader_namespace" {

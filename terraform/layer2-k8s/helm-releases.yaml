@@ -30,7 +30,7 @@ releases:
     chart_version:
     namespace: certmanager
   - id: cluster-autoscaler
-    enabled: true
+    enabled: false
     chart: cluster-autoscaler
     repository: https://kubernetes.github.io/autoscaler
     chart_version: 9.26.0
@@ -107,9 +107,16 @@ releases:
     repository: https://projectcalico.docs.tigera.io/charts
     chart_version: v3.24.1
     namespace: tigera-operator
+    timeout: 600
   - id: victoria-metrics-k8s-stack
     enabled: false
     chart: victoria-metrics-k8s-stack
     repository: https://victoriametrics.github.io/helm-charts
     chart_version: 0.8.1
     namespace: monitoring
+  - id: karpenter
+    enabled: true
+    chart: karpenter
+    repository: oci://public.ecr.aws/karpenter
+    chart_version: v0.27.0
+    namespace: karpenter

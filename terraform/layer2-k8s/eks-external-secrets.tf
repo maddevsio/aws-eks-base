@@ -31,6 +31,16 @@ resources:
     cpu: 200m
     memory: 128Mi
 
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
+          operator: In
+          values:
+            - spot
+
 webhook:
   securityContext:
     capabilities:
@@ -48,6 +58,16 @@ webhook:
       cpu: 100m
       memory: 64Mi
 
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
+            operator: In
+            values:
+              - spot
+
 certController:
   securityContext:
     capabilities:
@@ -64,6 +84,16 @@ certController:
     limits:
       cpu: 100m
       memory: 64Mi
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
+            operator: In
+            values:
+              - spot
 VALUES
 }
 

@@ -20,10 +20,10 @@ affinity:
     requiredDuringSchedulingIgnoredDuringExecution:
       nodeSelectorTerms:
       - matchExpressions:
-        - key: eks.amazonaws.com/capacityType
+        - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
           operator: In
           values:
-          - SPOT
+          - spot
         - key: eks.amazonaws.com/nodegroup
           operator: DoesNotExist
 VALUES

@@ -25,7 +25,7 @@ pilot:
       cpu: "500m"
       memory: "2Gi"
   nodeSelector:
-    eks.amazonaws.com/capacityType: ON_DEMAND
+    ${local.karpenter.enabled ? "karpenter.sh/capacity-type: on-demand" : "eks.amazonaws.com/capacityType: on-demand" }
 global:
   imagePullPolicy: IfNotPresent
   proxy:

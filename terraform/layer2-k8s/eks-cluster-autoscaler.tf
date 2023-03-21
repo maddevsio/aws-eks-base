@@ -42,7 +42,7 @@ affinity:
         - key: eks.amazonaws.com/capacityType
           operator: In
           values:
-            - ON_DEMAND
+            - on-demand
 resources:
   limits:
     cpu: 100m

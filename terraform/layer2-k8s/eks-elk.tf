@@ -83,10 +83,10 @@ elasticsearch:
     requiredDuringSchedulingIgnoredDuringExecution:
       nodeSelectorTerms:
       - matchExpressions:
-        - key: eks.amazonaws.com/capacityType
+        - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
           operator: In
           values:
-            - ON_DEMAND
+            - on-demand
 VALUES
   elk_kibana_values           = <<VALUES
 kibana:
@@ -155,10 +155,10 @@ kibana:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: eks.amazonaws.com/capacityType
+          - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
             operator: In
             values:
-              - SPOT
+              - spot
 
   extraInitContainers:
     - name: es-check
@@ -450,10 +450,10 @@ apm-server:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: eks.amazonaws.com/capacityType
+          - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
             operator: In
             values:
-              - ON_DEMAND
+              - on-demand
 VALUES
   elk_metricbeat_values       = <<VALUES
 metricbeat:
