@@ -137,7 +137,7 @@ module "external_secrets_namespace" {
       ingress = {
         ports = [
           {
-            port     = "9443"
+            port     = "10250"
             protocol = "TCP"
           }
         ]
