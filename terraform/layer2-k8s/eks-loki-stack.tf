@@ -77,7 +77,7 @@ module "loki_namespace" {
       }
     },
     {
-      name         = "allow-monitoring"
+      name         = "allow-monitoring-loki"
       policy_types = ["Ingress"]
       pod_selector = {
         match_expressions = {
@@ -94,6 +94,34 @@ module "loki_namespace" {
           },
           {
             port     = "3100"
+            protocol = "TCP"
+          }
+        ]
+        from = [
+          {
+            namespace_selector = {
+              match_labels = {
+                name = "monitoring"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      name         = "allow-monitoring-promtail"
+      policy_types = ["Ingress"]
+      pod_selector = {
+        match_expressions = {
+          key      = "app.kubernetes.io/instance"
+          operator = "In"
+          values   = [local.loki_stack.name]
+        }
+      }
+      ingress = {
+        ports = [
+          {
+            port     = "3101"
             protocol = "TCP"
           }
         ]
