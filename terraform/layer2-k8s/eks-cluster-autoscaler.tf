@@ -46,7 +46,7 @@ affinity:
 resources:
   limits:
     cpu: 100m
-    memory: 512Mi
+    memory: 1024Mi
   requests:
     cpu: 100m
     memory: 320Mi
@@ -147,6 +147,7 @@ module "aws_iam_autoscaler" {
           "autoscaling:DescribeLaunchConfigurations",
           "autoscaling:DescribeAutoScalingInstances",
           "autoscaling:DescribeAutoScalingGroups",
+          "ec2:DescribeInstanceTypes",
         ],
         "Resource" : "*"
       },
@@ -154,7 +155,6 @@ module "aws_iam_autoscaler" {
         "Sid" : "clusterAutoscalerOwn",
         "Effect" : "Allow",
         "Action" : [
-          "autoscaling:UpdateAutoScalingGroup",
           "autoscaling:TerminateInstanceInAutoScalingGroup",
           "autoscaling:SetDesiredCapacity",
         ],
