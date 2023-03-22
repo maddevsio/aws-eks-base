@@ -7,20 +7,23 @@ locals {
   eks_addons = merge({
     vpc-cni = {
       resolve_conflicts        = "OVERWRITE"
+      addon_version            = data.aws_eks_addon_version.vpc_cni.version
       service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
     },
     aws-ebs-csi-driver = {
       resolve_conflicts        = "OVERWRITE"
+      addon_version            = data.aws_eks_addon_version.aws_ebs_csi_driver.version
       service_account_role_arn = module.aws_ebs_csi_driver.iam_role_arn
     },
     coredns = {
       resolve_conflicts = "OVERWRITE"
+      addon_version     = data.aws_eks_addon_version.coredns.version
     },
     kube-proxy = {
       resolve_conflicts = "OVERWRITE"
+      addon_version     = data.aws_eks_addon_version.kube_proxy.version
     }
   })
-
 
   eks_map_roles = [
     {
@@ -287,4 +290,24 @@ resource "aws_kms_key" "eks" {
 
 resource "kubectl_manifest" "aws_auth_configmap" {
   yaml_body = local.aws_auth_configmap_yaml
+}
+
+data "aws_eks_addon_version" "aws_ebs_csi_driver" {
+  addon_name         = "aws-ebs-csi-driver"
+  kubernetes_version = var.eks_cluster_version
+}
+
+data "aws_eks_addon_version" "coredns" {
+  addon_name         = "coredns"
+  kubernetes_version = var.eks_cluster_version
+}
+
+data "aws_eks_addon_version" "kube_proxy" {
+  addon_name         = "kube-proxy"
+  kubernetes_version = var.eks_cluster_version
+}
+
+data "aws_eks_addon_version" "vpc_cni" {
+  addon_name         = "vpc-cni"
+  kubernetes_version = var.eks_cluster_version
 }
