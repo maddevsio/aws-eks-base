@@ -30,7 +30,7 @@ releases:
     chart_version:
     namespace: certmanager
   - id: cluster-autoscaler
-    enabled: true
+    enabled: false
     chart: cluster-autoscaler
     repository: https://kubernetes.github.io/autoscaler
     chart_version: 9.26.0
@@ -115,7 +115,7 @@ releases:
     chart_version: 0.8.1
     namespace: monitoring
   - id: karpenter
-    enabled: false
+    enabled: true
     chart: karpenter
     repository: oci://public.ecr.aws/karpenter
     chart_version: v0.27.0
