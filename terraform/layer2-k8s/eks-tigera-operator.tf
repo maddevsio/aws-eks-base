@@ -6,7 +6,6 @@ locals {
     repository    = local.helm_releases[index(local.helm_releases.*.id, "tigera-operator")].repository
     chart_version = local.helm_releases[index(local.helm_releases.*.id, "tigera-operator")].chart_version
     namespace     = local.helm_releases[index(local.helm_releases.*.id, "tigera-operator")].namespace
-    timeout       = local.helm_releases[index(local.helm_releases.*.id, "tigera-operator")].timeout
   }
 
   tigera_operator_values = <<VALUES

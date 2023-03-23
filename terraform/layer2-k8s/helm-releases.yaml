@@ -107,7 +107,6 @@ releases:
     repository: https://projectcalico.docs.tigera.io/charts
     chart_version: v3.24.1
     namespace: tigera-operator
-    timeout: 600
   - id: victoria-metrics-k8s-stack
     enabled: false
     chart: victoria-metrics-k8s-stack

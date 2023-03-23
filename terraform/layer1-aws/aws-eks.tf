@@ -250,7 +250,7 @@ module "eks" {
   self_managed_node_groups = { for k, v in local.self_managed_node_groups_values : k => v if v != null }
 
   fargate_profiles = {
-    fargate = {
+    default = {
       name = "fargate"
       selectors = [
         {
