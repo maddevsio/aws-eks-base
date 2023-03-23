@@ -24,4 +24,3 @@ remote_state {
     skip_credentials_validation = true
   }
 }
-
