@@ -21,27 +21,8 @@ locals {
     }
   })
 
-  self_managed_node_group_karpenter_initial = {
-    addons = {
-      name          = "${local.name}-addons"
-      iam_role_name = "${local.name}-addons"
-      desired_size  = var.node_group_addons.desired_capacity
-      max_size      = var.node_group_addons.max_capacity
-      min_size      = var.node_group_addons.min_capacity
-      instance_type = var.node_group_addons.instance_type
-      subnet_ids    = module.vpc.private_subnets
-
-      bootstrap_extra_args       = "--kubelet-extra-args '--node-labels=eks.amazonaws.com/capacityType=ondemand --node-labels=nodegroup=addons'"
-      capacity_rebalance         = var.node_group_addons.capacity_rebalance
-      use_mixed_instances_policy = var.node_group_addons.use_mixed_instances_policy
-      mixed_instances_policy     = var.node_group_addons.mixed_instances_policy
-
-      tags = local.eks_worker_tags
-    }
-  }
-
-  self_managed_node_groups_values = {
-    spot = {
+  self_managed_node_groups_values = merge({
+    spot = var.karpenter_enabled ? null : {
       name          = "${local.name}-spot"
       iam_role_name = "${local.name}-spot"
       desired_size  = var.node_group_spot.desired_capacity
@@ -55,8 +36,9 @@ locals {
       mixed_instances_policy     = var.node_group_spot.mixed_instances_policy
 
       tags = local.eks_worker_tags
-    },
-    ondemand = {
+    }
+
+    ondemand = var.karpenter_enabled ? null : {
       name          = "${local.name}-ondemand"
       iam_role_name = "${local.name}-ondemand"
       desired_size  = var.node_group_ondemand.desired_capacity
@@ -71,8 +53,9 @@ locals {
       mixed_instances_policy     = var.node_group_ondemand.mixed_instances_policy
 
       tags = local.eks_worker_tags
-    },
-    ci = {
+    }
+
+    ci = var.karpenter_enabled ? null : {
       name          = "${local.name}-ci"
       iam_role_name = "${local.name}-ci"
       desired_size  = var.node_group_ci.desired_capacity
@@ -86,8 +69,9 @@ locals {
       mixed_instances_policy     = var.node_group_ci.mixed_instances_policy
 
       tags = merge(local.eks_worker_tags, { "k8s.io/cluster-autoscaler/node-template/label/nodegroup" = "ci" })
-    },
-    bottlerocket = {
+    }
+
+    bottlerocket = var.karpenter_enabled ? null : {
       name          = "${local.name}-bottlerocket"
       iam_role_name = "${local.name}-bottlerocket"
       desired_size  = var.node_group_br.desired_capacity
@@ -117,7 +101,24 @@ locals {
 
       tags = merge(local.eks_worker_tags, { "k8s.io/cluster-autoscaler/node-template/label/nodegroup" = "bottlerocket" })
     }
-  }
+
+    addons = var.karpenter_enabled ? {
+      name          = "${local.name}-addons"
+      iam_role_name = "${local.name}-addons"
+      desired_size  = var.node_group_addons.desired_capacity
+      max_size      = var.node_group_addons.max_capacity
+      min_size      = var.node_group_addons.min_capacity
+      instance_type = var.node_group_addons.instance_type
+      subnet_ids    = module.vpc.private_subnets
+
+      bootstrap_extra_args       = "--kubelet-extra-args '--node-labels=eks.amazonaws.com/capacityType=ondemand --node-labels=nodegroup=addons'"
+      capacity_rebalance         = var.node_group_addons.capacity_rebalance
+      use_mixed_instances_policy = var.node_group_addons.use_mixed_instances_policy
+      mixed_instances_policy     = var.node_group_addons.mixed_instances_policy
+
+      tags = local.eks_worker_tags
+    } : null
+  })
 
   eks_map_roles = [
     {
@@ -244,7 +245,7 @@ module "eks" {
     iam_role_attach_cni_policy = false
   }
 
-  self_managed_node_groups = var.karpenter_enabled ? local.self_managed_node_group_karpenter_initial : toset(local.self_managed_node_groups_values)
+  self_managed_node_groups = { for k, v in local.self_managed_node_groups_values : k => v if v != null }
 
   fargate_profiles = {
     fargate = {

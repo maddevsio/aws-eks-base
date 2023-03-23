@@ -41,6 +41,9 @@ defaultRules:
   disabled:
     KubeProxyDown: true
 
+prometheus-node-exporter:
+  priorityClassName: system-cluster-critical
+
 prometheus:
   ingress:
     enabled: true

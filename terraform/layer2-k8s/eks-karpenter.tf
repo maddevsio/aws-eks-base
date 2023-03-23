@@ -9,16 +9,19 @@ locals {
   }
 
   karpenter_values = <<VALUES
+serviceMonitor:
+  enabled: true
+
 settings:
   aws:
     clusterName: ${local.eks_cluster_id}
     clusterEndpoint: ${local.eks_cluster_endpoint}
     defaultInstanceProfile: ${var.node_group_addons_iam_instance_profile_id}
-    interruptionQueueName: ${module.karpenter[0].queue_name}
+    interruptionQueueName: ${local.karpenter.enabled ? module.karpenter[0].queue_name : ""}
 
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: ${module.karpenter[0].irsa_arn}
+    eks.amazonaws.com/role-arn: ${local.karpenter.enabled ? module.karpenter[0].irsa_arn : ""}
 
 affinity:
   nodeAffinity:
@@ -82,6 +85,8 @@ resource "helm_release" "karpenter" {
   values = [
     local.karpenter_values
   ]
+
+  depends_on = [kubectl_manifest.kube_prometheus_stack_operator_crds]
 }
 
 resource "kubectl_manifest" "karpenter_provisioner_default" {
@@ -104,7 +109,10 @@ resource "kubectl_manifest" "karpenter_provisioner_default" {
           values: ["spot", "on-demand"]
         - key: "karpenter.k8s.aws/instance-cpu"
           operator: In
-          values: ["1", "2", "4"]
+          values: ["2", "4"]
+        - key: karpenter.k8s.aws/instance-size
+          operator: NotIn
+          values: [nano, micro, small]
       limits:
         resources:
           cpu: 1000
@@ -199,4 +207,5 @@ resource "kubectl_manifest" "karpenter_node_template_private_subnet" {
 }
 
 data "aws_ecrpublic_authorization_token" "token" {}
+
 

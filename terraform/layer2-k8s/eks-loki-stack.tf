@@ -38,6 +38,7 @@ loki:
               - on-demand
 
 promtail:
+  priorityClassName: system-cluster-critical
   enabled: true
   serviceMonitor:
     enabled: true
