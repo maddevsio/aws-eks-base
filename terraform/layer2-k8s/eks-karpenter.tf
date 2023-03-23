@@ -57,9 +57,9 @@ module "karpenter" {
   irsa_oidc_provider_arn          = local.eks_oidc_provider_arn
   irsa_namespace_service_accounts = ["karpenter:karpenter"]
 
-  create_iam_role = false
+  create_iam_role         = false
   create_instance_profile = false
-  iam_role_arn    = var.node_group_addons_iam_role_arn
+  iam_role_arn            = var.node_group_addons_iam_role_arn
 }
 
 module "karpenter_namespace" {
@@ -165,7 +165,7 @@ resource "kubectl_manifest" "karpenter_provisioner_ci" {
 }
 
 resource "kubectl_manifest" "karpenter_node_template_public_subnet" {
-  count = local.karpenter.enabled ? 1 : 0
+  count     = local.karpenter.enabled ? 1 : 0
   yaml_body = <<-YAML
     apiVersion: karpenter.k8s.aws/v1alpha1
     kind: AWSNodeTemplate
@@ -186,7 +186,7 @@ resource "kubectl_manifest" "karpenter_node_template_public_subnet" {
 }
 
 resource "kubectl_manifest" "karpenter_node_template_private_subnet" {
-  count = local.karpenter.enabled ? 1 : 0
+  count     = local.karpenter.enabled ? 1 : 0
   yaml_body = <<-YAML
     apiVersion: karpenter.k8s.aws/v1alpha1
     kind: AWSNodeTemplate

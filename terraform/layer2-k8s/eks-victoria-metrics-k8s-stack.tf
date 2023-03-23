@@ -63,7 +63,7 @@ vmsingle:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
           - matchExpressions:
-            - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType" }
+            - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
               operator: In
               values:
                 - on-demand
@@ -84,7 +84,7 @@ vmagent:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
           - matchExpressions:
-            - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType" }
+            - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
               operator: In
               values:
                 - on-demand
@@ -181,7 +181,7 @@ grafana:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType" }
+          - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
             operator: In
             values:
               - spot
@@ -291,7 +291,7 @@ alertmanager:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
           - matchExpressions:
-              - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType" }
+              - key: ${local.karpenter.enabled ? "karpenter.sh/capacity-type" : "eks.amazonaws.com/capacityType"}
                 operator: In
                 values:
                   - on-demand

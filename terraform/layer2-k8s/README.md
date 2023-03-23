@@ -197,6 +197,8 @@
 | <a name="module_gitlab_runner_namespace"></a> [gitlab\_runner\_namespace](#module\_gitlab\_runner\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
 | <a name="module_ingress_nginx_namespace"></a> [ingress\_nginx\_namespace](#module\_ingress\_nginx\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
 | <a name="module_istio_system_namespace"></a> [istio\_system\_namespace](#module\_istio\_system\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
+| <a name="module_karpenter"></a> [karpenter](#module\_karpenter) | terraform-aws-modules/eks/aws//modules/karpenter | 18.31.0 |
+| <a name="module_karpenter_namespace"></a> [karpenter\_namespace](#module\_karpenter\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
 | <a name="module_keda_namespace"></a> [keda\_namespace](#module\_keda\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
 | <a name="module_kiali_namespace"></a> [kiali\_namespace](#module\_kiali\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
 | <a name="module_kube_prometheus_stack_namespace"></a> [kube\_prometheus\_stack\_namespace](#module\_kube\_prometheus\_stack\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
@@ -232,6 +234,7 @@
 | [helm_release.ingress_nginx](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.istio_base](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.istiod](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
+| [helm_release.karpenter](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.kedacore](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.kiali](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
 | [helm_release.loki_stack](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
@@ -242,6 +245,10 @@
 | [kubectl_manifest.calico_felix](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.istio_prometheus_service_monitor_cp](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.istio_prometheus_service_monitor_dp](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
+| [kubectl_manifest.karpenter_node_template_private_subnet](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
+| [kubectl_manifest.karpenter_node_template_public_subnet](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
+| [kubectl_manifest.karpenter_provisioner_ci](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
+| [kubectl_manifest.karpenter_provisioner_default](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.kube_prometheus_stack_operator_crds](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubernetes_ingress_v1.default](https://registry.terraform.io/providers/kubernetes/2.10.0/docs/resources/ingress_v1) | resource |
 | [kubernetes_secret.elasticsearch_certificates](https://registry.terraform.io/providers/kubernetes/2.10.0/docs/resources/secret) | resource |
@@ -260,6 +267,7 @@
 | [tls_private_key.aws_loadbalancer_controller_webhook_ca](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
 | [tls_self_signed_cert.aws_loadbalancer_controller_webhook_ca](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/self_signed_cert) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/caller_identity) | data source |
+| [aws_ecrpublic_authorization_token.token](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/ecrpublic_authorization_token) | data source |
 | [aws_eks_cluster.main](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/eks_cluster) | data source |
 | [aws_eks_cluster_auth.main](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/eks_cluster_auth) | data source |
 | [aws_secretsmanager_secret.infra](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/secretsmanager_secret) | data source |
@@ -281,6 +289,8 @@
 | <a name="input_helm_release_history_size"></a> [helm\_release\_history\_size](#input\_helm\_release\_history\_size) | How much helm releases to store | `number` | `5` | no |
 | <a name="input_name"></a> [name](#input\_name) | Project name, required to create unique resource names | `any` | n/a | yes |
 | <a name="input_nginx_ingress_ssl_terminator"></a> [nginx\_ingress\_ssl\_terminator](#input\_nginx\_ingress\_ssl\_terminator) | Select SSL termination type | `string` | `"lb"` | no |
+| <a name="input_node_group_addons_iam_instance_profile_id"></a> [node\_group\_addons\_iam\_instance\_profile\_id](#input\_node\_group\_addons\_iam\_instance\_profile\_id) | Instance profile for node group addons | `string` | `""` | no |
+| <a name="input_node_group_addons_iam_role_arn"></a> [node\_group\_addons\_iam\_role\_arn](#input\_node\_group\_addons\_iam\_role\_arn) | Role ARN for node group addons | `string` | `""` | no |
 | <a name="input_region"></a> [region](#input\_region) | Default infrastructure region | `string` | `"us-east-1"` | no |
 | <a name="input_short_region"></a> [short\_region](#input\_short\_region) | The abbreviated name of the region, required to form unique resource names | `map` | <pre>{<br>  "ap-east-1": "ape1",<br>  "ap-northeast-1": "apn1",<br>  "ap-northeast-2": "apn2",<br>  "ap-south-1": "aps1",<br>  "ap-southeast-1": "apse1",<br>  "ap-southeast-2": "apse2",<br>  "ca-central-1": "cac1",<br>  "cn-north-1": "cnn1",<br>  "cn-northwest-1": "cnnw1",<br>  "eu-central-1": "euc1",<br>  "eu-north-1": "eun1",<br>  "eu-west-1": "euw1",<br>  "eu-west-2": "euw2",<br>  "eu-west-3": "euw3",<br>  "sa-east-1": "sae1",<br>  "us-east-1": "use1",<br>  "us-east-2": "use2",<br>  "us-gov-east-1": "usge1",<br>  "us-gov-west-1": "usgw1",<br>  "us-west-1": "usw1",<br>  "us-west-2": "usw2"<br>}</pre> | no |
 | <a name="input_ssl_certificate_arn"></a> [ssl\_certificate\_arn](#input\_ssl\_certificate\_arn) | ARN of ACM SSL certificate | `any` | n/a | yes |
