@@ -103,5 +103,5 @@ variable "nginx_ingress_ssl_terminator" {
 # Cluster autoscaler
 variable "cluster_autoscaler_version" {
   description = "Version of cluster autoscaler"
-  default     = "v1.22.0"
+  default     = "v1.25.0"
 }
