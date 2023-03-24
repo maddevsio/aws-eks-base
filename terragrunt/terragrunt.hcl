@@ -2,15 +2,8 @@ terragrunt_version_constraint = ">= 0.39"
 skip                          = true
 
 locals {
-
-  values = merge(
-    yamldecode(file(find_in_parent_folders("region.yaml"))),
-    yamldecode(file(find_in_parent_folders("env.yaml")))
-  )
-
-  region              = local.values.region
-  environment         = local.values.environment
-  remote_state_bucket = "${get_env("TF_REMOTE_STATE_BUCKET")}"
+  remote_state_bucket_region = "${get_env("TF_REMOTE_STATE_BUCKET_REGION")}"
+  remote_state_bucket        = "${get_env("TF_REMOTE_STATE_BUCKET")}"
 }
 
 remote_state {
@@ -20,7 +13,7 @@ remote_state {
     if_exists = "overwrite_terragrunt"
   }
   config = {
-    region = local.region
+    region = local.remote_state_bucket_region
     bucket = local.remote_state_bucket
     key    = "${path_relative_to_include()}/terraform.tfstate"
     encrypt = true
@@ -31,5 +24,3 @@ remote_state {
     skip_credentials_validation = true
   }
 }
-
-inputs = local.values

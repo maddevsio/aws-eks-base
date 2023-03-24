@@ -3,13 +3,13 @@ releases:
     enabled: true
     chart: aws-load-balancer-controller
     repository: https://aws.github.io/eks-charts
-    chart_version: 1.4.5
+    chart_version: 1.4.8
     namespace: aws-load-balancer-controller
   - id: aws-node-termination-handler
     enabled: true
     chart: aws-node-termination-handler
     repository: https://aws.github.io/eks-charts
-    chart_version: 0.19.3
+    chart_version: 0.21.0
     namespace: aws-node-termination-handler
   - id: cert-manager
     enabled: false
@@ -33,7 +33,7 @@ releases:
     enabled: true
     chart: cluster-autoscaler
     repository: https://kubernetes.github.io/autoscaler
-    chart_version: 9.13.1
+    chart_version: 9.26.0
     namespace: cluster-autoscaler
   - id: elk
     enabled: false
@@ -93,7 +93,7 @@ releases:
     enabled: true
     chart: loki-stack
     repository: https://grafana.github.io/helm-charts
-    chart_version: 2.8.3
+    chart_version: 2.9.9
     namespace: loki
   - id: reloader
     enabled: true
