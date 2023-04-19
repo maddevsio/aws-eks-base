@@ -4,27 +4,6 @@ locals {
     "k8s.io/cluster-autoscaler/${local.name}" = "owned"
   }
 
-  eks_addons = merge({
-    vpc-cni = {
-      resolve_conflicts        = "OVERWRITE"
-      addon_version            = data.aws_eks_addon_version.vpc_cni.version
-      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
-    },
-    aws-ebs-csi-driver = {
-      resolve_conflicts        = "OVERWRITE"
-      addon_version            = data.aws_eks_addon_version.aws_ebs_csi_driver.version
-      service_account_role_arn = module.aws_ebs_csi_driver.iam_role_arn
-    },
-    coredns = {
-      resolve_conflicts = "OVERWRITE"
-      addon_version     = data.aws_eks_addon_version.coredns.version
-    },
-    kube-proxy = {
-      resolve_conflicts = "OVERWRITE"
-      addon_version     = data.aws_eks_addon_version.kube_proxy.version
-    }
-  })
-
   eks_map_roles = [
     {
       rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/administrator"
@@ -32,14 +11,6 @@ locals {
       groups   = ["system:masters"]
     }
   ]
-  eks_map_users = []
-
-  aws_auth_configmap_yaml = <<-CONTENT
-    ${chomp(module.eks.aws_auth_configmap_yaml)}
-        ${indent(4, yamlencode(local.eks_map_roles))}
-      mapUsers: |
-        ${indent(4, yamlencode(local.eks_map_users))}
-    CONTENT
 }
 
 data "aws_ami" "eks_default_bottlerocket" {
@@ -55,12 +26,32 @@ data "aws_ami" "eks_default_bottlerocket" {
 #tfsec:ignore:aws-vpc-no-public-egress-sgr tfsec:ignore:aws-eks-enable-control-plane-logging tfsec:ignore:aws-eks-encrypt-secrets tfsec:ignore:aws-eks-no-public-cluster-access tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "18.9.0"
+  version = "19.12.0"
 
-  cluster_name    = local.name
-  cluster_version = var.eks_cluster_version
-  subnet_ids      = module.vpc.intra_subnets
-  enable_irsa     = true
+  cluster_name              = local.name
+  cluster_version           = var.eks_cluster_version
+  subnet_ids                = module.vpc.private_subnets
+  control_plane_subnet_ids  = module.vpc.intra_subnets
+  enable_irsa               = true
+  manage_aws_auth_configmap = true
+  create_aws_auth_configmap = false
+  aws_auth_roles            = local.eks_map_roles
+  cluster_addons = {
+    coredns = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent              = true
+      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
+    }
+    aws-ebs-csi-driver = {
+      most_recent              = true
+      service_account_role_arn = module.aws_ebs_csi_driver.iam_role_arn
+    }
+  }
 
   cluster_enabled_log_types              = var.eks_cluster_enabled_log_types
   cloudwatch_log_group_retention_in_days = var.eks_cloudwatch_log_group_retention_in_days
@@ -72,59 +63,9 @@ module "eks" {
 
   vpc_id = module.vpc.vpc_id
 
-  cluster_addons = local.eks_addons
-
-  cluster_encryption_config = var.eks_cluster_encryption_config_enable ? [
-    {
-      provider_key_arn = aws_kms_key.eks[0].arn
-      resources        = ["secrets"]
-    }
-  ] : []
-
   cluster_endpoint_public_access       = var.eks_cluster_endpoint_public_access
   cluster_endpoint_private_access      = var.eks_cluster_endpoint_private_access
   cluster_endpoint_public_access_cidrs = var.eks_cluster_endpoint_only_pritunl ? ["${module.pritunl[0].pritunl_endpoint}/32"] : ["0.0.0.0/0"]
-
-  # Extend cluster security group rules
-  cluster_security_group_additional_rules = {
-    egress_nodes_ephemeral_ports_tcp = {
-      description                = "To node 1025-65535"
-      protocol                   = "tcp"
-      from_port                  = 1025
-      to_port                    = 65535
-      type                       = "egress"
-      source_node_security_group = true
-    }
-  }
-
-  # Extend node-to-node security group rules
-  node_security_group_additional_rules = {
-    ingress_self_all = {
-      description = "Node to node all ports/protocols"
-      protocol    = "-1"
-      from_port   = 0
-      to_port     = 0
-      type        = "ingress"
-      self        = true
-    }
-    ingress_cluster_all = {
-      description                   = "Cluster to nodes all ports/protocols"
-      protocol                      = "-1"
-      from_port                     = 1025
-      to_port                       = 65535
-      type                          = "ingress"
-      source_cluster_security_group = true
-    }
-    egress_all = {
-      description      = "Node all egress"
-      protocol         = "-1"
-      from_port        = 0
-      to_port          = 0
-      type             = "egress"
-      cidr_blocks      = ["0.0.0.0/0"]
-      ipv6_cidr_blocks = ["::/0"]
-    }
-  }
 
   self_managed_node_group_defaults = {
     block_device_mappings = {
@@ -148,7 +89,6 @@ module "eks" {
     }
     iam_role_attach_cni_policy = false
   }
-
   self_managed_node_groups = {
     spot = {
       name          = "${local.name}-spot"
@@ -227,7 +167,6 @@ module "eks" {
       tags = merge(local.eks_worker_tags, { "k8s.io/cluster-autoscaler/node-template/label/nodegroup" = "bottlerocket" })
     }
   }
-
   fargate_profiles = {
     default = {
       name = "fargate"
@@ -250,7 +189,7 @@ module "eks" {
 
 module "vpc_cni_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "4.14.0"
+  version = "5.17.0"
 
   role_name             = "${local.name}-vpc-cni"
   attach_vpc_cni_policy = true
@@ -268,7 +207,7 @@ module "vpc_cni_irsa" {
 
 module "aws_ebs_csi_driver" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "4.14.0"
+  version = "4.17.0"
 
   role_name             = "${local.name}-aws-ebs-csi-driver"
   attach_ebs_csi_policy = true
@@ -281,33 +220,4 @@ module "aws_ebs_csi_driver" {
   }
 
   tags = local.tags
-}
-
-resource "aws_kms_key" "eks" {
-  count       = var.eks_cluster_encryption_config_enable ? 1 : 0
-  description = "EKS Secret Encryption Key"
-}
-
-resource "kubectl_manifest" "aws_auth_configmap" {
-  yaml_body = local.aws_auth_configmap_yaml
-}
-
-data "aws_eks_addon_version" "aws_ebs_csi_driver" {
-  addon_name         = "aws-ebs-csi-driver"
-  kubernetes_version = var.eks_cluster_version
-}
-
-data "aws_eks_addon_version" "coredns" {
-  addon_name         = "coredns"
-  kubernetes_version = var.eks_cluster_version
-}
-
-data "aws_eks_addon_version" "kube_proxy" {
-  addon_name         = "kube-proxy"
-  kubernetes_version = var.eks_cluster_version
-}
-
-data "aws_eks_addon_version" "vpc_cni" {
-  addon_name         = "vpc-cni"
-  kubernetes_version = var.eks_cluster_version
 }

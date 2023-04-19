@@ -90,13 +90,13 @@ output "eks_cluster_security_group_id" {
 }
 
 output "eks_kubectl_console_config" {
-  value       = "aws eks update-kubeconfig --name ${module.eks.cluster_id} --region ${var.region}"
+  value       = "aws eks update-kubeconfig --name ${module.eks.cluster_name} --region ${var.region}"
   description = "description"
   depends_on  = []
 }
 
 output "eks_cluster_id" {
-  value = module.eks.cluster_id
+  value = module.eks.cluster_name
 }
 
 output "eks_oidc_provider_arn" {

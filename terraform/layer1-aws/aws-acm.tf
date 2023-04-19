@@ -10,7 +10,7 @@ data "aws_acm_certificate" "main" {
 
 module "acm" {
   source  = "terraform-aws-modules/acm/aws"
-  version = "3.3.0"
+  version = "4.3.2"
 
   create_certificate = var.create_acm_certificate
 
