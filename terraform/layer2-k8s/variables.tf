@@ -103,5 +103,11 @@ variable "nginx_ingress_ssl_terminator" {
 # Cluster autoscaler
 variable "cluster_autoscaler_version" {
   description = "Version of cluster autoscaler"
-  default     = "v1.25.0"
+  default     = "v1.26.2"
+}
+
+variable "helm_charts_path" {
+  type        = string
+  description = "where to find the helm charts"
+  default     = "../../helm-charts/"
 }

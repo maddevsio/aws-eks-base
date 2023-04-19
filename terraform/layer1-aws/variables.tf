@@ -108,13 +108,15 @@ variable "single_nat_gateway" {
 
 # EKS
 variable "eks_cluster_version" {
-  default     = "1.25"
+  default     = "1.26"
   description = "Version of the EKS K8S cluster"
 }
 
 variable "eks_workers_additional_policies" {
-  type        = list(any)
-  default     = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
+  type = map(string)
+  default = {
+    additional = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  }
   description = "Additional IAM policy attached to EKS worker nodes"
 }
 
