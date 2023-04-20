@@ -4,19 +4,19 @@ terraform {
   required_providers {
     aws = {
       source  = "aws"
-      version = "4.10.0"
+      version = "4.62.0"
     }
     kubernetes = {
       source  = "kubernetes"
-      version = "2.10.0"
+      version = "2.19.0"
     }
     helm = {
       source  = "helm"
-      version = "2.5.1"
+      version = "2.6.0"
     }
     http = {
       source  = "hashicorp/http"
-      version = "2.1.0"
+      version = "3.2.1"
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
