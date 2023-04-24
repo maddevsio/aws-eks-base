@@ -69,7 +69,7 @@ releases:
     enabled: false
     chart:
     repository: https://istio-release.storage.googleapis.com/charts
-    chart_version: 1.16.1
+    chart_version: 1.17.2
     namespace: istio-system
   - id: keda
     enabled: false
