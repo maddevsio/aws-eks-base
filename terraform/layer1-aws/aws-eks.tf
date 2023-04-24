@@ -207,7 +207,7 @@ module "vpc_cni_irsa" {
 
 module "aws_ebs_csi_driver" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "4.17.0"
+  version = "5.17.0"
 
   role_name             = "${local.name}-aws-ebs-csi-driver"
   attach_ebs_csi_policy = true
