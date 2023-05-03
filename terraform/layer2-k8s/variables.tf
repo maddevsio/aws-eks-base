@@ -105,3 +105,10 @@ variable "cluster_autoscaler_version" {
   description = "Version of cluster autoscaler"
   default     = "v1.25.0"
 }
+
+
+variable "helm_charts_path" {
+  type        = string
+  description = "where to find the helm charts"
+  default     = "../../helm-charts/"
+}

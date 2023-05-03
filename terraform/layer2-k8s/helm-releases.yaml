@@ -19,13 +19,13 @@ releases:
     namespace: certmanager
   - id: cert-mananger-certificate
     enabled: false
-    chart: ../../helm-charts/certificate
+    chart: certificate
     repository:
     chart_version:
     namespace: ingress-nginx
   - id: cert-manager-cluster-issuer
     enabled: false
-    chart: ../../helm-charts/cluster-issuer
+    chart: cluster-issuer
     repository:
     chart_version:
     namespace: certmanager
@@ -37,7 +37,7 @@ releases:
     namespace: cluster-autoscaler
   - id: elk
     enabled: false
-    chart: ../../helm-charts/elk
+    chart: elk
     repository:
     chart_version:
     namespace: elk

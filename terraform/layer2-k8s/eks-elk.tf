@@ -842,7 +842,7 @@ resource "helm_release" "elk" {
   count = local.elk.enabled ? 1 : 0
 
   name        = local.elk.name
-  chart       = local.elk.chart
+  chart       = "${var.helm_charts_path}/${local.elk.chart}"
   repository  = local.elk.repository
   version     = local.elk.chart_version
   namespace   = module.elk_namespace[count.index].name
