@@ -254,7 +254,7 @@ alertmanager:
     tls:
     - hosts:
       - ${local.victoria_metrics_k8s_stack_alertmanager_domain_name}
-  alertmanagerSpec:
+  spec:
     storage:
       volumeClaimTemplate:
         spec:
