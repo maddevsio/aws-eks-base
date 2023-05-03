@@ -40,4 +40,5 @@ inputs = {
   eks_cluster_id        = dependency.aws-base.outputs.eks_cluster_id
   eks_oidc_provider_arn = dependency.aws-base.outputs.eks_oidc_provider_arn
   ssl_certificate_arn   = dependency.aws-base.outputs.ssl_certificate_arn
+  helm_charts_path      = "${get_terragrunt_dir()}/../../../../helm-charts"
 }
