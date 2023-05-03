@@ -191,7 +191,7 @@ resource "helm_release" "cluster_issuer" {
   count = local.cert_manager_cluster_issuer.enabled ? 1 : 0
 
   name        = local.cert_manager_cluster_issuer.name
-  chart       = local.cert_manager_cluster_issuer.chart
+  chart       = "${var.helm_charts_path}/${local.cert_manager_cluster_issuer.chart}"
   repository  = local.cert_manager_cluster_issuer.repository
   version     = local.cert_manager_cluster_issuer.chart_version
   namespace   = local.cert_manager_cluster_issuer.namespace
@@ -209,7 +209,7 @@ resource "helm_release" "certificate" {
   count = local.cert_mananger_certificate.enabled ? 1 : 0
 
   name        = local.cert_mananger_certificate.name
-  chart       = local.cert_mananger_certificate.chart
+  chart       = "${var.helm_charts_path}/${local.cert_mananger_certificate.chart}"
   repository  = local.cert_mananger_certificate.repository
   version     = local.cert_mananger_certificate.chart_version
   namespace   = local.cert_mananger_certificate.namespace
