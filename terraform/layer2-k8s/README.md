@@ -126,7 +126,6 @@
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | ID of the created EKS cluster. | `any` | n/a | yes |
 | <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | ARN of EKS oidc provider | `any` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Env name | `string` | `"demo"` | no |
-| <a name="input_helm_charts_path"></a> [helm\_charts\_path](#input\_helm\_charts\_path) | where to find the helm charts | `string` | `"../../helm-charts/"` | no |
 | <a name="input_helm_release_history_size"></a> [helm\_release\_history\_size](#input\_helm\_release\_history\_size) | How much helm releases to store | `number` | `5` | no |
 | <a name="input_name"></a> [name](#input\_name) | Project name, required to create unique resource names | `any` | n/a | yes |
 | <a name="input_nginx_ingress_ssl_terminator"></a> [nginx\_ingress\_ssl\_terminator](#input\_nginx\_ingress\_ssl\_terminator) | Select SSL termination type | `string` | `"lb"` | no |

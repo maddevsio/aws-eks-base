@@ -1,7 +1,7 @@
 module "eventbridge" {
   count   = var.aws_cis_benchmark_alerts.enabled ? 1 : 0
   source  = "terraform-aws-modules/eventbridge/aws"
-  version = "1.14.0"
+  version = "1.17.3"
 
   create_bus = false
 
