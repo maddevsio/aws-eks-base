@@ -17,7 +17,7 @@ data "aws_security_group" "default" {
 #tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "3.12.0"
+  version = "4.0.1"
 
   name = local.name
   cidr = var.cidr
@@ -89,7 +89,7 @@ module "vpc" {
 
 module "vpc_gateway_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "3.12.0"
+  version = "4.0.1"
 
   vpc_id = module.vpc.vpc_id
 
