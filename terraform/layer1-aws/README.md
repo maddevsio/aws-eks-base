@@ -17,7 +17,7 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_acm"></a> [acm](#module\_acm) | terraform-aws-modules/acm/aws | 4.3.2 |
-| <a name="module_aws_ebs_csi_driver"></a> [aws\_ebs\_csi\_driver](#module\_aws\_ebs\_csi\_driver) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | 4.17.0 |
+| <a name="module_aws_ebs_csi_driver"></a> [aws\_ebs\_csi\_driver](#module\_aws\_ebs\_csi\_driver) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | 5.17.0 |
 | <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | 19.12.0 |
 | <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | terraform-aws-modules/eventbridge/aws | 1.17.3 |
 | <a name="module_pritunl"></a> [pritunl](#module\_pritunl) | ../modules/aws-pritunl | n/a |
@@ -30,25 +30,25 @@
 
 | Name | Type |
 |------|------|
-| [aws_cloudtrail.main](https://registry.terraform.io/providers/aws/4.62.0/docs/resources/cloudtrail) | resource |
-| [aws_ebs_encryption_by_default.default](https://registry.terraform.io/providers/aws/4.62.0/docs/resources/ebs_encryption_by_default) | resource |
-| [aws_iam_account_password_policy.default](https://registry.terraform.io/providers/aws/4.62.0/docs/resources/iam_account_password_policy) | resource |
-| [aws_s3_bucket.cloudtrail](https://registry.terraform.io/providers/aws/4.62.0/docs/resources/s3_bucket) | resource |
-| [aws_s3_bucket_acl.cloudtrail](https://registry.terraform.io/providers/aws/4.62.0/docs/resources/s3_bucket_acl) | resource |
-| [aws_s3_bucket_lifecycle_configuration.cloudtrail](https://registry.terraform.io/providers/aws/4.62.0/docs/resources/s3_bucket_lifecycle_configuration) | resource |
-| [aws_s3_bucket_policy.cloudtrail](https://registry.terraform.io/providers/aws/4.62.0/docs/resources/s3_bucket_policy) | resource |
-| [aws_s3_bucket_public_access_block.cloudtrail](https://registry.terraform.io/providers/aws/4.62.0/docs/resources/s3_bucket_public_access_block) | resource |
-| [aws_s3_bucket_server_side_encryption_configuration.cloudtrail](https://registry.terraform.io/providers/aws/4.62.0/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
-| [aws_sns_topic.security_alerts](https://registry.terraform.io/providers/aws/4.62.0/docs/resources/sns_topic) | resource |
-| [aws_sns_topic_policy.security_alerts](https://registry.terraform.io/providers/aws/4.62.0/docs/resources/sns_topic_policy) | resource |
-| [aws_sns_topic_subscription.security_alerts](https://registry.terraform.io/providers/aws/4.62.0/docs/resources/sns_topic_subscription) | resource |
-| [aws_acm_certificate.main](https://registry.terraform.io/providers/aws/4.62.0/docs/data-sources/acm_certificate) | data source |
-| [aws_ami.eks_default_bottlerocket](https://registry.terraform.io/providers/aws/4.62.0/docs/data-sources/ami) | data source |
-| [aws_availability_zones.available](https://registry.terraform.io/providers/aws/4.62.0/docs/data-sources/availability_zones) | data source |
-| [aws_caller_identity.current](https://registry.terraform.io/providers/aws/4.62.0/docs/data-sources/caller_identity) | data source |
-| [aws_eks_cluster_auth.main](https://registry.terraform.io/providers/aws/4.62.0/docs/data-sources/eks_cluster_auth) | data source |
-| [aws_route53_zone.main](https://registry.terraform.io/providers/aws/4.62.0/docs/data-sources/route53_zone) | data source |
-| [aws_security_group.default](https://registry.terraform.io/providers/aws/4.62.0/docs/data-sources/security_group) | data source |
+| [aws_cloudtrail.main](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/cloudtrail) | resource |
+| [aws_ebs_encryption_by_default.default](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/ebs_encryption_by_default) | resource |
+| [aws_iam_account_password_policy.default](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/iam_account_password_policy) | resource |
+| [aws_s3_bucket.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_acl.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_acl) | resource |
+| [aws_s3_bucket_lifecycle_configuration.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_lifecycle_configuration) | resource |
+| [aws_s3_bucket_policy.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_policy) | resource |
+| [aws_s3_bucket_public_access_block.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_server_side_encryption_configuration.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
+| [aws_sns_topic.security_alerts](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/sns_topic) | resource |
+| [aws_sns_topic_policy.security_alerts](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/sns_topic_policy) | resource |
+| [aws_sns_topic_subscription.security_alerts](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/sns_topic_subscription) | resource |
+| [aws_acm_certificate.main](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/acm_certificate) | data source |
+| [aws_ami.eks_default_bottlerocket](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/ami) | data source |
+| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/availability_zones) | data source |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/caller_identity) | data source |
+| [aws_eks_cluster_auth.main](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/eks_cluster_auth) | data source |
+| [aws_route53_zone.main](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/route53_zone) | data source |
+| [aws_security_group.default](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/security_group) | data source |
 
 ## Inputs
 

@@ -2,22 +2,22 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.1.8 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 4.10.0 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | 2.5.1 |
-| <a name="requirement_http"></a> [http](#requirement\_http) | 2.1.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.4.4 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 4.62.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | 2.6.0 |
+| <a name="requirement_http"></a> [http](#requirement\_http) | 3.2.1 |
 | <a name="requirement_kubectl"></a> [kubectl](#requirement\_kubectl) | 1.14.0 |
-| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.10.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.19.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.10.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.5.1 |
-| <a name="provider_http"></a> [http](#provider\_http) | 2.1.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.62.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.6.0 |
+| <a name="provider_http"></a> [http](#provider\_http) | 3.2.1 |
 | <a name="provider_kubectl"></a> [kubectl](#provider\_kubectl) | 1.14.0 |
-| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.10.0 |
+| <a name="provider_kubernetes"></a> [kubernetes](#provider\_kubernetes) | 2.19.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | n/a |
 | <a name="provider_tls"></a> [tls](#provider\_tls) | n/a |
 
@@ -57,46 +57,46 @@
 
 | Name | Type |
 |------|------|
-| [aws_route53_record.default_ingress](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/route53_record) | resource |
-| [aws_s3_bucket.elastic_stack](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket) | resource |
-| [aws_s3_bucket.gitlab_runner_cache](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket) | resource |
-| [aws_s3_bucket_acl.elastic_stack_acl](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_acl) | resource |
-| [aws_s3_bucket_acl.gitlab_runner_acl](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_acl) | resource |
-| [aws_s3_bucket_lifecycle_configuration.gitlab_runner_lifecycle](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_lifecycle_configuration) | resource |
-| [aws_s3_bucket_public_access_block.elastic_stack_public_access_block](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_public_access_block) | resource |
-| [aws_s3_bucket_public_access_block.gitlab_runner_cache_public_access_block](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_public_access_block) | resource |
-| [aws_s3_bucket_server_side_encryption_configuration.elastic_stack_encryption](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
-| [aws_s3_bucket_server_side_encryption_configuration.gitlab_runner_encryption](https://registry.terraform.io/providers/aws/4.10.0/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
-| [helm_release.aws_loadbalancer_controller](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.aws_node_termination_handler](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.cert_manager](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.certificate](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.cluster_autoscaler](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.cluster_issuer](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.elk](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.external_dns](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.external_secrets](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.gitlab_runner](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.ingress_nginx](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.istio_base](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.istiod](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.kedacore](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.kiali](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.loki_stack](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.prometheus_operator](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.reloader](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.tigera_operator](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
-| [helm_release.victoria_metrics_k8s_stack](https://registry.terraform.io/providers/helm/2.5.1/docs/resources/release) | resource |
+| [aws_route53_record.default_ingress](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/route53_record) | resource |
+| [aws_s3_bucket.elastic_stack](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket.gitlab_runner_cache](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_acl.elastic_stack_acl](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_acl) | resource |
+| [aws_s3_bucket_acl.gitlab_runner_acl](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_acl) | resource |
+| [aws_s3_bucket_lifecycle_configuration.gitlab_runner_lifecycle](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_lifecycle_configuration) | resource |
+| [aws_s3_bucket_public_access_block.elastic_stack_public_access_block](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_public_access_block.gitlab_runner_cache_public_access_block](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_server_side_encryption_configuration.elastic_stack_encryption](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
+| [aws_s3_bucket_server_side_encryption_configuration.gitlab_runner_encryption](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
+| [helm_release.aws_loadbalancer_controller](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.aws_node_termination_handler](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.cert_manager](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.certificate](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.cluster_autoscaler](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.cluster_issuer](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.elk](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.external_dns](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.external_secrets](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.gitlab_runner](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.ingress_nginx](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.istio_base](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.istiod](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.kedacore](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.kiali](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.loki_stack](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.prometheus_operator](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.reloader](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.tigera_operator](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
+| [helm_release.victoria_metrics_k8s_stack](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
 | [kubectl_manifest.calico_felix](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.istio_prometheus_service_monitor_cp](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.istio_prometheus_service_monitor_dp](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.kube_prometheus_stack_operator_crds](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
-| [kubernetes_ingress_v1.default](https://registry.terraform.io/providers/kubernetes/2.10.0/docs/resources/ingress_v1) | resource |
-| [kubernetes_secret.elasticsearch_certificates](https://registry.terraform.io/providers/kubernetes/2.10.0/docs/resources/secret) | resource |
-| [kubernetes_secret.elasticsearch_credentials](https://registry.terraform.io/providers/kubernetes/2.10.0/docs/resources/secret) | resource |
-| [kubernetes_secret.elasticsearch_s3_user_creds](https://registry.terraform.io/providers/kubernetes/2.10.0/docs/resources/secret) | resource |
-| [kubernetes_secret.kibana_enc_key](https://registry.terraform.io/providers/kubernetes/2.10.0/docs/resources/secret) | resource |
-| [kubernetes_storage_class.advanced](https://registry.terraform.io/providers/kubernetes/2.10.0/docs/resources/storage_class) | resource |
+| [kubernetes_ingress_v1.default](https://registry.terraform.io/providers/hashicorp/kubernetes/2.19.0/docs/resources/ingress_v1) | resource |
+| [kubernetes_secret.elasticsearch_certificates](https://registry.terraform.io/providers/hashicorp/kubernetes/2.19.0/docs/resources/secret) | resource |
+| [kubernetes_secret.elasticsearch_credentials](https://registry.terraform.io/providers/hashicorp/kubernetes/2.19.0/docs/resources/secret) | resource |
+| [kubernetes_secret.elasticsearch_s3_user_creds](https://registry.terraform.io/providers/hashicorp/kubernetes/2.19.0/docs/resources/secret) | resource |
+| [kubernetes_secret.kibana_enc_key](https://registry.terraform.io/providers/hashicorp/kubernetes/2.19.0/docs/resources/secret) | resource |
+| [kubernetes_storage_class.advanced](https://registry.terraform.io/providers/hashicorp/kubernetes/2.19.0/docs/resources/storage_class) | resource |
 | [random_string.elasticsearch_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [random_string.kibana_enc_key](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
 | [random_string.kibana_password](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) | resource |
@@ -107,12 +107,12 @@
 | [tls_private_key.aws_loadbalancer_controller_webhook](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
 | [tls_private_key.aws_loadbalancer_controller_webhook_ca](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
 | [tls_self_signed_cert.aws_loadbalancer_controller_webhook_ca](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/self_signed_cert) | resource |
-| [aws_caller_identity.current](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/caller_identity) | data source |
-| [aws_eks_cluster.main](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/eks_cluster) | data source |
-| [aws_eks_cluster_auth.main](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/eks_cluster_auth) | data source |
-| [aws_secretsmanager_secret.infra](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/secretsmanager_secret) | data source |
-| [aws_secretsmanager_secret_version.infra](https://registry.terraform.io/providers/aws/4.10.0/docs/data-sources/secretsmanager_secret_version) | data source |
-| [http_http.kube_prometheus_stack_operator_crds](https://registry.terraform.io/providers/hashicorp/http/2.1.0/docs/data-sources/http) | data source |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/caller_identity) | data source |
+| [aws_eks_cluster.main](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/eks_cluster) | data source |
+| [aws_eks_cluster_auth.main](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/eks_cluster_auth) | data source |
+| [aws_secretsmanager_secret.infra](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/secretsmanager_secret) | data source |
+| [aws_secretsmanager_secret_version.infra](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/secretsmanager_secret_version) | data source |
+| [http_http.kube_prometheus_stack_operator_crds](https://registry.terraform.io/providers/hashicorp/http/3.2.1/docs/data-sources/http) | data source |
 
 ## Inputs
 
@@ -126,6 +126,7 @@
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | ID of the created EKS cluster. | `any` | n/a | yes |
 | <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | ARN of EKS oidc provider | `any` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Env name | `string` | `"demo"` | no |
+| <a name="input_helm_charts_path"></a> [helm\_charts\_path](#input\_helm\_charts\_path) | where to find the helm charts | `string` | `"../../helm-charts/"` | no |
 | <a name="input_helm_release_history_size"></a> [helm\_release\_history\_size](#input\_helm\_release\_history\_size) | How much helm releases to store | `number` | `5` | no |
 | <a name="input_name"></a> [name](#input\_name) | Project name, required to create unique resource names | `any` | n/a | yes |
 | <a name="input_nginx_ingress_ssl_terminator"></a> [nginx\_ingress\_ssl\_terminator](#input\_nginx\_ingress\_ssl\_terminator) | Select SSL termination type | `string` | `"lb"` | no |
