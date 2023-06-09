@@ -21,6 +21,11 @@ variable "aws_account_password_policy" {
   }
 }
 
+variable "is_this_payment_account" {
+  default     = false
+  description = "Set it to false if target account is under AWS Organization. This variable is used to enable apply configuration for cost allocation tags"
+}
+
 variable "name" {
   description = "Project name, required to create unique resource names"
 }

@@ -56,11 +56,6 @@ module "eks" {
   cluster_enabled_log_types              = var.eks_cluster_enabled_log_types
   cloudwatch_log_group_retention_in_days = var.eks_cloudwatch_log_group_retention_in_days
 
-  tags = {
-    ClusterName = local.name
-    Environment = local.env
-  }
-
   vpc_id = module.vpc.vpc_id
 
   cluster_endpoint_public_access       = var.eks_cluster_endpoint_public_access
@@ -185,6 +180,7 @@ module "eks" {
     }
   }
 
+  tags = { "ClusterName" = local.name }
 }
 
 module "vpc_cni_irsa" {

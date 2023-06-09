@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "4.62.0"
+      version = "5.1.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
@@ -32,4 +32,25 @@ resource "aws_iam_account_password_policy" "default" {
   require_symbols                = var.aws_account_password_policy.require_symbols
   allow_users_to_change_password = var.aws_account_password_policy.allow_users_to_change_password
   max_password_age               = var.aws_account_password_policy.max_password_age
+}
+
+
+module "aws-cost-allocation-tags" {
+  count  = var.is_this_payment_account ? 1 : 0
+  source = "../modules/aws-cost-allocation-tags"
+
+  tags = [
+    {
+      tag_key = "Environment"
+      status  = "Active"
+    },
+    {
+      tag_key = "Terraform"
+      status  = "Active"
+    },
+    {
+      tag_key = "aws:autoscaling:groupName"
+      status  = "Active"
+    }
+  ]
 }
