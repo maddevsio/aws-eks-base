@@ -36,9 +36,9 @@ resource "aws_iam_account_password_policy" "default" {
 
 
 module "aws-cost-allocation-tags" {
-  count  = var.is_this_payment_account ? 1 : 0
-  source = "../modules/aws-cost-allocation-tags"
+  count = var.is_this_payment_account ? 1 : 0
 
+  source = "../modules/aws-cost-allocation-tags"
   tags = [
     {
       tag_key = "Environment"
