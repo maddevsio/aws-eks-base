@@ -22,7 +22,7 @@ variable "aws_account_password_policy" {
 }
 
 variable "is_this_payment_account" {
-  default     = false
+  default     = true
   description = "Set it to false if target account is under AWS Organization. This variable is used to enable apply configuration for cost allocation tags"
 }
 
