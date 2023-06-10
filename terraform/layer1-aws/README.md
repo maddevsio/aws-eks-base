@@ -3,20 +3,21 @@
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | 1.4.4 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 4.62.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | 5.1.0 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | 2.19.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.62.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.1.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_acm"></a> [acm](#module\_acm) | terraform-aws-modules/acm/aws | 4.3.2 |
+| <a name="module_aws_cost_allocation_tags"></a> [aws\_cost\_allocation\_tags](#module\_aws\_cost\_allocation\_tags) | ../modules/aws-cost-allocation-tags | n/a |
 | <a name="module_aws_ebs_csi_driver"></a> [aws\_ebs\_csi\_driver](#module\_aws\_ebs\_csi\_driver) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | 5.17.0 |
 | <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | 19.12.0 |
 | <a name="module_eventbridge"></a> [eventbridge](#module\_eventbridge) | terraform-aws-modules/eventbridge/aws | 1.17.3 |
@@ -30,25 +31,24 @@
 
 | Name | Type |
 |------|------|
-| [aws_cloudtrail.main](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/cloudtrail) | resource |
-| [aws_ebs_encryption_by_default.default](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/ebs_encryption_by_default) | resource |
-| [aws_iam_account_password_policy.default](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/iam_account_password_policy) | resource |
-| [aws_s3_bucket.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket) | resource |
-| [aws_s3_bucket_acl.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_acl) | resource |
-| [aws_s3_bucket_lifecycle_configuration.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_lifecycle_configuration) | resource |
-| [aws_s3_bucket_policy.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_policy) | resource |
-| [aws_s3_bucket_public_access_block.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_public_access_block) | resource |
-| [aws_s3_bucket_server_side_encryption_configuration.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
-| [aws_sns_topic.security_alerts](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/sns_topic) | resource |
-| [aws_sns_topic_policy.security_alerts](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/sns_topic_policy) | resource |
-| [aws_sns_topic_subscription.security_alerts](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/resources/sns_topic_subscription) | resource |
-| [aws_acm_certificate.main](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/acm_certificate) | data source |
-| [aws_ami.eks_default_bottlerocket](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/ami) | data source |
-| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/availability_zones) | data source |
-| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/caller_identity) | data source |
-| [aws_eks_cluster_auth.main](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/eks_cluster_auth) | data source |
-| [aws_route53_zone.main](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/route53_zone) | data source |
-| [aws_security_group.default](https://registry.terraform.io/providers/hashicorp/aws/4.62.0/docs/data-sources/security_group) | data source |
+| [aws_cloudtrail.main](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/resources/cloudtrail) | resource |
+| [aws_ebs_encryption_by_default.default](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/resources/ebs_encryption_by_default) | resource |
+| [aws_iam_account_password_policy.default](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/resources/iam_account_password_policy) | resource |
+| [aws_s3_bucket.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_lifecycle_configuration.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/resources/s3_bucket_lifecycle_configuration) | resource |
+| [aws_s3_bucket_policy.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/resources/s3_bucket_policy) | resource |
+| [aws_s3_bucket_public_access_block.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_server_side_encryption_configuration.cloudtrail](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
+| [aws_sns_topic.security_alerts](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/resources/sns_topic) | resource |
+| [aws_sns_topic_policy.security_alerts](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/resources/sns_topic_policy) | resource |
+| [aws_sns_topic_subscription.security_alerts](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/resources/sns_topic_subscription) | resource |
+| [aws_acm_certificate.main](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/data-sources/acm_certificate) | data source |
+| [aws_ami.eks_default_bottlerocket](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/data-sources/ami) | data source |
+| [aws_availability_zones.available](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/data-sources/availability_zones) | data source |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/data-sources/caller_identity) | data source |
+| [aws_eks_cluster_auth.main](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/data-sources/eks_cluster_auth) | data source |
+| [aws_route53_zone.main](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/data-sources/route53_zone) | data source |
+| [aws_security_group.default](https://registry.terraform.io/providers/hashicorp/aws/5.1.0/docs/data-sources/security_group) | data source |
 
 ## Inputs
 
@@ -75,6 +75,7 @@
 | <a name="input_eks_workers_additional_policies"></a> [eks\_workers\_additional\_policies](#input\_eks\_workers\_additional\_policies) | Additional IAM policy attached to EKS worker nodes | `map(string)` | <pre>{<br>  "additional": "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"<br>}</pre> | no |
 | <a name="input_eks_write_kubeconfig"></a> [eks\_write\_kubeconfig](#input\_eks\_write\_kubeconfig) | Flag for eks module to write kubeconfig | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Env name in case workspace wasn't used | `string` | `"demo"` | no |
+| <a name="input_is_this_payment_account"></a> [is\_this\_payment\_account](#input\_is\_this\_payment\_account) | Set it to false if a target account isn't a payer account. This variable is used to apply a configuration for cost allocation tags | `bool` | `true` | no |
 | <a name="input_name"></a> [name](#input\_name) | Project name, required to create unique resource names | `any` | n/a | yes |
 | <a name="input_node_group_br"></a> [node\_group\_br](#input\_node\_group\_br) | Bottlerocket node group configuration | <pre>object({<br>    instance_type              = string<br>    max_capacity               = number<br>    min_capacity               = number<br>    desired_capacity           = number<br>    capacity_rebalance         = bool<br>    use_mixed_instances_policy = bool<br>    mixed_instances_policy     = any<br>  })</pre> | <pre>{<br>  "capacity_rebalance": true,<br>  "desired_capacity": 0,<br>  "instance_type": "t3.medium",<br>  "max_capacity": 5,<br>  "min_capacity": 0,<br>  "mixed_instances_policy": {<br>    "instances_distribution": {<br>      "on_demand_base_capacity": 0,<br>      "on_demand_percentage_above_base_capacity": 0<br>    },<br>    "override": [<br>      {<br>        "instance_type": "t3.medium"<br>      },<br>      {<br>        "instance_type": "t3a.medium"<br>      }<br>    ]<br>  },<br>  "use_mixed_instances_policy": true<br>}</pre> | no |
 | <a name="input_node_group_ci"></a> [node\_group\_ci](#input\_node\_group\_ci) | CI node group configuration | <pre>object({<br>    instance_type              = string<br>    max_capacity               = number<br>    min_capacity               = number<br>    desired_capacity           = number<br>    capacity_rebalance         = bool<br>    use_mixed_instances_policy = bool<br>    mixed_instances_policy     = any<br>  })</pre> | <pre>{<br>  "capacity_rebalance": false,<br>  "desired_capacity": 0,<br>  "instance_type": "t3.medium",<br>  "max_capacity": 5,<br>  "min_capacity": 0,<br>  "mixed_instances_policy": {<br>    "instances_distribution": {<br>      "on_demand_base_capacity": 0,<br>      "on_demand_percentage_above_base_capacity": 0<br>    },<br>    "override": [<br>      {<br>        "instance_type": "t3.medium"<br>      },<br>      {<br>        "instance_type": "t3a.medium"<br>      }<br>    ]<br>  },<br>  "use_mixed_instances_policy": true<br>}</pre> | no |
