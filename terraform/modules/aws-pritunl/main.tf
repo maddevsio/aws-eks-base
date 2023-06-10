@@ -1,6 +1,6 @@
 data "aws_region" "current" {}
 resource "aws_eip" "this" {
-  vpc = true
+  domain = "vpc"
   tags = {
     Name        = var.name
     Environment = var.environment

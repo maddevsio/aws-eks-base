@@ -1,6 +1,13 @@
 provider "aws" {
   region              = var.region
   allowed_account_ids = var.allowed_account_ids
+  default_tags {
+    tags = {
+      Name        = local.name
+      Environment = local.env
+      Terraform   = "true"
+    }
+  }
 }
 
 provider "kubernetes" {
