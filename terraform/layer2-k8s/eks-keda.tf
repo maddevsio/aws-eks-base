@@ -52,6 +52,32 @@ module "keda_namespace" {
           }
         ]
       }
+    },
+    {
+      name         = "allow-control-plane"
+      policy_types = ["Ingress"]
+      pod_selector = {
+        match_expressions = {
+          key      = "app"
+          operator = "In"
+          values   = ["keda-operator-metrics-apiserver"]
+        }
+      }
+      ingress = {
+        ports = [
+          {
+            port     = "6443"
+            protocol = "TCP"
+          }
+        ]
+        from = [
+          {
+            ip_block = {
+              cidr = "0.0.0.0/0"
+            }
+          }
+        ]
+      }
     }
   ]
 }
