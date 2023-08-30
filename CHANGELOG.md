@@ -12,8 +12,34 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+<a name="v9.1.0"></a>
+## [v9.1.0] - 2023-07-11
+FEATURES:
+- Upgrade all applications in layer2 ([#331](https://github.com/maddevsio/aws-eks-base/issues/331))
+- Decoupled layers by using terragrunt v2 ([#313](https://github.com/maddevsio/aws-eks-base/issues/313))
+
+ENHANCEMENTS:
+- Use default tags on an aws provider level ([#336](https://github.com/maddevsio/aws-eks-base/issues/336))
+- Feat/upgrade terraform terragrunt providers modules ([#330](https://github.com/maddevsio/aws-eks-base/issues/330))
+- [#319](https://github.com/maddevsio/aws-eks-base/issues/319) updated k8s version, updated dependent resources and small bugfixes ([#324](https://github.com/maddevsio/aws-eks-base/issues/324))
+- Issue [#309](https://github.com/maddevsio/aws-eks-base/issues/309) update terragrunt version to 0.39.1 ([#310](https://github.com/maddevsio/aws-eks-base/issues/310))
+
+BUG FIXES:
+- Network policy for keda ([#338](https://github.com/maddevsio/aws-eks-base/issues/338))
+- Fixed terraform docs resources links ([#335](https://github.com/maddevsio/aws-eks-base/issues/335))
+- Bug/terragrunt deploy cluster issuer ([#332](https://github.com/maddevsio/aws-eks-base/issues/332))
+- Fixed bug zone_id value ([#333](https://github.com/maddevsio/aws-eks-base/issues/333))
+- Add new network policy to loki namespace ([#323](https://github.com/maddevsio/aws-eks-base/issues/323))
+- Change network policy ([#321](https://github.com/maddevsio/aws-eks-base/issues/321))
+- Issue [#294](https://github.com/maddevsio/aws-eks-base/issues/294) correct version terragrunt ([#308](https://github.com/maddevsio/aws-eks-base/issues/308))
+- Issue [#304](https://github.com/maddevsio/aws-eks-base/issues/304) layer2-aws terraform plan error ([#305](https://github.com/maddevsio/aws-eks-base/issues/305))
+- Fixed deprecated issues with bucket encryption, lifecylce, bucket_acl and key algorithm ([#303](https://github.com/maddevsio/aws-eks-base/issues/303))
+
+
+
+
 <a name="v9.0.0"></a>
-## [v9.0.0] - 2022-10-20
+## [v9.0.0] - 2022-10-21
 FEATURES:
 - Decoupled layers by using terragrunt v2 ([#313](https://github.com/maddevsio/aws-eks-base/issues/313))
 - CIS benchmark alerts using Eventbridge ([#283](https://github.com/maddevsio/aws-eks-base/issues/283))
@@ -204,7 +230,8 @@ DOCS:
 
 
 
-[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v9.0.0...HEAD
+[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v9.1.0...HEAD
+[v9.1.0]: https://github.com/maddevsio/aws-eks-base/compare/v9.0.0...v9.1.0
 [v9.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v8.0.0...v9.0.0
 [v8.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v7.0.0...v8.0.0
 [v7.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v6.1.1...v7.0.0
