@@ -1,25 +1,25 @@
 # Table of content
 
 <!-- TOC -->
-  * [EKS Upgrading](#eks-upgrading)
-  * [K8S namespace features:](#k8s-namespace-features-)
-  * [Gitlab-runner](#gitlab-runner)
-    * [How to add more restrictions for Gitlab-Runner](#how-to-add-more-restrictions-for-gitlab-runner)
-  * [Monitoring](#monitoring)
-  * [Grafana: How to add GitHub/Gitlab OAuth2 Authentication:](#grafana--how-to-add-githubgitlab-oauth2-authentication-)
-  * [Alertmanager](#alertmanager)
-    * [If you want to receive alerts **via Slack**, then do next:](#if-you-want-to-receive-alerts-via-slack--then-do-next-)
-  * [Deleting Tigera-operator](#deleting-tigera-operator)
-  * [What if you don't want to use an aws-load-balancer controller in front of an ingress-nginx and want to use a cert-manager and terminate SSL on ingres-nginx side](#what-if-you-dont-want-to-use-an-aws-load-balancer-controller-in-front-of-an-ingress-nginx-and-want-to-use-a-cert-manager-and-terminate-ssl-on-ingres-nginx-side)
-  * [Apply using terraform](#apply-using-terraform)
-    * [S3 state backend](#s3-state-backend)
-      * [Inputs](#inputs)
-      * [init](#init)
-      * [plan](#plan)
-      * [apply](#apply)
-  * [Update terraform version](#update-terraform-version)
-  * [Update terraform providers](#update-terraform-providers)
-  * [Update terragrunt version](#update-terragrunt-version)
+- [Table of content](#table-of-content)
+  - [EKS Upgrading](#eks-upgrading)
+  - [K8S namespace features:](#k8s-namespace-features)
+  - [Gitlab-runner](#gitlab-runner)
+    - [How to add more restrictions for Gitlab-Runner](#how-to-add-more-restrictions-for-gitlab-runner)
+  - [Monitoring](#monitoring)
+  - [Grafana: How to add GitHub/Gitlab OAuth2 Authentication:](#grafana-how-to-add-githubgitlab-oauth2-authentication)
+  - [Alertmanager](#alertmanager)
+    - [If you want to receive alerts **via Slack**, then do next:](#if-you-want-to-receive-alerts-via-slack-then-do-next)
+  - [What if you don't want to use an aws-load-balancer controller in front of an ingress-nginx and want to use a cert-manager and terminate SSL on ingres-nginx side](#what-if-you-dont-want-to-use-an-aws-load-balancer-controller-in-front-of-an-ingress-nginx-and-want-to-use-a-cert-manager-and-terminate-ssl-on-ingres-nginx-side)
+  - [Apply using terraform](#apply-using-terraform)
+    - [S3 state backend](#s3-state-backend)
+      - [Inputs](#inputs)
+      - [init](#init)
+      - [plan](#plan)
+      - [apply](#apply)
+  - [Update terraform version](#update-terraform-version)
+  - [Update terraform providers](#update-terraform-providers)
+  - [Update terragrunt version](#update-terragrunt-version)
 <!-- TOC -->
 
 ## EKS Upgrading
@@ -326,22 +326,6 @@ Alertmanager is disabled in default installation. If you want to enable it, then
 ### If you want to receive alerts **via Slack**, then do next:
 * See [this instruction](https://slack.com/help/articles/115005265063-Incoming-webhooks-for-Slack) and generate Slack Incoming Webhook
 * Set `alertmanager_slack_webhook`, `alertmanager_slack_channel` variables in [AWS Secrets Manager](https://console.aws.amazon.com/secretsmanager/home?region=us-east-1#!/home) secret with the pattern `/${local.name_wo_region}/infra/layer2-k8s`.
-
-## Deleting Tigera-operator
-1. Run:
-
-    ```bash
-    $ kubectl delete installations.operator.tigera.io default
-    ```
-
-2. Set `enabled: false` for `id: tigera-operator` in the file **helm-releases.yaml**
-3. Run `terraform apply` in the layer2-k8s folder
-4. Run:
-
-    ```bash
-    $ kubectl delete ns calico-apiserver calico-system
-    ```
-5. Restart all nodes
 
 ## What if you don't want to use an aws-load-balancer controller in front of an ingress-nginx and want to use a cert-manager and terminate SSL on ingres-nginx side
 

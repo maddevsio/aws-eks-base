@@ -50,7 +50,6 @@
 | <a name="module_kube_prometheus_stack_namespace"></a> [kube\_prometheus\_stack\_namespace](#module\_kube\_prometheus\_stack\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
 | <a name="module_loki_namespace"></a> [loki\_namespace](#module\_loki\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
 | <a name="module_reloader_namespace"></a> [reloader\_namespace](#module\_reloader\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
-| <a name="module_tigera_operator_namespace"></a> [tigera\_operator\_namespace](#module\_tigera\_operator\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
 | <a name="module_victoria_metrics_k8s_stack_namespace"></a> [victoria\_metrics\_k8s\_stack\_namespace](#module\_victoria\_metrics\_k8s\_stack\_namespace) | ../modules/eks-kubernetes-namespace | n/a |
 
 ## Resources
@@ -85,9 +84,7 @@
 | [helm_release.loki_stack](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
 | [helm_release.prometheus_operator](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
 | [helm_release.reloader](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
-| [helm_release.tigera_operator](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
 | [helm_release.victoria_metrics_k8s_stack](https://registry.terraform.io/providers/hashicorp/helm/2.6.0/docs/resources/release) | resource |
-| [kubectl_manifest.calico_felix](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.istio_prometheus_service_monitor_cp](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.istio_prometheus_service_monitor_dp](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
 | [kubectl_manifest.kube_prometheus_stack_operator_crds](https://registry.terraform.io/providers/gavinbunney/kubectl/1.14.0/docs/resources/manifest) | resource |
