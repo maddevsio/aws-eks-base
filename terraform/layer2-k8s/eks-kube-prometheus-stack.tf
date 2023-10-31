@@ -128,7 +128,6 @@ grafana:
         - name: CloudWatch
           type: cloudwatch
           jsonData:
-            authType: credentials
             defaultRegion: "${local.region}"
         - name: Loki
           type: loki
