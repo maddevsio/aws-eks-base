@@ -33,7 +33,6 @@ variable "limits" {
     {
       type = "Container"
       default = {
-        cpu    = "150m"
         memory = "128Mi"
       }
       default_request = {
