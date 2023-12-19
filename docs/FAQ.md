@@ -43,7 +43,6 @@ We strongly recommend using our terraform module `kubernetes-namespace` to manag
     {
       type = "Container"
       default = {
-        cpu    = "150m"
         memory = "128Mi"
       }
       default_request = {
