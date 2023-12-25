@@ -108,3 +108,15 @@ output "ssl_certificate_arn" {
   description = "ARN of SSL certificate"
   value       = local.ssl_certificate_arn
 }
+
+output "node_group_default_iam_instance_profile_id" {
+  value = module.eks.self_managed_node_groups["default"].iam_instance_profile_id
+}
+
+output "node_group_default_iam_role_arn" {
+  value = module.eks.self_managed_node_groups["default"].iam_role_arn
+}
+
+output "node_group_default_iam_role_name" {
+  value = module.eks.self_managed_node_groups["default"].iam_role_name
+}

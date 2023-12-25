@@ -1,16 +1,10 @@
 releases:
   - id: aws-load-balancer-controller
-    enabled: true
+    enabled: false
     chart: aws-load-balancer-controller
     repository: https://aws.github.io/eks-charts
     chart_version: 1.5.1
     namespace: aws-load-balancer-controller
-  - id: aws-node-termination-handler
-    enabled: true
-    chart: aws-node-termination-handler
-    repository: https://aws.github.io/eks-charts
-    chart_version: 0.21.0
-    namespace: aws-node-termination-handler
   - id: cert-manager
     enabled: false
     chart: cert-manager
@@ -29,12 +23,6 @@ releases:
     repository:
     chart_version:
     namespace: certmanager
-  - id: cluster-autoscaler
-    enabled: true
-    chart: cluster-autoscaler
-    repository: https://kubernetes.github.io/autoscaler
-    chart_version: 9.28.0
-    namespace: cluster-autoscaler
   - id: elk
     enabled: false
     chart: elk

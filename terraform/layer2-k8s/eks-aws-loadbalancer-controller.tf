@@ -19,16 +19,6 @@ serviceAccount:
   create: true
   annotations:
      "eks.amazonaws.com/role-arn": ${local.aws_load_balancer_controller.enabled ? module.aws_iam_aws_loadbalancer_controller[0].role_arn : ""}
-
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: eks.amazonaws.com/capacityType
-          operator: In
-          values:
-            - ON_DEMAND
 VALUES
 }
 

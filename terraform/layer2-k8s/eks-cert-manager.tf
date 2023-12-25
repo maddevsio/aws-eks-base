@@ -30,15 +30,7 @@ serviceAccount:
     "eks.amazonaws.com/role-arn": ${local.cert_manager.enabled ? module.aws_iam_cert_manager[0].role_arn : ""}
 securityContext:
   fsGroup: 1001
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: eks.amazonaws.com/capacityType
-          operator: In
-          values:
-            - ON_DEMAND
+
 cainjector:
   enabled: true
   replicaCount: 1

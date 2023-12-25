@@ -63,10 +63,10 @@ vmsingle:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
           - matchExpressions:
-            - key: eks.amazonaws.com/capacityType
+            - key: karpenter.sh/capacity-type
               operator: In
               values:
-                - ON_DEMAND
+                - on-demand
 vmagent:
   spec:
     extraArgs:
@@ -84,10 +84,10 @@ vmagent:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
           - matchExpressions:
-            - key: eks.amazonaws.com/capacityType
+            - key: karpenter.sh/capacity-type
               operator: In
               values:
-                - ON_DEMAND
+                - on-demand
 kubeScheduler:
   enabled: false
 kubeControllerManager:
@@ -181,10 +181,10 @@ grafana:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: eks.amazonaws.com/capacityType
+          - key: karpenter.sh/capacity-type
             operator: In
             values:
-              - SPOT
+              - spot
 VALUES
   victoria_metrics_k8s_stack_grafana_istio_values                 = <<VALUES
 grafana:
@@ -291,10 +291,10 @@ alertmanager:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
           - matchExpressions:
-              - key: eks.amazonaws.com/capacityType
+              - key: karpenter.sh/capacity-type
                 operator: In
                 values:
-                  - ON_DEMAND
+                  - on-demand
 VALUES
   victoria_metrics_k8s_stack_alertmanager_slack_values            = <<VALUES
 # Alertmanager parameters

@@ -19,14 +19,3 @@ single_nat_gateway = true
 # EKS
 ##########
 eks_cluster_encryption_config_enable = true
-
-node_group_ondemand = {
-  instance_types       = ["m5a.medium"]
-  capacity_type        = "ON_DEMAND"
-  max_capacity         = 5
-  min_capacity         = 1
-  desired_capacity     = 1
-  force_update_version = false
-}
-
-eks_write_kubeconfig = false

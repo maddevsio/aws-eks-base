@@ -1,8 +1,4 @@
 locals {
-  eks_worker_tags = {
-    "k8s.io/cluster-autoscaler/enabled"       = "true"
-    "k8s.io/cluster-autoscaler/${local.name}" = "owned"
-  }
 
   eks_map_roles = [
     {
@@ -13,13 +9,14 @@ locals {
   ]
 }
 
-data "aws_ami" "eks_default_bottlerocket" {
+data "aws_ami" "eks_default_arm64" {
   most_recent = true
   owners      = ["amazon"]
 
   filter {
     name   = "name"
-    values = ["bottlerocket-aws-k8s-${var.eks_cluster_version}-x86_64-*"]
+    values = ["amazon-eks-arm64-node-${var.eks_cluster_version}-v*"]
+
   }
 }
 
@@ -65,7 +62,10 @@ module "eks" {
   cluster_endpoint_private_access      = var.eks_cluster_endpoint_private_access
   cluster_endpoint_public_access_cidrs = var.eks_cluster_endpoint_only_pritunl ? ["${module.pritunl[0].pritunl_endpoint}/32"] : ["0.0.0.0/0"]
 
+  node_security_group_tags = { "karpenter.sh/discovery" = local.name }
+
   self_managed_node_group_defaults = {
+    ami_id = data.aws_ami.eks_default_arm64.id
     block_device_mappings = {
       xvda = {
         device_name = "/dev/xvda"
@@ -78,7 +78,7 @@ module "eks" {
 
       }
     }
-    iam_role_additional_policies = var.eks_workers_additional_policies
+    # iam_role_additional_policies = var.eks_workers_additional_policies
     metadata_options = {
       http_endpoint               = "enabled"
       http_tokens                 = "required"
@@ -88,81 +88,18 @@ module "eks" {
     iam_role_attach_cni_policy = false
   }
   self_managed_node_groups = {
-    spot = {
-      name          = "${local.name}-spot"
-      iam_role_name = "${local.name}-spot"
-      desired_size  = var.node_group_spot.desired_capacity
-      max_size      = var.node_group_spot.max_capacity
-      min_size      = var.node_group_spot.min_capacity
+    default = {
+      name          = "${local.name}-default"
+      iam_role_name = "${local.name}-default"
+      desired_size  = var.node_group_default.desired_capacity
+      max_size      = var.node_group_default.max_capacity
+      min_size      = var.node_group_default.min_capacity
       subnet_ids    = module.vpc.private_subnets
 
-      bootstrap_extra_args       = "--kubelet-extra-args '--node-labels=eks.amazonaws.com/capacityType=SPOT  --node-labels=nodegroup=spot'"
-      capacity_rebalance         = var.node_group_spot.capacity_rebalance
-      use_mixed_instances_policy = var.node_group_spot.use_mixed_instances_policy
-      mixed_instances_policy     = var.node_group_spot.mixed_instances_policy
-
-      tags = local.eks_worker_tags
-    },
-    ondemand = {
-      name          = "${local.name}-ondemand"
-      iam_role_name = "${local.name}-ondemand"
-      desired_size  = var.node_group_ondemand.desired_capacity
-      max_size      = var.node_group_ondemand.max_capacity
-      min_size      = var.node_group_ondemand.min_capacity
-      instance_type = var.node_group_ondemand.instance_type
-      subnet_ids    = module.vpc.private_subnets
-
-      bootstrap_extra_args       = "--kubelet-extra-args '--node-labels=eks.amazonaws.com/capacityType=ON_DEMAND --node-labels=nodegroup=ondemand'"
-      capacity_rebalance         = var.node_group_ondemand.capacity_rebalance
-      use_mixed_instances_policy = var.node_group_ondemand.use_mixed_instances_policy
-      mixed_instances_policy     = var.node_group_ondemand.mixed_instances_policy
-
-      tags = local.eks_worker_tags
-    },
-    ci = {
-      name          = "${local.name}-ci"
-      iam_role_name = "${local.name}-ci"
-      desired_size  = var.node_group_ci.desired_capacity
-      max_size      = var.node_group_ci.max_capacity
-      min_size      = var.node_group_ci.min_capacity
-      subnet_ids    = module.vpc.private_subnets
-
-      bootstrap_extra_args       = "--kubelet-extra-args '--node-labels=eks.amazonaws.com/capacityType=SPOT  --node-labels=nodegroup=ci --register-with-taints=nodegroup=ci:NoSchedule'"
-      capacity_rebalance         = var.node_group_ci.capacity_rebalance
-      use_mixed_instances_policy = var.node_group_ci.use_mixed_instances_policy
-      mixed_instances_policy     = var.node_group_ci.mixed_instances_policy
-
-      tags = merge(local.eks_worker_tags, { "k8s.io/cluster-autoscaler/node-template/label/nodegroup" = "ci" })
-    },
-    bottlerocket = {
-      name          = "${local.name}-bottlerocket"
-      iam_role_name = "${local.name}-bottlerocket"
-      desired_size  = var.node_group_br.desired_capacity
-      max_size      = var.node_group_br.max_capacity
-      min_size      = var.node_group_br.min_capacity
-      subnet_ids    = module.vpc.private_subnets
-
-      platform                   = "bottlerocket"
-      ami_id                     = data.aws_ami.eks_default_bottlerocket.id
-      bootstrap_extra_args       = <<-EOT
-          [settings.host-containers.admin]
-          enabled = false
-
-          [settings.host-containers.control]
-          enabled = true
-
-          [settings.kubernetes.node-labels]
-          "eks.amazonaws.com/capacityType" = "SPOT"
-          "nodegroup" = "bottlerocket"
-
-          [settings.kubernetes.node-taints]
-          "nodegroup" = "bottlerocket:NoSchedule"
-          EOT
-      capacity_rebalance         = var.node_group_br.capacity_rebalance
-      use_mixed_instances_policy = var.node_group_br.use_mixed_instances_policy
-      mixed_instances_policy     = var.node_group_br.mixed_instances_policy
-
-      tags = merge(local.eks_worker_tags, { "k8s.io/cluster-autoscaler/node-template/label/nodegroup" = "bottlerocket" })
+      bootstrap_extra_args       = "--kubelet-extra-args '--node-labels=nodegroup=default --register-with-taints=CriticalAddonsOnly=true:NoSchedule'"
+      capacity_rebalance         = var.node_group_default.capacity_rebalance
+      use_mixed_instances_policy = var.node_group_default.use_mixed_instances_policy
+      mixed_instances_policy     = var.node_group_default.mixed_instances_policy
     }
   }
   fargate_profiles = {
