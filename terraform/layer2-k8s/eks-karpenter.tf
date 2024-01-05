@@ -79,6 +79,11 @@ spec:
         karpenter.sh/discovery: ${local.name}
   tags:
     karpenter.sh/discovery: ${local.name}
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeSize: 100Gi
+        volumeType: gp3
 EOF
 
   depends_on = [helm_release.karpenter]
@@ -105,6 +110,11 @@ spec:
         karpenter.sh/discovery: ${local.eks_cluster_id}
   tags:
     karpenter.sh/discovery: ${local.eks_cluster_id}
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeSize: 100Gi
+        volumeType: gp3
 EOF
 
   depends_on = [helm_release.karpenter]
