@@ -36,7 +36,7 @@ releases:
     chart_version: 1.9.0
     namespace: external-dns
   - id: external-secrets
-    enabled: true
+    enabled: false
     chart: external-secrets
     repository: https://charts.external-secrets.io
     chart_version: 0.8.1
@@ -48,7 +48,7 @@ releases:
     chart_version: 0.51.1
     namespace: gitlab-runner
   - id: ingress-nginx
-    enabled: true
+    enabled: false
     chart: ingress-nginx
     repository: https://kubernetes.github.io/ingress-nginx
     chart_version: 4.6.0
@@ -59,6 +59,12 @@ releases:
     repository: https://istio-release.storage.googleapis.com/charts
     chart_version: 1.17.2
     namespace: istio-system
+  - id: karpenter
+    enabled: true
+    chart: karpenter
+    repository: oci://public.ecr.aws/karpenter
+    chart_version: v0.33.0
+    namespace: karpenter
   - id: keda
     enabled: false
     chart: keda
@@ -72,19 +78,19 @@ releases:
     chart_version: 1.66.0
     namespace: kiali
   - id: kube-prometheus-stack
-    enabled: true
+    enabled: false
     chart: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
     chart_version: 45.11.0
     namespace: monitoring
   - id: loki-stack
-    enabled: true
+    enabled: false
     chart: loki-stack
     repository: https://grafana.github.io/helm-charts
     chart_version: 2.9.10
     namespace: loki
   - id: reloader
-    enabled: true
+    enabled: false
     chart: reloader
     repository: https://stakater.github.io/stakater-charts
     chart_version: 1.0.22

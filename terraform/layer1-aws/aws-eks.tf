@@ -78,7 +78,6 @@ module "eks" {
 
       }
     }
-    # iam_role_additional_policies = var.eks_workers_additional_policies
     metadata_options = {
       http_endpoint               = "enabled"
       http_tokens                 = "required"

@@ -117,14 +117,6 @@ variable "eks_cluster_version" {
   description = "Version of the EKS K8S cluster"
 }
 
-# variable "eks_workers_additional_policies" {
-#   type = map(string)
-#   default = {
-#     additional = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-#   }
-#   description = "Additional IAM policy attached to EKS worker nodes"
-# }
-
 variable "node_group_default" {
   type = object({
     instance_type              = string
