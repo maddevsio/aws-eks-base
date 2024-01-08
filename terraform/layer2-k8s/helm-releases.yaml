@@ -30,13 +30,13 @@ releases:
     chart_version:
     namespace: elk
   - id: external-dns
-    enabled: true
+    enabled: false
     chart: external-dns
     repository: https://kubernetes-sigs.github.io/external-dns
     chart_version: 1.9.0
     namespace: external-dns
   - id: external-secrets
-    enabled: false
+    enabled: true
     chart: external-secrets
     repository: https://charts.external-secrets.io
     chart_version: 0.8.1
