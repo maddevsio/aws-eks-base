@@ -39,10 +39,10 @@ loki:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: eks.amazonaws.com/capacityType
+          - key: karpenter.sh/capacity-type
             operator: In
             values:
-              - ON_DEMAND
+              - on-demand
 
 promtail:
   enabled: true

@@ -28,11 +28,12 @@ module "vpc" {
   database_subnets = local.database_subnets
   intra_subnets    = local.intra_subnets
 
-  single_nat_gateway   = var.single_nat_gateway
-  enable_nat_gateway   = true
-  enable_vpn_gateway   = false
-  enable_dns_hostnames = true
-  enable_dns_support   = true
+  single_nat_gateway      = var.single_nat_gateway
+  enable_nat_gateway      = true
+  enable_vpn_gateway      = false
+  enable_dns_hostnames    = true
+  enable_dns_support      = true
+  map_public_ip_on_launch = true
 
   create_database_subnet_group = false
 
@@ -47,6 +48,7 @@ module "vpc" {
   private_subnet_tags = {
     Name                              = "${local.name}-private"
     destination                       = "private"
+    "karpenter.sh/discovery"          = "private"
     "kubernetes.io/role/internal-elb" = "1"
   }
 
@@ -58,6 +60,7 @@ module "vpc" {
   public_subnet_tags = {
     Name                     = "${local.name}-public"
     destination              = "public"
+    "karpenter.sh/discovery" = "public"
     "kubernetes.io/role/elb" = "1"
   }
 

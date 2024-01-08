@@ -117,15 +117,7 @@ variable "eks_cluster_version" {
   description = "Version of the EKS K8S cluster"
 }
 
-variable "eks_workers_additional_policies" {
-  type = map(string)
-  default = {
-    additional = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-  }
-  description = "Additional IAM policy attached to EKS worker nodes"
-}
-
-variable "node_group_spot" {
+variable "node_group_default" {
   type = object({
     instance_type              = string
     max_capacity               = number
@@ -137,10 +129,10 @@ variable "node_group_spot" {
   })
 
   default = {
-    instance_type              = "t3.medium" # will be overridden
-    max_capacity               = 5
-    min_capacity               = 0
-    desired_capacity           = 1
+    instance_type              = "t4g.medium" # will be overridden
+    max_capacity               = 3
+    min_capacity               = 2
+    desired_capacity           = 2
     capacity_rebalance         = true
     use_mixed_instances_policy = true
     mixed_instances_policy = {
@@ -150,101 +142,12 @@ variable "node_group_spot" {
       }
 
       override = [
-        { instance_type = "t3.medium" },
-        { instance_type = "t3a.medium" }
+        { instance_type = "t4g.small" },
+        { instance_type = "t4g.medium" }
       ]
     }
   }
-  description = "Spot node group configuration"
-}
-
-variable "node_group_ci" {
-  type = object({
-    instance_type              = string
-    max_capacity               = number
-    min_capacity               = number
-    desired_capacity           = number
-    capacity_rebalance         = bool
-    use_mixed_instances_policy = bool
-    mixed_instances_policy     = any
-  })
-
-  default = {
-    instance_type              = "t3.medium" # will be overridden
-    max_capacity               = 5
-    min_capacity               = 0
-    desired_capacity           = 0
-    capacity_rebalance         = false
-    use_mixed_instances_policy = true
-    mixed_instances_policy = {
-      instances_distribution = {
-        on_demand_base_capacity                  = 0
-        on_demand_percentage_above_base_capacity = 0
-      }
-
-      override = [
-        { instance_type = "t3.medium" },
-        { instance_type = "t3a.medium" }
-      ]
-    }
-  }
-  description = "CI node group configuration"
-}
-
-variable "node_group_ondemand" {
-  type = object({
-    instance_type              = string
-    max_capacity               = number
-    min_capacity               = number
-    desired_capacity           = number
-    capacity_rebalance         = bool
-    use_mixed_instances_policy = bool
-    mixed_instances_policy     = any
-  })
-
-  default = {
-    instance_type              = "t3a.medium"
-    max_capacity               = 5
-    min_capacity               = 1
-    desired_capacity           = 1
-    capacity_rebalance         = false
-    use_mixed_instances_policy = false
-    mixed_instances_policy     = null
-  }
-  description = "Default ondemand node group configuration"
-}
-
-variable "node_group_br" {
-  type = object({
-    instance_type              = string
-    max_capacity               = number
-    min_capacity               = number
-    desired_capacity           = number
-    capacity_rebalance         = bool
-    use_mixed_instances_policy = bool
-    mixed_instances_policy     = any
-  })
-
-  default = {
-    instance_type              = "t3.medium" # will be overridden
-    max_capacity               = 5
-    min_capacity               = 0
-    desired_capacity           = 0
-    capacity_rebalance         = true
-    use_mixed_instances_policy = true
-    mixed_instances_policy = {
-      instances_distribution = {
-        on_demand_base_capacity                  = 0
-        on_demand_percentage_above_base_capacity = 0
-      }
-
-      override = [
-        { instance_type = "t3.medium" },
-        { instance_type = "t3a.medium" }
-      ]
-    }
-  }
-  description = "Bottlerocket node group configuration"
+  description = "Default node group configuration"
 }
 
 variable "eks_map_roles" {
@@ -256,11 +159,6 @@ variable "eks_map_roles" {
   }))
 
   default = []
-}
-
-variable "eks_write_kubeconfig" {
-  default     = false
-  description = "Flag for eks module to write kubeconfig"
 }
 
 variable "eks_cluster_enabled_log_types" {
