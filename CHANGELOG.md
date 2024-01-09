@@ -12,8 +12,27 @@ project adheres to [Semantic Versioning](http://semver.org/).
 
 
 
+<a name="v10.0.0"></a>
+## [v10.0.0] - 2024-01-09
+FEATURES:
+- Switch from cluster-autoscaler to karpenter ([#349](https://github.com/maddevsio/aws-eks-base/issues/349))
+- Do not use tigera-operator for native network policies ([#341](https://github.com/maddevsio/aws-eks-base/issues/341))
+
+ENHANCEMENTS:
+- Delete cpu.limits from the limitrange configuration ([#346](https://github.com/maddevsio/aws-eks-base/issues/346))
+
+BUG FIXES:
+- Change authentication method for cloudwatch datasource ([#344](https://github.com/maddevsio/aws-eks-base/issues/344))
+- Set k8s resources for Loki workload ([#342](https://github.com/maddevsio/aws-eks-base/issues/342))
+
+DOCS:
+- Update README after adding karpenter ([#350](https://github.com/maddevsio/aws-eks-base/issues/350))
+
+
+
+
 <a name="v9.1.0"></a>
-## [v9.1.0] - 2023-07-11
+## [v9.1.0] - 2023-08-30
 FEATURES:
 - Upgrade all applications in layer2 ([#331](https://github.com/maddevsio/aws-eks-base/issues/331))
 - Decoupled layers by using terragrunt v2 ([#313](https://github.com/maddevsio/aws-eks-base/issues/313))
@@ -230,7 +249,8 @@ DOCS:
 
 
 
-[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v9.1.0...HEAD
+[Unreleased]: https://github.com/maddevsio/aws-eks-base/compare/v10.0.0...HEAD
+[v10.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v9.1.0...v10.0.0
 [v9.1.0]: https://github.com/maddevsio/aws-eks-base/compare/v9.0.0...v9.1.0
 [v9.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v8.0.0...v9.0.0
 [v8.0.0]: https://github.com/maddevsio/aws-eks-base/compare/v7.0.0...v8.0.0
