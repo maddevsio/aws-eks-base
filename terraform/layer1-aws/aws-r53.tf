@@ -14,7 +14,7 @@ module "r53_zone" {
   zones = {
     (var.domain_name) = {
       comment = var.domain_name
-      tags    = local.tags
+      tags    = var.tags
     }
   }
 }

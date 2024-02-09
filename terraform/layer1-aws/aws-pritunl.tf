@@ -3,10 +3,10 @@ module "pritunl" {
   count = var.pritunl_vpn_server_enable ? 1 : 0
 
   source          = "../modules/aws-pritunl"
-  environment     = local.env
-  vpc_id          = module.vpc.vpc_id
-  public_subnets  = module.vpc.public_subnets
-  private_subnets = module.vpc.private_subnets
+  environment     = var.env
+  vpc_id          = var.vpc_id
+  public_subnets  = var.public_subnets
+  private_subnets = var.private_subnets
   ingress_with_cidr_blocks = [
     {
       protocol    = "6"

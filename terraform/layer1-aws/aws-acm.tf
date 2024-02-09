@@ -19,5 +19,5 @@ module "acm" {
   subject_alternative_names = [
   "*.${local.domain_name}"]
 
-  tags = local.tags
+  tags = var.tags
 }

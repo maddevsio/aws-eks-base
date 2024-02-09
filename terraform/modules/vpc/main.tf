@@ -1,28 +1,20 @@
 locals {
+  az_count         = length(var.azs)
   cidr_subnets     = [for cidr_block in cidrsubnets(var.cidr, 2, 2, 2, 2) : cidrsubnets(cidr_block, 4, 4, 4, 4)]
-  private_subnets  = chunklist(local.cidr_subnets[0], var.az_count)[0]
-  public_subnets   = chunklist(local.cidr_subnets[1], var.az_count)[0]
-  database_subnets = chunklist(local.cidr_subnets[2], var.az_count)[0]
-  intra_subnets    = chunklist(local.cidr_subnets[3], var.az_count)[0]
-  azs              = data.aws_availability_zones.available.names
+  private_subnets  = chunklist(local.cidr_subnets[0], local.az_count)[0]
+  public_subnets   = chunklist(local.cidr_subnets[1], local.az_count)[0]
+  database_subnets = chunklist(local.cidr_subnets[2], local.az_count)[0]
+  intra_subnets    = chunklist(local.cidr_subnets[3], local.az_count)[0]
 }
 
-# https://github.com/terraform-aws-modules/terraform-aws-vpc/blob/master/examples/complete-vpc/main.tf#L82
-data "aws_security_group" "default" {
-  name   = "default"
-  vpc_id = module.vpc.vpc_id
-}
-
-#tfsec:ignore:aws-ec2-no-public-ip-subnet
-#tfsec:ignore:aws-ec2-require-vpc-flow-logs-for-all-vpcs
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "4.0.1"
 
-  name = local.name
+  name = var.name
   cidr = var.cidr
 
-  azs              = local.azs
+  azs              = var.azs
   private_subnets  = local.private_subnets
   public_subnets   = local.public_subnets
   database_subnets = local.database_subnets
@@ -41,51 +33,51 @@ module "vpc" {
   default_security_group_ingress = []
   default_security_group_egress  = []
 
-  tags = merge(local.tags, {
-    "kubernetes.io/cluster/${local.name}" = "shared"
+  tags = merge(var.tags, {
+    "kubernetes.io/cluster/${var.name}" = "shared"
   })
 
   private_subnet_tags = {
-    Name                              = "${local.name}-private"
+    Name                              = "${var.name}-private"
     destination                       = "private"
     "karpenter.sh/discovery"          = "private"
     "kubernetes.io/role/internal-elb" = "1"
   }
 
   private_route_table_tags = {
-    Name        = "${local.name}-private"
+    Name        = "${var.name}-private"
     destination = "private"
   }
 
   public_subnet_tags = {
-    Name                     = "${local.name}-public"
+    Name                     = "${var.name}-public"
     destination              = "public"
     "karpenter.sh/discovery" = "public"
     "kubernetes.io/role/elb" = "1"
   }
 
   public_route_table_tags = {
-    Name        = "${local.name}-public"
+    Name        = "${var.name}-public"
     destination = "public"
   }
 
   database_subnet_tags = {
-    Name        = "${local.name}-database"
+    Name        = "${var.name}-database"
     destination = "database"
   }
 
   database_route_table_tags = {
-    Name        = "${local.name}-database"
+    Name        = "${var.name}-database"
     destination = "database"
   }
 
   intra_subnet_tags = {
-    Name        = "${local.name}-intra"
+    Name        = "${var.name}-intra"
     destination = "intra"
   }
 
   intra_route_table_tags = {
-    Name        = "${local.name}-intra"
+    Name        = "${var.name}-intra"
     destination = "intra"
   }
 }
@@ -106,10 +98,10 @@ module "vpc_gateway_endpoints" {
         module.vpc.public_route_table_ids
       ])
       tags = {
-        Name = "${local.name}-s3"
+        Name = "${var.name}-s3"
       }
     }
   }
 
-  tags = local.tags
+  tags = var.tags
 }

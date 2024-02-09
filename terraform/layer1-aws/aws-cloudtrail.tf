@@ -1,22 +1,22 @@
 #tfsec:ignore:aws-cloudtrail-enable-at-rest-encryption tfsec:ignore:aws-cloudtrail-ensure-cloudwatch-integration
 resource "aws_cloudtrail" "main" {
-  name                          = local.name
+  name                          = var.name
   s3_bucket_name                = aws_s3_bucket.cloudtrail.id
   include_global_service_events = true
   enable_log_file_validation    = true
   enable_logging                = true
   is_multi_region_trail         = true
 
-  tags = local.tags
+  tags = var.tags
 
   depends_on = [aws_s3_bucket_policy.cloudtrail]
 }
 
 #tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning tfsec:ignore:aws-cloudtrail-require-bucket-access-logging
 resource "aws_s3_bucket" "cloudtrail" {
-  bucket = "${local.name}-aws-cloudtrail-logs"
+  bucket = "${var.name}-aws-cloudtrail-logs"
 
-  tags = local.tags
+  tags = var.tags
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "cloudtrail" {

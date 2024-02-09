@@ -122,3 +122,14 @@ variable "node_group_default_iam_role_name" {
   description = "The IAM Role name of a default nodegroup"
   default     = ""
 }
+
+variable "eks_auth_token" {
+
+}
+variable "eks_cluster_endpoint" {
+
+}
+
+variable "cluster_ca_certificate" {
+
+}

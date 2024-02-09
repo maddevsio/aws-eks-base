@@ -25,10 +25,10 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "19.12.0"
 
-  cluster_name              = local.name
+  cluster_name              = var.name
   cluster_version           = var.eks_cluster_version
-  subnet_ids                = module.vpc.private_subnets
-  control_plane_subnet_ids  = module.vpc.intra_subnets
+  subnet_ids                = var.private_subnets
+  control_plane_subnet_ids  = var.intra_subnets
   enable_irsa               = true
   manage_aws_auth_configmap = true
   create_aws_auth_configmap = false
@@ -56,13 +56,13 @@ module "eks" {
   cluster_enabled_log_types              = var.eks_cluster_enabled_log_types
   cloudwatch_log_group_retention_in_days = var.eks_cloudwatch_log_group_retention_in_days
 
-  vpc_id = module.vpc.vpc_id
+  vpc_id = var.vpc_id
 
   cluster_endpoint_public_access       = var.eks_cluster_endpoint_public_access
   cluster_endpoint_private_access      = var.eks_cluster_endpoint_private_access
-  cluster_endpoint_public_access_cidrs = var.eks_cluster_endpoint_only_pritunl ? ["${module.pritunl[0].pritunl_endpoint}/32"] : ["0.0.0.0/0"]
+  cluster_endpoint_public_access_cidrs = var.eks_cluster_endpoint_only_pritunl ? ["0.0.0.0/0"] : ["0.0.0.0/0"]
 
-  node_security_group_tags = { "karpenter.sh/discovery" = local.name }
+  node_security_group_tags = { "karpenter.sh/discovery" = var.name }
 
   self_managed_node_group_defaults = {
     ami_id = data.aws_ami.eks_default_arm64.id
@@ -88,12 +88,12 @@ module "eks" {
   }
   self_managed_node_groups = {
     default = {
-      name          = "${local.name}-default"
-      iam_role_name = "${local.name}-default"
+      name          = "${var.name}-default"
+      iam_role_name = "${var.name}-default"
       desired_size  = var.node_group_default.desired_capacity
       max_size      = var.node_group_default.max_capacity
       min_size      = var.node_group_default.min_capacity
-      subnet_ids    = module.vpc.private_subnets
+      subnet_ids    = var.private_subnets
 
       bootstrap_extra_args       = "--kubelet-extra-args '--node-labels=nodegroup=default --register-with-taints=CriticalAddonsOnly=true:NoSchedule'"
       capacity_rebalance         = var.node_group_default.capacity_rebalance
@@ -111,22 +111,22 @@ module "eks" {
         }
       ]
 
-      subnets = module.vpc.private_subnets
+      subnets = var.private_subnets
 
-      tags = merge(local.tags, {
+      tags = merge(var.tags, {
         Namespace = "fargate"
       })
     }
   }
 
-  tags = { "ClusterName" = local.name }
+  tags = { "ClusterName" = var.name }
 }
 
 module "vpc_cni_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "5.17.0"
 
-  role_name             = "${local.name}-vpc-cni"
+  role_name             = "${var.name}-vpc-cni"
   attach_vpc_cni_policy = true
   vpc_cni_enable_ipv4   = true
 
@@ -137,14 +137,14 @@ module "vpc_cni_irsa" {
     }
   }
 
-  tags = local.tags
+  tags = var.tags
 }
 
 module "aws_ebs_csi_driver" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "5.17.0"
 
-  role_name             = "${local.name}-aws-ebs-csi-driver"
+  role_name             = "${var.name}-aws-ebs-csi-driver"
   attach_ebs_csi_policy = true
 
   oidc_providers = {
@@ -154,5 +154,5 @@ module "aws_ebs_csi_driver" {
     }
   }
 
-  tags = local.tags
+  tags = var.tags
 }
