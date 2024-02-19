@@ -22,7 +22,7 @@ variable "aws_account_password_policy" {
 }
 
 variable "is_this_payment_account" {
-  default     = true
+  default     = false
   description = "Set it to false if a target account isn't a payer account. This variable is used to apply a configuration for cost allocation tags"
 }
 
@@ -103,21 +103,27 @@ variable "cloudtrail_logs_s3_expiration_days" {
 variable "tags" {
   type = any
 }
+
 variable "private_subnets" {
   type = list(any)
 }
+
 variable "public_subnets" {
   type = list(any)
 }
+
 variable "intra_subnets" {
   type = list(any)
 }
+
 variable "vpc_id" {
 
 }
+
 variable "region" {
 
 }
+
 variable "env" {
 
 }

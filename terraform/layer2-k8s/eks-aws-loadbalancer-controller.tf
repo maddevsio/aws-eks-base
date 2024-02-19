@@ -142,7 +142,8 @@ module "aws_iam_aws_loadbalancer_controller" {
           "elasticloadbalancing:DescribeTargetGroups",
           "elasticloadbalancing:DescribeTargetGroupAttributes",
           "elasticloadbalancing:DescribeTargetHealth",
-          "elasticloadbalancing:DescribeTags"
+          "elasticloadbalancing:DescribeTags",
+          "elasticloadbalancing:DescribeTrustStores"
         ],
         "Resource" : "*"
       },
@@ -303,6 +304,28 @@ module "aws_iam_aws_loadbalancer_controller" {
       {
         "Effect" : "Allow",
         "Action" : [
+          "elasticloadbalancing:AddTags"
+        ],
+        "Resource" : [
+          "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
+          "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
+          "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*"
+        ],
+        "Condition" : {
+          "StringEquals" : {
+            "elasticloadbalancing:CreateAction" : [
+              "CreateTargetGroup",
+              "CreateLoadBalancer"
+            ]
+          },
+          "Null" : {
+            "aws:RequestTag/elbv2.k8s.aws/cluster" : "false"
+          }
+        }
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
           "elasticloadbalancing:RegisterTargets",
           "elasticloadbalancing:DeregisterTargets"
         ],
@@ -404,6 +427,8 @@ resource "helm_release" "aws_loadbalancer_controller" {
     name  = "webhookTLS.key"
     value = tls_private_key.aws_loadbalancer_controller_webhook[0].private_key_pem
   }
+
+  depends_on = [helm_release.karpenter]
 }
 
 resource "kubernetes_ingress_v1" "default" {

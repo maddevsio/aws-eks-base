@@ -8,6 +8,10 @@ variable "name" {
   description = "Project name, required to create unique resource names"
 }
 
+variable "name_wo_region" {
+  description = "Project name, required to create unique resource names without region suffix"
+}
+
 variable "environment" {
   default     = "demo"
   description = "Env name"
@@ -121,15 +125,4 @@ variable "node_group_default_iam_role_arn" {
 variable "node_group_default_iam_role_name" {
   description = "The IAM Role name of a default nodegroup"
   default     = ""
-}
-
-variable "eks_auth_token" {
-
-}
-variable "eks_cluster_endpoint" {
-
-}
-
-variable "cluster_ca_certificate" {
-
 }

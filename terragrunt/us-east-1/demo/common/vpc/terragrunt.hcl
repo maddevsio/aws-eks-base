@@ -11,7 +11,7 @@ include "env" {
 }
 
 terraform {
-  source = "${get_terragrunt_dir()}/../../../../terraform//modules/vpc"
+  source = "${get_terragrunt_dir()}/../../../../../terraform//modules/vpc"
 }
 
 inputs = {
