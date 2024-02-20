@@ -104,7 +104,7 @@ spec:
   subnetSelectorTerms:
     - tags:
         karpenter.sh/discovery: "public"
-        Name: "${local.name}-public"
+        Name: "${var.name}-public"
   securityGroupSelectorTerms:
     - tags:
         karpenter.sh/discovery: ${local.eks_cluster_id}
