@@ -1,33 +1,40 @@
 variable "name" {
-  type = string
+  type        = string
+  description = "Name, required to create unique resource names"
 }
 
 variable "env" {
-  type = string
+  type        = string
+  description = "Environment name"
 }
 
 variable "region" {
-  type = string
+  type        = string
+  description = "Infrastructure region"
 }
 
 variable "vpc_id" {
-  type = string
+  type        = string
+  description = "The ID of the VPC where cluster will created"
 }
 
 variable "intra_subnets" {
-  type = list(any)
+  type        = list(any)
+  description = "A list of intra subnets inside the VPC"
 }
 
 variable "private_subnets" {
-  type = list(any)
+  type        = list(any)
+  description = "A list of private subnets inside the VPC"
 }
 
 variable "public_subnets" {
-  type = list(any)
+  type        = list(any)
+  description = "A list of public subnets inside the VPC"
 }
 
 variable "eks_cluster_version" {
-  default     = "1.25"
+  default     = "1.29"
   description = "Version of the EKS K8S cluster"
 }
 
@@ -64,15 +71,10 @@ variable "node_group_default" {
   description = "Default node group configuration"
 }
 
-variable "eks_map_roles" {
-  description = "Additional IAM roles to add to the aws-auth configmap."
-  type = list(object({
-    rolearn  = string
-    username = string
-    groups   = list(string)
-  }))
-
-  default = []
+variable "access_entries" {
+  type        = any
+  default     = {}
+  description = "Map of access entries to add to the cluster"
 }
 
 variable "eks_cluster_enabled_log_types" {
@@ -101,7 +103,7 @@ variable "eks_cluster_endpoint_public_access" {
 
 variable "eks_cluster_endpoint_private_access" {
   type        = bool
-  default     = false
+  default     = true
   description = "Enable or not private access to cluster endpoint"
 }
 
@@ -112,6 +114,7 @@ variable "eks_cluster_endpoint_only_pritunl" {
 }
 
 variable "tags" {
-  type    = any
-  default = {}
+  type        = any
+  default     = {}
+  description = "A map of additional tags to add to resources"
 }

@@ -1,17 +1,11 @@
 include "root" {
-  path           = find_in_parent_folders()
-  expose         = true
-  merge_strategy = "deep"
+  path   = find_in_parent_folders()
+  expose = true
 }
 
 include "env" {
-  path           = find_in_parent_folders("env.hcl")
-  expose         = true
-  merge_strategy = "deep"
-}
-
-dependencies {
-  paths = ["../aws-r53"]
+  path   = find_in_parent_folders("env.hcl")
+  expose = true
 }
 
 dependency "r53" {
@@ -22,6 +16,23 @@ dependency "r53" {
   mock_outputs = {
     route53_zone_id = "ZZZZ0ZZZ"
   }
+}
+
+generate "providers_versions" {
+  path      = "versions.tf"
+  if_exists = "overwrite"
+  contents  = <<EOF
+terraform {
+  required_version = ">= 1.7.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "${include.root.locals.tf_providers.aws}"
+    }
+  }
+}
+EOF
 }
 
 terraform {

@@ -1,18 +1,10 @@
 include "root" {
-  path           = find_in_parent_folders()
-  expose         = true
-  merge_strategy = "deep"
+  path = find_in_parent_folders()
 }
 
 include "env" {
-  path           = find_in_parent_folders("env.hcl")
-  expose         = true
-  merge_strategy = "deep"
-}
-
-
-dependencies {
-  paths = ["../common/aws-vpc", "../common/aws-eks", "../common/aws-acm", "../common/aws-r53"]
+  path   = find_in_parent_folders("env.hcl")
+  expose = true
 }
 
 dependency "vpc" {
@@ -58,42 +50,37 @@ dependency "aws-r53" {
   }
 }
 
-generate "providers" {
-  path      = "providers-override.tf"
-  if_exists = "overwrite_terragrunt"
-  contents  = <<-EOF
-    provider "kubernetes" {
-      host                   = data.aws_eks_cluster.main.endpoint
-      cluster_ca_certificate = base64decode(data.aws_eks_cluster.main.certificate_authority.0.data)
-      token                  = data.aws_eks_cluster_auth.main.token
-    }
+generate "providers_versions" {
+  path      = "versions.tf"
+  if_exists = "overwrite"
+  contents  = <<EOF
+terraform {
+  required_version = ">= 1.7.0"
 
-    provider "kubectl" {
-      host                   = data.aws_eks_cluster.main.endpoint
-      cluster_ca_certificate = base64decode(data.aws_eks_cluster.main.certificate_authority.0.data)
-      token                  = data.aws_eks_cluster_auth.main.token
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "${include.root.locals.tf_providers.aws}"
     }
-
-    provider "helm" {
-      kubernetes {
-        host                   = data.aws_eks_cluster.main.endpoint
-        cluster_ca_certificate = base64decode(data.aws_eks_cluster.main.certificate_authority.0.data)
-        token                  = data.aws_eks_cluster_auth.main.token
-      }
-
-      experiments {
-        manifest = true
-      }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "${include.root.locals.tf_providers.kubernetes}"
     }
-
-    data "aws_eks_cluster" "main" {
-      name = var.eks_cluster_id
+    kubectl = {
+      source  = "avinbunney/kubectl"
+      version = "${include.root.locals.tf_providers.kubectl}"
     }
-
-    data "aws_eks_cluster_auth" "main" {
-      name = var.eks_cluster_id
+    helm = {
+      source  = "hashicorp/helm"
+      version = "${include.root.locals.tf_providers.helm}"
     }
-  EOF
+    http = {
+      source  = "hashicorp/http"
+      version = "${include.root.locals.tf_providers.http}"
+    }
+  }
+}
+EOF
 }
 
 terraform {

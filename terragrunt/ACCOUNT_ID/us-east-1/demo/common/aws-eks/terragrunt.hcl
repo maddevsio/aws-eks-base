@@ -1,17 +1,11 @@
 include "root" {
-  path           = find_in_parent_folders()
-  expose         = true
-  merge_strategy = "deep"
+  path   = find_in_parent_folders()
+  expose = true
 }
 
 include "env" {
-  path           = find_in_parent_folders("env.hcl")
-  expose         = true
-  merge_strategy = "deep"
-}
-
-dependencies {
-  paths = ["../aws-vpc"]
+  path   = find_in_parent_folders("env.hcl")
+  expose = true
 }
 
 dependency "vpc" {
@@ -28,22 +22,25 @@ dependency "vpc" {
   }
 }
 
-generate "providers" {
-  path      = "providers-override.tf"
-  if_exists = "overwrite_terragrunt"
-  contents  = <<-EOF
-    provider "kubernetes" {
-      host                   = module.eks.cluster_endpoint
-      cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-      token                  = data.aws_eks_cluster_auth.main.token
-    }
+generate "providers_versions" {
+  path      = "versions.tf"
+  if_exists = "overwrite"
+  contents  = <<EOF
+terraform {
+  required_version = ">= 1.7.0"
 
-    data "aws_eks_cluster_auth" "main" {
-      name = module.eks.cluster_name
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "${include.root.locals.tf_providers.aws}"
     }
-
-    data "aws_caller_identity" "current" {}
-  EOF
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "${include.root.locals.tf_providers.kubernetes}"
+    }
+  }
+}
+EOF
 }
 
 terraform {
@@ -51,8 +48,10 @@ terraform {
 }
 
 inputs = {
-  name = include.env.locals.name
-  env  = include.env.locals.values.environment
+  name                = include.env.locals.name
+  env                 = include.env.locals.values.environment
+  region              = include.env.locals.values.region
+  eks_cluster_version = include.env.locals.values.eks_cluster_version
 
   vpc_id          = dependency.vpc.outputs.vpc_id
   private_subnets = dependency.vpc.outputs.vpc_private_subnets

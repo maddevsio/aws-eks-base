@@ -1,14 +1,3 @@
-locals {
-
-  eks_map_roles = [
-    {
-      rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/administrator"
-      username = "administrator"
-      groups   = ["system:masters"]
-    }
-  ]
-}
-
 data "aws_ami" "eks_default_arm64" {
   most_recent = true
   owners      = ["amazon"]
@@ -23,16 +12,18 @@ data "aws_ami" "eks_default_arm64" {
 #tfsec:ignore:aws-vpc-no-public-egress-sgr tfsec:ignore:aws-eks-enable-control-plane-logging tfsec:ignore:aws-eks-encrypt-secrets tfsec:ignore:aws-eks-no-public-cluster-access tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "19.12.0"
+  version = "20.8.4"
 
-  cluster_name              = var.name
-  cluster_version           = var.eks_cluster_version
-  subnet_ids                = var.private_subnets
-  control_plane_subnet_ids  = var.intra_subnets
-  enable_irsa               = true
-  manage_aws_auth_configmap = true
-  create_aws_auth_configmap = false
-  aws_auth_roles            = local.eks_map_roles
+  cluster_name             = var.name
+  cluster_version          = var.eks_cluster_version
+  vpc_id                   = var.vpc_id
+  subnet_ids               = var.private_subnets
+  control_plane_subnet_ids = var.intra_subnets
+
+  authentication_mode                      = "API"
+  enable_cluster_creator_admin_permissions = true
+  access_entries                           = var.access_entries
+
   cluster_addons = {
     coredns = {
       most_recent = true
@@ -55,8 +46,6 @@ module "eks" {
 
   cluster_enabled_log_types              = var.eks_cluster_enabled_log_types
   cloudwatch_log_group_retention_in_days = var.eks_cloudwatch_log_group_retention_in_days
-
-  vpc_id = var.vpc_id
 
   cluster_endpoint_public_access       = var.eks_cluster_endpoint_public_access
   cluster_endpoint_private_access      = var.eks_cluster_endpoint_private_access

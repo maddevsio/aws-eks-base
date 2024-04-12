@@ -7,8 +7,6 @@ locals {
   name_wo_region = "${local.values.name}-${local.values.environment}"
 }
 
-inputs = local.values
-
 generate "provider-aws" {
   path      = "provider-aws.tf"
   if_exists = "overwrite_terragrunt"
@@ -25,5 +23,3 @@ generate "provider-aws" {
     }
   EOF
 }
-
-

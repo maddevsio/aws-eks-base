@@ -1,5 +1,5 @@
 locals {
-  az_count         = length(var.azs) - 1
+  az_count         = length(var.azs)
   cidr_subnets     = [for cidr_block in cidrsubnets(var.cidr, 2, 2, 2, 2) : cidrsubnets(cidr_block, 4, 4, 4, 4)]
   private_subnets  = chunklist(local.cidr_subnets[0], local.az_count)[0]
   public_subnets   = chunklist(local.cidr_subnets[1], local.az_count)[0]
@@ -9,7 +9,7 @@ locals {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "4.0.1"
+  version = "5.7.1"
 
   name = var.name
   cidr = var.cidr
@@ -84,7 +84,7 @@ module "vpc" {
 
 module "vpc_gateway_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
-  version = "4.0.1"
+  version = "5.7.1"
 
   vpc_id = module.vpc.vpc_id
 

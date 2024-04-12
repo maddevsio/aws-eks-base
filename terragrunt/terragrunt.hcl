@@ -2,8 +2,16 @@ terragrunt_version_constraint = ">= 0.39"
 skip                          = true
 
 locals {
-  remote_state_bucket_region = "${get_env("TF_REMOTE_STATE_BUCKET_REGION")}"
-  remote_state_bucket        = "${get_env("TF_REMOTE_STATE_BUCKET")}"
+  remote_state_bucket_region = "us-east-1"                   #get_env("TF_REMOTE_STATE_BUCKET_REGION")
+  remote_state_bucket        = "maddevs-netpol-use1-tfstate" #get_env("TF_REMOTE_STATE_BUCKET")
+
+  tf_providers = {
+    aws        = "5.45.0"
+    kubernetes = "2.29.0"
+    kubectl    = "1.14.0"
+    helm       = "2.13.0"
+    http       = "3.4.2"
+  }
 }
 
 remote_state {
