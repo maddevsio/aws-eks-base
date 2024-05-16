@@ -1,4 +1,4 @@
-name: 'Terraform-utils'
+name: 'Build docker image terraform-utils'
 
 on:
   push:
