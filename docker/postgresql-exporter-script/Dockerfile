@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/postgres:12-alpine
+FROM public.ecr.aws/docker/library/postgres:16-alpine
 
 WORKDIR /app
 
