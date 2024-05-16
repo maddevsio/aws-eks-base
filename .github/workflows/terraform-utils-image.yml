@@ -7,7 +7,6 @@ on:
       - 'onboarding'
     paths:
       - 'docker/terraform-utils/Dockerfile'
-  workflow_dispatch:
 
 jobs:
   push_to_registries:
