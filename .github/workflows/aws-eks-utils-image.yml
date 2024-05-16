@@ -5,8 +5,8 @@ on:
     branches:
       - main
       - onboarding
-    paths:
-      - 'docker/aws-eks-utils/Dockerfile'
+#    paths:
+#      - 'docker/aws-eks-utils/Dockerfile'
 
 jobs:
   push_to_registries:
