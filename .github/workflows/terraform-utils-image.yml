@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - 'main'
-      - 'onboarding'
-#    paths:
-#      - 'docker/terraform-utils/Dockerfile'
+    paths:
+      - 'docker/terraform-utils/Dockerfile'
 
 jobs:
   push_to_registries:
