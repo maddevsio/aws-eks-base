@@ -1,4 +1,4 @@
-name: 'aws-eks-utils'
+name: 'Build docker image aws-eks-utils'
 
 on:
   push:
