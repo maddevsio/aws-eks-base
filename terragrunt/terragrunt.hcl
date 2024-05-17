@@ -3,7 +3,7 @@ skip                          = true
 
 locals {
   remote_state_bucket_region = "us-east-1"                   #get_env("TF_REMOTE_STATE_BUCKET_REGION")
-  remote_state_bucket        = "maddevs-netpol-use1-tfstate" #get_env("TF_REMOTE_STATE_BUCKET")
+  remote_state_bucket        = "maddevs-atverdikov-use1-tfstate" #get_env("TF_REMOTE_STATE_BUCKET")
 
   tf_providers = {
     aws        = "5.49.0"

@@ -26,7 +26,7 @@ EOF
 }
 
 terraform {
-  source = "${get_path_to_repo_root()}/terraform/modules//aws-ebs-encryption-default"
+  source = "${get_path_to_repo_root()}/terraform/modules/aws-ebs-encryption-default"
 }
 
 inputs = {
