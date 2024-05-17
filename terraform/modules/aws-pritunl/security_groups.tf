@@ -1,6 +1,6 @@
 module "ec2_sg" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "4.8.0"
+  version = "5.1.2"
 
   name        = var.name
   description = "${var.name} security group"

@@ -8,7 +8,7 @@ generate "providers_versions" {
   if_exists = "overwrite"
   contents  = <<EOF
 terraform {
-  required_version = ">= 1.7.0"
+  required_version = ">= 1.8.3"
 
   required_providers {
     aws = {
