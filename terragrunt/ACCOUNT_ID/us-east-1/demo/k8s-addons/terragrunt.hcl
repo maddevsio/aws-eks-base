@@ -1,5 +1,6 @@
 include "root" {
   path = find_in_parent_folders()
+  expose = true
 }
 
 include "env" {
@@ -84,7 +85,7 @@ EOF
 }
 
 terraform {
-  source = "${get_path_to_repo_root()}/terraform/modules/k8s-addons"
+  source = "${get_path_to_repo_root()}/terraform/modules//k8s-addons"
 }
 
 inputs = {
