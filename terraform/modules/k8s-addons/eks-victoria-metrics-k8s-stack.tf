@@ -345,7 +345,7 @@ VALUES
 module "victoria_metrics_k8s_stack_namespace" {
   count = local.victoria_metrics_k8s_stack.enabled ? 1 : 0
 
-  source = "../../../../modules/eks-kubernetes-namespace"
+  source = "../eks-kubernetes-namespace"
   name   = local.victoria_metrics_k8s_stack.namespace
   network_policies = concat([
     {
