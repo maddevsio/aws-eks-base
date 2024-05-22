@@ -56,7 +56,7 @@ data "aws_iam_policy_document" "this" {
 
 module "iam_policy" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
-  version = "4.14.0"
+  version = "5.39.1"
 
   name        = var.name
   path        = "/"
@@ -67,7 +67,7 @@ module "iam_policy" {
 
 module "this_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version = "4.14.0"
+  version = "5.39.1"
 
   trusted_role_services = [
     "ec2.amazonaws.com"
@@ -91,7 +91,7 @@ resource "aws_iam_instance_profile" "this_instance_profile" {
 
 module "backup_role" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role"
-  version = "4.14.0"
+  version = "5.39.1"
 
   trusted_role_services = [
     "backup.amazonaws.com"

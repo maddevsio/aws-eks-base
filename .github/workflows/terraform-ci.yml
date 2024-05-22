@@ -17,7 +17,7 @@ jobs:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Terraform Init l1
         working-directory: ./terraform/layer1-aws
         run: terraform init -backend=false
@@ -47,7 +47,7 @@ jobs:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Terraform Format
         run: terraform fmt -recursive -write=false -check .
         working-directory: ./terraform
@@ -62,7 +62,7 @@ jobs:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Terraform tflint l1
         working-directory: ./terraform/layer1-aws
         run: tflint --no-color
@@ -79,16 +79,16 @@ jobs:
       options: --user root
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Download init for l1
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: l1
           path: ./terraform/layer1-aws/.terraform
       - name: tfsec l1
         working-directory: ./terraform
         run: tfsec layer1-aws
-      - uses: geekyeggo/delete-artifact@v1
+      - uses: geekyeggo/delete-artifact@v5
         with:
           name: l1
           failOnError: false

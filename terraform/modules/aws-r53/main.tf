@@ -7,7 +7,7 @@ data "aws_route53_zone" "main" {
 
 module "r53_zone" {
   source  = "terraform-aws-modules/route53/aws//modules/zones"
-  version = "2.10.2"
+  version = "2.11.1"
 
   create = var.create_r53_zone
 
