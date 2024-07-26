@@ -469,7 +469,7 @@ resource "kubernetes_ingress_v1" "default" {
   }
   wait_for_load_balancer = true
 
-  depends_on = [kubectl_manifest.karpenter_nodepool_default, helm_release.ingress_nginx, module.aws_iam_aws_loadbalancer_controller] #, helm_release.aws_loadbalancer_controller,  module.aws_iam_aws_loadbalancer_controller, tls_locally_signed_cert.aws_loadbalancer_controller_webhook
+  depends_on = [kubectl_manifest.karpenter_nodepool_default, helm_release.ingress_nginx, module.aws_iam_aws_loadbalancer_controller]
 }
 
 resource "aws_route53_record" "default_ingress" {
