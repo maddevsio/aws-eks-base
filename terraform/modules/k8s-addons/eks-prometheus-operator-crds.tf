@@ -1,13 +1,13 @@
 locals {
   kube_prometheus_stack_operator_crds = [
-    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/crds/crd-alertmanagerconfigs.yaml",
-    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/crds/crd-alertmanagers.yaml",
-    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/crds/crd-podmonitors.yaml",
-    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/crds/crd-probes.yaml",
-    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/crds/crd-prometheuses.yaml",
-    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/crds/crd-prometheusrules.yaml",
-    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/crds/crd-servicemonitors.yaml",
-    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/crds/crd-thanosrulers.yaml"
+    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-alertmanagerconfigs.yaml",
+    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-alertmanagers.yaml",
+    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-podmonitors.yaml",
+    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-probes.yaml",
+    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-prometheuses.yaml",
+    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-prometheusrules.yaml",
+    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-servicemonitors.yaml",
+    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-thanosrulers.yaml"
   ]
 }
 

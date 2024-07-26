@@ -63,7 +63,7 @@ releases:
     enabled: true
     chart: karpenter
     repository: oci://public.ecr.aws/karpenter
-    chart_version: v0.36.1
+    chart_version: 0.37.0
     namespace: karpenter
   - id: keda
     enabled: false
@@ -81,7 +81,7 @@ releases:
     enabled: true
     chart: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
-    chart_version: 58.5.3
+    chart_version: 61.3.1
     namespace: monitoring
   - id: loki-stack
     enabled: true
@@ -99,5 +99,5 @@ releases:
     enabled: false
     chart: victoria-metrics-k8s-stack
     repository: https://victoriametrics.github.io/helm-charts
-    chart_version: 0.22.11
+    chart_version: 0.24.1
     namespace: monitoring

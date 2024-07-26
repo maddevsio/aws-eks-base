@@ -1,5 +1,5 @@
 include "root" {
-  path = find_in_parent_folders()
+  path   = find_in_parent_folders()
   expose = true
 }
 
@@ -68,7 +68,7 @@ terraform {
       version = "${include.root.locals.tf_providers.kubernetes}"
     }
     kubectl = {
-      source  = "avinbunney/kubectl"
+      source  = "gavinbunney/kubectl"
       version = "${include.root.locals.tf_providers.kubectl}"
     }
     helm = {
@@ -86,6 +86,16 @@ EOF
 
 terraform {
   source = "${get_path_to_repo_root()}/terraform/modules//k8s-addons"
+
+  extra_arguments "apply_args" {
+    commands = [
+      "apply"
+    ]
+
+    arguments = [
+      "-parallelism=20",
+    ]
+  }
 }
 
 inputs = {
@@ -93,6 +103,7 @@ inputs = {
   name_wo_region                   = include.env.locals.name_wo_region
   environment                      = include.env.locals.values.environment
   vpc_cidr                         = include.env.locals.values.vpc_cidr
+  domain_name                      = include.env.locals.values.domain_name
   vpc_id                           = dependency.vpc.outputs.vpc_id
   eks_cluster_id                   = dependency.eks.outputs.eks_cluster_id
   eks_oidc_provider_arn            = dependency.eks.outputs.eks_oidc_provider_arn

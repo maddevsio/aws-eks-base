@@ -208,11 +208,12 @@ resource "helm_release" "ingress_nginx" {
   version     = local.ingress_nginx.chart_version
   namespace   = module.ingress_nginx_namespace[count.index].name
   max_history = var.helm_release_history_size
+  wait        = true
 
   values = [
     local.ingress_nginx_general_values,
     var.nginx_ingress_ssl_terminator == "lb" ? local.ingress_nginx_and_aws_load_balancer_controller : local.ingress_pod_ssl_termination_values
   ]
 
-  depends_on = [kubectl_manifest.kube_prometheus_stack_operator_crds]
+  depends_on = [kubectl_manifest.kube_prometheus_stack_operator_crds, helm_release.aws_loadbalancer_controller]
 }

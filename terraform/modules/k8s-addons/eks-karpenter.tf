@@ -16,7 +16,7 @@ settings:
 
 serviceAccount:
   annotations:
-    eks.amazonaws.com/role-arn: ${module.karpenter[0].irsa_arn}
+    eks.amazonaws.com/role-arn: ${module.karpenter[0].iam_role_arn}
 
 controller:
   resources:
@@ -35,20 +35,23 @@ module "karpenter" {
   count = local.karpenter.enabled ? 1 : 0
 
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "20.8.4"
+  version = "20.17.2"
 
   cluster_name = local.eks_cluster_id
 
-  policies = {
+  node_iam_role_additional_policies = {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   }
 
-  irsa_oidc_provider_arn          = local.eks_oidc_provider_arn
-  irsa_namespace_service_accounts = ["karpenter:karpenter"]
+  enable_irsa            = true
+  irsa_oidc_provider_arn = local.eks_oidc_provider_arn
+  enable_pod_identity    = false
 
-  create_iam_role                            = false
-  enable_karpenter_instance_profile_creation = true
-  iam_role_arn                               = var.node_group_default_iam_role_arn
+  create_node_iam_role = false
+  node_iam_role_arn    = var.node_group_default_iam_role_arn
+  # Since the node group role will already have an access entry
+  create_access_entry = false
+
 }
 
 module "karpenter_namespace" {
@@ -68,7 +71,7 @@ metadata:
   name: private
   namespace: karpenter
 spec:
-  amiFamily: AL2 # Amazon Linux 2
+  amiFamily: AL2023 # Amazon Linux 2023
   role: ${var.node_group_default_iam_role_name} # replace with your cluster name NODE ROLE ID from the aws-base
   subnetSelectorTerms:
     - tags:
@@ -99,7 +102,7 @@ metadata:
   name: public
   namespace: karpenter
 spec:
-  amiFamily: AL2 # Amazon Linux 2
+  amiFamily: AL2023 # Amazon Linux 2023
   role: ${var.node_group_default_iam_role_name} # replace with your cluster name NODE ROLE ID from the aws-base
   subnetSelectorTerms:
     - tags:
@@ -186,7 +189,7 @@ spec:
 
 EOF
 
-  depends_on = [helm_release.karpenter]
+  depends_on = [kubectl_manifest.karpenter_ec2nodeclass_private]
 }
 
 resource "kubectl_manifest" "karpenter_nodepool_ci" {
@@ -257,7 +260,7 @@ spec:
 
 EOF
 
-  depends_on = [helm_release.karpenter]
+  depends_on = [kubectl_manifest.karpenter_ec2nodeclass_public]
 }
 
 resource "helm_release" "karpenter" {

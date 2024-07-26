@@ -18,7 +18,7 @@ provider "helm" {
   }
 
   experiments {
-    manifest = true
+    manifest = false
   }
 }
 
