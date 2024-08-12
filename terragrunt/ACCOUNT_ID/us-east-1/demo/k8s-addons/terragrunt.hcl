@@ -93,17 +93,15 @@ terraform {
 }
 
 inputs = {
-  name                             = include.env.locals.name
-  name_wo_region                   = include.env.locals.name_wo_region
-  environment                      = include.env.locals.values.environment
-  vpc_cidr                         = include.env.locals.values.vpc_cidr
-  domain_name                      = include.env.locals.values.domain_name
-  vpc_id                           = dependency.vpc.outputs.vpc_id
-  eks_cluster_id                   = dependency.eks.outputs.eks_cluster_id
-  eks_oidc_provider_arn            = dependency.eks.outputs.eks_oidc_provider_arn
-  node_group_default_iam_role_arn  = dependency.eks.outputs.node_group_default_iam_role_arn
-  node_group_default_iam_role_name = dependency.eks.outputs.node_group_default_iam_role_name
-  zone_id                          = dependency.aws-r53.outputs.route53_zone_id
-  ssl_certificate_arn              = dependency.aws-acm.outputs.ssl_certificate_arn
-  helm_charts_path                 = "${get_path_to_repo_root()}/helm-charts"
+  name                  = include.env.locals.name
+  name_wo_region        = include.env.locals.name_wo_region
+  environment           = include.env.locals.values.environment
+  vpc_cidr              = include.env.locals.values.vpc_cidr
+  domain_name           = include.env.locals.values.domain_name
+  vpc_id                = dependency.vpc.outputs.vpc_id
+  eks_cluster_id        = dependency.eks.outputs.eks_cluster_id
+  eks_oidc_provider_arn = dependency.eks.outputs.eks_oidc_provider_arn
+  zone_id               = dependency.aws-r53.outputs.route53_zone_id
+  ssl_certificate_arn   = dependency.aws-acm.outputs.ssl_certificate_arn
+  helm_charts_path      = "${get_path_to_repo_root()}/helm-charts"
 }
