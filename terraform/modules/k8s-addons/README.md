@@ -106,7 +106,6 @@ No requirements.
 | <a name="input_additional_allowed_ips"></a> [additional\_allowed\_ips](#input\_additional\_allowed\_ips) | IP addresses allowed to connect to private resources | `list(any)` | `[]` | no |
 | <a name="input_allowed_account_ids"></a> [allowed\_account\_ids](#input\_allowed\_account\_ids) | List of allowed AWS account IDs | `list(any)` | `[]` | no |
 | <a name="input_allowed_ips"></a> [allowed\_ips](#input\_allowed\_ips) | IP addresses allowed to connect to private resources | `list(any)` | `[]` | no |
-| <a name="input_cluster_autoscaler_version"></a> [cluster\_autoscaler\_version](#input\_cluster\_autoscaler\_version) | Version of cluster autoscaler | `string` | `"v1.28.0"` | no |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | Main public domain name | `string` | n/a | yes |
 | <a name="input_eks_cluster_id"></a> [eks\_cluster\_id](#input\_eks\_cluster\_id) | ID of the created EKS cluster. | `string` | n/a | yes |
 | <a name="input_eks_oidc_provider_arn"></a> [eks\_oidc\_provider\_arn](#input\_eks\_oidc\_provider\_arn) | ARN of EKS oidc provider | `string` | n/a | yes |
@@ -116,8 +115,6 @@ No requirements.
 | <a name="input_name"></a> [name](#input\_name) | Name, required to create unique resource names | `string` | n/a | yes |
 | <a name="input_name_wo_region"></a> [name\_wo\_region](#input\_name\_wo\_region) | Project name, required to create unique resource names without region suffix | `string` | n/a | yes |
 | <a name="input_nginx_ingress_ssl_terminator"></a> [nginx\_ingress\_ssl\_terminator](#input\_nginx\_ingress\_ssl\_terminator) | Select SSL termination type | `string` | `"lb"` | no |
-| <a name="input_node_group_default_iam_role_arn"></a> [node\_group\_default\_iam\_role\_arn](#input\_node\_group\_default\_iam\_role\_arn) | The IAM Role ARN of a default nodegroup | `string` | `""` | no |
-| <a name="input_node_group_default_iam_role_name"></a> [node\_group\_default\_iam\_role\_name](#input\_node\_group\_default\_iam\_role\_name) | The IAM Role name of a default nodegroup | `string` | `""` | no |
 | <a name="input_region"></a> [region](#input\_region) | Default infrastructure region | `string` | `"us-east-1"` | no |
 | <a name="input_ssl_certificate_arn"></a> [ssl\_certificate\_arn](#input\_ssl\_certificate\_arn) | ARN of ACM SSL certificate | `string` | n/a | yes |
 | <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | CIDR block of VPC | `string` | `"10.0.0.0/16"` | no |

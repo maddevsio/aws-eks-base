@@ -90,13 +90,6 @@ variable "nginx_ingress_ssl_terminator" {
   # nginx - terminate ssl on nginx side
 }
 
-# Cluster autoscaler
-variable "cluster_autoscaler_version" {
-  type        = string
-  description = "Version of cluster autoscaler"
-  default     = "v1.28.0"
-}
-
 variable "helm_charts_path" {
   type        = string
   description = "where to find the helm charts"
