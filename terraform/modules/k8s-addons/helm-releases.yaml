@@ -39,7 +39,7 @@ releases:
     enabled: true
     chart: external-secrets
     repository: https://charts.external-secrets.io
-    chart_version: 0.9.18
+    chart_version: 0.10.0
     namespace: external-secrets
   - id: gitlab-runner
     enabled: false
@@ -59,12 +59,6 @@ releases:
     repository: https://istio-release.storage.googleapis.com/charts
     chart_version: 1.22.0
     namespace: istio-system
-  - id: karpenter
-    enabled: true
-    chart: karpenter
-    repository: oci://public.ecr.aws/karpenter
-    chart_version: 0.37.0
-    namespace: karpenter
   - id: keda
     enabled: false
     chart: keda

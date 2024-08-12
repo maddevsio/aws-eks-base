@@ -1,4 +1,3 @@
-<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 No requirements.
@@ -39,4 +38,3 @@ No modules.
 | <a name="output_cert_pem"></a> [cert\_pem](#output\_cert\_pem) | n/a |
 | <a name="output_p8"></a> [p8](#output\_p8) | n/a |
 | <a name="output_private_key_pem"></a> [private\_key\_pem](#output\_private\_key\_pem) | n/a |
-<!-- END_TF_DOCS -->

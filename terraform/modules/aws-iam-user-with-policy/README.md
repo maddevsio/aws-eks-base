@@ -1,4 +1,3 @@
-<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 No requirements.
@@ -34,4 +33,3 @@ No modules.
 |------|-------------|
 | <a name="output_access_key_id"></a> [access\_key\_id](#output\_access\_key\_id) | AWS ACCESS\_KEY\_ID |
 | <a name="output_access_secret_key"></a> [access\_secret\_key](#output\_access\_secret\_key) | AWS ACCESS\_SECRET\_KEY |
-<!-- END_TF_DOCS -->

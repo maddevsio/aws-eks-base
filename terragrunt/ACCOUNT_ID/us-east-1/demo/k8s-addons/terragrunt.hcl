@@ -51,6 +51,10 @@ dependency "aws-r53" {
   }
 }
 
+dependencies {
+  paths = ["../karpenter"]
+}
+
 generate "providers_versions" {
   path      = "versions.tf"
   if_exists = "overwrite"
@@ -86,16 +90,6 @@ EOF
 
 terraform {
   source = "${get_path_to_repo_root()}/terraform/modules//k8s-addons"
-
-  extra_arguments "apply_args" {
-    commands = [
-      "apply"
-    ]
-
-    arguments = [
-      "-parallelism=20",
-    ]
-  }
 }
 
 inputs = {
