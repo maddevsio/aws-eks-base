@@ -8,16 +8,6 @@ include "env" {
   expose = true
 }
 
-dependency "vpc" {
-  config_path = "../common/aws-vpc"
-
-  mock_outputs_allowed_terraform_commands = ["init", "validate", "plan", "destroy"]
-
-  mock_outputs = {
-    vpc_id = "vpc-0f5b1b5f788888888"
-  }
-}
-
 dependency "eks" {
   config_path = "../common/aws-eks"
 
@@ -29,30 +19,6 @@ dependency "eks" {
     node_group_default_iam_role_arn  = "arn::"
     node_group_default_iam_role_name = "test"
   }
-}
-
-dependency "aws-acm" {
-  config_path = "../common/aws-acm"
-
-  mock_outputs_allowed_terraform_commands = ["init", "validate", "plan", "destroy"]
-
-  mock_outputs = {
-    ssl_certificate_arn = "arn:aws:acm:us-east-1:111111111:certificate/fa029132-86ab-7777-8888-1111111"
-  }
-}
-
-dependency "aws-r53" {
-  config_path = "../common/aws-r53"
-
-  mock_outputs_allowed_terraform_commands = ["init", "validate", "plan", "destroy"]
-
-  mock_outputs = {
-    route53_zone_id = "Z058363314IT7VAKRA777"
-  }
-}
-
-dependencies {
-  paths = ["../karpenter"]
 }
 
 generate "providers_versions" {
@@ -89,21 +55,14 @@ EOF
 }
 
 terraform {
-  source = "${get_path_to_repo_root()}/terraform/modules//k8s-addons"
+  source = "${get_path_to_repo_root()}/terraform/modules//k8s-karpenter"
 }
 
 inputs = {
   name                             = include.env.locals.name
-  name_wo_region                   = include.env.locals.name_wo_region
-  environment                      = include.env.locals.values.environment
-  vpc_cidr                         = include.env.locals.values.vpc_cidr
-  domain_name                      = include.env.locals.values.domain_name
-  vpc_id                           = dependency.vpc.outputs.vpc_id
   eks_cluster_id                   = dependency.eks.outputs.eks_cluster_id
   eks_oidc_provider_arn            = dependency.eks.outputs.eks_oidc_provider_arn
   node_group_default_iam_role_arn  = dependency.eks.outputs.node_group_default_iam_role_arn
   node_group_default_iam_role_name = dependency.eks.outputs.node_group_default_iam_role_name
-  zone_id                          = dependency.aws-r53.outputs.route53_zone_id
-  ssl_certificate_arn              = dependency.aws-acm.outputs.ssl_certificate_arn
-  helm_charts_path                 = "${get_path_to_repo_root()}/helm-charts"
+  nodepools                        = include.env.locals.values.eks_karpenter_nodepools
 }

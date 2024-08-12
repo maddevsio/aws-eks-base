@@ -1,4 +1,3 @@
-<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 No requirements.
@@ -34,4 +33,3 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_role_arn"></a> [role\_arn](#output\_role\_arn) | This role ARN |
-<!-- END_TF_DOCS -->

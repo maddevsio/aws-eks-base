@@ -527,7 +527,7 @@ resource "helm_release" "prometheus_operator" {
   ])
 
   depends_on = [
-    kubectl_manifest.kube_prometheus_stack_operator_crds
+    helm_release.ingress_nginx
   ]
 
 }

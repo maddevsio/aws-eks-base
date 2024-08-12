@@ -411,6 +411,7 @@ resource "helm_release" "aws_loadbalancer_controller" {
   version     = local.aws_load_balancer_controller.chart_version
   namespace   = module.aws_load_balancer_controller_namespace[count.index].name
   max_history = var.helm_release_history_size
+  wait        = true
 
   values = [
     local.aws_load_balancer_controller_values
@@ -428,7 +429,6 @@ resource "helm_release" "aws_loadbalancer_controller" {
     value = tls_private_key.aws_loadbalancer_controller_webhook[0].private_key_pem
   }
 
-  depends_on = [helm_release.karpenter]
 }
 
 resource "kubernetes_ingress_v1" "default" {
@@ -468,7 +468,7 @@ resource "kubernetes_ingress_v1" "default" {
   }
   wait_for_load_balancer = true
 
-  depends_on = [helm_release.aws_loadbalancer_controller, helm_release.ingress_nginx, module.aws_iam_aws_loadbalancer_controller, tls_locally_signed_cert.aws_loadbalancer_controller_webhook]
+  depends_on = [helm_release.ingress_nginx, module.aws_iam_aws_loadbalancer_controller]
 }
 
 resource "aws_route53_record" "default_ingress" {

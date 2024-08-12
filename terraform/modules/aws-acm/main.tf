@@ -10,12 +10,13 @@ data "aws_acm_certificate" "main" {
 
 module "acm" {
   source  = "terraform-aws-modules/acm/aws"
-  version = "4.3.2"
+  version = "5.0.1"
 
   create_certificate = var.create_acm_certificate
 
-  domain_name = var.domain_name
-  zone_id     = var.zone_id
+  domain_name       = var.domain_name
+  zone_id           = var.zone_id
+  validation_method = var.validation_method
   subject_alternative_names = [
   "*.${var.domain_name}"]
 }

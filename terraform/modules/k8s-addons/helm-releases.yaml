@@ -3,13 +3,13 @@ releases:
     enabled: true
     chart: aws-load-balancer-controller
     repository: https://aws.github.io/eks-charts
-    chart_version: 1.5.1
+    chart_version: 1.7.2
     namespace: aws-load-balancer-controller
   - id: cert-manager
     enabled: false
     chart: cert-manager
     repository: https://charts.jetstack.io
-    chart_version: 1.11.0
+    chart_version: 1.14.5
     namespace: certmanager
   - id: cert-mananger-certificate
     enabled: false
@@ -33,71 +33,65 @@ releases:
     enabled: false
     chart: external-dns
     repository: https://kubernetes-sigs.github.io/external-dns
-    chart_version: 1.9.0
+    chart_version: 1.14.4
     namespace: external-dns
   - id: external-secrets
     enabled: true
     chart: external-secrets
     repository: https://charts.external-secrets.io
-    chart_version: 0.8.1
+    chart_version: 0.10.0
     namespace: external-secrets
   - id: gitlab-runner
     enabled: false
     chart: gitlab-runner
     repository: https://charts.gitlab.io
-    chart_version: 0.51.1
+    chart_version: 0.64.1
     namespace: gitlab-runner
   - id: ingress-nginx
     enabled: true
     chart: ingress-nginx
     repository: https://kubernetes.github.io/ingress-nginx
-    chart_version: 4.6.0
+    chart_version: 4.10.1
     namespace: ingress-nginx
   - id: istio
     enabled: false
     chart:
     repository: https://istio-release.storage.googleapis.com/charts
-    chart_version: 1.17.2
+    chart_version: 1.22.0
     namespace: istio-system
-  - id: karpenter
-    enabled: true
-    chart: karpenter
-    repository: oci://public.ecr.aws/karpenter
-    chart_version: v0.33.0
-    namespace: karpenter
   - id: keda
     enabled: false
     chart: keda
     repository: https://kedacore.github.io/charts
-    chart_version: 2.10.2
+    chart_version: 2.14.2
     namespace: keda
   - id: kiali
     enabled: false
     chart: kiali-server
     repository: https://kiali.org/helm-charts
-    chart_version: 1.66.0
+    chart_version: 1.84.0
     namespace: kiali
   - id: kube-prometheus-stack
     enabled: true
     chart: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
-    chart_version: 45.11.0
+    chart_version: 61.3.1
     namespace: monitoring
   - id: loki-stack
     enabled: true
     chart: loki-stack
     repository: https://grafana.github.io/helm-charts
-    chart_version: 2.9.10
+    chart_version: 2.10.2
     namespace: loki
   - id: reloader
     enabled: true
     chart: reloader
     repository: https://stakater.github.io/stakater-charts
-    chart_version: 1.0.22
+    chart_version: 1.0.97
     namespace: reloader
   - id: victoria-metrics-k8s-stack
     enabled: false
     chart: victoria-metrics-k8s-stack
     repository: https://victoriametrics.github.io/helm-charts
-    chart_version: 0.14.17
+    chart_version: 0.24.1
     namespace: monitoring

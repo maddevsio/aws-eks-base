@@ -1,18 +1,7 @@
-data "aws_ami" "eks_default_arm64" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amazon-eks-arm64-node-${var.eks_cluster_version}-v*"]
-
-  }
-}
-
 #tfsec:ignore:aws-vpc-no-public-egress-sgr tfsec:ignore:aws-eks-enable-control-plane-logging tfsec:ignore:aws-eks-encrypt-secrets tfsec:ignore:aws-eks-no-public-cluster-access tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.8.4"
+  version = "20.20.0"
 
   cluster_name             = var.name
   cluster_version          = var.eks_cluster_version
@@ -54,13 +43,13 @@ module "eks" {
   node_security_group_tags = { "karpenter.sh/discovery" = var.name }
 
   self_managed_node_group_defaults = {
-    ami_id = data.aws_ami.eks_default_arm64.id
+    ami_type = "AL2023_ARM_64_STANDARD"
     block_device_mappings = {
       xvda = {
         device_name = "/dev/xvda"
         ebs = {
           delete_on_termination = true
-          encrypted             = false
+          encrypted             = true
           volume_size           = 100
           volume_type           = "gp3"
         }
@@ -77,17 +66,35 @@ module "eks" {
   }
   self_managed_node_groups = {
     default = {
-      name          = "${var.name}-default"
-      iam_role_name = "${var.name}-default"
-      desired_size  = var.node_group_default.desired_capacity
-      max_size      = var.node_group_default.max_capacity
-      min_size      = var.node_group_default.min_capacity
-      subnet_ids    = var.private_subnets
-
-      bootstrap_extra_args       = "--kubelet-extra-args '--node-labels=nodegroup=default --register-with-taints=CriticalAddonsOnly=true:NoSchedule'"
+      name                       = "${var.name}-default"
+      iam_role_name              = "${var.name}-default"
+      desired_size               = var.node_group_default.desired_capacity
+      max_size                   = var.node_group_default.max_capacity
+      min_size                   = var.node_group_default.min_capacity
+      subnet_ids                 = var.private_subnets
       capacity_rebalance         = var.node_group_default.capacity_rebalance
       use_mixed_instances_policy = var.node_group_default.use_mixed_instances_policy
       mixed_instances_policy     = var.node_group_default.mixed_instances_policy
+      cloudinit_pre_nodeadm = [
+        {
+          content_type = "application/node.eks.aws"
+          content      = <<-EOT
+            ---
+            apiVersion: node.eks.aws/v1alpha1
+            kind: NodeConfig
+            spec:
+              kubelet:
+                config:
+                  shutdownGracePeriod: 30s
+                  featureGates:
+                    DisableKubeletCloudCredentialProviders: true
+                  registerWithTaints:
+                    - key: CriticalAddonsOnly
+                      value: "true"
+                      effect: NoSchedule
+          EOT
+        }
+      ]
     }
   }
   fargate_profiles = {
@@ -113,7 +120,7 @@ module "eks" {
 
 module "vpc_cni_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.17.0"
+  version = "5.39.1"
 
   role_name             = "${var.name}-vpc-cni"
   attach_vpc_cni_policy = true
@@ -131,7 +138,7 @@ module "vpc_cni_irsa" {
 
 module "aws_ebs_csi_driver" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.17.0"
+  version = "5.39.1"
 
   role_name             = "${var.name}-aws-ebs-csi-driver"
   attach_ebs_csi_policy = true

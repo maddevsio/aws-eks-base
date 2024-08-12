@@ -1,5 +1,5 @@
 image:
-  name: hashicorp/terraform:0.14.6
+  name: hashicorp/terraform:1.8.3
   entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
@@ -38,7 +38,7 @@ terraform_validate:
     - terraform validate -no-color .
 
 terraform_tflint:
-  image: 
+  image:
     name: wata727/tflint
     entrypoint:
     - '/usr/bin/env'
