@@ -101,15 +101,3 @@ variable "helm_charts_path" {
   type        = string
   description = "where to find the helm charts"
 }
-
-variable "node_group_default_iam_role_arn" {
-  type        = string
-  description = "The IAM Role ARN of a default nodegroup"
-  default     = ""
-}
-
-variable "node_group_default_iam_role_name" {
-  type        = string
-  description = "The IAM Role name of a default nodegroup"
-  default     = ""
-}
