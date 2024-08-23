@@ -5,7 +5,7 @@ locals {
     enabled       = true
     chart         = try(var.helm.chart_name, "karpenter")
     repository    = try(var.helm.repository, "oci://public.ecr.aws/karpenter")
-    chart_version = try(var.helm.chart_version, "0.37.0")
+    chart_version = try(var.helm.chart_version, "1.0.0")
     namespace     = try(var.helm.namespace, "karpenter")
   }
 
@@ -66,13 +66,14 @@ resource "kubectl_manifest" "ec2nodeclass_private" {
   count = local.karpenter.enabled ? 1 : 0
 
   yaml_body = <<EOF
-apiVersion: karpenter.k8s.aws/v1beta1
+apiVersion: karpenter.sh/v1
 kind: EC2NodeClass
 metadata:
   name: private
   namespace: ${local.karpenter.namespace}
 spec:
-  amiFamily: AL2023 # Amazon Linux 2023
+  amiSelectorTerms:
+    - alias: al2023@latest
   role: ${var.node_group_default_iam_role_name} # replace with your cluster name NODE ROLE ID from the aws-eks
   subnetSelectorTerms:
     - tags:
@@ -97,13 +98,14 @@ resource "kubectl_manifest" "ec2nodeclass_public" {
   count = local.karpenter.enabled ? 1 : 0
 
   yaml_body = <<EOF
-apiVersion: karpenter.k8s.aws/v1beta1
+apiVersion: karpenter.sh/v1
 kind: EC2NodeClass
 metadata:
   name: public
   namespace: ${local.karpenter.namespace}
 spec:
-  amiFamily: AL2023 # Amazon Linux 2023
+  amiSelectorTerms:
+    - alias: al2023@latest
   role: ${var.node_group_default_iam_role_name} # replace with your cluster name NODE ROLE ID from the aws-base
   subnetSelectorTerms:
     - tags:
