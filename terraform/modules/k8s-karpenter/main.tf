@@ -3,8 +3,8 @@ locals {
   karpenter = {
     name          = try(var.helm.release_name, "karpenter")
     enabled       = true
-    chart         = try(var.helm.chart_name, "karpenter")
-    repository    = try(var.helm.repository, "oci://public.ecr.aws/karpenter")
+    chart         = try(var.helm.chart_name, "oci://public.ecr.aws/karpenter/karpenter")
+    repository    = try(var.helm.repository, "")
     chart_version = try(var.helm.chart_version, "1.0.0")
     namespace     = try(var.helm.namespace, "karpenter")
   }
@@ -19,6 +19,12 @@ serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: ${module.this[0].iam_role_arn}
 
+postInstallHook:
+  image:
+    repository: bitnami/kubectl
+    tag: "1.30"
+    digest: sha256:c85f429088cea9ad968752e6d59e7edbc74b5750526f9a04531dce6b37f3ac87
+
 controller:
   resources:
     requests:
@@ -29,8 +35,6 @@ controller:
 
 VALUES
 }
-
-data "aws_ecrpublic_authorization_token" "token" {}
 
 module "this" {
   count = local.karpenter.enabled ? 1 : 0
@@ -66,7 +70,7 @@ resource "kubectl_manifest" "ec2nodeclass_private" {
   count = local.karpenter.enabled ? 1 : 0
 
   yaml_body = <<EOF
-apiVersion: karpenter.sh/v1
+apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
   name: private
@@ -98,7 +102,7 @@ resource "kubectl_manifest" "ec2nodeclass_public" {
   count = local.karpenter.enabled ? 1 : 0
 
   yaml_body = <<EOF
-apiVersion: karpenter.sh/v1
+apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
   name: public
@@ -144,8 +148,6 @@ resource "helm_release" "this" {
   version             = local.karpenter.chart_version
   namespace           = module.namespace[count.index].name
   max_history         = 3
-  repository_username = data.aws_ecrpublic_authorization_token.token.user_name
-  repository_password = data.aws_ecrpublic_authorization_token.token.password
 
   values = [
     local.karpenter_values
