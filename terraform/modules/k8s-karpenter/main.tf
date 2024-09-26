@@ -19,12 +19,6 @@ serviceAccount:
   annotations:
     eks.amazonaws.com/role-arn: ${module.this[0].iam_role_arn}
 
-postInstallHook:
-  image:
-    repository: bitnami/kubectl
-    tag: "1.30"
-    digest: sha256:c85f429088cea9ad968752e6d59e7edbc74b5750526f9a04531dce6b37f3ac87
-
 controller:
   resources:
     requests:
