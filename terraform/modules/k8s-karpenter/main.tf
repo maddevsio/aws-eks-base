@@ -5,7 +5,7 @@ locals {
     enabled       = true
     chart         = try(var.helm.chart_name, "oci://public.ecr.aws/karpenter/karpenter")
     repository    = try(var.helm.repository, "")
-    chart_version = try(var.helm.chart_version, "1.0.0")
+    chart_version = try(var.helm.chart_version, "1.0.3")
     namespace     = try(var.helm.namespace, "karpenter")
   }
 
