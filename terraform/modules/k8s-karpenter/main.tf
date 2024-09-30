@@ -3,9 +3,9 @@ locals {
   karpenter = {
     name          = try(var.helm.release_name, "karpenter")
     enabled       = true
-    chart         = try(var.helm.chart_name, "karpenter")
-    repository    = try(var.helm.repository, "oci://public.ecr.aws/karpenter")
-    chart_version = try(var.helm.chart_version, "1.0.0")
+    chart         = try(var.helm.chart_name, "oci://public.ecr.aws/karpenter/karpenter")
+    repository    = try(var.helm.repository, "")
+    chart_version = try(var.helm.chart_version, "1.0.3")
     namespace     = try(var.helm.namespace, "karpenter")
   }
 
@@ -29,8 +29,6 @@ controller:
 
 VALUES
 }
-
-data "aws_ecrpublic_authorization_token" "token" {}
 
 module "this" {
   count = local.karpenter.enabled ? 1 : 0
@@ -66,7 +64,7 @@ resource "kubectl_manifest" "ec2nodeclass_private" {
   count = local.karpenter.enabled ? 1 : 0
 
   yaml_body = <<EOF
-apiVersion: karpenter.sh/v1
+apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
   name: private
@@ -98,7 +96,7 @@ resource "kubectl_manifest" "ec2nodeclass_public" {
   count = local.karpenter.enabled ? 1 : 0
 
   yaml_body = <<EOF
-apiVersion: karpenter.sh/v1
+apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
   name: public
@@ -144,8 +142,6 @@ resource "helm_release" "this" {
   version             = local.karpenter.chart_version
   namespace           = module.namespace[count.index].name
   max_history         = 3
-  repository_username = data.aws_ecrpublic_authorization_token.token.user_name
-  repository_password = data.aws_ecrpublic_authorization_token.token.password
 
   values = [
     local.karpenter_values
