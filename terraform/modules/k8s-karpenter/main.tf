@@ -3,9 +3,9 @@ locals {
   karpenter = {
     name          = try(var.helm.release_name, "karpenter")
     enabled       = true
-    chart         = try(var.helm.chart_name, "oci://public.ecr.aws/karpenter/karpenter")
-    repository    = try(var.helm.repository, "")
-    chart_version = try(var.helm.chart_version, "1.0.3")
+    chart         = try(var.helm.chart_name, "karpenter")
+    repository    = try(var.helm.repository, "oci://public.ecr.aws/karpenter")
+    chart_version = try(var.helm.chart_version, "1.0.6")
     namespace     = try(var.helm.namespace, "karpenter")
   }
 
@@ -136,14 +136,23 @@ resource "kubectl_manifest" "nodepool" {
 resource "helm_release" "this" {
   count = local.karpenter.enabled ? 1 : 0
 
-  name                = local.karpenter.name
-  chart               = local.karpenter.chart
-  repository          = local.karpenter.repository
-  version             = local.karpenter.chart_version
-  namespace           = module.namespace[count.index].name
-  max_history         = 3
+  name        = local.karpenter.name
+  chart       = local.karpenter.chart
+  repository  = local.karpenter.repository
+  version     = local.karpenter.chart_version
+  namespace   = module.namespace[count.index].name
+  max_history = 3
+
+  repository_username = data.aws_ecrpublic_authorization_token.token.user_name
+  repository_password = data.aws_ecrpublic_authorization_token.token.password
 
   values = [
     local.karpenter_values
   ]
+
+  lifecycle {
+    ignore_changes = [
+      repository_password
+    ]
+  }
 }

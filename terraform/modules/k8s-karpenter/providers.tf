@@ -1,3 +1,8 @@
+provider "aws" {
+  alias  = "ecr"
+  region = "us-east-1"
+}
+
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.main.endpoint
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.main.certificate_authority.0.data)
@@ -31,3 +36,7 @@ data "aws_eks_cluster_auth" "main" {
 }
 
 data "aws_caller_identity" "current" {}
+
+data "aws_ecrpublic_authorization_token" "token" {
+  provider = aws.ecr
+}
