@@ -39,7 +39,7 @@ releases:
     enabled: true
     chart: external-secrets
     repository: https://charts.external-secrets.io
-    chart_version: 0.10.0
+    chart_version: 0.10.4
     namespace: external-secrets
   - id: gitlab-runner
     enabled: false

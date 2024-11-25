@@ -180,5 +180,8 @@ resource "helm_release" "loki_stack" {
     local.loki_stack_values
   ]
 
-  depends_on = [kubectl_manifest.kube_prometheus_stack_operator_crds]
+  depends_on = [
+    kubectl_manifest.kube_prometheus_stack_operator_crds,
+    helm_release.aws_loadbalancer_controller
+  ]
 }

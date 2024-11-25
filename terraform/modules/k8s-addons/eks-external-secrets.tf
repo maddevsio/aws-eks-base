@@ -154,4 +154,5 @@ resource "helm_release" "external_secrets" {
     local.external_secrets_values
   ]
 
+  depends_on = [helm_release.aws_loadbalancer_controller]
 }
