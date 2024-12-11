@@ -153,4 +153,5 @@ resource "helm_release" "external_secrets" {
   values = [
     local.external_secrets_values
   ]
+
 }
