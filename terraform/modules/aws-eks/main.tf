@@ -42,6 +42,17 @@ module "eks" {
 
   node_security_group_tags = { "karpenter.sh/discovery" = var.name }
 
+  node_security_group_additional_rules = {
+    ingress_allow_all_traffic_inside = {
+      description = "Allow all traffic inside security group"
+      protocol    = "all"
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      self        = true
+    }
+  }
+
   self_managed_node_group_defaults = {
     ami_type = "AL2023_ARM_64_STANDARD"
     block_device_mappings = {
