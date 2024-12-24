@@ -6,11 +6,11 @@ locals {
   remote_state_bucket        = get_env("TF_REMOTE_STATE_BUCKET")
 
   tf_providers = {
-    aws        = "5.58.0"
-    kubernetes = "2.30.0"
-    kubectl    = "1.14.0"
-    helm       = "2.13.2"
-    http       = "3.4.2"
+    aws        = "5.82.2"
+    kubernetes = "2.35.1"
+    kubectl    = "2.1.3"
+    helm       = "2.17.0"
+    http       = "3.4.5"
   }
 }
 
