@@ -1,5 +1,4 @@
 terragrunt_version_constraint = ">= 0.58"
-skip                          = false
 
 locals {
   remote_state_bucket_region = get_env("TF_REMOTE_STATE_BUCKET_REGION")
