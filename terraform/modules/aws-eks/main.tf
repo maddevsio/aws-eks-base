@@ -1,7 +1,7 @@
 #tfsec:ignore:aws-vpc-no-public-egress-sgr tfsec:ignore:aws-eks-enable-control-plane-logging tfsec:ignore:aws-eks-encrypt-secrets tfsec:ignore:aws-eks-no-public-cluster-access tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.20.0"
+  version = "20.31.6"
 
   cluster_name             = var.name
   cluster_version          = var.eks_cluster_version
@@ -131,7 +131,7 @@ module "eks" {
 
 module "vpc_cni_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.39.1"
+  version = "5.48.0"
 
   role_name             = "${var.name}-vpc-cni"
   attach_vpc_cni_policy = true
@@ -149,7 +149,7 @@ module "vpc_cni_irsa" {
 
 module "aws_ebs_csi_driver" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.39.1"
+  version = "5.48.0"
 
   role_name             = "${var.name}-aws-ebs-csi-driver"
   attach_ebs_csi_policy = true
