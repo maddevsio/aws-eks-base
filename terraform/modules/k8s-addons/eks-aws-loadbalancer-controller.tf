@@ -428,11 +428,6 @@ resource "helm_release" "aws_loadbalancer_controller" {
     name  = "webhookTLS.key"
     value = tls_private_key.aws_loadbalancer_controller_webhook[0].private_key_pem
   }
-  set {
-    name  = "enableServiceMutatorWebhook"
-    value = "false"
-  }
-
 }
 
 resource "kubernetes_ingress_v1" "default" {
