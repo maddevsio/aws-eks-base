@@ -3,6 +3,11 @@ include "root" {
   expose = true
 }
 
+include "env" {
+  path   = find_in_parent_folders("env.hcl")
+  expose = true
+}
+
 include "region" {
   path   = find_in_parent_folders("region.hcl")
   expose = true
@@ -30,5 +35,6 @@ terraform {
 }
 
 inputs = {
+  name   = include.env.locals.name
   enable = include.region.locals.region_values.aws_ebs_encryption_by_default
 }
