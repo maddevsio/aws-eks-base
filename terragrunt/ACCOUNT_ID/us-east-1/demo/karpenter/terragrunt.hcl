@@ -38,7 +38,7 @@ terraform {
       version = "${include.root.locals.tf_providers.kubernetes}"
     }
     kubectl = {
-      source  = "gavinbunney/kubectl"
+      source  = "alekc/kubectl"
       version = "${include.root.locals.tf_providers.kubectl}"
     }
     helm = {
