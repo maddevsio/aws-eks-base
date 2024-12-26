@@ -3,7 +3,7 @@ releases:
     enabled: true
     chart: aws-load-balancer-controller
     repository: https://aws.github.io/eks-charts
-    chart_version: 1.7.2
+    chart_version: 1.11.0
     namespace: aws-load-balancer-controller
   - id: cert-manager
     enabled: false
@@ -39,7 +39,7 @@ releases:
     enabled: true
     chart: external-secrets
     repository: https://charts.external-secrets.io
-    chart_version: 0.10.0
+    chart_version: 0.11.0
     namespace: external-secrets
   - id: gitlab-runner
     enabled: false
@@ -51,7 +51,7 @@ releases:
     enabled: true
     chart: ingress-nginx
     repository: https://kubernetes.github.io/ingress-nginx
-    chart_version: 4.10.1
+    chart_version: 4.11.3
     namespace: ingress-nginx
   - id: istio
     enabled: false
@@ -75,16 +75,16 @@ releases:
     enabled: true
     chart: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
-    chart_version: 61.3.1
+    chart_version: 67.3.1
     namespace: monitoring
   - id: loki-stack
-    enabled: true
+    enabled: false
     chart: loki-stack
     repository: https://grafana.github.io/helm-charts
     chart_version: 2.10.2
     namespace: loki
   - id: reloader
-    enabled: true
+    enabled: false
     chart: reloader
     repository: https://stakater.github.io/stakater-charts
     chart_version: 1.0.97

@@ -137,6 +137,7 @@ module "aws_iam_aws_loadbalancer_controller" {
           "elasticloadbalancing:DescribeLoadBalancerAttributes",
           "elasticloadbalancing:DescribeListeners",
           "elasticloadbalancing:DescribeListenerCertificates",
+          "elasticloadbalancing:DescribeListenerAttributes",
           "elasticloadbalancing:DescribeSSLPolicies",
           "elasticloadbalancing:DescribeRules",
           "elasticloadbalancing:DescribeTargetGroups",
@@ -441,7 +442,6 @@ resource "kubernetes_ingress_v1" "default" {
   metadata {
     name = "${local.ingress_nginx.name}-controller"
     annotations = {
-      "kubernetes.io/ingress.class"                        = "alb"
       "alb.ingress.kubernetes.io/scheme"                   = "internet-facing"
       "alb.ingress.kubernetes.io/tags"                     = "Environment=${local.env},Name=${local.name},Cluster=${local.eks_cluster_id}"
       "alb.ingress.kubernetes.io/certificate-arn"          = "${local.ssl_certificate_arn}"
@@ -454,6 +454,7 @@ resource "kubernetes_ingress_v1" "default" {
     namespace = module.ingress_nginx_namespace[count.index].name
   }
   spec {
+    ingress_class_name = "alb"
     rule {
       http {
         path {
