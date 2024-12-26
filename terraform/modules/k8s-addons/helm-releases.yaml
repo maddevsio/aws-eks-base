@@ -78,16 +78,16 @@ releases:
     chart_version: 67.3.1
     namespace: monitoring
   - id: loki-stack
-    enabled: false
+    enabled: true
     chart: loki-stack
     repository: https://grafana.github.io/helm-charts
     chart_version: 2.10.2
     namespace: loki
   - id: reloader
-    enabled: false
+    enabled: true
     chart: reloader
     repository: https://stakater.github.io/stakater-charts
-    chart_version: 1.0.97
+    chart_version: 1.2.0
     namespace: reloader
   - id: victoria-metrics-k8s-stack
     enabled: false

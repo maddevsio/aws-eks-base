@@ -10,6 +10,9 @@ locals {
   loki_stack_values = <<VALUES
 loki:
   enabled: true
+  image:
+    repository: grafana/loki
+    tag: 2.9.11
   rbac:
     create: true
     pspEnabled: false # Due to psp removed in k8s 1.25 and latest loki-stack chart doesn't maintain new PSP version
