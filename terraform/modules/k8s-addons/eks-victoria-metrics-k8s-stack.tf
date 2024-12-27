@@ -88,6 +88,12 @@ vmagent:
               operator: In
               values:
                 - on-demand
+
+vmalert:
+  spec:
+    extraArgs:
+      notifier.blackhole: "true"
+
 kubeScheduler:
   enabled: false
 kubeControllerManager:
@@ -101,6 +107,9 @@ VALUES
 # Grafana settings
 grafana:
   enabled: true
+  sidecar:
+    datasources:
+      enabled: "false"
   adminPassword: "${local.victoria_metrics_k8s_stack_grafana_password}"
   serviceAccount:
     annotations:
@@ -124,13 +133,7 @@ grafana:
       type: cloudwatch
       jsonData:
         authType: credentials
-        defaultRegion: "${local.region}"
-    - name: Loki
-      type: loki
-      url: http://loki-stack.loki:3100
-      jsonData:
-        maxLines: 1000
-  dashboardProviders:
+dashboardProviders:
     dashboardproviders.yaml:
       apiVersion: 1
       providers:

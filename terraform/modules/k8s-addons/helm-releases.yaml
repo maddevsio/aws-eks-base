@@ -72,7 +72,7 @@ releases:
     chart_version: 1.84.0
     namespace: kiali
   - id: kube-prometheus-stack
-    enabled: true
+    enabled: false
     chart: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
     chart_version: 67.3.1
@@ -90,8 +90,8 @@ releases:
     chart_version: 1.2.0
     namespace: reloader
   - id: victoria-metrics-k8s-stack
-    enabled: false
+    enabled: true
     chart: victoria-metrics-k8s-stack
     repository: https://victoriametrics.github.io/helm-charts
-    chart_version: 0.24.1
+    chart_version: 0.31.3
     namespace: monitoring
