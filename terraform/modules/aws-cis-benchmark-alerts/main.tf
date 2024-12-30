@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 module "eventbridge" {
   count   = var.aws_cis_benchmark_alerts.enabled ? 1 : 0
   source  = "terraform-aws-modules/eventbridge/aws"
