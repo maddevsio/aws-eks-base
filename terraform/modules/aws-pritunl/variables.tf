@@ -8,32 +8,32 @@ variable "public_subnets" {
   description = "A list of public subnets where Pritunl server will be run"
 }
 
-variable "private_subnets" {
-  type        = list(any)
-  description = "A list of private subnets where EFS will be created"
-}
-
 variable "name" {
+  type        = string
   default     = "pritunl"
   description = "Name used for all resources in this module"
 }
 
 variable "environment" {
+  type        = string
   default     = "infra"
   description = "Environment name"
 }
 
 variable "instance_type" {
+  type        = string
   default     = "t3.small"
   description = "Pritunl server instance type"
 }
 
 variable "encrypted" {
+  type        = bool
   default     = true
   description = "Encrypt or not EFS"
 }
 
 variable "kms_key_id" {
+  type        = string
   default     = null
   description = "KMS key ID in case of using CMK"
 }
