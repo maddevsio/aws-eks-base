@@ -3,11 +3,6 @@ variable "name" {
   description = "Name, required to create unique resource names"
 }
 
-variable "env" {
-  type        = string
-  description = "Environment name"
-}
-
 variable "region" {
   type        = string
   description = "Infrastructure region"
@@ -28,12 +23,8 @@ variable "private_subnets" {
   description = "A list of private subnets inside the VPC"
 }
 
-variable "public_subnets" {
-  type        = list(any)
-  description = "A list of public subnets inside the VPC"
-}
-
 variable "eks_cluster_version" {
+  type        = string
   default     = "1.29"
   description = "Version of the EKS K8S cluster"
 }
@@ -87,12 +78,6 @@ variable "eks_cloudwatch_log_group_retention_in_days" {
   type        = number
   default     = 90
   description = "Number of days to retain log events. Default retention - 90 days."
-}
-
-variable "eks_cluster_encryption_config_enable" {
-  type        = bool
-  default     = false
-  description = "Enable or not encryption for k8s secrets with aws-kms"
 }
 
 variable "eks_cluster_endpoint_public_access" {
