@@ -22,6 +22,6 @@ data "external" "this_p8" {
   program = ["bash", "${path.module}/data-sources/p8.sh"]
 
   query = {
-    private_key_pem = "${tls_private_key.this.private_key_pem}"
+    private_key_pem = tls_private_key.this.private_key_pem
   }
 }
