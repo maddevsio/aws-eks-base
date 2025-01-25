@@ -93,5 +93,5 @@ releases:
     enabled: true
     chart: victoria-metrics-k8s-stack
     repository: https://victoriametrics.github.io/helm-charts
-    chart_version: 0.31.3
+    chart_version: 0.24.1
     namespace: monitoring
