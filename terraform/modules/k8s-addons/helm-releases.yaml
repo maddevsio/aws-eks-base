@@ -75,7 +75,7 @@ releases:
     enabled: false
     chart: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
-    chart_version: 67.3.1
+    chart_version: 61.3.1
     namespace: monitoring
   - id: loki-stack
     enabled: true

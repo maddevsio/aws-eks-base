@@ -123,8 +123,9 @@ grafana:
     - name: CloudWatch
       type: cloudwatch
       jsonData:
-        authType: credentials
-        defaultRegion: "${local.region}"
+        authType: default
+        assumeRoleArn:
+        defaultRegion: "${var.region}"
     - name: Loki
       type: loki
       url: http://loki-stack.loki:3100
@@ -479,7 +480,8 @@ module "aws_iam_victoria_metrics_k8s_stack_grafana" {
         "Action" : [
           "cloudwatch:ListMetrics",
           "cloudwatch:GetMetricStatistics",
-          "cloudwatch:GetMetricData"
+          "cloudwatch:GetMetricData",
+          "logs:DescribeLogGroups"
         ],
         "Resource" : "*"
       },
