@@ -95,3 +95,9 @@ releases:
     repository: https://victoriametrics.github.io/helm-charts
     chart_version: 0.24.1
     namespace: monitoring
+  - id: github-runner
+    enabled: true
+    chart: actions-runner-controller
+    repository: https://actions-runner-controller.github.io/actions-runner-controller
+    chart_version: 0.23.7
+    namespace: github-runner
