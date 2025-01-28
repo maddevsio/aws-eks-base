@@ -1,11 +1,11 @@
 locals {
   victoria_metrics_k8s_stack = {
-    name          = local.helm_releases[index(local.helm_releases.*.id, "victoria-metrics-k8s-stack")].id
-    enabled       = local.helm_releases[index(local.helm_releases.*.id, "victoria-metrics-k8s-stack")].enabled
-    chart         = local.helm_releases[index(local.helm_releases.*.id, "victoria-metrics-k8s-stack")].chart
-    repository    = local.helm_releases[index(local.helm_releases.*.id, "victoria-metrics-k8s-stack")].repository
-    chart_version = local.helm_releases[index(local.helm_releases.*.id, "victoria-metrics-k8s-stack")].chart_version
-    namespace     = local.helm_releases[index(local.helm_releases.*.id, "victoria-metrics-k8s-stack")].namespace
+    name          = local.helm_releases[index(local.helm_releases.*.id, "vm-k8s-stack")].id
+    enabled       = local.helm_releases[index(local.helm_releases.*.id, "vm-k8s-stack")].enabled
+    chart         = local.helm_releases[index(local.helm_releases.*.id, "vm-k8s-stack")].chart
+    repository    = local.helm_releases[index(local.helm_releases.*.id, "vm-k8s-stack")].repository
+    chart_version = local.helm_releases[index(local.helm_releases.*.id, "vm-k8s-stack")].chart_version
+    namespace     = local.helm_releases[index(local.helm_releases.*.id, "vm-k8s-stack")].namespace
   }
   victoria_metrics_k8s_stack_grafana_oauth_type                   = "" # we support three options: without ouath (empty value), github or gitlab. Default is empty
   victoria_metrics_k8s_stack_grafana_password                     = local.victoria_metrics_k8s_stack.enabled ? random_string.victoria_metrics_k8s_stack_grafana_password[0].result : ""
@@ -24,18 +24,25 @@ locals {
 defaultRules:
   create: true
   rules:
-    general: false
-    kubernetesSystem: false
+    general:
+      create: false
+    kubernetesSystem:
+      create: false
 victoria-metrics-operator:
-  createCRD: false
+  crds:
+    enabled: true
+    plain: true
+    cleanup:
+      enabled: true
   operator:
     disable_prometheus_converter: false
     enable_converter_ownership: true
     useCustomConfigReloader: true
 vmsingle:
   enabled: true
-  # spec for VMSingle crd
-  # https://github.com/VictoriaMetrics/operator/blob/master/docs/api.MD#vmsinglespec
+  rbac:
+    create: true
+    pspEnabled: false
   spec:
     retentionPeriod: "14d"
     replicaCount: 1
@@ -88,6 +95,11 @@ vmagent:
               operator: In
               values:
                 - on-demand
+vmalert:
+  spec:
+    extraArgs:
+      notifier.blackhole: "true"
+
 kubeScheduler:
   enabled: false
 kubeControllerManager:
@@ -119,64 +131,39 @@ grafana:
   env:
     GF_SERVER_ROOT_URL: https://${local.victoria_metrics_k8s_stack_grafana_domain_name}
     GF_USERS_ALLOW_SIGN_UP: false
-  additionalDataSources:
-    - name: CloudWatch
-      type: cloudwatch
-      jsonData:
-        authType: default
-        assumeRoleArn:
-        defaultRegion: "${var.region}"
-    - name: Loki
-      type: loki
-      url: http://loki-stack.loki:3100
-      jsonData:
-        maxLines: 1000
-  dashboardProviders:
-    dashboardproviders.yaml:
+  datasources:
+    datasources.yaml:
       apiVersion: 1
-      providers:
-      - name: 'logs'
-        orgId: 1
-        folder: 'logs'
-        type: file
-        disableDeletion: true
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/logs
-      - name: 'k8s'
-        orgId: 1
-        folder: 'k8s'
-        type: file
-        disableDeletion: true
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/k8s
-      - name: 'istio'
-        orgId: 1
-        folder: 'istio'
-        type: file
-        disableDeletion: true
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/istio
-  dashboards:
-    logs:
-      logs:
-        ## Dashboard for quick search application logs for loki with two datasources loki and prometheus - https://grafana.com/grafana/dashboards/12019
-        url: https://grafana-dashboards.maddevs.org/common/aws-eks-base/loki-dashboard-quick-search.json
-    k8s:
-      nginx-ingress:
-      ## Dashboard for nginx-ingress metrics - https://grafana.com/grafana/dashboards/9614
-        gnetId: 9614
-        datasource: VictoriaMetrics
-      loki-promtail:
-      ## Dashboard for loki and promtail metrics - https://grafana.com/grafana/dashboards/10880
-        gnetId: 10880
-        datasource: VictoriaMetrics
-      cluster-autoscaler:
-      ## Dashboard for cluster-autoscaler metrics - https://grafana.com/grafana/dashboards/3831
-        gnetId: 3831
-        datasource: VictoriaMetrics
+      datasources:
+      - name: CloudWatch
+        type: cloudwatch
+        jsonData:
+          authType: default
+          assumeRoleArn:
+          defaultRegion: "${var.region}"
+      - name: Loki
+        type: loki
+        url: http://loki-stack.loki:3100
+        jsonData:
+          maxLines: 1000
+  sidecar:
+    datasources:
+      enabled: true
+      initDatasources: true
+      default:
+        - name: VictoriaMetrics
+          isDefault: true
+    dashboards:
+      enabled: true
+      SCProvider: true
+      label: grafana_dashboard
+      folder: /tmp/dashboards
+      defaultFolderName: null
+      labelValue: "1"
+      folderAnnotation: "k8s-sidecar-target-directory"
+      provider:
+        allowUiUpdates: false
+        foldersFromFilesStructure: true
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -348,120 +335,6 @@ module "victoria_metrics_k8s_stack_namespace" {
 
   source = "../eks-kubernetes-namespace"
   name   = local.victoria_metrics_k8s_stack.namespace
-  network_policies = concat([
-    {
-      name         = "default-deny"
-      policy_types = ["Ingress", "Egress"]
-      pod_selector = {}
-    },
-    {
-      name         = "allow-this-namespace"
-      policy_types = ["Ingress"]
-      pod_selector = {}
-      ingress = {
-        from = [
-          {
-            namespace_selector = {
-              match_labels = {
-                name = local.victoria_metrics_k8s_stack.namespace
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      name         = "allow-ingress"
-      policy_types = ["Ingress"]
-      pod_selector = {}
-      ingress = {
-
-        from = [
-          {
-            namespace_selector = {
-              match_labels = {
-                name = local.ingress_nginx.namespace
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      name         = "allow-control-plane"
-      policy_types = ["Ingress"]
-      pod_selector = {
-        match_expressions = {
-          key      = "app"
-          operator = "In"
-          values   = ["${local.victoria_metrics_k8s_stack.name}-operator"]
-        }
-      }
-      ingress = {
-        ports = [
-          {
-            port     = "10250"
-            protocol = "TCP"
-          }
-        ]
-        from = [
-          {
-            ip_block = {
-              cidr = "0.0.0.0/0"
-            }
-          }
-        ]
-      }
-    },
-    {
-      name         = "allow-egress"
-      policy_types = ["Egress"]
-      pod_selector = {}
-      egress = {
-        to = [
-          {
-            ip_block = {
-              cidr = "0.0.0.0/0"
-              except = [
-                "169.254.169.254/32"
-              ]
-            }
-          }
-        ]
-      }
-    }
-    ], local.kiali_server.enabled ? [{
-      name         = "allow-kiali-namespace"
-      policy_types = ["Ingress"]
-      pod_selector = {
-        match_expressions = {
-          key      = "app.kubernetes.io/instance"
-          operator = "In"
-          values   = [local.victoria_metrics_k8s_stack.name]
-        }
-      }
-      ingress = {
-        ports = [
-          {
-            port     = "8429"
-            protocol = "TCP"
-          },
-          {
-            port     = "3000"
-            protocol = "TCP"
-          }
-        ]
-        from = [
-          {
-            namespace_selector = {
-              match_labels = {
-                name = local.kiali_server.namespace
-              }
-            }
-          }
-        ]
-      }
-  }] : [])
 }
 
 module "aws_iam_victoria_metrics_k8s_stack_grafana" {

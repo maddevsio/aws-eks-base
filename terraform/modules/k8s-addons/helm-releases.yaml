@@ -75,7 +75,7 @@ releases:
     enabled: false
     chart: kube-prometheus-stack
     repository: https://prometheus-community.github.io/helm-charts
-    chart_version: 61.3.1
+    chart_version: 67.3.1
     namespace: monitoring
   - id: loki-stack
     enabled: true
@@ -89,9 +89,9 @@ releases:
     repository: https://stakater.github.io/stakater-charts
     chart_version: 1.2.0
     namespace: reloader
-  - id: victoria-metrics-k8s-stack
+  - id: vm-k8s-stack
     enabled: true
     chart: victoria-metrics-k8s-stack
     repository: https://victoriametrics.github.io/helm-charts
-    chart_version: 0.24.1
+    chart_version: 0.31.3
     namespace: monitoring

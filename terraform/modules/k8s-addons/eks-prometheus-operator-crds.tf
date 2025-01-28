@@ -7,7 +7,9 @@ locals {
     "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-prometheuses.yaml",
     "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-prometheusrules.yaml",
     "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-servicemonitors.yaml",
-    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-thanosrulers.yaml"
+    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-thanosrulers.yaml",
+    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-prometheusagents.yaml",
+    "https://raw.githubusercontent.com/prometheus-community/helm-charts/kube-prometheus-stack-${local.kube_prometheus_stack.chart_version}/charts/kube-prometheus-stack/charts/crds/crds/crd-scrapeconfigs.yaml"
   ]
 }
 
