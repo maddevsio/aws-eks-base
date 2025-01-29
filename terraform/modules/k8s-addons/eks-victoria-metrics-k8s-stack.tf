@@ -23,14 +23,18 @@ locals {
   victoria_metrics_k8s_stack_values                               = <<VALUES
 defaultRules:
   create: true
-  rules:
+  groups:
     general:
       create: false
     kubernetesSystem:
       create: false
+
+defaultDashboards:
+  enabled: true
+
 victoria-metrics-operator:
+  enabled: true
   crds:
-    enabled: true
     plain: true
     cleanup:
       enabled: true
@@ -38,14 +42,14 @@ victoria-metrics-operator:
     disable_prometheus_converter: false
     enable_converter_ownership: true
     useCustomConfigReloader: true
+
 vmsingle:
   enabled: true
-  rbac:
-    create: true
-    pspEnabled: false
   spec:
-    retentionPeriod: "14d"
+    port: "8429"
+    retentionPeriod: "14"
     replicaCount: 1
+    extraArgs: {}
     storage:
       storageClassName: advanced
       accessModes:
@@ -74,10 +78,16 @@ vmsingle:
               operator: In
               values:
                 - on-demand
+
 vmagent:
+  enabled: true
   spec:
+    port: "8429"
+    selectAllByDefault: true
+    scrapeInterval: 20s
     extraArgs:
       promscrape.streamParse: "true"
+      promscrape.dropOriginalLabels: "true"
       promscrape.maxScrapeSize: "335544320"
     resources:
       limits:
@@ -95,19 +105,48 @@ vmagent:
               operator: In
               values:
                 - on-demand
-vmalert:
-  spec:
-    extraArgs:
-      notifier.blackhole: "true"
 
-kubeScheduler:
+vmalert:
+  enabled: true
+  remoteWriteVMAgent: false
+  spec:
+    port: "8080"
+    selectAllByDefault: true
+    evaluationInterval: 15s
+    extraArgs:
+      http.pathPrefix: "/"
+      notifier.blackhole: "true"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: karpenter.sh/capacity-type
+              operator: In
+              values:
+                - on-demand
+
+kube-state-metrics:
+  enabled: false
+kubelet:
+  enabled: false
+kubeApiServer:
   enabled: false
 kubeControllerManager:
   enabled: false
+kubeDns:
+  enabled: false
+coreDns:
+  enabled: false
 kubeEtcd:
+  enabled: false
+kubeScheduler:
   enabled: false
 kubeProxy:
   enabled: false
+prometheus-operator-crds:
+  enabled: false
+extraObjects: []
 VALUES
   victoria_metrics_k8s_stack_grafana_values                       = <<VALUES
 # Grafana settings
@@ -146,6 +185,52 @@ grafana:
         url: http://loki-stack.loki:3100
         jsonData:
           maxLines: 1000
+
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'logs'
+        orgId: 1
+        folder: 'logs'
+        type: file
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/logs
+      - name: 'k8s'
+        orgId: 1
+        folder: 'k8s'
+        type: file
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/k8s
+      - name: 'istio'
+        orgId: 1
+        folder: 'istio'
+        type: file
+        disableDeletion: true
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/istio
+
+  dashboards:
+    logs:
+      logs:
+        ## Dashboard for quick search application logs for loki with two datasources loki and prometheus - https://grafana.com/grafana/dashboards/12019
+        url: https://grafana-dashboards.maddevs.org/common/aws-eks-base/loki-dashboard-quick-search.json
+    k8s:
+      nginx-ingress:
+        gnetId: 9614
+        datasource: VictoriaMetrics
+      loki-promtail:
+        gnetId: 10880
+        datasource: VictoriaMetrics
+      cluster-autoscaler:
+        gnetId: 3831
+        datasource: VictoriaMetrics
+
   sidecar:
     datasources:
       enabled: true
@@ -154,16 +239,7 @@ grafana:
         - name: VictoriaMetrics
           isDefault: true
     dashboards:
-      enabled: true
-      SCProvider: true
-      label: grafana_dashboard
-      folder: /tmp/dashboards
-      defaultFolderName: null
-      labelValue: "1"
-      folderAnnotation: "k8s-sidecar-target-directory"
-      provider:
-        allowUiUpdates: false
-        foldersFromFilesStructure: true
+      enabled: false
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
