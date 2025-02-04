@@ -7,7 +7,7 @@ resource "kubernetes_storage_class" "advanced" {
   allow_volume_expansion = true
   volume_binding_mode    = "WaitForFirstConsumer"
   parameters = {
-    type      = "gp2"
+    type      = "gp3"
     fsType    = "ext4"
     encrypted = "true" # It is set to true for cases when global EBS encryption is disabled.
   }
