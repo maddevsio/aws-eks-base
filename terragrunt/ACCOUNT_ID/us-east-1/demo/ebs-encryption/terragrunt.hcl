@@ -8,11 +8,6 @@ include "env" {
   expose = true
 }
 
-include "region" {
-  path   = find_in_parent_folders("region.hcl")
-  expose = true
-}
-
 generate "providers_versions" {
   path      = "versions.tf"
   if_exists = "overwrite"
@@ -35,6 +30,5 @@ terraform {
 }
 
 inputs = {
-  name   = include.env.locals.name
-  enable = include.region.locals.region_values.aws_ebs_encryption_by_default
+  enable = include.env.locals.values.aws_ebs_encryption_by_default
 }
