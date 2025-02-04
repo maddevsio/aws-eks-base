@@ -1,10 +1,10 @@
 include "root" {
-  path   = find_in_parent_folders()
+  path   = find_in_parent_folders("root.hcl")
   expose = true
 }
 
-include "region" {
-  path   = find_in_parent_folders("region.hcl")
+include "env" {
+  path   = find_in_parent_folders("env.hcl")
   expose = true
 }
 
@@ -30,5 +30,5 @@ terraform {
 }
 
 inputs = {
-  enable = include.region.locals.region_values.aws_ebs_encryption_by_default
+  enable = include.env.locals.values.aws_ebs_encryption_by_default
 }

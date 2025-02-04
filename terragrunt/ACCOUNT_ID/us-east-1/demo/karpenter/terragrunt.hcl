@@ -1,5 +1,5 @@
 include "root" {
-  path   = find_in_parent_folders()
+  path   = find_in_parent_folders("root.hcl")
   expose = true
 }
 
@@ -38,7 +38,7 @@ terraform {
       version = "${include.root.locals.tf_providers.kubernetes}"
     }
     kubectl = {
-      source  = "gavinbunney/kubectl"
+      source  = "alekc/kubectl"
       version = "${include.root.locals.tf_providers.kubectl}"
     }
     helm = {

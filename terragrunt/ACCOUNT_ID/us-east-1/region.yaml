@@ -28,4 +28,3 @@ short_region:
   us-gov-east-1: "usge1" # AWS GovCloud (US-East)
   us-gov-west-1: "usgw1" # AWS GovCloud (US)
 
-aws_ebs_encryption_by_default: true
