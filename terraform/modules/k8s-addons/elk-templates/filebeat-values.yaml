@@ -1,0 +1,66 @@
+fullnameOverride: "filebeat"
+filebeatConfig:
+  filebeat.yml: |
+    filebeat.inputs:
+    - type: container
+      # https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-input-container.html#filebeat-input-container-config-json
+      json.keys_under_root: true
+      json.overwrite_keys: false
+      json.expand_keys: true
+      json.add_error_key: true
+      json.message_key: message
+      json.ignore_decoding_error: true
+      paths:
+        - /var/log/containers/*.log
+      processors:
+      - add_kubernetes_metadata:
+          host: $${NODE_NAME}
+          matchers:
+          - logs_path:
+              logs_path: "/var/log/containers/"
+      - drop_event:
+          when:
+            equals:
+              kubernetes.container.name: "filebeat"
+      - drop_event.when.and:
+          - equals.k8s-app: "coredns"
+          - regexp.message: ".*NOERROR.*"
+    setup.template.name: "filebeat"
+    setup.template.pattern: "filebeat-*"
+    setup.ilm.enabled: false
+    output.elasticsearch:
+      username: '$${ELASTICSEARCH_USERNAME}'
+      password: '$${ELASTICSEARCH_PASSWORD}'
+      protocol: https
+      hosts: ["$${ELASTICSEARCH_HOST}:9200"]
+      ssl.verification_mode: none
+      indices:
+        - index: "filebeat-%%{+yyyy.MM.dd}-000001"
+extraEnvs:
+ - name: 'ELASTICSEARCH_USERNAME'
+   valueFrom:
+     secretKeyRef:
+       name: elastic-credentials
+       key: username
+ - name: 'ELASTICSEARCH_PASSWORD'
+   valueFrom:
+     secretKeyRef:
+       name: elastic-credentials
+       key: password
+ - name: 'ELASTICSEARCH_HOST'
+   valueFrom:
+     secretKeyRef:
+       name: elastic-credentials
+       key: host
+
+resources:
+ requests:
+   cpu: "100m"
+   memory: "50Mi"
+ limits:
+   cpu: "300m"
+   memory: "300Mi"
+
+tolerations:
+ - effect: NoSchedule
+   operator: Exists

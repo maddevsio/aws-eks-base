@@ -113,3 +113,9 @@ variable "node_group_default_iam_role_name" {
   description = "The IAM Role name of a default nodegroup"
   default     = ""
 }
+
+variable "elk" {
+  type        = any
+  default     = {}
+  description = "ELK configuration"
+}

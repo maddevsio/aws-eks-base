@@ -78,7 +78,7 @@ releases:
     chart_version: 67.3.1
     namespace: monitoring
   - id: loki-stack
-    enabled: true
+    enabled: false
     chart: loki-stack
     repository: https://grafana.github.io/helm-charts
     chart_version: 2.10.2
@@ -95,3 +95,9 @@ releases:
     repository: https://victoriametrics.github.io/helm-charts
     chart_version: 0.24.1
     namespace: monitoring
+  - id: filebeat
+    enabled: true
+    chart: elastic/filebeat
+    repository: https://helm.elastic.co/
+    chart_version: 7.17.3
+    namespace: elk
