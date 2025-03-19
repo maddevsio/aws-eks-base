@@ -119,3 +119,10 @@ variable "elk" {
   default     = {}
   description = "ELK configuration"
 }
+
+variable "logstash" {
+  type        = any
+  default     = {}
+  description = "Logstash configuration"
+}
+

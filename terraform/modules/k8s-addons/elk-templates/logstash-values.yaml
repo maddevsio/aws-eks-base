@@ -1,0 +1,121 @@
+replicas: 1
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 1Gi
+  limits:
+    memory: 2Gi
+
+
+# persistence:
+  # enabled: true
+
+logstashConfig:
+  logstash.yml: |
+    http.host: 0.0.0.0
+    xpack.monitoring.enabled: true
+    xpack.monitoring.elasticsearch.username: '$${ELASTICSEARCH_USERNAME}'
+    xpack.monitoring.elasticsearch.password: '$${ELASTICSEARCH_PASSWORD}'
+    xpack.monitoring.elasticsearch.ssl.certificate_authority: '/etc/logstash/certificates/ca.crt'
+    xpack.monitoring.elasticsearch.hosts: ["https://elasticsearch-es-internal-http.elk.svc:9200"]
+
+logstashPipeline:
+  logstash.conf: |
+    input {
+      tcp {
+        port => 5400
+        codec => json
+      }
+      beats {
+        port => 5044
+      }
+    }
+
+    output {
+      elasticsearch {
+        hosts => ["elasticsearch-es-internal-http.elk.svc:9200"]
+        user => '$${ELASTICSEARCH_USERNAME}'
+        password => '$${ELASTICSEARCH_PASSWORD}'
+        index => "filebeat-%%{+yyyy.MM.dd}-000001"
+        manage_template => true
+        template => '/etc/elk/logstash-index-template.json'
+        template_name => 'filebeat'
+        template_overwrite => true
+        action => "create"
+        ssl => true
+        ssl_certificate_verification => false
+        cacert => '/etc/logstash/certificates/ca.crt'
+      }
+      stdout { codec => rubydebug }
+    }
+
+# https://www.elastic.co/guide/en/logstash/current/plugins-outputs-elasticsearch.html
+
+secrets:
+  - name: "index-template"
+    value:
+      logstash-index-template.json: |
+        {
+          "index_patterns": ["filebeat-*"],
+          "data_stream": {},
+          "template": {
+            "settings": {
+              "index.refresh_interval": "5s",
+              "index.mapping.total_fields.limit": 5000,
+              "index.lifecycle.name": "filebeat-policy",
+              "number_of_shards": 1,
+              "number_of_replicas": 1
+            }
+          }
+        }
+
+secretMounts:
+  - name: logstash-index-template
+    secretName: logstash-logstash-index-template
+    path: /etc/elk
+
+extraPorts:
+  - name: beats
+    containerPort: 5044
+  - name: tcp
+    containerPort: 5400
+
+service:
+  ports:
+    - name: beats
+      port: 5044
+      protocol: TCP
+      targetPort: 5044
+    - name: tcp
+      port: 5400
+      protocol: TCP
+      targetPort: 5400
+
+extraEnvs:
+ - name: 'ELASTICSEARCH_USERNAME'
+   valueFrom:
+     secretKeyRef:
+       name: elastic-credentials
+       key: username
+ - name: 'ELASTICSEARCH_PASSWORD'
+   valueFrom:
+     secretKeyRef:
+       name: elastic-credentials
+       key: password
+ - name: 'ELASTICSEARCH_HOST'
+   valueFrom:
+     secretKeyRef:
+       name: elastic-credentials
+       key: host
+
+extraVolumes:
+  - name: ca-certs
+    secret:
+      secretName: elasticsearch-es-http-certs-public
+
+extraVolumeMounts:
+  - name: ca-certs
+    mountPath: /etc/logstash/certificates
+    readOnly: true
+

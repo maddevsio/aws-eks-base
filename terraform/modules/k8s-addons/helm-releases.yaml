@@ -101,3 +101,9 @@ releases:
     repository: https://helm.elastic.co/
     chart_version: 7.17.3
     namespace: elk
+  - id: logstash
+    enabled: true
+    chart: elastic/logstash
+    repository: https://helm.elastic.co/
+    chart_version: 7.17.3
+    namespace: elk

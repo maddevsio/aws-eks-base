@@ -18,24 +18,17 @@ filebeatConfig:
           matchers:
           - logs_path:
               logs_path: "/var/log/containers/"
-      - drop_event:
-          when:
-            equals:
-              kubernetes.container.name: "filebeat"
+      - drop_event.when.or:
+        - equals.kubernetes.container.name: "filebeat"
+        - equals.kubernetes.container.name: "logstash"
       - drop_event.when.and:
           - equals.k8s-app: "coredns"
           - regexp.message: ".*NOERROR.*"
     setup.template.name: "filebeat"
     setup.template.pattern: "filebeat-*"
     setup.ilm.enabled: false
-    output.elasticsearch:
-      username: '$${ELASTICSEARCH_USERNAME}'
-      password: '$${ELASTICSEARCH_PASSWORD}'
-      protocol: https
-      hosts: ["$${ELASTICSEARCH_HOST}:9200"]
-      ssl.verification_mode: none
-      indices:
-        - index: "filebeat-%%{+yyyy.MM.dd}-000001"
+    output.logstash:
+      hosts: ["logstash-logstash.elk.svc:5044"]
 extraEnvs:
  - name: 'ELASTICSEARCH_USERNAME'
    valueFrom:
