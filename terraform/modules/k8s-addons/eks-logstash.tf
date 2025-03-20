@@ -20,7 +20,7 @@ resource "helm_release" "logstash" {
   version     = local.logstash.chart_version
 
   namespace   = "elk"
-  timeout     = "180"
+  timeout     = "600"
   max_history = var.helm_release_history_size
 
   values = compact(

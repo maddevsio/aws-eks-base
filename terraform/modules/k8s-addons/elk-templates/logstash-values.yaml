@@ -1,4 +1,4 @@
-replicas: 1
+replicas: 2
 
 resources:
   requests:
@@ -112,3 +112,11 @@ extraVolumeMounts:
     mountPath: /etc/logstash/certificates
     readOnly: true
 
+nodeAffinity:
+  requiredDuringSchedulingIgnoredDuringExecution:
+    nodeSelectorTerms:
+    - matchExpressions:
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+          - spot

@@ -27,22 +27,6 @@ filebeatConfig:
     setup.ilm.enabled: false
     output.logstash:
       hosts: ["logstash-logstash.elk.svc:5044"]
-extraEnvs:
- - name: 'ELASTICSEARCH_USERNAME'
-   valueFrom:
-     secretKeyRef:
-       name: elastic-credentials
-       key: username
- - name: 'ELASTICSEARCH_PASSWORD'
-   valueFrom:
-     secretKeyRef:
-       name: elastic-credentials
-       key: password
- - name: 'ELASTICSEARCH_HOST'
-   valueFrom:
-     secretKeyRef:
-       name: elastic-credentials
-       key: host
 
 resources:
  requests:
