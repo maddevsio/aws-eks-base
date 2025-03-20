@@ -23,10 +23,6 @@ logstashConfig:
 logstashPipeline:
   logstash.conf: |
     input {
-      tcp {
-        port => 5400
-        codec => json
-      }
       beats {
         port => 5044
       }
@@ -38,11 +34,7 @@ logstashPipeline:
         user => '$${ELASTICSEARCH_USERNAME}'
         password => '$${ELASTICSEARCH_PASSWORD}'
         index => "filebeat-%%{+yyyy.MM.dd}-000001"
-        manage_template => true
-        template => '/etc/elk/logstash-index-template.json'
-        template_name => 'filebeat'
-        template_overwrite => true
-        action => "create"
+        manage_template => false
         ssl => true
         ssl_certificate_verification => false
         cacert => '/etc/logstash/certificates/ca.crt'
@@ -52,28 +44,27 @@ logstashPipeline:
 
 # https://www.elastic.co/guide/en/logstash/current/plugins-outputs-elasticsearch.html
 
-secrets:
-  - name: "index-template"
-    value:
-      logstash-index-template.json: |
-        {
-          "index_patterns": ["filebeat-*"],
-          "data_stream": {},
-          "template": {
-            "settings": {
-              "index.refresh_interval": "5s",
-              "index.mapping.total_fields.limit": 5000,
-              "index.lifecycle.name": "filebeat-policy",
-              "number_of_shards": 1,
-              "number_of_replicas": 1
-            }
-          }
-        }
-
-secretMounts:
-  - name: logstash-index-template
-    secretName: logstash-logstash-index-template
-    path: /etc/elk
+    #secrets:
+    #  - name: "index-template"
+    #    value:
+    #      logstash-index-template.json: |
+    #        {
+    #          "index_patterns": ["filebeat-*"],
+    #          "template": {
+    #            "settings": {
+    #              "index.refresh_interval": "5s",
+    #              "index.mapping.total_fields.limit": 5000,
+    #              "index.lifecycle.name": "filebeat-policy",
+    #              "number_of_shards": 1,
+    #              "number_of_replicas": 1
+    #            }
+    #          }
+    #        }
+    #
+    #secretMounts:
+    #  - name: logstash-index-template
+    #    secretName: logstash-logstash-index-template
+    #    path: /etc/elk
 
 extraPorts:
   - name: beats
