@@ -8,9 +8,6 @@ resources:
     memory: 2Gi
 
 
-# persistence:
-  # enabled: true
-
 logstashConfig:
   logstash.yml: |
     http.host: 0.0.0.0
@@ -33,8 +30,12 @@ logstashPipeline:
         hosts => ["$${ELASTICSEARCH_HOST}:9200"]
         user => '$${ELASTICSEARCH_USERNAME}'
         password => '$${ELASTICSEARCH_PASSWORD}'
-        index => "filebeat-%%{+yyyy.MM.dd}-000001"
-        manage_template => false
+        index => "filebeat-${env}-%%{+yyyy.MM.dd}-000001"
+        manage_template => true
+        template => '/etc/elk/logstash-index-template.json'
+        template_name => 'filebeat-${env}'
+        template_overwrite => true
+        action => "create"
         ssl => true
         ssl_certificate_verification => false
         cacert => '/etc/logstash/certificates/ca.crt'
@@ -42,29 +43,30 @@ logstashPipeline:
       stdout { codec => rubydebug }
     }
 
-# https://www.elastic.co/guide/en/logstash/current/plugins-outputs-elasticsearch.html
+secrets:
+  - name: "index-template"
+    value:
+      logstash-index-template.json: |
+        {
+          "index_patterns": ["filebeat-${env}-*"],
+          "template": {
+            "aliases": {
+              "filebeat-${env}": {}
+            },
+            "settings": {
+              "index.mapping.total_fields.limit": 5000,
+              "index.lifecycle.name": "delete_old_${env}_indicies",
+              "index.lifecycle.rollover_alias": "filebeat-${env}",
+              "number_of_shards": 1,
+              "number_of_replicas": 1
+            }
+          }
+        }
 
-    #secrets:
-    #  - name: "index-template"
-    #    value:
-    #      logstash-index-template.json: |
-    #        {
-    #          "index_patterns": ["filebeat-*"],
-    #          "template": {
-    #            "settings": {
-    #              "index.refresh_interval": "5s",
-    #              "index.mapping.total_fields.limit": 5000,
-    #              "index.lifecycle.name": "filebeat-policy",
-    #              "number_of_shards": 1,
-    #              "number_of_replicas": 1
-    #            }
-    #          }
-    #        }
-    #
-    #secretMounts:
-    #  - name: logstash-index-template
-    #    secretName: logstash-logstash-index-template
-    #    path: /etc/elk
+secretMounts:
+  - name: logstash-index-template
+    secretName: logstash-logstash-index-template
+    path: /etc/elk
 
 extraPorts:
   - name: beats

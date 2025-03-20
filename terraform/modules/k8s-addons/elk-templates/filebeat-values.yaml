@@ -24,8 +24,6 @@ filebeatConfig:
       - drop_event.when.and:
           - equals.k8s-app: "coredns"
           - regexp.message: ".*NOERROR.*"
-    setup.template.name: "filebeat"
-    setup.template.pattern: "filebeat-*"
     setup.ilm.enabled: false
     output.logstash:
       hosts: ["logstash-logstash.elk.svc:5044"]
