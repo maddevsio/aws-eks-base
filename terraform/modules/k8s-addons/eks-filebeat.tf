@@ -27,6 +27,9 @@ resource "helm_release" "filebeat" {
     [data.template_file.filebeat.rendered,
       try(local.elk.helm_values_override, null),
   ])
+  depends_on = [
+    helm_release.logstash
+  ]
 }
 
 resource "kubectl_manifest" "elk_external_secrets" {

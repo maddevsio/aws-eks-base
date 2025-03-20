@@ -18,7 +18,7 @@ logstashConfig:
     xpack.monitoring.elasticsearch.username: '$${ELASTICSEARCH_USERNAME}'
     xpack.monitoring.elasticsearch.password: '$${ELASTICSEARCH_PASSWORD}'
     xpack.monitoring.elasticsearch.ssl.certificate_authority: '/etc/logstash/certificates/ca.crt'
-    xpack.monitoring.elasticsearch.hosts: ["https://elasticsearch-es-internal-http.elk.svc:9200"]
+    xpack.monitoring.elasticsearch.hosts: ["https://$${ELASTICSEARCH_HOST}:9200"]
 
 logstashPipeline:
   logstash.conf: |
@@ -30,7 +30,7 @@ logstashPipeline:
 
     output {
       elasticsearch {
-        hosts => ["elasticsearch-es-internal-http.elk.svc:9200"]
+        hosts => ["$${ELASTICSEARCH_HOST}:9200"]
         user => '$${ELASTICSEARCH_USERNAME}'
         password => '$${ELASTICSEARCH_PASSWORD}'
         index => "filebeat-%%{+yyyy.MM.dd}-000001"
