@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd/applications/aws-load-balancer-controller.yaml
+  name: aws-load-balancer-controller
   namespace: argocd
 spec:
   source:
