@@ -1,7 +1,7 @@
 #tfsec:ignore:aws-vpc-no-public-egress-sgr tfsec:ignore:aws-eks-enable-control-plane-logging tfsec:ignore:aws-eks-encrypt-secrets tfsec:ignore:aws-eks-no-public-cluster-access tfsec:ignore:aws-eks-no-public-cluster-access-to-cidr
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "20.20.0"
+  version = "20.35.0"
 
   cluster_name             = var.name
   cluster_version          = var.eks_cluster_version
@@ -18,6 +18,9 @@ module "eks" {
       most_recent = true
     }
     kube-proxy = {
+      most_recent = true
+    }
+    eks-pod-identity-agent = {
       most_recent = true
     }
     vpc-cni = {

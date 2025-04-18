@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: karpenter
+  namespace: argocd
+spec:
+  source:
+    repoURL: 'https://github.com/maddevsio/aws-eks-base.git'
+    path: argocd/k8s-addons/karpenter
+    targetRevision: main
+  destination:
+    name: in-cluster
+    namespace: argocd
+  project: k8s-addons
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true

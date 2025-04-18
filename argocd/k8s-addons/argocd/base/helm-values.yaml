@@ -1,0 +1,55 @@
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hostname: argocd.example.com
+  # Configure RBAC
+  rbacConfig:
+    policy.default: role:readonly
+    policy.csv: |
+      p, role:org-admin, applications, *, */*, allow
+      p, role:org-admin, clusters, get, *, allow
+      p, role:org-admin, repositories, get, *, allow
+      p, role:org-admin, repositories, create, *, allow
+      p, role:org-admin, repositories, update, *, allow
+      p, role:org-admin, repositories, delete, *, allow
+
+configs:
+  cm:
+    application.resourceTrackingMethod: annotation
+    kustomize.buildOptions: --enable-helm
+  params:
+    server.insecure: "true"
+    server.log.level: "warn"
+    controller.log.level: "warn"
+    reposerver.log.level: "warn"
+
+extraObjects:
+  - apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: k8s-addons
+      namespace: argocd
+      labels:
+        app.kubernetes.io/name: argocd
+        app.kubernetes.io/part-of: argocd
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      clusterResourceWhitelist:
+      - group: '*'
+        kind: '*'
+      destinations:
+      - namespace: '*'
+        server: '*'
+      sourceRepos:
+      - '*'
+global:
+  tolerations:
+    - key: CriticalAddonsOnly
+      operator: Exists
+
+controller:
+  tolerations:
+    - key: CriticalAddonsOnly
+      operator: Exists

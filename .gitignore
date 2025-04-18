@@ -116,3 +116,4 @@ $RECYCLE.BIN/
 *.lnk
 
 **/temp/*
+argocd/**/charts
