@@ -7,7 +7,7 @@ spec:
   source:
     repoURL: 'https://github.com/maddevsio/aws-eks-base.git'
     path: argocd/k8s-addons/ingress-nginx
-    targetRevision: main
+    targetRevision: argocd
   destination:
     name: in-cluster
     namespace: argocd
