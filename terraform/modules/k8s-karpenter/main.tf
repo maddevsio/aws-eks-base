@@ -1,12 +1,13 @@
 locals {
   eks_cluster_endpoint = data.aws_eks_cluster.main.endpoint
   karpenter = {
-    name          = try(var.helm.release_name, "karpenter")
-    enabled       = true
-    chart         = try(var.helm.chart_name, "karpenter")
-    repository    = try(var.helm.repository, "oci://public.ecr.aws/karpenter")
-    chart_version = try(var.helm.chart_version, "1.0.6")
-    namespace     = try(var.helm.namespace, "karpenter")
+    name                = try(var.helm.release_name, "karpenter")
+    enabled             = true
+    chart               = try(var.helm.chart_name, "karpenter")
+    repository          = try(var.helm.repository, "oci://public.ecr.aws/karpenter")
+    chart_version       = try(var.helm.chart_version, "1.0.6")
+    namespace           = try(var.helm.namespace, "karpenter")
+    allocatable_pod_ips = try(var.helm.allocatable_pod_ips, 110)
   }
 
   karpenter_values = <<VALUES
@@ -80,6 +81,8 @@ spec:
   securityGroupSelectorTerms:
     - tags:
         karpenter.sh/discovery: ${var.name}
+  kubelet:
+    maxPods: ${local.karpenter.allocatable_pod_ips}
   tags:
     karpenter.sh/discovery: ${var.name}
   blockDeviceMappings:
@@ -112,6 +115,8 @@ spec:
   securityGroupSelectorTerms:
     - tags:
         karpenter.sh/discovery: ${var.eks_cluster_id}
+  kubelet:
+    maxPods: ${local.karpenter.allocatable_pod_ips}
   tags:
     karpenter.sh/discovery: ${var.eks_cluster_id}
   blockDeviceMappings:
@@ -143,8 +148,8 @@ resource "helm_release" "this" {
   namespace   = module.namespace[count.index].name
   max_history = 3
 
-  repository_username = data.aws_ecrpublic_authorization_token.token.user_name
-  repository_password = data.aws_ecrpublic_authorization_token.token.password
+  # repository_username = data.aws_ecrpublic_authorization_token.token.user_name
+  # repository_password = data.aws_ecrpublic_authorization_token.token.password
 
   values = [
     local.karpenter_values

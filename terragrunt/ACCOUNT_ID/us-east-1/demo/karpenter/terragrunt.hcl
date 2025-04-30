@@ -14,10 +14,10 @@ dependency "eks" {
   mock_outputs_allowed_terraform_commands = ["init", "validate", "plan", "destroy"]
 
   mock_outputs = {
-    eks_cluster_id                   = "test"
-    eks_oidc_provider_arn            = "arn:aws:iam::11111111:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/D55EEBDFE5510B81EEE2381B88888888"
-    node_group_default_iam_role_arn  = "arn::"
-    node_group_default_iam_role_name = "test"
+    eks_cluster_id                   = "maddevs-khv-demo-euw1"
+    eks_oidc_provider_arn            = "arn:aws:iam::746336062380:oidc-provider/oidc.eks.eu-west-1.amazonaws.com/id/E0AD5EAC2B536ED71013DE04B03AB5EF"
+    node_group_default_iam_role_arn  = "arn:aws:iam::746336062380:role/maddevs-khv-demo-euw1-default-20250428112004069300000005"
+    node_group_default_iam_role_name = "maddevs-khv-demo-euw1-default-20250428112004069300000005"
   }
 }
 

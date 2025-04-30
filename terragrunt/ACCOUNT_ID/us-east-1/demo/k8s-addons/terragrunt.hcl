@@ -106,4 +106,5 @@ inputs = {
   zone_id                          = dependency.aws-r53.outputs.route53_zone_id
   ssl_certificate_arn              = dependency.aws-acm.outputs.ssl_certificate_arn
   helm_charts_path                 = "${get_path_to_repo_root()}/helm-charts"
+  region                           = include.env.locals.values.region
 }

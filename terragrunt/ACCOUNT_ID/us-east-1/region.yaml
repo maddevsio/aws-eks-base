@@ -1,9 +1,9 @@
 ---
-region: us-east-1
+region: eu-west-1
 azs:
-  - us-east-1a
-  - us-east-1b
-  - us-east-1c
+  - eu-west-1a
+  - eu-west-1b
+  - eu-west-1c
 
 short_region:
   us-east-1: "use1"  # US East (N. Virginia)

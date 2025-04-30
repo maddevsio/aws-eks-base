@@ -36,7 +36,7 @@ releases:
     chart_version: 1.14.4
     namespace: external-dns
   - id: external-secrets
-    enabled: true
+    enabled: false
     chart: external-secrets
     repository: https://charts.external-secrets.io
     chart_version: 0.10.0
@@ -84,7 +84,7 @@ releases:
     chart_version: 2.10.2
     namespace: loki
   - id: reloader
-    enabled: true
+    enabled: false
     chart: reloader
     repository: https://stakater.github.io/stakater-charts
     chart_version: 1.0.97

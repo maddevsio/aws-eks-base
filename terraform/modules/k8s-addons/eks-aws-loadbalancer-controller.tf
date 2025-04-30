@@ -99,7 +99,7 @@ module "aws_iam_aws_loadbalancer_controller" {
   count = local.aws_load_balancer_controller.enabled ? 1 : 0
 
   source            = "../aws-iam-eks-trusted"
-  name              = "${local.name}-aws-lb-controller"
+  name              = "${local.name}-aws-lb-control"
   region            = local.region
   oidc_provider_arn = local.eks_oidc_provider_arn
   policy = jsonencode({
@@ -450,6 +450,7 @@ resource "kubernetes_ingress_v1" "default" {
     namespace = module.ingress_nginx_namespace[count.index].name
   }
   spec {
+    # ingress_class_name = "nginx"
     rule {
       http {
         path {
