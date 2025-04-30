@@ -8,7 +8,7 @@ locals {
   tf_providers = {
     aws        = "5.58.0"
     kubernetes = "2.30.0"
-    kubectl    = "1.14.0"
+    kubectl    = "1.19.0"
     helm       = "2.13.2"
     http       = "3.4.2"
   }
