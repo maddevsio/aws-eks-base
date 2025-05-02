@@ -1,14 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-resources:
-  - application-k8s-addons.yaml
-
 helmCharts:
-  - name: argo-cd
-    repo: https://argoproj.github.io/argo-helm
+  - name: aws-load-balancer-controller
+    repo: https://aws.github.io/eks-charts
     includeCRDs: true
-    version: 7.8.26
-    releaseName: argocd
-    namespace: argocd
+    version: 1.12.0
+    releaseName: aws-load-balancer-controller
+    namespace: aws-loadbalancer-controller
     valuesFile: helm-values.yaml

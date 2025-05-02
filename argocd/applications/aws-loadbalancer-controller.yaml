@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: aws-load-balancer-controller
+  name: aws-loadbalancer-controller
   namespace: argocd
 spec:
   source:
@@ -10,7 +10,7 @@ spec:
     targetRevision: argocd
   destination:
     name: in-cluster
-    namespace: aws-load-balancer-controller
+    namespace: aws-loadbalancer-controller
   project: k8s-addons
   syncPolicy:
     syncOptions:
