@@ -2,7 +2,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: k8s-addons
-  namespace: argocd
 spec:
   project: k8s-addons
   source:

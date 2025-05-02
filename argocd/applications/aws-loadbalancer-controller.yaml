@@ -6,7 +6,7 @@ metadata:
 spec:
   source:
     repoURL: 'https://github.com/maddevsio/aws-eks-base.git'
-    path: argocd/k8s-addons/aws-load-balancer-controller
+    path: argocd/k8s-addons/aws-loadbalancer-controller
     targetRevision: argocd
   destination:
     name: in-cluster
