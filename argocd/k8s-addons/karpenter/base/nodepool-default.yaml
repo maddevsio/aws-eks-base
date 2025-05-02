@@ -34,22 +34,6 @@ spec:
           operator: In
           values: ["spot", "on-demand"]
 
-      kubelet:
-        systemReserved:
-          cpu: 100m
-          memory: 100Mi
-          ephemeral-storage: 1Gi
-        kubeReserved:
-          cpu: 200m
-          memory: 100Mi
-          ephemeral-storage: 3Gi
-        evictionMaxPodGracePeriod: 60
-        imageGCHighThresholdPercent: 85
-        imageGCLowThresholdPercent: 80
-        cpuCFSQuota: true
-
-  expireAfter: 720h
-
   disruption:
     consolidationPolicy: WhenEmptyOrUnderutilized
     consolidateAfter: 1m
