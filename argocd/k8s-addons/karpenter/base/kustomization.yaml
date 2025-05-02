@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - nodepool-default.yaml
+  - nodeclass-private.yaml
 
 helmCharts:
   - name: karpenter
