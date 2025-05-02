@@ -7,6 +7,7 @@ resources:
 helmCharts:
   - name: karpenter
     repo: oci://public.ecr.aws/karpenter
+    includeCRDs: true
     version: 1.4.0
     releaseName: karpenter
     namespace: karpenter
