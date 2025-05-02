@@ -1,0 +1,16 @@
+rbac:
+  create: true
+controller:
+  service:
+    type: ClusterIP
+    targetPorts:
+      http: http
+      https: http
+  publishService:
+    enabled: true
+  config:
+    server-tokens: "false"
+    use-forwarded-headers: "true"
+    proxy-real-ip-cidr: "10.100.0.0/16"
+    limit-req-status-code: "429"
+    annotations-risk-level: Critical

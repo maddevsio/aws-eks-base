@@ -10,7 +10,7 @@ spec:
     targetRevision: argocd
   destination:
     name: in-cluster
-    namespace: argocd
+    namespace: karpenter
   project: k8s-addons
   syncPolicy:
     syncOptions:

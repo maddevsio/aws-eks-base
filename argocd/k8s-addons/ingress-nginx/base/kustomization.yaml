@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources: []
+
+helmCharts:
+  - name: ingress-nginx
+    repo: https://kubernetes.github.io/ingress-nginx
+    version: 4.12.1
+    releaseName: ingress-nginx
+    namespace: ingress-nginx
+    valuesFile: helm-values.yaml

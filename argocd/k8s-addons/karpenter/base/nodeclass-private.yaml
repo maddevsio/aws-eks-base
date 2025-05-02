@@ -1,0 +1,22 @@
+apiVersion: karpenter.k8s.aws/v1
+kind: EC2NodeClass
+metadata:
+  name: private
+spec:
+  amiSelectorTerms:
+    - alias: al2023@latest
+  role: maddevs-demo-use1-default-20250502092354100600000003
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: "private"
+        Name: "maddevs-demo-use1-private"
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: maddevs-demo-use1
+  tags:
+    karpenter.sh/discovery: maddevs-demo-use1
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        volumeSize: 100Gi
+        volumeType: gp3
