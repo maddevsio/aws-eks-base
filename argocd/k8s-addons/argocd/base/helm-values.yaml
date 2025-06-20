@@ -1,6 +1,6 @@
 server:
   ingress:
-    enabled: true
+    enabled: false
     ingressClassName: nginx
     hostname: argocd.example.com
   # Configure RBAC
