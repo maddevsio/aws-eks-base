@@ -24,26 +24,8 @@ configs:
     controller.log.level: "warn"
     reposerver.log.level: "warn"
 
-extraObjects:
-  - apiVersion: argoproj.io/v1alpha1
-    kind: AppProject
-    metadata:
-      name: k8s-addons
-      namespace: argocd
-      labels:
-        app.kubernetes.io/name: argocd
-        app.kubernetes.io/part-of: argocd
-      finalizers:
-        - resources-finalizer.argocd.argoproj.io
-    spec:
-      clusterResourceWhitelist:
-      - group: '*'
-        kind: '*'
-      destinations:
-      - namespace: '*'
-        server: '*'
-      sourceRepos:
-      - '*'
+extraObjects: []
+
 global:
   tolerations:
     - key: CriticalAddonsOnly
