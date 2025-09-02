@@ -354,3 +354,6 @@ If you're interested in contributing to the project:
 
 - Start by reading the [Contributing](https://github.com/maddevsio/aws-eks-base/blob/main/.github/CONTRIBUTING.md) guide
 - Explore [current issues](https://github.com/maddevsio/aws-eks-base/issues?q=is%3Aopen+is%3Aissue).
+
+
+<!-- Security scan triggered at 2025-09-02 02:02:56 -->
